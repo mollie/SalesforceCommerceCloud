@@ -2,7 +2,7 @@ var Logger = require('*/cartridge/scripts/utils/logger');
 var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities');
 
 /**
- * TODO
+ *
  * @returns {Object} payload - returns payload
  */
 function payloadBuilder() {
@@ -16,15 +16,15 @@ function payloadBuilder() {
  * @returns {Object} response
  */
 function responseMapper(result) {
-    Logger.debug('MOLLIE :: UpdatePayment: ' + JSON.stringify(result));
+    Logger.debug('MOLLIE :: GetOrder: ' + JSON.stringify(result));
     if (!result || typeof result === 'string') {
         return {
-            payment: new mollieEntities.Payment(),
+            order: new mollieEntities.Order(),
             raw: result || null
         };
     }
     return {
-        payment: new mollieEntities.Payment(result),
+        order: new mollieEntities.Order(result),
         raw: JSON.stringify(result)
     };
 }

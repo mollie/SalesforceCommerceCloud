@@ -16,15 +16,15 @@ function payloadBuilder() {
  * @returns {Object} response
  */
 function responseMapper(result) {
-    Logger.debug('MOLLIE :: UpdatePayment: ' + JSON.stringify(result));
+    Logger.debug('MOLLIE :: UpdateOrder: ' + JSON.stringify(result));
     if (!result || typeof result === 'string') {
         return {
-            payment: new mollieEntities.Payment(),
+            order: new mollieEntities.Order(),
             raw: result || null
         };
     }
     return {
-        payment: new mollieEntities.Payment(result),
+        order: new mollieEntities.Order(result),
         raw: JSON.stringify(result)
     };
 }

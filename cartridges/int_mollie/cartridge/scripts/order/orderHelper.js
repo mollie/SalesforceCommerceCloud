@@ -49,6 +49,13 @@ function cancelOrder(order, message) {
     }
 }
 
+/**
+ *
+ *
+ * @param {dw.order.Order} order - Order object
+ * @param {string} message - Error Message
+ * @returns {void}
+ */
 function failOrCancelOrder(order, message) {
     if (order.getStatus() === Order.ORDER_STATUS_CREATED) {
         failOrder(order, message)
@@ -57,6 +64,16 @@ function failOrCancelOrder(order, message) {
     } else {
         addItemToOrderHistory(order, 'PAYMENT :: Cannot fail or cancel the order. Order has not the correct status: ' + order.getStatus());
     }
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - Order object
+ * @returns {void}
+ */
+function isNewOrder(order) {
+    return order.getStatus() === Order.ORDER_STATUS_CREATED;
 }
 
 /**
@@ -116,7 +133,7 @@ var getTransactionCustomProperty = function (order, paymentMethod, custom) {
  * @returns {void}
  */
 function setTransactionStatus(order, paymentMethod, status) {
-    setTransactionCustomProperty(order, paymentMethod, { key: 'mollidTransactionStatus', value: new String(status).toString() });
+    setTransactionCustomProperty(order, paymentMethod, { key: 'mollieTransactionStatus', value: new String(status).toString() });
 }
 
 /**
@@ -127,7 +144,7 @@ function setTransactionStatus(order, paymentMethod, status) {
  * @returns {string} - captureId
  */
 function getTransactionStatus(order, paymentMethod) {
-    return getTransactionCustomProperty(order, paymentMethod, { key: 'mollidTransactionStatus' });
+    return getTransactionCustomProperty(order, paymentMethod, { key: 'mollieTransactionStatus' });
 }
 
 /**
@@ -204,6 +221,7 @@ module.exports = {
     failOrder: failOrder,
     cancelOrder: cancelOrder,
     failOrCancelOrder: failOrCancelOrder,
+    isNewOrder: isNewOrder,
     cancelMolliePaymentOrOrder: cancelMolliePaymentOrOrder,
     getMolliePaymentInstruments: getMolliePaymentInstruments,
     setTransactionCustomProperty: setTransactionCustomProperty,

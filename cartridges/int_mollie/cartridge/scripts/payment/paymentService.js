@@ -1,6 +1,7 @@
 var MollieService = require('*/cartridge/scripts/services/worldlineService');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var config = require('*/cartridge/scripts/config');
+var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
 
 /**
  *
@@ -14,8 +15,7 @@ function createPayment(order, paymentMethod) {
     try {
         const paymentResult = MollieService.createPayment({
             orderId: order.orderNo,
-            currency: order.getTotalGrossPrice().getCurrencyCode(),
-            value: order.getTotalGrossPrice().getValue(),
+            amount: new sfccEntities.Currency(order.getTotalGrossPrice()),
             description: 'description order', //TODO
             method: paymentMethod,
         });

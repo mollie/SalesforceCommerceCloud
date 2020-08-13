@@ -1,7 +1,7 @@
 const createPayment = require('*/cartridge/scripts/services/mollie/payment/createPayment');
-const getPayment = require('*/cartridge/scripts/services/mollie/payment/createPayment');
-const updatePayment = require('*/cartridge/scripts/services/mollie/payment/createPayment');
-const cancelPayment = require('*/cartridge/scripts/services/mollie/payment/createPayment');
+const getPayment = require('*/cartridge/scripts/services/mollie/payment/getPayment');
+const updatePayment = require('*/cartridge/scripts/services/mollie/payment/updatePayment');
+const cancelPayment = require('*/cartridge/scripts/services/mollie/payment/cancelPayment');
 const paymentConstants = require('*/cartridge/scripts/services/mollie/payment/paymentConstants');
 const Mollie = require('*/cartridge/scripts/services/mollie/Mollie');
 

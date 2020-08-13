@@ -58,7 +58,28 @@ function Payment(payment) {
     this.links = new Links(payment._links);
 }
 
+/**
+ *
+ * @class
+ * @param {Object} address - Mollie Address object
+ */
+function Address(address) {
+    address = address || {};
+    this.organizationName = address.organizationName;
+    this.streetAndNumber = address.streetAndNumber;
+    this.streetAdditional = address.streetAdditional;
+    this.city = address.city;
+    this.region = address.region;
+    this.postalCode = address.postalCode;
+    this.country = address.country;
+    this.title = address.title;
+    this.givenName = address.givenName;
+    this.familyName = address.familyName;
+    this.email = address.email;
+}
+
 module.exports.Amount = Amount;
 module.exports.Link = Link;
 module.exports.Links = Links;
 module.exports.Payment = Payment;
+module.exports.Address = Address;

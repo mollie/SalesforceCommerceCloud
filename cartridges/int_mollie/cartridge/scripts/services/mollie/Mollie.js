@@ -37,17 +37,22 @@ function Mollie(configuration) {
         svc.addHeader('Authorization', config.getBearerToken());
     };
 
-    this.replaceOrderId = function (parameters) {
+    this.replaceId = function (parameters) {
         if (parameters.orderId) {
             this.path = this.path
                 .replace("{paymentId}", parameters.paymentId);
+        }
+
+        if (parameters.orderId) {
+            this.path = this.path
+                .replace("{orderId}", parameters.orderId);
         }
     }
 
     this.createRequest = function createRequest(svc, parameters) {
         this.configureService(svc);
         this.setBearerToken(svc);
-        this.replaceOrderId(parameters);
+        this.replaceId(parameters);
         var request = new MollieRequest(this.payloadBuilder(parameters));
         var requestBody = JSON.stringify(request);
         Logger.debug(this.serviceName + ' :: RequestBody: ' + requestBody);

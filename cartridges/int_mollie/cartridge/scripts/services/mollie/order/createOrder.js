@@ -12,11 +12,15 @@ var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
 function payloadBuilder(params) {
     return {
         amount: new sfccEntities.Currency(order.getTotalGrossPrice()),
-        description: 'Order description',
+        orderNumber: params.orderId,
+        locale: request.getLocale(),
         redirectUrl: URLUtils.https('Payment-Redirect', 'id', params.orderId).toString(),
         webhookUrl: URLUtils.https('Payment-Hook').toString(),
-        locale: request.getLocale(),
-        method: params.method
+        method: params.method,
+        lines: params.productLineItems.toArray().map(function (productLineItem) {
+            return new sfccEntities.ProductLineItem(productLineItem);
+        }),
+        billingAddress: new sfccEntities.Address(params.billingAddress, order.getProfile()),
     };
 }
 
@@ -27,15 +31,15 @@ function payloadBuilder(params) {
  * @returns {Object} response
  */
 function responseMapper(result) {
-    Logger.debug('MOLLIE :: CreatePayment: ' + JSON.stringify(result));
+    Logger.debug('MOLLIE :: CreateOrder: ' + JSON.stringify(result));
     if (!result || typeof result === 'string') {
         return {
-            payment: new mollieEntities.Payment(),
+            order: new mollieEntities.Order(),
             raw: result || null
         };
     }
     return {
-        payment: new mollieEntities.Payment(result),
+        order: new mollieEntities.Order(result),
         raw: JSON.stringify(result)
     };
 }

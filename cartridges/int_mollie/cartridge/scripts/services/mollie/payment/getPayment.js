@@ -1,5 +1,5 @@
 var Logger = require('*/cartridge/scripts/utils/logger');
-var entities = require('*/cartridge/scripts/services/mollie/mollieEntities');
+var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities');
 
 /**
  *
@@ -19,12 +19,12 @@ function responseMapper(result) {
     Logger.debug('MOLLIE :: GetPayment: ' + JSON.stringify(result));
     if (!result || typeof result === 'string') {
         return {
-            payment: new entities.Payment(),
+            payment: new mollieEntities.Payment(),
             raw: result || null
         };
     }
     return {
-        payment: new entities.Payment(result),
+        payment: new mollieEntities.Payment(result),
         raw: JSON.stringify(result)
     };
 }

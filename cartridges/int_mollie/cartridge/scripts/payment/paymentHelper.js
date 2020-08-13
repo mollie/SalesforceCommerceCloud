@@ -17,7 +17,6 @@ var ObjectUtil = require('*/cartridge/scripts/utils/object');
  */
 function processPaymentResult(order, paymentResult) {
     const STATUS = config.getTransactionStatus();
-    const TYPE = config.getProcessType();
 
     var url;
     var orderId = order.orderNo;
@@ -46,7 +45,9 @@ function processPaymentResult(order, paymentResult) {
     // PROCESS STATUS
     switch (paymentResult.status) {
         case STATUS.PAID:
-            COHelpers.placeOrder(order);
+            if (orderHelper.isNewOrder(order)) {
+                COHelpers.placeOrder(order);
+            }
             Transaction.wrap(function () {
                 orderHelper.setPaymentStatus(order, Order.PAYMENT_STATUS_PAID);
             });
@@ -55,7 +56,9 @@ function processPaymentResult(order, paymentResult) {
 
         case STATUS.PENDING:
         case STATUS.AUTHORIZED:
-            COHelpers.placeOrder(order);
+            if (orderHelper.isNewOrder(order)) {
+                COHelpers.placeOrder(order);
+            }
             url = URLUtils.https('Order-Confirm', 'ID', orderId, 'token', orderToken).toString();
             break;
 
