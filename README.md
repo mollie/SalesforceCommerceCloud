@@ -47,13 +47,20 @@ Add the following cartridges to the business manager site:
 - bc_csc_mollie
 - bc_jobs_mollie
 
-## Site Preferences //TODO
+## Site Preferences 
+
+- mollieBearerToken: string
+- mollieEnableOrderAPI: boolean
 
 ## Custom Properties
 
 ### PaymentMethod //TODO
 
-### PaymentTransaction //TODO
+### PaymentTransaction
+- `mollieTransactionStatus`: string - the payment status recieved from Mollie
+- `mollieTransactionPaymentId`: string - the id of the Mollie order
+- `mollieTransactionOrderId`: string - the id of the Mollie payment
+- `mollieTransactionType`: string - api used for creating payment (payment / order)
 
 ### Profile //TODO
 
