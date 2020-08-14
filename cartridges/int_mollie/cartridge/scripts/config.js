@@ -19,6 +19,12 @@ var TRANSACTION_API = {
     ORDER: "order"
 };
 
+var TRANSACTION_CATEGORY = {
+    MEAL: "meal",
+    ECO: "eco",
+    GIFT: "gift"
+};
+
 // Mollie Configuration
 /**
  *
@@ -92,6 +98,16 @@ function Config() {
      */
     this.getTransactionAPI = function () {
         return TRANSACTION_API;
+    }
+
+    /**
+     * Get Transaction Category constant
+     * @function
+     * @name Config#getOrderType
+     * @return {Object} Order Types
+     */
+    this.getTransactionCategory = function () {
+        return TRANSACTION_CATEGORY;
     }
 
     //#endregion

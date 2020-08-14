@@ -1,4 +1,4 @@
-var MollieService = require('*/cartridge/scripts/services/worldlineService');
+var MollieService = require('*/cartridge/scripts/services/mollieService');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var config = require('*/cartridge/scripts/config');
 var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
@@ -21,7 +21,7 @@ function createPayment(order, paymentMethod) {
         });
 
         Transaction.wrap(function () {
-            var historyItem = 'MOLLIE :: CREATE PAYMENT' + paymentResult.raw;
+            var historyItem = 'PAYMENT :: Create payment: ' + paymentResult.raw;
             orderHelper.addItemToOrderHistory(order, historyItem, true);
             orderHelper.setTransactionAPI(order, null, API.PAYMENT);
         });
@@ -45,11 +45,6 @@ function handlePaymentUpdate(paymentId) {
             paymentId: paymentId,
         });
 
-        Transaction.wrap(function () {
-            var historyItem = 'MOLLIE :: HANDLING PAYMENT UPDATE' + paymentResult.raw;
-            orderHelper.addItemToOrderHistory(order, historyItem, true);
-        });
-
         return paymentHelper.processOrderResult(order, paymentResult);
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
@@ -70,7 +65,7 @@ function cancelPayment(paymentId) {
         });
 
         Transaction.wrap(function () {
-            var historyItem = 'MOLLIE :: CANCEL PAYMENT' + paymentResult.raw;
+            var historyItem = 'PAYMENT :: Canceling payment: ' + paymentResult.raw;
             orderHelper.addItemToOrderHistory(order, historyItem, true);
         });
 
@@ -81,6 +76,8 @@ function cancelPayment(paymentId) {
     }
 }
 
-module.exports.createPayment = createPayment;
-module.exports.handlePaymentUpdate = handlePaymentUpdate;
-module.exports.cancelPayment = cancelPayment;
+module.exports = {
+    createPayment: createPayment,
+    handlePaymentUpdate: handlePaymentUpdate,
+    cancelPayment: cancelPayment
+}

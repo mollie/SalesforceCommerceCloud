@@ -48,6 +48,8 @@ function ProductLineItem(productLineItem) {
     }
 }
 
-module.exports.Currency = Currency;
-module.exports.Address = Address;
-module.exports.ProductLineItem = ProductLineItem;
+module.exports = {
+    Currency: Currency,
+    Address: Address,
+    ProductLineItem: ProductLineItem
+}

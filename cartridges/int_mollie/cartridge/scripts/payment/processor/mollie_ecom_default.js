@@ -24,7 +24,7 @@ function Handle(basket, paymentInformation) {
 
     var pm = paymentInformation.paymentMethod;
 
-    // Removes all saferpay paymentInstruments related to the currentBasket
+    // Removes all Mollie paymentInstruments related to the currentBasket
     // in order to start an order with a clean slate
     Transaction.wrap(function () {
         var paymentInstruments = currentBasket.getPaymentInstruments();
@@ -39,7 +39,7 @@ function Handle(basket, paymentInformation) {
         currentBasket.createPaymentInstrument(pm, currentBasket.totalGrossPrice);
     });
 
-    // Payment forms are managed by Saferpay, so field and server errors are irrelevant her.
+    // Payment forms are managed by Mollie, so field and server errors are irrelevant her.
     return { fieldErrors: [cardErrors], serverErrors: serverErrors, error: false };
 }
 

@@ -9,7 +9,7 @@ var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 var ObjectUtil = require('*/cartridge/scripts/utils/object');
 
 /**
- * Process the Order Result from worldline
+ * Process the Order Result from Mollie
  *
  * @param {dw.order.Order} order
  * @param {object} paymentResult

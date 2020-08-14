@@ -7,28 +7,28 @@ const Mollie = require('*/cartridge/scripts/services/mollie/Mollie');
 
 exports.createOrder = function (parameters) {
     var mollie = new Mollie(orderConstants.CREATE_ORDER);
-    saferpay.addPayloadBuilder(createOrder.payloadBuilder);
-    saferpay.addResponseMapper(createOrder.responseMapper);
+    mollie.addPayloadBuilder(createOrder.payloadBuilder);
+    mollie.addResponseMapper(createOrder.responseMapper);
     return mollie.execute(parameters);
 };
 
 exports.getOrder = function (parameters) {
     var mollie = new Mollie(paymentConstants.GET_ORDER);
-    saferpay.addPayloadBuilder(getOrder.payloadBuilder);
-    saferpay.addResponseMapper(getOrder.responseMapper);
+    mollie.addPayloadBuilder(getOrder.payloadBuilder);
+    mollie.addResponseMapper(getOrder.responseMapper);
     return mollie.execute(parameters);
 };
 
 exports.updateOrder = function (parameters) {
     var mollie = new Mollie(orderConstants.UPDATE_ORDER);
-    saferpay.addPayloadBuilder(updateOrder.payloadBuilder);
-    saferpay.addResponseMapper(updateOrder.responseMapper);
+    mollie.addPayloadBuilder(updateOrder.payloadBuilder);
+    mollie.addResponseMapper(updateOrder.responseMapper);
     return mollie.execute(parameters);
 };
 
 exports.cancelOrder = function (parameters) {
     var mollie = new Mollie(orderConstants.CANCEL_ORDER);
-    saferpay.addPayloadBuilder(cancelOrder.payloadBuilder);
-    saferpay.addResponseMapper(cancelOrder.responseMapper);
+    mollie.addPayloadBuilder(cancelOrder.payloadBuilder);
+    mollie.addResponseMapper(cancelOrder.responseMapper);
     return mollie.execute(parameters);
 };

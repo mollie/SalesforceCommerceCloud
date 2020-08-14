@@ -84,7 +84,8 @@ function isNewOrder(order) {
  */
 function cancelMolliePaymentOrOrder(order) {
     if (orderHelper.getTransactionAPI() === config.getTransactionAPI().ORDER) {
-        // TODO
+        var orderId = orderHelper.getTransactionOrderId(order, null);
+        mollieOrderService.cancelOrder(orderId);
     } else {
         var paymentId = orderHelper.getTransactionPaymentId(order, null);
         molliePaymentService.cancelPayment(paymentId);
@@ -93,10 +94,10 @@ function cancelMolliePaymentOrOrder(order) {
 
 /**
  *
- * @description Returns all paymentInstruments related to the Worldline processor
+ * @description Returns all paymentInstruments related to the Mollie processor
  * @param {dw.order.Order} order - order object
  * @param {string} [paymentMethodId] - paymentMethodId
- * @returns {dw.order.OrderPaymentInstrument[]} - Worldline PaymentInstruments
+ * @returns {dw.order.OrderPaymentInstrument[]} - Mollie PaymentInstruments
  */
 function getMolliePaymentInstruments(order, paymentMethodId) {
     const filterFunction = function (instrument) {

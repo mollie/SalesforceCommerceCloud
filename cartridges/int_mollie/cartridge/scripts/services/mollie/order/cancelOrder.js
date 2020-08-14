@@ -12,7 +12,7 @@ function payloadBuilder() {
 /**
  *
  *
- * @param {Object} result - Saferpay Service Response
+ * @param {Object} result - Mollie Service Response
  * @returns {Object} response
  */
 function responseMapper(result) {

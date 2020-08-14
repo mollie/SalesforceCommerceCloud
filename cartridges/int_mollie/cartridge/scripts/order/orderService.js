@@ -1,4 +1,4 @@
-var MollieService = require('*/cartridge/scripts/services/worldlineService');
+var MollieService = require('*/cartridge/scripts/services/mollieService');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var config = require('*/cartridge/scripts/config');
 
@@ -21,7 +21,7 @@ function createOrder(order, paymentMethod) {
         });
 
         Transaction.wrap(function () {
-            var historyItem = 'MOLLIE :: CREATE PAYMENT' + orderResult.raw;
+            var historyItem = 'PAYMENT :: Create order payment: ' + orderResult.raw;
             orderHelper.addItemToOrderHistory(order, historyItem, true);
             orderHelper.setTransactionAPI(order, null, API.ORDER);
         });
@@ -33,4 +33,32 @@ function createOrder(order, paymentMethod) {
     }
 }
 
-module.exports.createOrder = createOrder;
+
+/**
+ *
+ * @param {string} orderId - orderId
+ * @returns {Object} - Redirect object
+ * @throws {ServiceException}
+ */
+function cancelOrder(orderId) {
+    try {
+        const orderResult = MollieService.cancelOrder({
+            orderId: orderId,
+        });
+
+        Transaction.wrap(function () {
+            var historyItem = 'PAYMENT :: Canceling order payment: ' + orderResult.raw;
+            orderHelper.addItemToOrderHistory(order, historyItem, true);
+        });
+
+        return paymentHelper.processOrderResult(order, orderResult);
+    } catch (e) {
+        if (e.name === 'PaymentProviderException') throw e;
+        throw ServiceException.from(e);
+    }
+}
+
+module.exports = {
+    createOrder: createOrder,
+    cancelOrder: cancelOrder
+}
