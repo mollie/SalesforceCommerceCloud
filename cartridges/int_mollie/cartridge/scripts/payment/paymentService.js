@@ -26,7 +26,7 @@ function createPayment(order, paymentMethod) {
             orderHelper.setTransactionAPI(order, null, API.PAYMENT);
         });
 
-        return paymentResult.links.checkout.link.href;
+        return paymentResult.payment.links.checkout.link.href;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
         throw ServiceException.from(e);
@@ -45,7 +45,7 @@ function handlePaymentUpdate(paymentId) {
             paymentId: paymentId,
         });
 
-        return paymentHelper.processOrderResult(order, paymentResult);
+        return paymentHelper.processOrderResult(order, paymentResult.payment);
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
         throw ServiceException.from(e);
@@ -69,7 +69,7 @@ function cancelPayment(paymentId) {
             orderHelper.addItemToOrderHistory(order, historyItem, true);
         });
 
-        return paymentHelper.processOrderResult(order, paymentResult);
+        return paymentHelper.processOrderResult(order, paymentResult.payment);
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
         throw ServiceException.from(e);

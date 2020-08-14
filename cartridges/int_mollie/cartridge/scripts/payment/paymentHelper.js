@@ -23,24 +23,11 @@ function processPaymentResult(order, paymentResult) {
     var orderToken = order.orderToken;
 
     Transaction.wrap(function () {
-        var historyItem = 'PAYMENT :: Processing ' + ' ' + processType + ' :: ' + JSON.stringify(paymentResults);
+        var historyItem = 'PAYMENT :: Processing ' + ' ' + processType + ' :: ' + JSON.stringify(paymentResult);
         orderHelper.addItemToOrderHistory(order, historyItem, true);
         orderHelper.setTransactionStatus(order, null, paymentResult.status);
         orderHelper.setTransactionPaymentId(order, null, paymentResult.id);
     });
-
-    /**
-     * OPEN: "open", ---
-    CREATED: "created", ---
-    PENDING: "pending",
-    AUTHORIZED: "authorized", HOOK
-    PAID: "paid", --- HOOK
-    SHIPPING: "shipping", X
-    COMPLETED: "completed", X
-    EXPIRED: "expired", --- HOOK
-    CANCELED: "canceled", --- HOOK
-    FAILED: "failed" --- HOOK
-     */
 
     // PROCESS STATUS
     switch (paymentResult.status) {

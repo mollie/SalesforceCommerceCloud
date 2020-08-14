@@ -23,7 +23,7 @@ server.get('Redirect', server.middleware.https, function (req, res, next) {
 
 /**
  * Handling of a payment hook.
- * Hook for handling Mollie update payment call
+ * Hook for handling Mollie update status call
  *
  * @param {Object} req - The request
  * @param {Object} res - The response

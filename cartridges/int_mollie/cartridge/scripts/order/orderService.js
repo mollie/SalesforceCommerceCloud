@@ -26,7 +26,7 @@ function createOrder(order, paymentMethod) {
             orderHelper.setTransactionAPI(order, null, API.ORDER);
         });
 
-        return paymentResult.links.checkout.link.href;
+        return orderResult.order.links.checkout.link.href;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
         throw ServiceException.from(e);
@@ -51,7 +51,7 @@ function cancelOrder(orderId) {
             orderHelper.addItemToOrderHistory(order, historyItem, true);
         });
 
-        return paymentHelper.processOrderResult(order, orderResult);
+        return paymentHelper.processOrderResult(order, orderResult.order);
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
         throw ServiceException.from(e);
