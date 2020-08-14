@@ -87,9 +87,9 @@ function Order(order) {
     order = order || {};
     this.resource = order.resource;
     this.id = order.id;
-    this.profileId = order.profileId,
-        this.method = order.method,
-        this.amount = new Amount(order.amount);
+    this.profileId = order.profileId;
+    this.method = order.method;
+    this.amount = new Amount(order.amount);
     this.status = order.status;
     this.isCancelable = order.isCancelable;
     this.metadata = order.metadata;
@@ -110,6 +110,24 @@ function Order(order) {
         }) : null;
 }
 
+/**
+ *
+ * @class
+ * @param {Object} method - Mollie Method object
+ */
+function Method(method) {
+    method = method || {};
+    this.resource = method.resource;
+    this.id = method.id;
+    this.description = method.description;
+    this.minimumAmount = new Amount(method.minimumAmount);
+    this.maximumAmount = new Amount(method.maximumAmount);
+    this.imageURL = method.image && method.image.svg;
+    this.isEnabled() = function () {
+        return method.status === "activated";
+    }
+}
+
 module.exports = {
     Amount: Amount,
     Link: Link,
@@ -117,5 +135,5 @@ module.exports = {
     Address: Address,
     Payment: Payment,
     Order: Order,
-    Line: Line
+    Method: Method
 }
