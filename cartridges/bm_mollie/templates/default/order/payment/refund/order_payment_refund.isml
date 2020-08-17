@@ -1,0 +1,58 @@
+<!--- TEMPLATENAME: order/payment/order_payment_details.isml --->
+<isdecorate template="pt_csc.isml">
+	<div class="slds-text-heading--medium mb-3">Order Payment Refund</div>
+	<isset name="transactions" value="${pdict.transactions}" scope="page"/>
+	<isset name="orderId" value="${pdict.orderId}" scope="page"/>
+	<isloop items = "${transactions}" var="transaction">
+		<div class="card">
+            <div class="card-header">
+			    <isprint value="${transaction.paymentMethod}"> - <isprint value="${transaction.amount}"></h4>
+            </div>
+
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr><th scope="col">Date</th><th scope="col">Amount</th><th scope="col">Status</th></tr>
+                    </thead>
+                    <tbody>
+                    <isloop items = "${transaction.refunds}" var="refund">
+                        <tr>
+                            <td><isprint value="${refund.date}"></td>
+                            <td><isprint value="${refund.currencyCode}"> <isprint value="${refund.amount}"></td>
+                            <td><isprint value="${refund.status}"></td>
+                        </tr>
+                    </isloop>
+                    </tbody>
+                </table>
+
+                <form method="post" class="m-0" action="CSCOrderPaymentRefund-Refund" id="orderPaymentRefund-refund" name="orderPaymentRefund-refund">
+                    <isif condition="${transaction.refundAllowed}">
+                        <fieldset>
+                    <iselse>
+                        <fieldset disabled>
+                    </isif>
+                        <input type="hidden" value="${orderId}" name="orderId" id="orderId" />
+                        <input type="hidden" value="${transaction.currencyCode}" name="currencyCode" id="currencyCode" />
+                        <input type="hidden" value="${transaction.paymentMethod}" name="paymentMethodID" id="paymentMethodID" />
+                        <div class="input-group">
+                            <input
+                                class="form-control"
+                                type="number"
+                                min="1"
+                                max="${transaction.maxAmountToRefund}"
+                                value="${transaction.maxAmountToRefund}"
+                                pattern="^\d*(\.\d{0,2})?$"
+                                step="0.01"
+                                name="refundAmount"
+                                id="refundAmount" />
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit">Refund</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+		</div>
+	</isloop>
+	<hr/>
+</isdecorate>

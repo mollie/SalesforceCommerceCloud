@@ -1,6 +1,5 @@
 var Logger = require('*/cartridge/scripts/utils/logger');
 var OrderMgr = require('dw/order/OrderMgr');
-var molliePaymentService = require('*/cartridge/scripts/payment/paymentService');
 
 /**
  *
@@ -77,22 +76,6 @@ function isNewOrder(order) {
 }
 
 /**
- * Cancels the mollie payment / order
- *
- * @param {dw.order.Order} order 
- * @return {void}
- */
-function cancelMolliePaymentOrOrder(order) {
-    if (orderHelper.getTransactionAPI() === config.getTransactionAPI().ORDER) {
-        var orderId = orderHelper.getTransactionOrderId(order, null);
-        mollieOrderService.cancelOrder(orderId);
-    } else {
-        var paymentId = orderHelper.getTransactionPaymentId(order, null);
-        molliePaymentService.cancelPayment(paymentId);
-    }
-}
-
-/**
  *
  * @description Returns all paymentInstruments related to the Mollie processor
  * @param {dw.order.Order} order - order object
@@ -109,7 +92,14 @@ function getMolliePaymentInstruments(order, paymentMethodId) {
         : order.getPaymentInstruments().toArray().filter(filterFunction);
 }
 
-var setTransactionCustomProperty = function (order, paymentMethod, custom) {
+/**
+ *
+ * @description Set transaction custom property
+ * @param {dw.order.Order} order - order object
+ * @param {string} paymentMethod - Payment Method
+ * @param {Object} custom - custom
+ */
+function setTransactionCustomProperty(order, paymentMethod, custom) {
     const paymentInstrument = getMolliePaymentInstruments(order, paymentMethod).pop();
 
     if (paymentInstrument) {
@@ -117,7 +107,15 @@ var setTransactionCustomProperty = function (order, paymentMethod, custom) {
     }
 };
 
-var getTransactionCustomProperty = function (order, paymentMethod, custom) {
+/**
+ *
+ * @description Get transaction custom property
+ * @param {dw.order.Order} order - order object
+ * @param {string} paymentMethod - Payment Method
+ * @param {Object} custom - custom
+ * @returns {Object} - transaction custom property
+ */
+function getTransactionCustomProperty(order, paymentMethod, custom) {
     const paymentInstrument = getMolliePaymentInstruments(order, paymentMethod).pop();
 
     if (!paymentInstrument) return null;
@@ -223,7 +221,6 @@ module.exports = {
     cancelOrder: cancelOrder,
     failOrCancelOrder: failOrCancelOrder,
     isNewOrder: isNewOrder,
-    cancelMolliePaymentOrOrder: cancelMolliePaymentOrOrder,
     getMolliePaymentInstruments: getMolliePaymentInstruments,
     setTransactionCustomProperty: setTransactionCustomProperty,
     getTransactionCustomProperty: getTransactionCustomProperty,

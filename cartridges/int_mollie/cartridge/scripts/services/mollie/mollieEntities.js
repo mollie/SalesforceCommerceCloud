@@ -1,3 +1,5 @@
+var config = require('*/cartridge/scripts/mollieConfig');
+
 /**
  *
  * @class
@@ -68,7 +70,15 @@ function Payment(payment) {
     this.method = payment.method;
     this.metadata = payment.metadata;
     this.status = payment.status;
-    this.isCancelable = payment.isCancelable;
+    this.isCancelable = function () {
+        return order.isCancelable;
+    };
+    this.isShippable = function () {
+        return false;
+    };
+    this.isRefundable = function () {
+        return order.status === STATUS.PAID;
+    };
     this.expiresAt = payment.expiresAt;
     this.details = payment.details;
     this.profileId = payment.profileId;
@@ -84,6 +94,7 @@ function Payment(payment) {
  * @param {Object} order - Mollie Order object
  */
 function Order(order) {
+    const STATUS = mollieConfig.getTransactionStatus();
     order = order || {};
     this.resource = order.resource;
     this.id = order.id;
@@ -91,7 +102,18 @@ function Order(order) {
     this.method = order.method;
     this.amount = new Amount(order.amount);
     this.status = order.status;
-    this.isCancelable = order.isCancelable;
+    this.isCancelable = function () {
+        return order.isCancelable;
+    };
+    this.isShippable = function () {
+        return order.status === STATUS.PAID ||
+            order.status === STATUS.AUTHORIZED
+    };
+    this.isRefundable = function () {
+        return order.status === STATUS.PAID ||
+            order.status === STATUS.SHIPPING ||
+            order.status === STATUS.COMPLETED
+    };
     this.metadata = order.metadata;
     this.createdAt = order.createdAt;
     this.expiresAt = order.expiresAt;
@@ -103,11 +125,15 @@ function Order(order) {
     this.orderNumber = order.orderNumber;
     this.shippingAddress = new Address(order.shippingAddress);
     this.redirectUrl = order.redirectUrl;
+    this.lines = shipment.lines ? shipment.lines.map(function (line) {
+        return new Line(line);
+    }) : null;
     this.links = new Links(order._links);
     this.payments = order._embedded && order._embedded.payments ?
         order._embedded.payments.map(function (payment) {
             return new Payment(payment);
         }) : null;
+
 }
 
 /**
@@ -125,7 +151,69 @@ function Method(method) {
     this.imageURL = method.image && method.image.svg;
     this.isEnabled() = function () {
         return method.status === "activated";
-    }
+    };
+}
+
+/**
+ *
+ * @class
+ * @param {Object} refund - Mollie Refund object
+ */
+function Refund(refund) {
+    refund = refund || {};
+    this.resource = refund.resource;
+    this.id = refund.id;
+    this.amount = new Amount(refund.amount);
+    this.createdAt = refund.createdAt;
+    this.description = refund.description;
+    this.paymentId = refund.paymentId;
+    this.orderId = refund.orderId;
+    this.lines = shipment.lines ? shipment.lines.map(function (line) {
+        return new Line(line);
+    }) : null;
+    this.isSuccessful() = function () {
+        return refund.status === "pending";
+    };
+}
+
+/**
+ *
+ * @class
+ * @param {Object} shipment - Mollie Shipment object
+ */
+function Shipment(shipment) {
+    shipment = shipment || {};
+    this.resource = shipment.resource;
+    this.id = shipment.id;
+    this.orderId = shipment.orderId;
+    this.lines = shipment.lines ? shipment.lines.map(function (line) {
+        return new Line(line);
+    }) : null;
+}
+
+/**
+ *
+ * @class
+ * @param {Object} line - Mollie Line object
+ */
+function Line(line) {
+    line = line || {};
+    this.resource = line.resource;
+    this.id = line.id;
+    this.orderId = line.orderId;
+    this.name = line.name;
+    this.sku = line.sku;
+    this.type = line.type;
+    this.status = line.status;
+    this.metadata = line.metadata;
+    this.isCancelable = line.isCancelable;
+    this.quantity = line.quantity;
+    this.unitPrice = new Amount(line.unitPrice);
+    this.vatRate = line.vatRate;
+    this.vatAmount = new Amount(line.vatAmount);
+    this.discountAmount = new Amount(line.discountAmount);
+    this.totalAmount = new Amount(line.totalAmount);
+    this.createdAt = line.createdAt;
 }
 
 module.exports = {
@@ -135,5 +223,8 @@ module.exports = {
     Address: Address,
     Payment: Payment,
     Order: Order,
-    Method: Method
+    Method: Method,
+    Refund: Refund,
+    Shipment: Shipment,
+    Line: Line
 }

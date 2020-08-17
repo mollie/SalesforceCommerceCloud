@@ -6,17 +6,17 @@ module.exports = {
     },
     GET_PAYMENT: {
         method: 'GET',
-        path: 'v2/payments/{paymentId}',
+        path: '/v2/payments/{paymentId}',
         serviceName: 'Mollie.GetPayment'
     },
     UPDATE_PAYMENT: {
         method: 'PATCH',
-        path: 'v2/payments/{paymentId}',
+        path: '/v2/payments/{paymentId}',
         serviceName: 'Mollie.UpdatePayment'
     },
     CANCEL_PAYMENT: {
         method: 'DELETE',
-        path: 'v2/payments/{paymentId}',
+        path: '/v2/payments/{paymentId}',
         serviceName: 'Mollie.CancelPayment'
     }
 };

@@ -2,7 +2,7 @@
 
 var base = module.superModule;
 
-const mollieMethodService = require('*/cartridge/scripts/method/methodService');
+const paymentService = require('*/cartridge/scripts/payment/paymentService');
 
 /**
  * Creates an array of objects containing applicable payment methods
@@ -12,7 +12,7 @@ const mollieMethodService = require('*/cartridge/scripts/method/methodService');
  *      current cart
  */
 function applicablePaymentMethods(paymentMethods) {
-    return mollieMethodService.getApplicablePaymentMethods(paymentMethods);
+    return paymentService.getApplicablePaymentMethods(paymentMethods);
 }
 
 /**

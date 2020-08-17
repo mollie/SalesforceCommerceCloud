@@ -2,7 +2,7 @@ const ServiceRegistry = require('dw/svc/LocalServiceRegistry');
 const Logger = require('*/cartridge/scripts/utils/logger');
 const PaymentProviderException = require('*/cartridge/scripts/exceptions/PaymentProviderException');
 const MollieRequest = require('*/cartridge/scripts/services/mollie/mollieRequest');
-const config = require('*/cartridge/scripts/config');
+const config = require('*/cartridge/scripts/mollieConfig');
 
 /**
  *
@@ -38,7 +38,7 @@ function Mollie(configuration) {
     };
 
     this.replaceId = function (parameters) {
-        if (parameters.orderId) {
+        if (parameters.paymentId) {
             this.path = this.path
                 .replace("{paymentId}", parameters.paymentId);
         }
@@ -46,6 +46,11 @@ function Mollie(configuration) {
         if (parameters.orderId) {
             this.path = this.path
                 .replace("{orderId}", parameters.orderId);
+        }
+
+        if (parameters.methodid) {
+            this.path = this.path
+                .replace("{methodId}", parameters.methodId);
         }
     }
 

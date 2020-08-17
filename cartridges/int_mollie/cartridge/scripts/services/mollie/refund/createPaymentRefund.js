@@ -1,4 +1,3 @@
-var URLUtils = require('dw/web/URLUtils');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities');
 var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
@@ -11,12 +10,8 @@ var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
  */
 function payloadBuilder(params) {
     return {
-        amount: new sfccEntities.Currency(order.getTotalGrossPrice()),
-        description: 'Order description',
-        redirectUrl: URLUtils.https('Payment-Redirect', 'id', params.orderId).toString(),
-        webhookUrl: URLUtils.https('Payment-Hook').toString(),
-        locale: request.getLocale(),
-        methodId: params.methodId,
+        paymentId: params.paymentId,
+        amount: new sfccEntities.Currency(params.amount),
     };
 }
 
@@ -27,15 +22,15 @@ function payloadBuilder(params) {
  * @returns {Object} response
  */
 function responseMapper(result) {
-    Logger.debug('MOLLIE :: CreatePayment: ' + JSON.stringify(result));
+    Logger.debug('MOLLIE :: CreatePaymentRefund: ' + JSON.stringify(result));
     if (!result || typeof result === 'string') {
         return {
-            payment: new mollieEntities.Payment(),
+            refund: new mollieEntities.Refund(),
             raw: result || null
         };
     }
     return {
-        payment: new mollieEntities.Payment(result),
+        refund: new mollieEntities.Refund(result),
         raw: JSON.stringify(result)
     };
 }

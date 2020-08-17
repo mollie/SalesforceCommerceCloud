@@ -11,16 +11,16 @@ var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
  */
 function payloadBuilder(params) {
     return {
-        amount: new sfccEntities.Currency(order.getTotalGrossPrice()),
+        amount: new sfccEntities.Currency(params.totalGrossPrice),
         orderNumber: params.orderId,
         locale: request.getLocale(),
         redirectUrl: URLUtils.https('Payment-Redirect', 'id', params.orderId).toString(),
         webhookUrl: URLUtils.https('Payment-Hook').toString(),
-        method: params.method,
+        methodId: params.methodId,
         lines: params.productLineItems.toArray().map(function (productLineItem) {
             return new sfccEntities.ProductLineItem(productLineItem);
         }),
-        billingAddress: new sfccEntities.Address(params.billingAddress, order.getProfile()),
+        billingAddress: new sfccEntities.Address(params.billingAddress, params.profile),
     };
 }
 

@@ -3,16 +3,17 @@ var Order = require('dw/order/Order');
 var URLUtils = require('dw/web/URLUtils');
 var Resource = require('dw/web/Resource');
 
-var config = require('*/cartridge/scripts/config');
+var config = require('*/cartridge/scripts/mollieConfig');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 var ObjectUtil = require('*/cartridge/scripts/utils/object');
+var paymentService = require('*/cartridge/scripts/payment/paymentService');
 
 /**
  * Process the Order Result from Mollie
  *
  * @param {dw.order.Order} order
- * @param {object} paymentResult
+ * @param {Object} paymentResult
  * @return {string} url
  */
 function processPaymentResult(order, paymentResult) {
@@ -59,7 +60,7 @@ function processPaymentResult(order, paymentResult) {
                 var historyItem = 'PAYMENT :: Return to checkout because of bad status :: ' + transaction.toStatusString();
                 orderHelper.failOrCancelOrder(order, historyItem);
             });
-            orderHelper.cancelPaymentOrOrder(order);
+            paymentService.cancelPaymentOrOrder(order);
             session.privacy.mollieError = Resource.msg('mollie.payment.error.' + ObjectUtil.getProperty(STATUS, paymentResult.status), 'mollie', null);
             url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString()
             break;
@@ -70,7 +71,9 @@ function processPaymentResult(order, paymentResult) {
         orderHelper.addItemToOrderHistory(order, historyItem, false);
     });
 
-    return url;
+    return {
+        url: url
+    };
 }
 
 module.exports = {

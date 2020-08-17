@@ -1,0 +1,5 @@
+<isdecorate template="pt_csc.isml">
+	<div class="slds-text-heading--medium">Order Payment Refund</div>
+    <div>Refund not supported with the current license.</div>
+    <hr />
+</isdecorate>

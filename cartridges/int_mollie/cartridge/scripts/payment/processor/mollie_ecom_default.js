@@ -5,10 +5,9 @@ const Transaction = require('dw/system/Transaction');
 const OrderMgr = require('dw/order/OrderMgr');
 const PaymentMgr = require('dw/order/PaymentMgr');
 const Logger = require('*/cartridge/scripts/utils/logger');
-const molliePaymentService = require('*/cartridge/scripts/payment/paymentService');
-const mollieOrderService = require('*/cartridge/scripts/order/orderService');
+const paymentService = require('*/cartridge/scripts/payment/paymentService');
 const collections = require('*/cartridge/scripts/util/collections');
-const config = require('*/cartridge/scripts/config');
+const config = require('*/cartridge/scripts/mollieConfig');
 
 /**
  * Creates the payment instrument based on the given information.
@@ -66,8 +65,8 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
         var order = OrderMgr.getOrder(orderNumber);
         redirectUrl = config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT ?
-            molliePaymentService.createPayment(order, paymentInstrument.getPaymentMethod()) :
-            mollieOrderService.createOrder(order, paymentInstrument.getPaymentMethod())
+            paymentService.createPayment(order, paymentInstrument.getPaymentMethod()) :
+            paymentService.createOrder(order, paymentInstrument.getPaymentMethod())
     } catch (e) {
         Logger.error(e.javaMessage + '\n\r' + e.stack);
 

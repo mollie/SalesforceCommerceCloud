@@ -1,0 +1,24 @@
+<!--- TEMPLATENAME: order/payment/order_payment_details.isml --->
+<isdecorate template="pt_csc.isml">
+	<div class="slds-text-heading--medium mb-3">Order Payment Shipment</div>
+	<isset name="order" value="${pdict.order}" scope="page"/>
+
+    <isloop items="${order.billing.payment.selectedPaymentInstruments}" var="paymentInstrument">
+        <div class="card">
+            <div class="card-header">
+                <isprint value="${paymentInstrument.paymentMethod}"> - <isprint value="${paymentInstrument.amount}">
+            </div>
+            <div class="card-body">
+                <form method="post" class="m-0" action="CSCOrderPaymentShipment-Shipment" id="orderPaymentShipment-shipment" name="orderPaymentShipment-shipment">
+                    <fieldset>
+                        <input type="hidden" value="${order.orderNumber}" name="orderId" id="orderId" />
+                        <input type="hidden" value="${paymentInstrument.paymentMethod}" name="paymentMethodID" id="paymentMethodID" />
+                        <button type="submit" class="btn btn-primary">Ship</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </isloop>
+
+	<hr/>
+</isdecorate>

@@ -54,7 +54,8 @@ Add the following cartridges to the business manager site:
 
 ## Custom Properties
 
-### PaymentMethod //TODO
+### PaymentMethod
+- `molliePaymentMethodId`: string - external mollie payment method id
 
 ### PaymentTransaction
 - `mollieTransactionStatus`: string - the payment status recieved from Mollie
