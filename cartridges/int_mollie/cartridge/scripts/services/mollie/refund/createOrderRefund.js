@@ -10,7 +10,6 @@ var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
  */
 function payloadBuilder(params) {
     return {
-        orderId: params.orderId,
         amount: new sfccEntities.Currency(params.amount),
         lines: []
     };
