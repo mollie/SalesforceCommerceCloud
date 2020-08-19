@@ -15,7 +15,6 @@ function createPayment(order, paymentMethod) {
         const paymentResult = MollieService.createPayment({
             orderId: order.orderNo,
             amount: new sfccEntities.Currency(order.getTotalGrossPrice()),
-            description: 'description order', //TODO
             methodId: paymentMethod.custom.molliePaymentMethodId
         });
 
@@ -91,7 +90,7 @@ function createOrder(order, paymentMethod) {
             billingAddress: order.getBillingAddress(),
             methodId: paymentMethod.custom.molliePaymentMethodId,
             profile: order.getProfile(),
-            totalGrossPrice: order.getTotalGrossPrice()
+            totalGrossPrice: order.getTotalGrossPrice(),
         });
 
         Transaction.wrap(function () {

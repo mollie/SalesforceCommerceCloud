@@ -43,7 +43,6 @@ function failOrder(order, message) {
  */
 function cancelOrder(order, message) {
     addItemToOrderHistory(order, message, true);
-    console.log('canceling order YBEYBE')
 
     var failOrderStatus = OrderMgr.cancelOrder(order);
     if (failOrderStatus.isError()) {

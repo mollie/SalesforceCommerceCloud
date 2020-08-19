@@ -6,7 +6,7 @@
 function Currency(money) {
     money = money || {};
     this.currency = money.getCurrencyCode();
-    this.value = parseInt(money.getValue());
+    this.value = money.getValue();
 }
 
 /**

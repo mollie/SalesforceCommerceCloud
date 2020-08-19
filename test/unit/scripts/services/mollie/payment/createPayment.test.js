@@ -1,26 +1,35 @@
 const { stubs } = testHelpers;
 const Ajv = require('ajv');
 const ajv = new Ajv({ allErrors: true });
-const validate = ajv.compile(require('../mollieServiceSchemas').createPaymentRefund);
+const validate = ajv.compile(require('../mollieServiceSchemas').createPayment);
 
-const refundStub = stubs.sandbox.stub();
+const paymentStub = stubs.sandbox.stub();
 
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
-const createPaymentRefund = proxyquire(`${base}/int_mollie/cartridge/scripts/services/mollie/refund/createPaymentRefund`, {
+const createPayment = proxyquire(`${base}/int_mollie/cartridge/scripts/services/mollie/payment/createPayment`, {
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
+    'dw/web/URLUtils': stubs.dw.URLUtilsMock,
     '*/cartridge/scripts/services/mollie/mollieEntities': {
-        Refund: refundStub
+        Payment: paymentStub
     },
     '*/cartridge/scripts/services/mollie/sfccEntities': require(`${base}/int_mollie/cartridge/scripts/services/mollie/sfccEntities`)
 });
 
-describe('mollie/createPaymentRefund', () => {
-    before(function () { stubs.init(); });
+describe('mollie/createPayment', () => {
+    before(function () {
+        stubs.init();
+        global.request = {
+            getLocale: function () {
+                return 'nl_BE';
+            }
+        };
+    });
     afterEach(function () { stubs.reset(); });
     after(function () { stubs.restore(); });
 
     context('#payloadBuilder', () => {
         beforeEach(() => {
+            this.returnUrl = faker.internet.url();
             this.amount = {
                 value: '5.99',
                 currency: 'EUR'
@@ -29,12 +38,14 @@ describe('mollie/createPaymentRefund', () => {
             this.currencyStub.getCurrencyCode.returns(this.amount.currency);
             this.currencyStub.getValue.returns(this.amount.value); 
             this.params = {
-                amount: this.currencyStub
+                totalGrossPrice: this.currencyStub,
+                methodId: 'bancontact'
             };
+            stubs.dw.URLUtilsMock.https.returns(this.returnUrl);
         });
 
         it('builds a correct payload', () => {
-            const payload = createPaymentRefund.payloadBuilder(this.params);
+            const payload = createPayment.payloadBuilder(this.params);
             validate(payload);
             expect(validate(payload)).to.be.eql(true, JSON.stringify(validate.errors));
         });
@@ -42,29 +53,29 @@ describe('mollie/createPaymentRefund', () => {
 
     context('#responseMapper', () => {
         it('returns a parsed response object', () => {
-            const result = { Refund: 'value' };
-            const response = createPaymentRefund.responseMapper(result);
+            const result = { Payment: 'value' };
+            const response = createPayment.responseMapper(result);
             expect(response.raw).to.eql(JSON.stringify(result));
-            expect(refundStub).to.have.been.calledOnce()
+            expect(paymentStub).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(result);
         });
 
         it('handles result without expected properties', () => {
-            let response = createPaymentRefund.responseMapper({});
-            expect(response).to.eql({ refund: {}, raw: JSON.stringify({}) });
+            let response = createPayment.responseMapper({});
+            expect(response).to.eql({ payment: {}, raw: JSON.stringify({}) });
         });
 
         it('handles a null or undefined result', () => {
-            let response = createPaymentRefund.responseMapper(null);
-            expect(response).to.eql({ refund: {}, raw: null });
+            let response = createPayment.responseMapper(null);
+            expect(response).to.eql({ payment: {}, raw: null });
 
-            response = createPaymentRefund.responseMapper();
-            expect(response).to.eql({ refund: {}, raw: null });
+            response = createPayment.responseMapper();
+            expect(response).to.eql({ payment: {}, raw: null });
         });
 
         it('handles a string result', () => {
-            const response = createPaymentRefund.responseMapper('string');
-            expect(response).to.eql({ refund: {}, raw: 'string' });
+            const response = createPayment.responseMapper('string');
+            expect(response).to.eql({ payment: {}, raw: 'string' });
         });
     });
 });
