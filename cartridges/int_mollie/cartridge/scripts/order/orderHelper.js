@@ -1,5 +1,7 @@
 var Logger = require('*/cartridge/scripts/utils/logger');
+var PaymentMgr = require('dw/order/PaymentMgr');
 var OrderMgr = require('dw/order/OrderMgr');
+var Order = require('dw/order/Order');
 
 /**
  *
@@ -44,6 +46,7 @@ function cancelOrder(order, message) {
 
     var failOrderStatus = OrderMgr.cancelOrder(order);
     if (failOrderStatus.isError()) {
+        
         addItemToOrderHistory(order, 'PAYMENT :: Failed canceling the order. User basket not restored: ' + JSON.stringify(failOrderStatus.getMessage()), true);
     }
 }
@@ -73,6 +76,23 @@ function failOrCancelOrder(order, message) {
  */
 function isNewOrder(order) {
     return order.getStatus() === Order.ORDER_STATUS_CREATED;
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {number} paymentStatus - Payment Status
+ * @returns {void}
+ */
+function setPaymentStatus(order, paymentStatus) {
+    var logMessage = 'PAYMENT :: UpdatePaymentStatus :: Updated payment status for order ' + order.orderNo + ' to ' + paymentStatus;
+    var currentPaymentStatus = order.getPaymentStatus().getValue();
+
+    if (currentPaymentStatus !== paymentStatus) {
+        order.setPaymentStatus(paymentStatus);
+        addItemToOrderHistory(order, logMessage, true);
+    }
 }
 
 /**
@@ -221,6 +241,7 @@ module.exports = {
     cancelOrder: cancelOrder,
     failOrCancelOrder: failOrCancelOrder,
     isNewOrder: isNewOrder,
+    setPaymentStatus: setPaymentStatus,
     getMolliePaymentInstruments: getMolliePaymentInstruments,
     setTransactionCustomProperty: setTransactionCustomProperty,
     getTransactionCustomProperty: getTransactionCustomProperty,

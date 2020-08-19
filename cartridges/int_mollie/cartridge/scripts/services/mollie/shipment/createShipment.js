@@ -7,10 +7,8 @@ var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities
  * @param {Object} params - params object
  * @returns {Object} payload - returns payload
  */
-function payloadBuilder(params) {
-    return {
-        orderId: params.orderId,
-    };
+function payloadBuilder() {
+    return {};
 }
 
 /**
@@ -28,7 +26,7 @@ function responseMapper(result) {
         };
     }
     return {
-        refund: new mollieEntities.Shipment(result),
+        shipment: new mollieEntities.Shipment(result),
         raw: JSON.stringify(result)
     };
 }

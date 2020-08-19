@@ -19,15 +19,15 @@ function responseMapper(result) {
     Logger.debug('MOLLIE :: GetMethods: ' + JSON.stringify(result));
     if (!result || typeof result === 'string') {
         return {
-            methods: new mollieEntities.Method(),
+            methods: [],
             raw: result || null
         };
     }
     return {
-        methods: result._embedded &&
+        methods: result._embedded ?
             result._embedded.methods.map(function (method) {
                 return new mollieEntities.Method(method);
-            }),
+            }) : [],
         raw: JSON.stringify(result)
     };
 }

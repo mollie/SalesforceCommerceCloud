@@ -13,13 +13,13 @@ const orderConstants = require('*/cartridge/scripts/services/mollie/order/orderC
 
 const createOrderRefund = require('*/cartridge/scripts/services/mollie/refund/createOrderRefund');
 const createPaymentRefund = require('*/cartridge/scripts/services/mollie/refund/createPaymentRefund');
-const refundConstants = require('*/cartridge/scripts/services/mollie/method/refundConstants');
+const refundConstants = require('*/cartridge/scripts/services/mollie/refund/refundConstants');
 
 const createShipment = require('*/cartridge/scripts/services/mollie/shipment/createShipment');
-const shipmentConstants = require('*/cartridge/scripts/services/mollie/method/refundConstants');
+const shipmentConstants = require('*/cartridge/scripts/services/mollie/shipment/shipmentConstants');
 
 const getMethod = require('*/cartridge/scripts/services/mollie/method/getMethod');
-const getMethods = require('*/cartridge/scripts/services/mollie/method/updateMethods');
+const getMethods = require('*/cartridge/scripts/services/mollie/method/getMethods');
 const methodConstants = require('*/cartridge/scripts/services/mollie/method/methodConstants');
 
 exports.createPayment = function (parameters) {
@@ -58,7 +58,7 @@ exports.createOrder = function (parameters) {
 };
 
 exports.getOrder = function (parameters) {
-    var mollie = new Mollie(paymentConstants.GET_ORDER);
+    var mollie = new Mollie(orderConstants.GET_ORDER);
     mollie.addPayloadBuilder(getOrder.payloadBuilder);
     mollie.addResponseMapper(getOrder.responseMapper);
     return mollie.execute(parameters);
@@ -107,7 +107,7 @@ exports.getMethod = function (parameters) {
 };
 
 exports.getMethods = function (parameters) {
-    var mollie = new Mollie(paymentConstants.GET_METHODS);
+    var mollie = new Mollie(methodConstants.GET_METHODS);
     mollie.addPayloadBuilder(getMethods.payloadBuilder);
     mollie.addResponseMapper(getMethods.responseMapper);
     return mollie.execute(parameters);
