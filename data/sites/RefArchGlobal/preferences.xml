@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<preferences xmlns="http://www.demandware.com/xml/impex/preferences/2007-03-31">
+    <custom-preferences>
+        <all-instances />
+        <development>
+            <preference preference-id="mollieEnabledTransactionAPI">true</preference>
+        </development>
+        <staging />
+        <production />
+    </custom-preferences>
+</preferences>

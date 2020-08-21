@@ -1,13 +1,11 @@
 const Mollie = require('*/cartridge/scripts/services/mollie/Mollie');
 const createPayment = require('*/cartridge/scripts/services/mollie/payment/createPayment');
 const getPayment = require('*/cartridge/scripts/services/mollie/payment/getPayment');
-const updatePayment = require('*/cartridge/scripts/services/mollie/payment/updatePayment');
 const cancelPayment = require('*/cartridge/scripts/services/mollie/payment/cancelPayment');
 const paymentConstants = require('*/cartridge/scripts/services/mollie/payment/paymentConstants');
 
 const createOrder = require('*/cartridge/scripts/services/mollie/order/createOrder');
 const getOrder = require('*/cartridge/scripts/services/mollie/order/getOrder');
-const updateOrder = require('*/cartridge/scripts/services/mollie/order/updateOrder');
 const cancelOrder = require('*/cartridge/scripts/services/mollie/order/cancelOrder');
 const orderConstants = require('*/cartridge/scripts/services/mollie/order/orderConstants');
 
@@ -36,13 +34,6 @@ exports.getPayment = function (parameters) {
     return mollie.execute(parameters);
 };
 
-exports.updatePayment = function (parameters) {
-    var mollie = new Mollie(paymentConstants.UPDATE_PAYMENT);
-    mollie.addPayloadBuilder(updatePayment.payloadBuilder);
-    mollie.addResponseMapper(updatePayment.responseMapper);
-    return mollie.execute(parameters);
-};
-
 exports.cancelPayment = function (parameters) {
     var mollie = new Mollie(paymentConstants.CANCEL_PAYMENT);
     mollie.addPayloadBuilder(cancelPayment.payloadBuilder);
@@ -61,13 +52,6 @@ exports.getOrder = function (parameters) {
     var mollie = new Mollie(orderConstants.GET_ORDER);
     mollie.addPayloadBuilder(getOrder.payloadBuilder);
     mollie.addResponseMapper(getOrder.responseMapper);
-    return mollie.execute(parameters);
-};
-
-exports.updateOrder = function (parameters) {
-    var mollie = new Mollie(orderConstants.UPDATE_ORDER);
-    mollie.addPayloadBuilder(updateOrder.payloadBuilder);
-    mollie.addResponseMapper(updateOrder.responseMapper);
     return mollie.execute(parameters);
 };
 

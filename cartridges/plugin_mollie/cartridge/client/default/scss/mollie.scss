@@ -1,1 +1,5 @@
 @charset "UTF-8";
+
+.mollie-component {
+    @extend .form-control;
+}

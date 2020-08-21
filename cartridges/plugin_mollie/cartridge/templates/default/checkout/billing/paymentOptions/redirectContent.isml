@@ -1,0 +1,39 @@
+<!--- applicable credit cards--->
+<div class="tab-pane ${paymentOption.ID}-content" id="${paymentOption.ID}-content" role="tabpanel">
+    <fieldset class="payment-form-fields">
+        <!--- payment method --->
+        <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
+            value="${paymentOption.ID}">
+
+        <isloop items="${pdict.aliases}" alias="alias">
+            <isif condition="${paymentOption.ID == alias.paymentMethod}">
+                <div>
+                    <input type="radio" name="alias-${paymentOption.ID}" value="${alias.alias}">
+                    <isprint value="${alias.brand}" /><br />
+                    Card Number:
+                    <isprint value="${alias.cardNumber}" /><br />
+                    Expiration:
+                    <isprint value="${alias.expiration}" /><br />
+                </div>
+            </isif>
+        </isloop>
+
+        <isif condition="${pdict.allowedPaymentMethodsForAliasRegistration
+            && pdict.allowedPaymentMethodsForAliasRegistration.indexOf(paymentOption.ID) >= 0}"
+        >
+            <div>
+                <input type="radio" name="alias-${paymentOption.ID}" value="false" checked>
+                ${Resource.msg('use_new_card', 'saferpay', null)}
+            </div>
+            <div>
+                <input type="checkbox" name="savePaymentMethod" value="true"> ${Resource.msg('save_card', 'saferpay', null)}
+            </div>
+        <iselse/>
+            <input type="hidden" class="form-control" name="alias-${paymentOption.ID}" value="false">
+            <input type="hidden" class="form-control" name="savePaymentMethod" value="false">
+        </isif>
+
+        <input type="hidden" class="form-control" name="aliasSelectedPaymentMethod" value="alias-${paymentOption.ID}">
+
+    </fieldset>
+</div>

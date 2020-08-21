@@ -50,7 +50,7 @@ Add the following cartridges to the business manager site:
 ## Site Preferences 
 
 - mollieBearerToken: string
-- mollieEnableOrderAPI: boolean
+- mollieEnabledTransactionAPI: boolean
 
 ## Custom Properties
 

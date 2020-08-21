@@ -30,11 +30,8 @@ function Mollie(configuration) {
         svc.setRequestMethod(this.method);
         svc.addHeader('Accept', 'application/json; charset=utf-8');
         svc.addHeader('content-type', 'application/json');
+        svc.addHeader('Authorization', 'Bearer ' + config.getBearerToken());
         return svc;
-    };
-
-    this.setBearerToken = function (svc) {
-        svc.addHeader('Authorization', config.getBearerToken());
     };
 
     this.replaceId = function (parameters) {
@@ -48,7 +45,7 @@ function Mollie(configuration) {
                 .replace("{orderId}", parameters.orderId);
         }
 
-        if (parameters.methodid) {
+        if (parameters.methodId) {
             this.path = this.path
                 .replace("{methodId}", parameters.methodId);
         }
@@ -56,11 +53,10 @@ function Mollie(configuration) {
 
     this.createRequest = function createRequest(svc, parameters) {
         this.configureService(svc);
-        this.setBearerToken(svc);
         this.replaceId(parameters);
         var request = new MollieRequest(this.payloadBuilder(parameters));
-        var requestBody = JSON.stringify(request);
-        Logger.debug(this.serviceName + ' :: RequestBody: ' + requestBody);
+        var requestBody = request.toString();
+        Logger.error(this.serviceName + ' :: RequestBody: ' + requestBody);
         return requestBody;
     };
 
@@ -73,16 +69,8 @@ function Mollie(configuration) {
             response = client.getText();
         }
 
-        if (client.statusCode === 200) {
-            return this.responseMapper(response);
-        }
-
-        var error = {
-            name: typeof response === 'string' ? response : response.ErrorName,
-            message: typeof response === 'string' ? null : response.ErrorMessage
-        };
-
-        throw new PaymentProviderException(error.name, error.message);
+        Logger.error('MOLLIE :: ' + this.serviceName + ' : ' + client.getText());
+        return this.responseMapper(response);
     };
 
     this.execute = function (parameters) {
@@ -90,24 +78,19 @@ function Mollie(configuration) {
             createRequest: this.createRequest.bind(this),
             parseResponse: this.parseResponse.bind(this)
         });
+        Logger.debug(this.serviceName + ' :: Service: ' + JSON.stringify(service));
+
         var result = service.call(parameters);
 
         if (result.isOk()) {
             return result.object;
         }
 
-        try {
-            response = JSON.parse(result.getErrorMessage());
-        } catch (e) {
-            response = result.getErrorMessage();
-        }
-
         var error = {
-            name: typeof response === 'string' ? response : response.ErrorName,
-            message: typeof response === 'string' ? null : response.ErrorMessage
+            error: result.error,
+            errorMessage: result.errorMessage
         };
-
-        throw new PaymentProviderException(error.name, error.message);
+        throw new PaymentProviderException(error.error, error.errorMessage);
     };
 }
 

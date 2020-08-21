@@ -5,8 +5,10 @@
  */
 function Currency(money) {
     money = money || {};
+    var test1 = money.getValue();
+    var test2 = test1.toFixed(2);
     this.currency = money.getCurrencyCode();
-    this.value = money.getValue();
+    this.value = test2;
 }
 
 /**
@@ -23,7 +25,7 @@ function Address(address, profile) {
         streetAdditional: address.getAddress2(),
         city: address.getCity(),
         postalCode: address.getPostalCode(),
-        country: address.getCountryCode(),
+        country: address.getCountryCode().value,
         title: address.getTitle(),
         givenName: address.getFirstName(),
         familyName: address.getLastName(),
@@ -34,7 +36,7 @@ function Address(address, profile) {
 /**
  *
  * @class
- * @param {dw.order.ProductLineItem} address - sfcc productLineItem object
+ * @param {dw.order.ProductLineItem} productLineItem - sfcc productLineItem object
  */
 function ProductLineItem(productLineItem) {
     return {
@@ -43,8 +45,8 @@ function ProductLineItem(productLineItem) {
         quantity: productLineItem.getQuantityValue(),
         vatRate: productLineItem.getTaxRate() * 100,
         vatAmount: new Currency(productLineItem.getTax()),
-        unitPrice: new Currency(productLineitem.getAdjustedGrossPrice().divide(productLineItem.getQuantityValue())),
-        totalAmount: new Currency(productLineitem.getAdjustedGrossPrice()),
+        unitPrice: new Currency(productLineItem.getAdjustedGrossPrice().divide(productLineItem.getQuantityValue())),
+        totalAmount: new Currency(productLineItem.getAdjustedGrossPrice()),
     }
 }
 

@@ -94,7 +94,7 @@ function Payment(payment) {
  * @param {Object} order - Mollie Order object
  */
 function Order(order) {
-    const STATUS = mollieConfig.getTransactionStatus();
+    const STATUS = config.getTransactionStatus();
     order = order || {};
     this.resource = order.resource;
     this.id = order.id;
@@ -125,7 +125,7 @@ function Order(order) {
     this.orderNumber = order.orderNumber;
     this.shippingAddress = new Address(order.shippingAddress);
     this.redirectUrl = order.redirectUrl;
-    this.lines = shipment.lines ? shipment.lines.map(function (line) {
+    this.lines = order.lines ? order.lines.map(function (line) {
         return new Line(line);
     }) : null;
     this.links = new Links(order._links);
@@ -149,8 +149,8 @@ function Method(method) {
     this.minimumAmount = new Amount(method.minimumAmount);
     this.maximumAmount = new Amount(method.maximumAmount);
     this.imageURL = method.image && method.image.svg;
-    this.isEnabled() = function () {
-        return method.status === "activated";
+    this.isEnabled = function () {
+        return method.status === "pending-boarding";
     };
 }
 
@@ -168,10 +168,10 @@ function Refund(refund) {
     this.description = refund.description;
     this.paymentId = refund.paymentId;
     this.orderId = refund.orderId;
-    this.lines = shipment.lines ? shipment.lines.map(function (line) {
+    this.lines = refund.lines ? refund.lines.map(function (line) {
         return new Line(line);
     }) : null;
-    this.isSuccessful() = function () {
+    this.isSuccessful = function () {
         return refund.status === "pending";
     };
 }

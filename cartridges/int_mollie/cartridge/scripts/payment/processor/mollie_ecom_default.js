@@ -56,7 +56,6 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
     var fieldErrors = {};
     var error = false;
     var redirectUrl;
-
     try {
         Transaction.wrap(function () {
             paymentInstrument.getPaymentTransaction().setTransactionID(orderNumber);
@@ -64,9 +63,10 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
         });
 
         var order = OrderMgr.getOrder(orderNumber);
+        var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
         redirectUrl = config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT ?
-            paymentService.createPayment(order, paymentInstrument.getPaymentMethod()) :
-            paymentService.createOrder(order, paymentInstrument.getPaymentMethod())
+            paymentService.createPayment(order, paymentMethod) :
+            paymentService.createOrder(order, paymentMethod)
     } catch (e) {
         Logger.error(e.javaMessage + '\n\r' + e.stack);
 

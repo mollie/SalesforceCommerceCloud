@@ -1,0 +1,12 @@
+{
+	"hooks": [
+		{
+			"name": "app.payment.processor.mollie_ecom_default",
+			"script": "./cartridge/scripts/payment/processor/mollie_ecom_default"
+		},
+		{
+			"name": "app.payment.form.processor.mollie_ecom_default",
+			"script": "./cartridge/scripts/payment/processor/mollie_ecom_default_form_processor"
+		}
+	]
+}

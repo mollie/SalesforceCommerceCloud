@@ -1,0 +1,38 @@
+<isset name="creditFields" value="${pdict.forms.billingForm.creditCardFields}" scope="page" />
+
+<!--- Hidden input for credit card type --->
+<input type="hidden" class="form-control" id="cardType" name="${creditFields.cardType.htmlName}" value="">
+
+<div class="form-group">
+    <label class="form-control-label">${Resource.msg('field.credit.card.holder', 'creditCard', null)}</label>
+    <div id="card-holder"></div>
+    <div class="invalid-feedback" id="card-holder-error"></div>
+</div>
+
+<div class="form-group">
+    <label class="form-control-label">${Resource.msg('field.credit.card.number', 'creditCard', null)}</label>
+    <div id="card-number"></div>
+    <div class="invalid-feedback" id="card-number-error"></div>
+</div>
+
+<div class="form-group">
+    <label class="form-control-label">${Resource.msg('field.credit.card.expiry', 'creditCard', null)}</label>
+    <div id="expiry-date"></div>
+    <div class="invalid-feedback" id="expiry-date-error"></div>
+</div>
+
+<div class="form-group">
+    <label class="form-control-label">${Resource.msg('field.credit.card.security.code', 'creditCard', null)}</label>
+    <div id="verification-code"></div>
+    <div class="invalid-feedback" id="verification-code-error"></div>
+</div>
+
+<isif condition="${pdict.customer.registeredUser}">
+    <div class="save-credit-card custom-control custom-checkbox ">
+        <input type="checkbox" class="custom-control-input" id="saveCreditCard" name="${creditFields.saveCard.htmlName}"
+            value="true" checked>
+        <label class="custom-control-label" for="saveCreditCard">
+            ${creditFields.saveCard.label}
+        </label>
+    </div>
+</isif>

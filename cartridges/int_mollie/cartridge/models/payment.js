@@ -3,6 +3,7 @@
 var base = module.superModule;
 
 const paymentService = require('*/cartridge/scripts/payment/paymentService');
+const PaymentMgr = require('dw/order/PaymentMgr');
 
 /**
  * Creates an array of objects containing applicable payment methods

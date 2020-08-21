@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+
+    <type-extension type-id="PaymentMethod">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="molliePaymentMethodId">
+                <display-name xml:lang="x-default">molliePaymentMethodId</display-name>
+                <type>string</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Mollie">
+                <display-name xml:lang="x-default">Mollie</display-name>
+                <attribute attribute-id="molliePaymentMethodId"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <type-extension type-id="PaymentTransaction">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="mollieTransactionStatus">
+                <display-name xml:lang="x-default">mollieTransactionStatus</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieTransactionPaymentId">
+                <display-name xml:lang="x-default">mollieTransactionPaymentId</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieTransactionOrderId">
+                <display-name xml:lang="x-default">mollieTransactionOrderId</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieTransactionAPI">
+                <display-name xml:lang="x-default">mollieTransactionAPI</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Mollie">
+                <display-name xml:lang="x-default">Mollie</display-name>
+                <attribute attribute-id="mollieTransactionStatus"/>
+                <attribute attribute-id="mollieTransactionPaymentId"/>
+                <attribute attribute-id="mollieTransactionOrderId" />
+                <attribute attribute-id="mollieTransactionAPI" />
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="mollieBearerToken">
+                <display-name xml:lang="x-default">Bearer token</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieEnabledTransactionAPI">
+                <display-name xml:lang="x-default">Enable order API</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieLogCategory">
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <default-value>mollie</default-value>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Mollie Config">
+                <display-name xml:lang="x-default">Configuration for Mollie Integration</display-name>
+                <attribute attribute-id="mollieBearerToken"/>
+                <attribute attribute-id="mollieEnabledTransactionAPI"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+</metadata>

@@ -49,6 +49,7 @@ function Config() {
     //#region GENERAL CONFIG
     this.bearerToken = getPreferenceOrThrow(sitePreferences, 'mollieBearerToken');
     this.enabledTransActionAPI = getPreferenceOrThrow(sitePreferences, 'mollieEnabledTransactionAPI');
+    this.logCategory = getPreferenceOrThrow(sitePreferences, 'mollieLogCategory');
 
     /**
      * Get SiteId
@@ -89,6 +90,16 @@ function Config() {
     this.getEnabledTransactionAPI = function () {
         return this.enabledTransActionAPI;
     }
+
+    /**
+     * Get LogCategory
+     * @function
+     * @name Config#getLogCategory
+     * @return {string} logCategory
+     */
+    this.getLogCategory = function () {
+        return this.logCategory;
+    };
 
     /**
      * Get Transaction API constant
