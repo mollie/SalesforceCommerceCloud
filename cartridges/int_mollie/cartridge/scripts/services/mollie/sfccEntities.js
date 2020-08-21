@@ -5,10 +5,8 @@
  */
 function Currency(money) {
     money = money || {};
-    var test1 = money.getValue();
-    var test2 = test1.toFixed(2);
     this.currency = money.getCurrencyCode();
-    this.value = test2;
+    this.value = money.getValue().toFixed(2);
 }
 
 /**

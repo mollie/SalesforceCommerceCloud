@@ -5,6 +5,25 @@ var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
 var URLUtils = require('dw/web/URLUtils');
 var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
 var Transaction = require('dw/system/Transaction');
+var paymentHelper = require('*/cartridge/scripts/payment/paymentHelper');
+var PaymentMgr = require('dw/order/PaymentMgr');
+
+/**
+ *
+ * @param {string} paymentId - paymentId
+ * @returns {object} - Payment
+ * @throws {ServiceException}
+ */
+function getPayment(paymentId) {
+    try {
+        return MollieService.getPayment({
+            paymentId: paymentId
+        });
+    } catch (e) {
+        if (e.name === 'PaymentProviderException') throw e;
+        throw ServiceException.from(e);
+    }
+}
 
 /**
  *
@@ -24,10 +43,11 @@ function createPayment(order, paymentMethod) {
         Transaction.wrap(function () {
             var historyItem = 'PAYMENT :: Create payment: ' + paymentResult.raw;
             orderHelper.addItemToOrderHistory(order, historyItem, true);
-            orderHelper.setTransactionAPI(order, null, config.getTransactionAPI().PAYMENT);
+            orderHelper.setTransactionAPI(order, paymentMethod.getID(), config.getTransactionAPI().PAYMENT);
+            orderHelper.setTransactionPaymentId(order, paymentMethod.getID(), paymentResult.payment.id);
         });
 
-        return paymentResult.payment.links.checkout.link.href;
+        return paymentResult;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
         throw ServiceException.from(e);
@@ -36,17 +56,35 @@ function createPayment(order, paymentMethod) {
 
 /**
  *
- * @param {string} paymentId - paymentId
+ * @param {dw.order.Order} order - Order object
+ * @returns {string} - Redirect url
+ * @throws {ServiceException}
+ */
+function getRedirectUrl(order) {
+    var result = getPaymentOrOrder(order);
+    return paymentHelper.processPaymentResult(order, result.payment || result.order).url
+}
+
+/**
+ *
+ * @param {dw.order.Order} order - Order object
+ * @param {string} statusUpdateId - id of the order / payment to update
  * @returns {Object} - Redirect url
  * @throws {ServiceException}
  */
-function handlePaymentUpdate(paymentId) {
+function handleStatusUpdate(order, statusUpdateId) {
     try {
-        const paymentResult = MollieService.getPayment({
-            paymentId: paymentId,
+        var paymentInstruments = order.getPaymentInstruments().toArray().filter(function (instrument) {
+            const paymentMethodId = instrument.getPaymentMethod();
+            return orderHelper.getTransactionPaymentId(order, paymentMethodId) === statusUpdateId ||
+                orderHelper.getTransactionOrderId(order, paymentMethodId) === statusUpdateId
         });
 
-        return paymentHelper.processPaymentResult(order, paymentResult.payment).url;
+        var paymentInstrument = paymentInstruments.pop();
+        if (paymentInstrument) {
+            result = getPaymentOrOrder(order, paymentInstrument.getPaymentMethod());
+            return paymentHelper.processPaymentResult(order, result.payment || result.order).url
+        }
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
         throw ServiceException.from(e);
@@ -79,6 +117,23 @@ function cancelPayment(paymentId) {
 
 /**
  *
+ * @param {string} orderId - orderId
+ * @returns {object} - Order
+ * @throws {ServiceException}
+ */
+function getOrder(orderId) {
+    try {
+        return MollieService.getOrder({
+            orderId: orderId
+        });
+    } catch (e) {
+        if (e.name === 'PaymentProviderException') throw e;
+        throw ServiceException.from(e);
+    }
+}
+
+/**
+ *
  * @param {dw.order.Order} order - Order object
  * @param {dw.order.PaymentMethod} paymentMethod - Order paymentMethod
  * @returns {string} - redirect url
@@ -101,10 +156,11 @@ function createOrder(order, paymentMethod) {
         Transaction.wrap(function () {
             var historyItem = 'PAYMENT :: Create order payment: ' + orderResult.raw;
             orderHelper.addItemToOrderHistory(order, historyItem, true);
-            orderHelper.setTransactionAPI(order, null, config.getTransactionAPI().ORDER);
+            orderHelper.setTransactionAPI(order, paymentMethod.getID(), config.getTransactionAPI().ORDER);
+            orderHelper.setTransactionOrderId(order, paymentMethod.getID(), orderResult.order.id);
         });
 
-        return orderResult.order.links.checkout.href;
+        return orderResult;
 
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
@@ -126,7 +182,7 @@ function cancelOrder(orderId) {
         });
 
         Transaction.wrap(function () {
-            var historyItem = 'PAYMENT :: Canceling order payment: ' + orderResult.raw;
+            var historyItem = 'PAYMENT :: Canceling order payment: ' + cancelResult.raw;
             orderHelper.addItemToOrderHistory(order, historyItem, true);
         });
 
@@ -141,14 +197,15 @@ function cancelOrder(orderId) {
  * Cancels the mollie payment / order
  *
  * @param {dw.order.Order} order 
+ * @param {string} paymentMethodId 
  * @return {void}
  */
-function cancelPaymentOrOrder(order) {
-    if (getTransactionAPI(order, null) === config.getTransactionAPI().ORDER) {
-        var orderId = orderHelper.getTransactionOrderId(order, null);
+function cancelPaymentOrOrder(order, paymentMethodId) {
+    if (orderHelper.getTransactionAPI(order, paymentMethodId) === config.getTransactionAPI().ORDER) {
+        var orderId = orderHelper.getTransactionOrderId(order, paymentMethodId);
         cancelOrder(orderId);
     } else {
-        var paymentId = orderHelper.getTransactionPaymentId(order, null);
+        var paymentId = orderHelper.getTransactionPaymentId(order, paymentMethodId);
         cancelPayment(paymentId);
     }
 }
@@ -157,14 +214,15 @@ function cancelPaymentOrOrder(order) {
  * Get the mollie payment / order
  *
  * @param {dw.order.Order} order 
+ * @param {string} paymentMethodId 
  * @return {void}
  */
-function getPaymentOrOrder(order) {
-    if (getTransactionAPI(order, null) === config.getTransactionAPI().ORDER) {
-        var orderId = orderHelper.getTransactionOrderId(order, null);
+function getPaymentOrOrder(order, paymentMethodId) {
+    if (orderHelper.getTransactionAPI(order, paymentMethodId) === config.getTransactionAPI().ORDER) {
+        var orderId = orderHelper.getTransactionOrderId(order, paymentMethodId);
         return getOrder(orderId);
     } else {
-        var paymentId = orderHelper.getTransactionPaymentId(order, null);
+        var paymentId = orderHelper.getTransactionPaymentId(order, paymentMethodId);
         return getPayment(paymentId);
     }
 }
@@ -176,25 +234,24 @@ function getPaymentOrOrder(order) {
  * @throws {ServiceException}
  */
 function getApplicablePaymentMethods(paymentMethods) {
-    var methodResult = MollieService.getMethods();
-    var methods = [];
-    paymentMethods.toArray().forEach(function (method) {
-        var mollieMethod = methodResult.methods.filter(function (mollieMethod) {
-            return mollieMethod.id === method.custom.molliePaymentMethodId;
-        })[0];
-
-        if ((mollieMethod && mollieMethod.isEnabled()) || !mollieMethod) {
-            methods.push({
-                ID: method.ID,
-                name: method.name,
-                image: (method.image) ? method.image.URL.toString() :
-                    mollieMethod && mollieMethod.imageURL || URLUtils.staticURL('./images/mollieMethodImage.png')
-            });
-        }
-    });
-    return methods;
     try {
+        var methodResult = MollieService.getMethods();
+        var methods = [];
+        paymentMethods.toArray().forEach(function (method) {
+            var mollieMethod = methodResult.methods.filter(function (mollieMethod) {
+                return mollieMethod.id === method.custom.molliePaymentMethodId;
+            })[0];
 
+            if ((mollieMethod && mollieMethod.isEnabled()) || !mollieMethod) {
+                methods.push({
+                    ID: method.ID,
+                    name: method.name,
+                    image: (method.image) ? method.image.URL.toString() :
+                        mollieMethod && mollieMethod.imageURL || URLUtils.staticURL('./images/mollieMethodImage.png')
+                });
+            }
+        });
+        return methods;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
         throw ServiceException.from(e);
@@ -218,7 +275,7 @@ function createRefund(order, paymentInstrument, refundAmount) {
         refund.setCurrencyCode(paymentInstrument.getPaymentTransaction().getAmount().getCurrencyCode());
 
         var createRefundResult;
-        if (getTransactionAPI(order, null) === config.getTransactionAPI().ORDER) {
+        if (orderHelper.getTransactionAPI(order, paymentInstrument.getPaymentMethod()) === config.getTransactionAPI().ORDER) {
             createRefundResult = MollieService.createOrderRefund({
                 orderId: order.orderNo,
                 amount: {
@@ -286,9 +343,12 @@ function createShipment(order) {
 }
 
 module.exports = {
+    getPayment: getPayment,
     createPayment: createPayment,
-    handlePaymentUpdate: handlePaymentUpdate,
+    getRedirectUrl: getRedirectUrl,
+    handleStatusUpdate: handleStatusUpdate,
     cancelPayment: cancelPayment,
+    getOrder: getOrder,
     createOrder: createOrder,
     cancelOrder: cancelOrder,
     cancelPaymentOrOrder: cancelPaymentOrOrder,

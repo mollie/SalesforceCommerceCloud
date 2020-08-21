@@ -7,7 +7,6 @@ var config = require('*/cartridge/scripts/mollieConfig');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 var ObjectUtil = require('*/cartridge/scripts/utils/object');
-var paymentService = require('*/cartridge/scripts/payment/paymentService');
 
 /**
  * Process the Order Result from Mollie
@@ -22,13 +21,6 @@ function processPaymentResult(order, paymentResult) {
     var url;
     var orderId = order.orderNo;
     var orderToken = order.orderToken;
-
-    Transaction.wrap(function () {
-        var historyItem = 'PAYMENT :: Processing ' + ' ' + processType + ' :: ' + JSON.stringify(paymentResult);
-        orderHelper.addItemToOrderHistory(order, historyItem, true);
-        orderHelper.setTransactionStatus(order, null, paymentResult.status);
-        orderHelper.setTransactionPaymentId(order, null, paymentResult.id);
-    });
 
     // PROCESS STATUS
     switch (paymentResult.status) {
@@ -57,18 +49,22 @@ function processPaymentResult(order, paymentResult) {
         case STATUS.FAILED:
         default:
             Transaction.wrap(function () {
-                var historyItem = 'PAYMENT :: Return to checkout because of bad status :: ' + transaction.toStatusString();
+                var historyItem = 'PAYMENT :: Return to checkout because of bad status :: ' + paymentResult.status;
                 orderHelper.failOrCancelOrder(order, historyItem);
             });
-            paymentService.cancelPaymentOrOrder(order);
+            
+            // When to fail order?
+            //var paymentService = require('*/cartridge/scripts/payment/paymentService');
+            //paymentService.cancelPaymentOrOrder(order);
             session.privacy.mollieError = Resource.msg('mollie.payment.error.' + ObjectUtil.getProperty(STATUS, paymentResult.status), 'mollie', null);
             url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString()
             break;
     }
 
     Transaction.wrap(function () {
-        var historyItem = 'PAYMENT :: ' + transaction.transactionType + ' transaction ' + transaction.status;
-        orderHelper.addItemToOrderHistory(order, historyItem, false);
+        orderHelper.setTransactionStatus(order, null, paymentResult.status);
+        var historyItem = 'PAYMENT :: Processed order ' + orderId + ' status: ' + paymentResult.status + ' :: ' + JSON.stringify(paymentResult);
+        orderHelper.addItemToOrderHistory(order, historyItem, true);
     });
 
     return {

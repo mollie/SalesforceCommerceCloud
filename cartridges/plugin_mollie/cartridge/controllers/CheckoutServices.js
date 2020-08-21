@@ -154,7 +154,7 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
     //  time.
     res.json({
         error: false,
-        continueUrl: handlePaymentResult.continueUrl
+        continueUrl: handlePaymentResult.redirectUrl
     });
 
     return next();

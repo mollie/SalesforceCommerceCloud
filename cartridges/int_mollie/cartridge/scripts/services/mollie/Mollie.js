@@ -24,8 +24,9 @@ function Mollie(configuration) {
         this.responseMapper = responseMapper;
     };
 
-    this.configureService = function (svc) {
+    this.configureService = function (svc, parameters) {
         var serviceCredentials = svc.getConfiguration().getCredential();
+        this.replaceId(parameters);
         svc.setURL(serviceCredentials.getURL() + this.path);
         svc.setRequestMethod(this.method);
         svc.addHeader('Accept', 'application/json; charset=utf-8');
@@ -52,8 +53,7 @@ function Mollie(configuration) {
     }
 
     this.createRequest = function createRequest(svc, parameters) {
-        this.configureService(svc);
-        this.replaceId(parameters);
+        this.configureService(svc, parameters);
         var request = new MollieRequest(this.payloadBuilder(parameters));
         var requestBody = request.toString();
         Logger.error(this.serviceName + ' :: RequestBody: ' + requestBody);

@@ -99,7 +99,7 @@ function setPaymentStatus(order, paymentStatus) {
  *
  * @description Returns all paymentInstruments related to the Mollie processor
  * @param {dw.order.Order} order - order object
- * @param {string} [paymentMethodId] - paymentMethodId
+ * @param {string} paymentMethodId - payment method id
  * @returns {dw.order.OrderPaymentInstrument[]} - Mollie PaymentInstruments
  */
 function getMolliePaymentInstruments(order, paymentMethodId) {
@@ -116,11 +116,11 @@ function getMolliePaymentInstruments(order, paymentMethodId) {
  *
  * @description Set transaction custom property
  * @param {dw.order.Order} order - order object
- * @param {string} paymentMethod - Payment Method
+ * @param {string} paymentMethodId - payment method id
  * @param {Object} custom - custom
  */
-function setTransactionCustomProperty(order, paymentMethod, custom) {
-    const paymentInstrument = getMolliePaymentInstruments(order, paymentMethod).pop();
+function setTransactionCustomProperty(order, paymentMethodId, custom) {
+    const paymentInstrument = getMolliePaymentInstruments(order, paymentMethodId).pop();
 
     if (paymentInstrument) {
         paymentInstrument.getPaymentTransaction().custom[custom.key] = custom.value;
@@ -131,12 +131,12 @@ function setTransactionCustomProperty(order, paymentMethod, custom) {
  *
  * @description Get transaction custom property
  * @param {dw.order.Order} order - order object
- * @param {string} paymentMethod - Payment Method
+ * @param {string} paymentMethodId - payment method id
  * @param {Object} custom - custom
  * @returns {Object} - transaction custom property
  */
-function getTransactionCustomProperty(order, paymentMethod, custom) {
-    const paymentInstrument = getMolliePaymentInstruments(order, paymentMethod).pop();
+function getTransactionCustomProperty(order, paymentMethodId, custom) {
+    const paymentInstrument = getMolliePaymentInstruments(order, paymentMethodId).pop();
 
     if (!paymentInstrument) return null;
     const customProperty = paymentInstrument.getPaymentTransaction().custom[custom.key];
@@ -147,92 +147,92 @@ function getTransactionCustomProperty(order, paymentMethod, custom) {
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} paymentMethod - Payment Method
+ * @param {string} paymentMethodId - payment method id
  * @param {string} transactionId - Mollie payment / order status
  * @returns {void}
  */
-function setTransactionStatus(order, paymentMethod, status) {
-    setTransactionCustomProperty(order, paymentMethod, { key: 'mollieTransactionStatus', value: new String(status).toString() });
+function setTransactionStatus(order, paymentMethodId, status) {
+    setTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionStatus', value: new String(status).toString() });
 }
 
 /**
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} paymentMethod - Payment Method
+ * @param {string} paymentMethodId - payment method id
  * @returns {string} - captureId
  */
-function getTransactionStatus(order, paymentMethod) {
-    return getTransactionCustomProperty(order, paymentMethod, { key: 'mollieTransactionStatus' });
+function getTransactionStatus(order, paymentMethodId) {
+    return getTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionStatus' });
 }
 
 /**
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} paymentMethod - Payment Method
+ * @param {string} paymentMethodId - payment method id
  * @param {string} paymentId - Mollie payment id
  * @returns {void}
  */
-function setTransactionPaymentId(order, paymentMethod, paymentId) {
-    setTransactionCustomProperty(order, paymentMethod, { key: 'mollieTransactionPaymentId', value: new String(paymentId).toString() });
+function setTransactionPaymentId(order, paymentMethodId, paymentId) {
+    setTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionPaymentId', value: new String(paymentId).toString() });
 }
 
 /**
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} paymentMethod - Payment Method
+ * @param {string} paymentMethodId - payment method id
  * @returns {string} - payment id
  */
-function getTransactionPaymentId(order, paymentMethod) {
-    return getTransactionCustomProperty(order, paymentMethod, { key: 'mollieTransactionPaymentId' });
+function getTransactionPaymentId(order, paymentMethodId) {
+    return getTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionPaymentId' });
 }
 
 /**
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} paymentMethod - Payment Method
+ * @param {string} paymentMethodId - payment method id
  * @param {string} transactionId - Mollie order id
  * @returns {void}
  */
-function setTransactionOrderId(order, paymentMethod, orderId) {
-    setTransactionCustomProperty(order, paymentMethod, { key: 'mollieTransactionOrderId', value: new String(orderId).toString() });
+function setTransactionOrderId(order, paymentMethodId, orderId) {
+    setTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionOrderId', value: new String(orderId).toString() });
 }
 
 /**
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} paymentMethod - Payment Method
+ * @param {string} paymentMethodId - payment method id
  * @returns {string} - order id
  */
-function getTransactionOrderId(order, paymentMethod) {
-    return getTransactionCustomProperty(order, paymentMethod, { key: 'mollieTransactionOrderId' });
+function getTransactionOrderId(order, paymentMethodId) {
+    return getTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionOrderId' });
 }
 
 /**
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} paymentMethod - Payment Method
- * @param {string} transactionId - Mollie payment / order status
+ * @param {string} paymentMethodId - payment method id
+ * @param {string} transactionAPI - Mollie payment / order status
  * @returns {void}
  */
-function setTransactionAPI(order, paymentMethod, type) {
-    setTransactionCustomProperty(order, paymentMethod, { key: 'mollieTransactionAPI', value: new String(type).toString() });
+function setTransactionAPI(order, paymentMethodId, transactionAPI) {
+    setTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionAPI', value: new String(transactionAPI).toString() });
 }
 
 /**
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} paymentMethod - Payment Method
+ * @param {string} paymentMethodId - payment method id
  * @returns {string} - type
  */
-function getTransactionAPI(order, paymentMethod) {
-    return getTransactionCustomProperty(order, paymentMethod, { key: 'mollieTransactionAPI' });
+function getTransactionAPI(order, paymentMethodId) {
+    return getTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionAPI' });
 }
 
 module.exports = {

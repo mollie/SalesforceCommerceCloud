@@ -8,6 +8,7 @@ const Logger = require('*/cartridge/scripts/utils/logger');
 const paymentService = require('*/cartridge/scripts/payment/paymentService');
 const collections = require('*/cartridge/scripts/util/collections');
 const config = require('*/cartridge/scripts/mollieConfig');
+const orderHelper = require('*/cartridge/scripts/order/orderHelper');
 
 /**
  * Creates the payment instrument based on the given information.
@@ -64,9 +65,15 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
         var order = OrderMgr.getOrder(orderNumber);
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
-        redirectUrl = config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT ?
-            paymentService.createPayment(order, paymentMethod) :
-            paymentService.createOrder(order, paymentMethod)
+        var usedTransactionAPI = orderHelper.getTransactionAPI(order, paymentMethod.getID());
+        
+        if (usedTransactionAPI === config.getTransactionAPI()) {
+            var result = paymentService.createPayment(order, paymentMethod);
+            redirectUrl = result.payment.links.checkout.href;
+        } else {
+            var result = paymentService.createOrder(order, paymentMethod);
+            redirectUrl = result.order.links.checkout.href;
+        }
     } catch (e) {
         Logger.error(e.javaMessage + '\n\r' + e.stack);
 

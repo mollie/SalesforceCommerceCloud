@@ -15,8 +15,8 @@ function payloadBuilder(params) {
         amount: new sfccEntities.Currency(params.totalGrossPrice),
         orderNumber: params.orderId,
         locale: request.getLocale(),
-        redirectUrl: URLUtils.https('Payment-Redirect', 'id', params.orderId).toString(),
-        webhookUrl: URLUtils.https('Payment-Hook').toString(),
+        redirectUrl: URLUtils.https('MolliePayment-Redirect', 'orderId', params.orderId).toString(),
+        webhookUrl: URLUtils.https('MolliePayment-Hook', 'orderId', params.orderId).toString(),
         method: params.methodId,
         lines: params.productLineItems.toArray().map(function (productLineItem) {
             return new sfccEntities.ProductLineItem(productLineItem);
