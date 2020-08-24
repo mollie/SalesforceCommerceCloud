@@ -20,9 +20,17 @@ function processForm(req, paymentForm, viewFormData) {
     viewData.paymentInformation = {
         paymentMethod: viewData.paymentMethod.value,
         cardType: {
-            value: cardType.getName()
+            value: cardType.getName(),
+            htmlName: paymentForm.creditCardFields.cardType.htmlName
+        },
+        cardToken: {
+            value: paymentForm.creditCardFields.cardToken.value,
+            htmlName: paymentForm.creditCardFields.cardToken.htmlName
         }
+
     };
+
+    viewData.saveCard = paymentForm.creditCardFields.saveCard.checked;
 
     return {
         error: false,
@@ -36,7 +44,7 @@ function processForm(req, paymentForm, viewFormData) {
  * @param {dw.order.Basket} basket - The current basket
  * @param {Object} billingData - payment information
  */
-function savePaymentInformation(req, basket, billingData) { } // eslint-disable-line no-unused-vars
+function savePaymentInformation(req, basket, billingData) { }
 
 exports.processForm = processForm;
 exports.savePaymentInformation = savePaymentInformation;

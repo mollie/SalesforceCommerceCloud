@@ -29,15 +29,17 @@ function getPayment(paymentId) {
  *
  * @param {dw.order.Order} order - Order object
  * @param {dw.order.PaymentMethod} paymentMethod - Order paymentMethod
+ * @param {string} cardToken - Mollie components card token
  * @returns {string} - Redirect url
  * @throws {ServiceException}
  */
-function createPayment(order, paymentMethod) {
+function createPayment(order, paymentMethod, cardToken) {
     try {
         const paymentResult = MollieService.createPayment({
             orderId: order.orderNo,
             amount: new sfccEntities.Currency(order.getTotalGrossPrice()),
-            methodId: paymentMethod.custom.molliePaymentMethodId
+            methodId: paymentMethod.custom.molliePaymentMethodId,
+            cardToken: cardToken
         });
 
         Transaction.wrap(function () {
@@ -136,10 +138,11 @@ function getOrder(orderId) {
  *
  * @param {dw.order.Order} order - Order object
  * @param {dw.order.PaymentMethod} paymentMethod - Order paymentMethod
+ * @param {string} cardToken - Mollie components card token
  * @returns {string} - redirect url
  * @throws {ServiceException}
  */
-function createOrder(order, paymentMethod) {
+function createOrder(order, paymentMethod, cardToken) {
     try {
         var orderResult = MollieService.createOrder({
             orderId: order.orderNo,
@@ -149,8 +152,8 @@ function createOrder(order, paymentMethod) {
             methodId: paymentMethod.custom.molliePaymentMethodId,
             profile: order.getCustomer().getProfile(),
             totalGrossPrice: order.getTotalGrossPrice(),
-            adjustedShippingTotalGrossPrice: order.adjustedShippingTotalGrossPrice,
-            adjustedShippingTotalTax: order.adjustedShippingTotalTax
+            shipments: order.getShipments(),
+            cardToken: cardToken
         });
 
         Transaction.wrap(function () {

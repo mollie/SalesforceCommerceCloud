@@ -3,35 +3,30 @@
 
     <payment-method method-id="MOLLIE_BANCONTACT">
         <name xml:lang="x-default">Bancontact</name>
-        <image>mollie_logo.jpg</image>
         <enabled-flag>true</enabled-flag>
         <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
     </payment-method>
 
-    <payment-method method-id="MOLLIE_CREDIT">
+    <payment-method method-id="CREDIT-CARD">
         <name xml:lang="x-default">Creditcard</name>
-        <image>mollie_logo.jpg</image>
         <enabled-flag>true</enabled-flag>
         <processor-id>MOLLIE_ECOM_CREDIT</processor-id>
     </payment-method>
 
     <payment-method method-id="MOLLIE_PAYPAL">
         <name xml:lang="x-default">PayPal</name>
-        <image>mollie_logo.jpg</image>
         <enabled-flag>true</enabled-flag>
         <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
     </payment-method>
 
     <payment-method method-id="MOLLIE_IDEAL">
         <name xml:lang="x-default">iDeal</name>
-        <image>mollie_logo.jpg</image>
         <enabled-flag>true</enabled-flag>
         <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
     </payment-method>
 
     <payment-method method-id="MOLLIE_SOFORT">
         <name xml:lang="x-default">Sofort</name>
-        <image>mollie_logo.jpg</image>
         <enabled-flag>true</enabled-flag>
         <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
     </payment-method>

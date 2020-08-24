@@ -84,6 +84,19 @@
                 <min-length>0</min-length>
                 <default-value>mollie</default-value>
             </attribute-definition>
+            <attribute-definition attribute-id="mollieComponentsEnableTestMode">
+                <display-name xml:lang="x-default">Enable components test mode</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieComponentsProfileId">
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <default-value>mollie</default-value>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Mollie Config">

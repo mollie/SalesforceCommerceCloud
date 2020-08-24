@@ -48,8 +48,27 @@ function ProductLineItem(productLineItem) {
     }
 }
 
+/**
+ *
+ * @class
+ * @param {dw.order.ShippingLineItem} shippingLineItem - sfcc shippingLineItem object
+ */
+function ShippingLineItem(shippingLineItem) {
+    var shippingCost = new Currency(shippingLineItem.getAdjustedGrossPrice());
+    return {
+        name: 'shipping',
+        quantity: 1,
+        vatRate: shippingLineItem.getTaxRate(),
+        vatAmount: new Currency(shippingLineItem.getTax()),
+        unitPrice: shippingCost,
+        totalAmount: shippingCost,
+        type: 'shipping_fee'
+    }
+}
+
 module.exports = {
     Currency: Currency,
     Address: Address,
-    ProductLineItem: ProductLineItem
+    ProductLineItem: ProductLineItem,
+    ShippingLineItem: ShippingLineItem
 }

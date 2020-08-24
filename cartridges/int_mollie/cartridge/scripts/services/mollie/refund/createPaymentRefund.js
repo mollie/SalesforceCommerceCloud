@@ -9,9 +9,13 @@ var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
  * @returns {Object} payload - returns payload
  */
 function payloadBuilder(params) {
-    return {
+    var payload = {
         amount: new sfccEntities.Currency(params.amount),
     };
+    if (params.cardToken) {
+        payload.cardToken = params.cardToken;
+    }
+    return payload;
 }
 
 /**

@@ -50,6 +50,8 @@ function Config() {
     this.bearerToken = getPreferenceOrThrow(sitePreferences, 'mollieBearerToken');
     this.enabledTransActionAPI = getPreferenceOrThrow(sitePreferences, 'mollieEnabledTransactionAPI');
     this.logCategory = getPreferenceOrThrow(sitePreferences, 'mollieLogCategory');
+    this.componentsEnableTestMode = getPreferenceOrThrow(sitePreferences, 'mollieComponentsEnableTestMode');
+    this.componentsProfileId = getPreferenceOrThrow(sitePreferences, 'mollieComponentsProfileId');
 
     /**
      * Get SiteId
@@ -100,6 +102,26 @@ function Config() {
     this.getLogCategory = function () {
         return this.logCategory;
     };
+
+    /**
+     * Get enabled test mode
+     * @function
+     * @name Config#getOrderType
+     * @return {Object} Order Types
+     */
+    this.getComponentsEnableTestMode = function () {
+        return this.componentsEnableTestMode;
+    }
+
+    /**
+     * Get components profile id
+     * @function
+     * @name Config#getOrderType
+     * @return {Object} Order Types
+     */
+    this.getComponentsProfileId = function () {
+        return this.componentsProfileId;
+    }
 
     /**
      * Get Transaction API constant

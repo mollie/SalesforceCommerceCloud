@@ -5,6 +5,7 @@ var Checkout = module.superModule;
 var server = require('server');
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 var URLUtils = require('dw/web/URLUtils');
+var config = require('*/cartridge/scripts/mollieConfig');
 
 server.extend(Checkout);
 
@@ -15,6 +16,16 @@ server.prepend('Begin', function (req, res, next) {
         res.redirect(URLUtils.home().toString());
     } else {
         COHelpers.restoreOpenOrder(orderId);
+    }
+
+    next();
+});
+
+server.append('Begin', function (req, res, next) {
+    var viewData = res.getViewData();
+    viewData.mollieComponents = {
+        profileId: config.getComponentsProfileId(),
+        enableTestMode: config.getComponentsEnableTestMode()
     }
 
     next();
