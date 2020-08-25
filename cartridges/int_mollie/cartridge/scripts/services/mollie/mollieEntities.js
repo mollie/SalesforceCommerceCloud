@@ -216,6 +216,24 @@ function Line(line) {
     this.createdAt = line.createdAt;
 }
 
+/**
+ *
+ * @class
+ * @param {Object} applePayResponse - Mollie ApplePayResponse object
+ */
+function ApplePayResponse(applePayResponse) {
+    applePayResponse = applePayResponse || {};
+    this.epochTimestamp = applePayResponse.epochTimestamp;
+    this.expiresAt = applePayResponse.expiresAt;
+    this.merchantSessionIdentifier = applePayResponse.merchantSessionIdentifier;
+    this.nonce = applePayResponse.nonce;
+    this.merchantIdentifier = applePayResponse.merchantIdentifier;
+    this.domainName = applePayResponse.domainNames;
+    this.displayName = applePayResponse.displayName;
+    this.signature = applePayResponse.signature;
+}
+
+
 module.exports = {
     Amount: Amount,
     Link: Link,
@@ -226,5 +244,6 @@ module.exports = {
     Method: Method,
     Refund: Refund,
     Shipment: Shipment,
-    Line: Line
+    Line: Line,
+    ApplePayResponse: ApplePayResponse
 }
