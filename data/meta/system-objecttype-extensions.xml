@@ -97,13 +97,6 @@
                 <min-length>0</min-length>
                 <default-value>mollie</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="mollieApplePayVerificationString">
-                <type>text</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <min-length>0</min-length>
-                <default-value>mollie</default-value>
-            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Mollie Config">

@@ -21,7 +21,6 @@ function payloadBuilder(params) {
             return new sfccEntities.ProductLineItem(productLineItem);
         }),
         billingAddress: new sfccEntities.Address(params.billingAddress, params.profile),
-        payment: {}
     };
 
     params.shipments.toArray().forEach(function (shipment) {
@@ -31,7 +30,7 @@ function payloadBuilder(params) {
     });
 
     if (params.cardToken) {
-        payload.payment.cardToken = params.cardToken;
+        payload.cardToken = params.cardToken;
     }
     Logger.error(this.serviceName + ' :: Service: ' + JSON.stringify(payload));
 

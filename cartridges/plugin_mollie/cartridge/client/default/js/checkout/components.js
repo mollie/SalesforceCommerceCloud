@@ -1,4 +1,4 @@
-'use strict';
+
 
 const $mollieComponentsContainer = $('.js-mollie-components-container')
 const mollie = Mollie($mollieComponentsContainer.attr('data-components-profile-id'), {

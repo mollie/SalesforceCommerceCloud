@@ -6,6 +6,7 @@ var URLUtils = require('dw/web/URLUtils');
 var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
 var Transaction = require('dw/system/Transaction');
 var paymentHelper = require('*/cartridge/scripts/payment/paymentHelper');
+var PaymentMgr = require('dw/order/PaymentMgr');
 
 /**
  *
