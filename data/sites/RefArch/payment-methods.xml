@@ -31,4 +31,10 @@
         <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
     </payment-method>
 
+    <payment-method method-id="MOLLIE_APPLE_PAY">
+        <name xml:lang="x-default">Apple Pay</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+    </payment-method>
+
 </payment-settings>
