@@ -1,5 +1,5 @@
 <li class="nav-item" data-method-id="${paymentOption.ID}">
-    <a class="nav-link credit-card-tab active" data-toggle="tab" href="#credit-card-content" role="tab">
+    <a class="nav-link credit-card-tab active js-mollie-component-tab" data-toggle="tab" href="#credit-card-content" role="tab">
         <img class="credit-card-option"
                 src="${paymentOption.image}"
                 height="32"

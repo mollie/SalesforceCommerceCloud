@@ -2,7 +2,8 @@
 
 var addressHelpers = require('base/checkout/address');
 var shippingHelpers = require('base/checkout/shipping');
-var billingHelpers = require('base/checkout/billing');
+var billingHelpersBase = require('base/checkout/billing');
+var billingHelpers = require('../checkout/billing');
 var summaryHelpers = require('base/checkout/summary');
 var formHelpers = require('base/checkout/formErrors');
 var scrollAnimate = require('base/components/scrollAnimate');
@@ -172,145 +173,154 @@ var mollieComponents = require('./components');
                     // Submit the Billing Address Form
                     //
 
-                    var error = mollieComponents.setCardToken();
-                    if (error) {
-                        console.log('MOLLIE COMPONENTS RETURN ERROR');
-                    }
+                    var handlePayment = function () {
+                        formHelpers.clearPreviousErrors('.payment-form');
 
-                    formHelpers.clearPreviousErrors('.payment-form');
+                        var billingAddressForm = $('#dwfrm_billing .billing-address-block :input').serialize();
 
-                    var billingAddressForm = $('#dwfrm_billing .billing-address-block :input').serialize();
-
-                    $('body').trigger('checkout:serializeBilling', {
-                        form: $('#dwfrm_billing .billing-address-block'),
-                        data: billingAddressForm,
-                        callback: function (data) {
-                            if (data) {
-                                billingAddressForm = data;
-                            }
-                        }
-                    });
-
-                    var contactInfoForm = $('#dwfrm_billing .contact-info-block :input').serialize();
-
-                    $('body').trigger('checkout:serializeBilling', {
-                        form: $('#dwfrm_billing .contact-info-block'),
-                        data: contactInfoForm,
-                        callback: function (data) {
-                            if (data) {
-                                contactInfoForm = data;
-                            }
-                        }
-                    });
-
-                    var activeTabId = $('.tab-pane.active').attr('id');
-                    var paymentInfoSelector = '#dwfrm_billing .' + activeTabId + ' .payment-form-fields :input';
-                    var paymentInfoForm = $(paymentInfoSelector).serialize();
-
-                    $('body').trigger('checkout:serializeBilling', {
-                        form: $(paymentInfoSelector),
-                        data: paymentInfoForm,
-                        callback: function (data) {
-                            if (data) {
-                                paymentInfoForm = data;
-                            }
-                        }
-                    });
-
-                    var paymentForm = billingAddressForm + '&' + contactInfoForm + '&' + paymentInfoForm;
-
-                    if ($('.data-checkout-stage').data('customer-type') === 'registered') {
-                        // if payment method is credit card
-                        if ($('.payment-information').data('payment-method-id') === 'CREDIT_CARD') {
-                            if (!($('.payment-information').data('is-new-payment'))) {
-                                var cvvCode = $('.saved-payment-instrument.' +
-                                    'selected-payment .saved-payment-security-code').val();
-
-                                if (cvvCode === '') {
-                                    var cvvElement = $('.saved-payment-instrument.' +
-                                        'selected-payment ' +
-                                        '.form-control');
-                                    cvvElement.addClass('is-invalid');
-                                    scrollAnimate(cvvElement);
-                                    defer.reject();
-                                    return defer;
+                        $('body').trigger('checkout:serializeBilling', {
+                            form: $('#dwfrm_billing .billing-address-block'),
+                            data: billingAddressForm,
+                            callback: function (data) {
+                                if (data) {
+                                    billingAddressForm = data;
                                 }
-
-                                var $savedPaymentInstrument = $('.saved-payment-instrument' +
-                                    '.selected-payment'
-                                );
-
-                                paymentForm += '&storedPaymentUUID=' +
-                                    $savedPaymentInstrument.data('uuid');
-
-                                paymentForm += '&securityCode=' + cvvCode;
                             }
-                        }
-                    }
-                    // disable the next:Place Order button here
-                    $('body').trigger('checkout:disableButton', '.next-step-button button');
+                        });
 
-                    $.ajax({
-                        url: $('#dwfrm_billing').attr('action'),
-                        method: 'POST',
-                        data: paymentForm,
-                        success: function (data) {
-                            // enable the next:Place Order button here
-                            $('body').trigger('checkout:enableButton', '.next-step-button button');
-                            // look for field validation errors
-                            if (data.error) {
-                                if (data.fieldErrors.length) {
-                                    data.fieldErrors.forEach(function (error) {
-                                        if (Object.keys(error).length) {
-                                            formHelpers.loadFormErrors('.payment-form', error);
-                                        }
-                                    });
+                        var contactInfoForm = $('#dwfrm_billing .contact-info-block :input').serialize();
+
+                        $('body').trigger('checkout:serializeBilling', {
+                            form: $('#dwfrm_billing .contact-info-block'),
+                            data: contactInfoForm,
+                            callback: function (data) {
+                                if (data) {
+                                    contactInfoForm = data;
                                 }
+                            }
+                        });
 
-                                if (data.serverErrors.length) {
-                                    data.serverErrors.forEach(function (error) {
-                                        $('.error-message').show();
-                                        $('.error-message-text').text(error);
-                                        scrollAnimate($('.error-message'));
-                                    });
+                        var activeTabId = $('.tab-pane.active').attr('id');
+                        var paymentInfoSelector = '#dwfrm_billing .' + activeTabId + ' .payment-form-fields :input';
+                        var paymentInfoForm = $(paymentInfoSelector).serialize();
+
+                        $('body').trigger('checkout:serializeBilling', {
+                            form: $(paymentInfoSelector),
+                            data: paymentInfoForm,
+                            callback: function (data) {
+                                if (data) {
+                                    paymentInfoForm = data;
                                 }
+                            }
+                        });
 
-                                if (data.cartError) {
-                                    window.location.href = data.redirectUrl;
-                                }
+                        var paymentForm = billingAddressForm + '&' + contactInfoForm + '&' + paymentInfoForm;
 
-                                defer.reject();
-                            } else {
-                                //
-                                // Populate the Address Summary
-                                //
-                                $('body').trigger('checkout:updateCheckoutView',
-                                    { order: data.order, customer: data.customer });
+                        if ($('.data-checkout-stage').data('customer-type') === 'registered') {
+                            // if payment method is credit card
+                            if ($('.payment-information').data('payment-method-id') === 'CREDIT_CARD') {
+                                if (!($('.payment-information').data('is-new-payment'))) {
+                                    var cvvCode = $('.saved-payment-instrument.' +
+                                        'selected-payment .saved-payment-security-code').val();
 
-                                if (data.renderedPaymentInstruments) {
-                                    $('.stored-payments').empty().html(
-                                        data.renderedPaymentInstruments
+                                    if (cvvCode === '') {
+                                        var cvvElement = $('.saved-payment-instrument.' +
+                                            'selected-payment ' +
+                                            '.form-control');
+                                        cvvElement.addClass('is-invalid');
+                                        scrollAnimate(cvvElement);
+                                        defer.reject();
+                                        return defer;
+                                    }
+
+                                    var $savedPaymentInstrument = $('.saved-payment-instrument' +
+                                        '.selected-payment'
                                     );
-                                }
 
-                                if (data.customer.registeredUser
-                                    && data.customer.customerPaymentInstruments.length
-                                ) {
-                                    $('.cancel-new-payment').removeClass('checkout-hidden');
-                                }
+                                    paymentForm += '&storedPaymentUUID=' +
+                                        $savedPaymentInstrument.data('uuid');
 
-                                scrollAnimate();
-                                defer.resolve(data);
-                            }
-                        },
-                        error: function (err) {
-                            // enable the next:Place Order button here
-                            $('body').trigger('checkout:enableButton', '.next-step-button button');
-                            if (err.responseJSON && err.responseJSON.redirectUrl) {
-                                window.location.href = err.responseJSON.redirectUrl;
+                                    paymentForm += '&securityCode=' + cvvCode;
+                                }
                             }
                         }
-                    });
+                        // disable the next:Place Order button here
+                        $('body').trigger('checkout:disableButton', '.next-step-button button');
+
+                        $.ajax({
+                            url: $('#dwfrm_billing').attr('action'),
+                            method: 'POST',
+                            data: paymentForm,
+                            success: function (data) {
+                                // enable the next:Place Order button here
+                                $('body').trigger('checkout:enableButton', '.next-step-button button');
+                                // look for field validation errors
+                                if (data.error) {
+                                    if (data.fieldErrors.length) {
+                                        data.fieldErrors.forEach(function (error) {
+                                            if (Object.keys(error).length) {
+                                                formHelpers.loadFormErrors('.payment-form', error);
+                                            }
+                                        });
+                                    }
+
+                                    if (data.serverErrors.length) {
+                                        data.serverErrors.forEach(function (error) {
+                                            $('.error-message').show();
+                                            $('.error-message-text').text(error);
+                                            scrollAnimate($('.error-message'));
+                                        });
+                                    }
+
+                                    if (data.cartError) {
+                                        window.location.href = data.redirectUrl;
+                                    }
+
+                                    defer.reject();
+                                } else {
+                                    //
+                                    // Populate the Address Summary
+                                    //
+                                    $('body').trigger('checkout:updateCheckoutView',
+                                        { order: data.order, customer: data.customer });
+
+                                    if (data.renderedPaymentInstruments) {
+                                        $('.stored-payments').empty().html(
+                                            data.renderedPaymentInstruments
+                                        );
+                                    }
+
+                                    if (data.customer.registeredUser
+                                        && data.customer.customerPaymentInstruments.length
+                                    ) {
+                                        $('.cancel-new-payment').removeClass('checkout-hidden');
+                                    }
+
+                                    scrollAnimate();
+                                    defer.resolve(data);
+                                }
+                            },
+                            error: function (err) {
+                                // enable the next:Place Order button here
+                                $('body').trigger('checkout:enableButton', '.next-step-button button');
+                                if (err.responseJSON && err.responseJSON.redirectUrl) {
+                                    window.location.href = err.responseJSON.redirectUrl;
+                                }
+                            }
+                        });
+                    }
+
+                    if ($('.js-mollie-component-tab').hasClass('active')) {
+                        mollieComponents.setCardToken(function (error) {
+                            if (error) {
+                                defer.reject(error);
+                            } else {
+                                handlePayment();
+                            }
+                        });
+                    } else {
+                        handlePayment();
+                    }
 
                     return defer;
                 } else if (stage === 'placeOrder') {
@@ -537,7 +547,7 @@ var exports = {
                     data.options
                 );
             });
-            billingHelpers.methods.updateBillingInformation(
+            billingHelpersBase.methods.updateBillingInformation(
                 data.order,
                 data.customer,
                 data.options
@@ -562,7 +572,7 @@ var exports = {
 
 };
 
-[billingHelpers, shippingHelpers, addressHelpers].forEach(function (library) {
+[billingHelpersBase, shippingHelpers, addressHelpers].forEach(function (library) {
     Object.keys(library).forEach(function (item) {
         if (typeof library[item] === 'object') {
             exports[item] = $.extend({}, exports[item], library[item]);

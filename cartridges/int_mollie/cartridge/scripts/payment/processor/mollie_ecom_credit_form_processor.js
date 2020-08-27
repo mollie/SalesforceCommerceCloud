@@ -1,4 +1,5 @@
 'use strict';
+var Resource = require('dw/web/Resource');
 
 /**
  * Verifies the required information for billing form is provided.
@@ -11,6 +12,14 @@ function processForm(req, paymentForm, viewFormData) {
     const viewData = viewFormData;
     const PaymentMgr = require('dw/order/PaymentMgr');
     const cardType = PaymentMgr.getPaymentMethod(paymentForm.paymentMethod.value);
+
+    if (!paymentForm.creditCardFields.cardToken.value) {
+        return {
+            fieldErrors: [],
+            serverErrors: [Resource.msg('error.invalid.card', 'mollie', null)],
+            error: true
+        };
+    }
 
     viewData.paymentMethod = {
         value: paymentForm.paymentMethod.value,
@@ -27,7 +36,6 @@ function processForm(req, paymentForm, viewFormData) {
             value: paymentForm.creditCardFields.cardToken.value,
             htmlName: paymentForm.creditCardFields.cardToken.htmlName
         }
-
     };
 
     viewData.saveCard = paymentForm.creditCardFields.saveCard.checked;
