@@ -71,7 +71,7 @@ function Payment(payment) {
     this.metadata = payment.metadata;
     this.status = payment.status;
     this.isCancelable = function () {
-        return order.isCancelable;
+        return payment.isCancelable;
     };
     this.isShippable = function () {
         return false;

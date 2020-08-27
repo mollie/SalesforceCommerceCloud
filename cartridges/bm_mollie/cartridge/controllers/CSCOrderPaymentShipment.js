@@ -51,21 +51,20 @@ exports.Shipment = function () {
     const lineId = request.httpParameterMap.get('lineId').stringValue;
     const orderId = request.httpParameterMap.get('orderId').stringValue;
     const order = OrderMgr.getOrder(orderId);
-
-    var lines;
-    if (quantity && lineId) {
-        lines = [{
-            id: lineId,
-            quantity: quantity,
-        }];
-    }
-
     const viewParams = {
         success: true,
-        orderId: orderId
+        orderId: order.orderNo
     };
 
     try {
+        var lines;
+        if (quantity && lineId) {
+            lines = [{
+                id: lineId,
+                quantity: quantity,
+            }];
+        }
+
         paymentService.createShipment(order, lines);
         Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
     } catch (e) {

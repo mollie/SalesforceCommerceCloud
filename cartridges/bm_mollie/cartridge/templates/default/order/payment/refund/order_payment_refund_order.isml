@@ -1,37 +1,37 @@
 <!--- TEMPLATENAME: order/payment/order_payment_details.isml --->
 <isdecorate template="pt_csc.isml">
-    <div class="slds-text-heading--medium mb-3">Order Payment Shipment</div>
+    <div class="slds-text-heading--medium mb-3">Order Payment Refund</div>
     <isset name="order" value="${pdict.order}" scope="page" />
     <div class="card">
         <div class="card-header">
             Order: <isprint value="${order.id}">
         </div>
         <div class="card-body">
-            <form method="post" class="m-0" action="CSCOrderPaymentShipment-Shipment" id="orderPaymentShipment-shipment"
-                name="orderPaymentShipment-shipment">
+            <form method="post" class="m-0" action="CSCOrderPaymentRefund-RefundOrder" id="orderPaymentRefund-refundOrder"
+                name="orderPaymentRefund-refundOrder">
                 <fieldset>
                     <input type="hidden" value="${pdict.orderId}" name="orderId" id="orderId" />
-                    <button type="submit" class="btn btn-primary">Ship</button>
+                    <button type="submit" class="btn btn-primary">Refund</button>
                 </fieldset>
             </form>
         </div>
     </div>
-    <isloop items="${pdict.shippableLines}" var="line">
+    <isloop items="${pdict.refundableLines}" var="line">
         <div class="card">
             <div class="card-header">
                 <isprint value="${line.name}"> - <isprint value="${line.sku}">
             </div>
             <div class="card-body">
-                Shippable quantity:
-                <isprint value="${line.shippableQuantity}" />
-                <form method="post" class="m-0" action="CSCOrderPaymentShipment-Shipment"
-                    id="orderPaymentShipment-shipment" name="orderPaymentShipment-shipment">
+                Refundable quantity:
+                <isprint value="${line.refundableQuantity}" />
+                <form method="post" class="m-0" action="CSCOrderPaymentRefund-RefundOrder"
+                    id="orderPaymentRefund-refundOrder" name="orderPaymentRefund-refundOrder">
                     <fieldset>
-                        <input class="form-control" type="number" min="1" max="${line.shippableQuantity}"
-                            value="${line.shippableQuantity}" name="quantity" id="quantity" />
+                        <input class="form-control" type="number" min="1" max="${line.refundableQuantity}"
+                            value="${line.refundableQuantity}" name="quantity" id="quantity" />
                         <input type="hidden" value="${line.id}" name="lineId" id="id" />
                         <input type="hidden" value="${pdict.orderId}" name="orderId" id="id" />
-                        <button type="submit" class="btn btn-primary">Ship</button>
+                        <button type="submit" class="btn btn-primary">Refund</button>
                     </fieldset>
                 </form>
             </div>

@@ -3,13 +3,10 @@ var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities
 
 /**
  *
- *
- * @param {Object} params - params object
  * @returns {Object} payload - returns payload
  */
 function payloadBuilder(params) {
     return {
-        amount: params.amount,
         lines: params.lines
     };
 }
@@ -21,15 +18,15 @@ function payloadBuilder(params) {
  * @returns {Object} response
  */
 function responseMapper(result) {
-    Logger.debug('MOLLIE :: CreateOrderRefund: ' + JSON.stringify(result));
+    Logger.debug('MOLLIE :: CancelOrderLineItem: ' + JSON.stringify(result));
     if (!result || typeof result === 'string') {
         return {
-            refund: new mollieEntities.Refund(),
+            order: new mollieEntities.Order(),
             raw: result || null
         };
     }
     return {
-        refund: new mollieEntities.Refund(result),
+        order: new mollieEntities.Order(result),
         raw: JSON.stringify(result)
     };
 }

@@ -1,8 +1,8 @@
 var ISML = require('dw/template/ISML');
-var Order = require('dw/order/Order');
 var OrderMgr = require('dw/order/OrderMgr');
-var OrderModel = require('*/cartridge/models/order');
+var Order = require('dw/order/Order');
 var Logger = require('*/cartridge/scripts/utils/logger');
+var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 
 var renderTemplate = function (templateName, viewParams) {
@@ -14,55 +14,112 @@ var renderTemplate = function (templateName, viewParams) {
     }
 };
 
-var isCancelAllowed = function (orderNo) {
-    const order = OrderMgr.getOrder(orderNo);
-    if (!order) return false;
-
+var isCancelAllowed = function (order) {
     const orderStatus = order.status.value;
-    var isCancelAllowed = (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
-        orderStatus !== Order.ORDER_STATUS_FAILED &&
-        orderStatus !== Order.ORDER_STATUS_CREATED);
+    return (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
+        orderStatus !== Order.ORDER_STATUS_FAILED);
+};
 
-    var result = paymentService.getPaymentOrOrder(order);
-    return isCancelAllowed && result.isCancelable;
+var getCancelableLines = function (serviceResult) {
+    return serviceResult.order.lines.filter(function (line) {
+        return line.cancelableQuantity >= 1;
+    });
 };
 
 exports.Start = function () {
     const orderNo = request.httpParameterMap.get('order_no').stringValue;
-
-    if (!isCancelAllowed(orderNo)) {
-        renderTemplate('order/payment/cancel/order_payment_cancel_not_available.isml');
+    var order = OrderMgr.getOrder(orderNo);
+    if (orderHelper.isMollieOrder(order)) {
+        var result = paymentService.getOrder(orderHelper.getOrderId(order));
+        var cancelableLines = getCancelableLines(result);
+        if (!isCancelAllowed(order) || !cancelableLines.length) {
+            renderTemplate('order/payment/cancel/order_payment_cancel_not_available.isml');
+        } else {
+            renderTemplate('order/payment/cancel/order_payment_cancel_order.ismll', {
+                orderId: order.orderNo,
+                order: result.order,
+                shippableLines: shippableLines
+            });
+        }
     } else {
-        var order = OrderMgr.getOrder(orderNo);
+        var mollieInstruments = orderHelper.filterMollieInstruments(order);
+        var payments = mollieInstruments.map(function (instrument) {
+            var paymentMethodId = instrument.getPaymentMethod();
+            var paymentId = orderHelper.getPaymentId(order, paymentMethodId);
+            return paymentService.getPayment(paymentId);
+        });
 
-        renderTemplate('order/payment/cancel/order_payment_cancel.isml', {
-            order: new OrderModel(order, {
-                containerView: 'order'
-            })
+        renderTemplate('order/payment/cancel/order_payment_cancel_payment.isml', {
+            orderId: order.orderNo,
+            payments: payments
         });
     }
 };
 
-exports.Cancel = function () {
-    const orderNo = request.httpParameterMap.get('orderId').stringValue;
-    const order = OrderMgr.getOrder(orderNo);
-
+exports.CancelPayment = function () {
+    const paymentId = request.httpParameterMap.get('paymentId').stringValue;
+    const orderId = request.httpParameterMap.get('orderId').stringValue;
     const viewParams = {
         success: true,
-        orderId: orderNo
+        orderId: orderId
     };
 
     try {
-        paymentService.cancelPaymentOrOrder(order);
-        Logger.debug('PAYMENT :: Cancel processed for order ' + order.orderNo);
+        paymentService.cancelPayment(paymentId);
+        Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
     } catch (e) {
-        Logger.error('PAYMENT :: ERROR :: Error while canceling order ' + orderNo + '. ' + e.message);
+        Logger.error('PAYMENT :: ERROR :: Error while creating shipment for order ' + orderId + '. ' + e.message);
         viewParams.success = false;
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/cancel/order_payment_cancel_confirmation.isml', viewParams);
+    renderTemplate('order/payment/shipment/order_payment_shipment_confirmation.isml', viewParams);
+};
+
+exports.CancelOrderLine = function () {
+    const quantity = request.httpParameterMap.get('quantity').stringValue;
+    const lineId = request.httpParameterMap.get('lineId').stringValue;
+    const orderId = request.httpParameterMap.get('orderId').stringValue;
+    const order = OrderMgr.getOrder(orderId);
+    const viewParams = {
+        success: true,
+        orderId: orderId
+    };
+
+    try {
+        paymentService.cancelOrderLineItem(order, [{
+            id: lineId,
+            quantity: quantity,
+        }]);
+        Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
+    } catch (e) {
+        Logger.error('PAYMENT :: ERROR :: Error while creating shipment for order ' + orderId + '. ' + e.message);
+        viewParams.success = false;
+        viewParams.errorMessage = e.message;
+    }
+
+    renderTemplate('order/payment/shipment/order_payment_shipment_confirmation.isml', viewParams);
+};
+
+exports.CancelOrder = function () {
+    const orderId = request.httpParameterMap.get('orderId').stringValue;
+    const order = OrderMgr.getOrder(orderId);
+    const viewParams = {
+        success: true,
+        orderId: order.orderNo
+    };
+
+    try {
+        paymentService.cancelOrder(order);
+        Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
+    } catch (e) {
+        Logger.error('PAYMENT :: ERROR :: Error while creating shipment for order ' + orderId + '. ' + e.message);
+        viewParams.success = false;
+        viewParams.errorMessage = e.message;
+    }
+
+    renderTemplate('order/payment/shipment/order_payment_shipment_confirmation.isml', viewParams);
 };
 
 exports.Start.public = true;
-exports.Cancel.public = true;
+exports.Shipment.public = true;

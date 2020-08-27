@@ -6,7 +6,6 @@ var URLUtils = require('dw/web/URLUtils');
 var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
 var Transaction = require('dw/system/Transaction');
 var paymentHelper = require('*/cartridge/scripts/payment/paymentHelper');
-var Calendar = require('dw/util/Calendar');
 
 /**
  *
@@ -87,7 +86,7 @@ function getRedirectUrl(order) {
  */
 function handleStatusUpdate(order, statusUpdateId) {
     try {
-        if (orderHelper.isMollieOrder(order) && 
+        if (orderHelper.isMollieOrder(order) &&
             orderHelper.getOrderId(order) === statusUpdateId) {
             var result = getOrder(statusUpdateId);
             paymentHelper.processPaymentResult(order, result.order);
@@ -113,19 +112,13 @@ function handleStatusUpdate(order, statusUpdateId) {
 /**
  *
  * @param {dw.order.Order} order - Order object
- * @param {string} paymentMethodId - paymentMethodId
- * @returns {object}  - result of the cancel payment REST call
+ * @param {string} paymentId - paymentMethodId
  * @throws {ServiceException}
  */
-function cancelPayment(order, paymentMethodId) {
+function cancelPayment(paymentId) {
     try {
         const paymentResult = MollieService.cancelPayment({
-            paymentId: orderHelper.getPaymentId(order, paymentMethodId)
-        });
-
-        Transaction.wrap(function () {
-            var historyItem = 'PAYMENT :: Canceling payment: ' + paymentResult.raw;
-            orderHelper.addItemToOrderHistory(order, historyItem, true);
+            paymentId: paymentId
         });
 
         return paymentResult;
@@ -203,9 +196,24 @@ function cancelOrder(order) {
             orderId: orderHelper.getOrderId(order),
         });
 
-        Transaction.wrap(function () {
-            var historyItem = 'PAYMENT :: Canceling order payment: ' + cancelResult.raw;
-            orderHelper.addItemToOrderHistory(order, historyItem, true);
+        return cancelResult;
+    } catch (e) {
+        if (e.name === 'PaymentProviderException') throw e;
+        throw ServiceException.from(e);
+    }
+}
+
+/**
+ *
+ * @param {dw.order.Order} order - Order object
+ * @returns {object}  - result of the cancel order REST call
+ * @throws {ServiceException}
+ */
+function cancelOrderLineItem(order, lines) {
+    try {
+        const cancelResult = MollieService.cancelOrderLineItem({
+            orderId: orderHelper.getOrderId(order),
+            lines: lines
         });
 
         return cancelResult;
@@ -250,58 +258,36 @@ function getApplicablePaymentMethods(paymentMethods) {
 /**
  *
  * @param {dw.order.Order} order - order object
+ * @param {objeect} lines - object containing lines
  * @returns {object}  - result of the refund order REST call
  * @throws {ServiceException}
  */
-function createRefund(order, paymentInstrument, refundAmount) {
-    Transaction.begin();
-
-    const refund = RefundMgr.createRefund(paymentInstrument.getPaymentTransaction().getTransactionID());
-
+function createOrderRefund(order, lines) {
     try {
-        refund.setOrderId(order.orderNo);
-        refund.setAmount(refundAmount);
-        refund.setCurrencyCode(paymentInstrument.getPaymentTransaction().getAmount().getCurrencyCode());
-
-        var createRefundResult;
-        if (orderHelper.isMollieOrder(order)) {
-            createRefundResult = MollieService.createOrderRefund({
-                orderId: order.orderNo,
-                amount: {
-                    currency: refund.getCurrencyCode(),
-                    value: refund.getAmount()
-                }
-            });
-        } else {
-            createRefundResult = MollieService.createPaymentRefund({
-                paymentId: order.orderNo,
-                amount: {
-                    currency: refund.getCurrencyCode(),
-                    value: refund.getAmount()
-                }
-            });
-        }
-
-        if (createRefundResult.isSuccessful()) {
-            refund.setDate(refundOrderResult.timestamp.getTime());
-            refund.setStatus(Refund.STATUS_REFUNDED);
-            var historyItem = 'PAYMENT :: Processing ' + transaction.transactionType + ' Transaction :: ' + JSON.stringify(transaction);
-            orderHelper.addItemToOrderHistory(order, historyItem, true);
-        } else {
-            throw new PaymentProviderException('Refund failed because of following status :: ' + transaction.toStatusString());
-        }
-        Transaction.commit();
-        return createRefundResult;
+        return MollieService.createOrderRefund({
+            orderId: orderHelper.getOrderId(order),
+            lines: lines
+        });
     } catch (e) {
-        var error = e;
+        if (error.name === 'PaymentProviderException') throw error;
+        throw ServiceException.from(error);
+    }
+}
 
-        refund.setDate(new Calendar().getTime());
-        refund.setStatus(Refund.STATUS_FAILED);
-
-        orderHelper.addItemToOrderHistory(order, error.message, true);
-
-        Transaction.commit();
-
+/**
+ *
+ * @param {string} paymentId - payment id
+ * @param {number} amount - amount to refund
+ * @returns {object}  - result of the refund order REST call
+ * @throws {ServiceException}
+ */
+function createPaymentRefund(paymentId, amount) {
+    try {
+        return MollieService.createOrderRefund({
+            id: paymentId,
+            amount: amount
+        });
+    } catch (e) {
         if (error.name === 'PaymentProviderException') throw error;
         throw ServiceException.from(error);
     }
@@ -316,17 +302,10 @@ function createRefund(order, paymentInstrument, refundAmount) {
  */
 function createShipment(order, lines) {
     try {
-        const shipmentResult = MollieService.createShipment({
+        return MollieService.createShipment({
             orderId: orderHelper.getOrderId(order),
             lines: lines || []
-        });
-
-        Transaction.wrap(function () {
-            var historyItem = 'PAYMENT :: Create order shipment: ' + shipmentResult.raw;
-            orderHelper.addItemToOrderHistory(order, historyItem, true);
-        });
-
-        return shipmentResult;
+        });;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
         throw ServiceException.from(e);
@@ -342,7 +321,9 @@ module.exports = {
     getOrder: getOrder,
     createOrder: createOrder,
     cancelOrder: cancelOrder,
+    cancelOrderLineItem: cancelOrderLineItem,
     getApplicablePaymentMethods: getApplicablePaymentMethods,
-    createRefund: createRefund,
+    createPaymentRefund: createPaymentRefund,
+    createOrderRefund: createOrderRefund,
     createShipment: createShipment
 }

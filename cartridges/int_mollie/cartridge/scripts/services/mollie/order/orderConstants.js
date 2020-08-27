@@ -13,5 +13,10 @@ module.exports = {
         method: 'DELETE',
         path: '/v2/orders/{orderId}',
         serviceName: 'Mollie.CancelOrder'
+    },
+    CANCEL_ORDER_LINE_ITEM: {
+        method: 'DELETE',
+        path: '/v2/orders/{orderId}/lines',
+        serviceName: 'Mollie.CancelOrderLineItem'
     }
 };

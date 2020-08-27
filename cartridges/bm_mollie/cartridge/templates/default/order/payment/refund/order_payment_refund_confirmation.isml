@@ -8,7 +8,5 @@
             Refund failed. <isprint value="${pdict.errorMessage}">.
         </div>
     </isif>
-
-    <isinclude template="order/payment/refund/order_payment_refund" />
     <hr />
 </isdecorate>

@@ -7,6 +7,7 @@ const paymentConstants = require('*/cartridge/scripts/services/mollie/payment/pa
 const createOrder = require('*/cartridge/scripts/services/mollie/order/createOrder');
 const getOrder = require('*/cartridge/scripts/services/mollie/order/getOrder');
 const cancelOrder = require('*/cartridge/scripts/services/mollie/order/cancelOrder');
+const cancelOrderLineItem = require('*/cartridge/scripts/services/mollie/order/cancelOrderLineItem');
 const orderConstants = require('*/cartridge/scripts/services/mollie/order/orderConstants');
 
 const createOrderRefund = require('*/cartridge/scripts/services/mollie/refund/createOrderRefund');
@@ -59,6 +60,13 @@ exports.cancelOrder = function (parameters) {
     var mollie = new Mollie(orderConstants.CANCEL_ORDER);
     mollie.addPayloadBuilder(cancelOrder.payloadBuilder);
     mollie.addResponseMapper(cancelOrder.responseMapper);
+    return mollie.execute(parameters);
+};
+
+exports.cancelOrderLineItem = function (parameters) {
+    var mollie = new Mollie(orderConstants.CANCEL_ORDER_LINE_ITEM);
+    mollie.addPayloadBuilder(cancelOrderLineItem.payloadBuilder);
+    mollie.addResponseMapper(cancelOrderLineItem.responseMapper);
     return mollie.execute(parameters);
 };
 

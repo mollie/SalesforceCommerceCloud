@@ -20,19 +20,22 @@ var paymentService = require('*/cartridge/scripts/payment/paymentService');
  */
 function processPaymentResult(order, paymentResult, paymentMethodId) {
     const STATUS = config.getTransactionStatus();
+    const isMollieOrder = orderHelper.isMollieOrder(order);
 
     var orderId = order.orderNo;
     var orderToken = order.orderToken;
     var url = URLUtils.https('Order-Confirm', 'ID', orderId, 'token', orderToken).toString()
-
+    var historyItem;
     // PROCESS STATUS
     switch (paymentResult.status) {
         case STATUS.COMPLETED:
+            historyItem = 'PAYMENT :: Order shipped, status :: ' + paymentResult.status;
             Transaction.wrap(function () {
                 orderHelper.setOrderShippingStatus(order, Order.SHIPPING_STATUS_SHIPPED);
             });
             break;
         case STATUS.PAID:
+            historyItem = 'PAYMENT :: Order paid, status :: ' + paymentResult.status;
             if (orderHelper.isNewOrder(order)) {
                 COHelpers.placeOrder(order);
             }
@@ -43,6 +46,7 @@ function processPaymentResult(order, paymentResult, paymentMethodId) {
 
         case STATUS.PENDING:
         case STATUS.AUTHORIZED:
+            historyItem = 'PAYMENT :: Order pending, status :: ' + paymentResult.status;
             if (orderHelper.isNewOrder(order)) {
                 COHelpers.placeOrder(order);
             }
@@ -50,18 +54,22 @@ function processPaymentResult(order, paymentResult, paymentMethodId) {
 
         case STATUS.OPEN:
         case STATUS.CREATED:
+            historyItem = 'PAYMENT :: Return to checkout because of bad status, status :: ' + paymentResult.status;
             url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
-            if (orderHelper.isMollieOrder(order)) {
-                paymentService.cancelOrder(order);
-            } else {
-                paymentService.cancelPayment(order, paymentMethodId)
+            if (paymentResult.isCancelable()) {
+                if (isMollieOrder) {
+                    paymentService.cancelOrder(order);
+                } else {
+                    var paymentId = orderHelper.getPaymentId(order, paymentMethodId);
+                    paymentService.cancelPayment(paymentId);
+                }
             }
 
         case STATUS.EXPIRED:
         case STATUS.CANCELED:
         case STATUS.FAILED:
             Transaction.wrap(function () {
-                var historyItem = 'PAYMENT :: Return to checkout because of bad status :: ' + paymentResult.status;
+                var historyItem = 'PAYMENT :: Canceling order, status :: ' + paymentResult.status;
                 orderHelper.failOrCancelOrder(order, historyItem);
             });
 
@@ -71,15 +79,16 @@ function processPaymentResult(order, paymentResult, paymentMethodId) {
     }
 
     Transaction.wrap(function () {
-        if (orderHelper.isMollieOrder(order)) {
+        if (isMollieOrder) {
             orderHelper.setOrderId(order, paymentResult.id)
             orderHelper.setOrderStatus(order, paymentResult.status);
         } else {
             orderHelper.setPaymentId(order, paymentMethodId, paymentResult.id)
             orderHelper.setPaymentStatus(order, paymentMethodId, paymentResult.status);
         }
-        var historyItem = 'PAYMENT :: Processed order ' + orderId + ' status: ' + paymentResult.status + ' :: ' + JSON.stringify(paymentResult);
-        orderHelper.addItemToOrderHistory(order, historyItem, true);
+        if (historyItem) {
+            orderHelper.addItemToOrderHistory(order, historyItem, true);
+        }
     });
 
     return {

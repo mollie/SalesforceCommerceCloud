@@ -39,6 +39,17 @@
         <credential-id>Mollie</credential-id>
     </service>
 
+    <service service-id="Mollie.CancelOrderLineItem">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_CancelOrderLineItem</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
     <service service-id="Mollie.CreateOrder">
         <service-type>HTTP</service-type>
         <enabled>true</enabled>
