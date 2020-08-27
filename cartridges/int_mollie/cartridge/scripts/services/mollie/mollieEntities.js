@@ -152,6 +152,9 @@ function Method(method) {
     this.isEnabled = function () {
         return method.status === "pending-boarding";
     };
+    this.issuers = method.issuers && method.issuers.map(function (issuer) {
+        return new Issuer(issuer);
+    });
 }
 
 /**
@@ -223,7 +226,19 @@ function Line(line) {
     this.shippableQuantity = line.shippableQuantity;
     this.refundableQuantity = line.refundableQuantity;
     this.cancelableQuantity = line.cancelableQuantity;
-    
+}
+
+/**
+ *
+ * @class
+ * @param {Object} issuer - Mollie Issuer object
+ */
+function Issuer(issuer) {
+    issuer = issuer || {};
+    this.resource = issuer.resource;
+    this.id = issuer.id;
+    this.name = issuer.name;
+    this.image = issuer.image && issuer.image.svg;
 }
 
 module.exports = {
@@ -236,5 +251,6 @@ module.exports = {
     Method: Method,
     Refund: Refund,
     Shipment: Shipment,
-    Line: Line
+    Line: Line,
+    Issuer: Issuer
 }

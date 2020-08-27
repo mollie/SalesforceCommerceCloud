@@ -31,17 +31,18 @@ function getPayment(paymentId) {
  *
  * @param {dw.order.Order} order - Order object
  * @param {dw.order.PaymentMethod} paymentMethod - Order paymentMethod
- * @param {string} cardToken - Mollie components card token
+ * @param {object} paymentData - object containing method specific data
  * @returns {string} - Redirect url
  * @throws {ServiceException}
  */
-function createPayment(order, paymentMethod, cardToken) {
+function createPayment(order, paymentMethod, paymentData) {
     try {
         const paymentResult = MollieService.createPayment({
             orderId: order.orderNo,
             amount: new sfccEntities.Currency(order.getTotalGrossPrice()),
             methodId: paymentMethod.custom.molliePaymentMethodId,
-            cardToken: cardToken
+            cardToken: paymentData && paymentData.cardToken,
+            issuer: paymentData && paymentData.issuer
         });
 
         Transaction.wrap(function () {
@@ -157,11 +158,11 @@ function getOrder(orderId) {
  *
  * @param {dw.order.Order} order - Order object
  * @param {dw.order.PaymentMethod} paymentMethod - Order paymentMethod
- * @param {string} cardToken - Mollie components card token
+ * @param {object} paymentData - object containing method specific data
  * @returns {string} - redirect url
  * @throws {ServiceException}
  */
-function createOrder(order, paymentMethod, cardToken) {
+function createOrder(order, paymentMethod, paymentData) {
     try {
         var orderResult = MollieService.createOrder({
             orderId: order.orderNo,
@@ -172,7 +173,8 @@ function createOrder(order, paymentMethod, cardToken) {
             profile: order.getCustomer().getProfile(),
             totalGrossPrice: order.getTotalGrossPrice(),
             shipments: order.getShipments(),
-            cardToken: cardToken
+            cardToken: paymentData && paymentData.cardToken,
+            issuer: paymentData && paymentData.issuer
         });
 
         Transaction.wrap(function () {
@@ -235,7 +237,8 @@ function getApplicablePaymentMethods(paymentMethods) {
                     ID: method.ID,
                     name: method.name,
                     image: (method.image) ? method.image.URL.toString() :
-                        mollieMethod && mollieMethod.imageURL || URLUtils.staticURL('./images/mollieMethodImage.png')
+                        mollieMethod && mollieMethod.imageURL || URLUtils.staticURL('./images/mollieMethodImage.png'),
+                    issuers: mollieMethod && mollieMethod.issuers
                 });
             }
         });

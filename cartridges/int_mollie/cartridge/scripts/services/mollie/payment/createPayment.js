@@ -10,14 +10,18 @@ var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
  * @returns {Object} payload - returns payload
  */
 function payloadBuilder(params) {
-    return {
+    var payload = {
         amount: new sfccEntities.Currency(params.totalGrossPrice),
         description: "Order: " + params.orderId,
         redirectUrl: URLUtils.https('Payment-Redirect', 'id', params.orderId).toString(),
         webhookUrl: URLUtils.https('Payment-Hook').toString(),
         locale: request.getLocale(),
-        method: params.methodId,
-    };
+        method: params.methodId
+    }
+    if (params.issuer) {
+        payload.issuer = params.issuer;
+    }
+    return payload;
 }
 
 /**

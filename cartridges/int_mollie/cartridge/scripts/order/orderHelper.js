@@ -2,6 +2,7 @@ var Logger = require('*/cartridge/scripts/utils/logger');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
+var config = require('*/cartridge/scripts/mollieConfig');
 
 /**
  *
@@ -46,7 +47,7 @@ function cancelOrder(order, message) {
 
     var failOrderStatus = OrderMgr.cancelOrder(order);
     if (failOrderStatus.isError()) {
-        
+
         addItemToOrderHistory(order, 'PAYMENT :: Failed canceling the order. User basket not restored: ' + JSON.stringify(failOrderStatus.getMessage()), true);
     }
 }
@@ -81,16 +82,43 @@ function isNewOrder(order) {
 /**
  *
  *
+ * @param {dw.order.Order} order - Order object
+ * @returns {boolean} is mollie order
+ */
+function isMollieOrder(order) {
+    return getUsedTransactionAPI(order) === config.getTransactionAPI().ORDER;
+}
+
+/**
+ *
+ *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {number} paymentStatus - Payment Status
  * @returns {void}
  */
-function setPaymentStatus(order, paymentStatus) {
+function setOrderPaymentStatus(order, paymentStatus) {
     var logMessage = 'PAYMENT :: UpdatePaymentStatus :: Updated payment status for order ' + order.orderNo + ' to ' + paymentStatus;
     var currentPaymentStatus = order.getPaymentStatus().getValue();
 
     if (currentPaymentStatus !== paymentStatus) {
         order.setPaymentStatus(paymentStatus);
+        addItemToOrderHistory(order, logMessage, true);
+    }
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {number} shippingStatus - Shipping Status
+ * @returns {void}
+ */
+function setOrderShippingStatus(order, shippingStatus) {
+    var logMessage = 'PAYMENT :: UpdateShippingStatus :: Updated shipping status for order ' + order.orderNo + ' to ' + shippingStatus;
+    var currentShippingStatus = order.getShippingStatus().getValue();
+
+    if (currentShippingStatus !== shippingStatus) {
+        order.setShippingStatus(shippingStatus);
         addItemToOrderHistory(order, logMessage, true);
     }
 }
@@ -145,26 +173,25 @@ function getTransactionCustomProperty(order, paymentMethodId, custom) {
 
 /**
  *
- *
- * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} paymentMethodId - payment method id
- * @param {string} transactionId - Mollie payment / order status
- * @returns {void}
+ * @description Set order custom property
+ * @param {dw.order.Order} order - order object
+ * @param {Object} custom - custom
  */
-function setTransactionStatus(order, paymentMethodId, status) {
-    setTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionStatus', value: new String(status).toString() });
-}
+function setOrderCustomProperty(order, custom) {
+    order.custom[custom.key] = custom.value;
+};
 
 /**
  *
- *
- * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} paymentMethodId - payment method id
- * @returns {string} - captureId
+ * @description Get order custom property
+ * @param {dw.order.Order} order - order object
+ * @param {Object} custom - custom
+ * @returns {Object} - transaction custom property
  */
-function getTransactionStatus(order, paymentMethodId) {
-    return getTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionStatus' });
-}
+function getOrderCustomProperty(order, custom) {
+    const customProperty = order.custom[custom.key];
+    return customProperty && customProperty.toString();
+};
 
 /**
  *
@@ -174,8 +201,8 @@ function getTransactionStatus(order, paymentMethodId) {
  * @param {string} paymentId - Mollie payment id
  * @returns {void}
  */
-function setTransactionPaymentId(order, paymentMethodId, paymentId) {
-    setTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionPaymentId', value: new String(paymentId).toString() });
+function setPaymentId(order, paymentMethodId, paymentId) {
+    setTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentId', value: new String(paymentId).toString() });
 }
 
 /**
@@ -185,8 +212,8 @@ function setTransactionPaymentId(order, paymentMethodId, paymentId) {
  * @param {string} paymentMethodId - payment method id
  * @returns {string} - payment id
  */
-function getTransactionPaymentId(order, paymentMethodId) {
-    return getTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionPaymentId' });
+function getPaymentId(order, paymentMethodId) {
+    return getTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentId' });
 }
 
 /**
@@ -194,11 +221,11 @@ function getTransactionPaymentId(order, paymentMethodId) {
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {string} paymentMethodId - payment method id
- * @param {string} transactionId - Mollie order id
+ * @param {string} transactionId - Mollie payment / order status
  * @returns {void}
  */
-function setTransactionOrderId(order, paymentMethodId, orderId) {
-    setTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionOrderId', value: new String(orderId).toString() });
+function setPaymentStatus(order, paymentMethodId, status) {
+    setTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentStatus', value: new String(status).toString() });
 }
 
 /**
@@ -206,33 +233,73 @@ function setTransactionOrderId(order, paymentMethodId, orderId) {
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {string} paymentMethodId - payment method id
+ * @returns {string} - captureId
+ */
+function getPaymentStatus(order, paymentMethodId) {
+    return getTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentStatus' });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} orderId - Mollie order id
+ * @returns {void}
+ */
+function setOrderId(order, orderId) {
+    setOrderCustomProperty(order, { key: 'mollieOrderId', value: new String(orderId).toString() });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
  * @returns {string} - order id
  */
-function getTransactionOrderId(order, paymentMethodId) {
-    return getTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionOrderId' });
+function getOrderId(order) {
+    return getOrderCustomProperty(order, { key: 'mollieOrderId' });
 }
 
 /**
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} paymentMethodId - payment method id
- * @param {string} transactionAPI - Mollie payment / order status
+ * @param {string} orderId - Mollie order id
  * @returns {void}
  */
-function setTransactionAPI(order, paymentMethodId, transactionAPI) {
-    setTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionAPI', value: new String(transactionAPI).toString() });
+function setOrderStatus(order, orderStatus) {
+    setOrderCustomProperty(order, { key: 'mollieOrderStatus', value: new String(orderStatus).toString() });
 }
 
 /**
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} paymentMethodId - payment method id
- * @returns {string} - type
+ * @returns {string} - order status
  */
-function getTransactionAPI(order, paymentMethodId) {
-    return getTransactionCustomProperty(order, paymentMethodId, { key: 'mollieTransactionAPI' });
+function getOrderStatus(order) {
+    return getOrderCustomProperty(order, { key: 'mollieOrderStatus' });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} usedTransactionAPI - Mollie order id
+ * @returns {void}
+ */
+function setUsedTransactionAPI(order, usedTransactionAPI) {
+    setOrderCustomProperty(order, { key: 'mollieUsedTransactionAPI', value: new String(usedTransactionAPI).toString() });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @returns {string} - order id
+ */
+function getUsedTransactionAPI(order) {
+    return getOrderCustomProperty(order, { key: 'mollieUsedTransactionAPI' });
 }
 
 module.exports = {
@@ -241,16 +308,22 @@ module.exports = {
     cancelOrder: cancelOrder,
     failOrCancelOrder: failOrCancelOrder,
     isNewOrder: isNewOrder,
-    setPaymentStatus: setPaymentStatus,
+    isMollieOrder: isMollieOrder,
+    setOrderPaymentStatus: setOrderPaymentStatus,
+    setOrderShippingStatus: setOrderShippingStatus,
     getMolliePaymentInstruments: getMolliePaymentInstruments,
     setTransactionCustomProperty: setTransactionCustomProperty,
     getTransactionCustomProperty: getTransactionCustomProperty,
-    setTransactionStatus: setTransactionStatus,
-    getTransactionStatus: getTransactionStatus,
-    setTransactionPaymentId: setTransactionPaymentId,
-    getTransactionPaymentId: getTransactionPaymentId,
-    setTransactionOrderId: setTransactionOrderId,
-    getTransactionOrderId: getTransactionOrderId,
-    setTransactionAPI: setTransactionAPI,
-    getTransactionAPI: getTransactionAPI,
+    setOrderCustomProperty: setOrderCustomProperty,
+    getOrderCustomProperty: getOrderCustomProperty,
+    setPaymentId: setPaymentId,
+    getPaymentId: getPaymentId,
+    setPaymentStatus: setPaymentStatus,
+    getPaymentStatus: getPaymentStatus,
+    setOrderId: setOrderId,
+    getOrderId: getOrderId,
+    setOrderStatus: setOrderStatus,
+    getOrderStatus: getOrderStatus,
+    setUsedTransactionAPI: setUsedTransactionAPI,
+    getUsedTransactionAPI: getUsedTransactionAPI
 };

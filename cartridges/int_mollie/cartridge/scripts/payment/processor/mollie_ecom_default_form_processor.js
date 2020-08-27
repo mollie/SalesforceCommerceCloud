@@ -17,6 +17,11 @@ function processForm(req, paymentForm, viewFormData) {
         htmlName: paymentForm.paymentMethod.value
     };
 
+    viewData.issuer = {
+        value: paymentForm.issuer.value,
+        htmlName: paymentForm.issuer.value
+    };
+
     viewData.paymentInformation = {
         paymentMethod: viewData.paymentMethod.value,
         cardType: {

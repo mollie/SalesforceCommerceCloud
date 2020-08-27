@@ -80,10 +80,10 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
         var cardToken = session.forms.billing.creditCardFields.cardToken.value;
 
         if (config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT) {
-            var result = paymentService.createPayment(order, paymentMethod, cardToken);
+            var result = paymentService.createPayment(order, paymentMethod, { cardToken: cardToken });
             redirectUrl = result.payment.links.checkout.href;
         } else {
-            var result = paymentService.createOrder(order, paymentMethod, cardToken);
+            var result = paymentService.createOrder(order, paymentMethod, { cardToken: cardToken });
             redirectUrl = result.order.links.checkout.href;
         }
     } catch (e) {

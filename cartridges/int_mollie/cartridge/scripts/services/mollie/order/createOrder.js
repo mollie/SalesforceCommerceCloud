@@ -33,6 +33,10 @@ function payloadBuilder(params) {
     if (params.cardToken) {
         payload.payment.cardToken = params.cardToken;
     }
+
+    if (params.issuer) {
+        payload.payment.issuer = params.issuer;
+    }
     Logger.error(this.serviceName + ' :: Service: ' + JSON.stringify(payload));
 
     return payload;

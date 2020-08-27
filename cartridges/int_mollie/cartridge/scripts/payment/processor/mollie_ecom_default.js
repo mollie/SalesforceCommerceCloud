@@ -64,12 +64,13 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
         var order = OrderMgr.getOrder(orderNumber);
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
+        var issuer = session.forms.billing.issuer.value;
 
         if (config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT) {
-            var result = paymentService.createPayment(order, paymentMethod);
+            var result = paymentService.createPayment(order, paymentMethod, { issuer: issuer });
             redirectUrl = result.payment.links.checkout.href;
         } else {
-            var result = paymentService.createOrder(order, paymentMethod);
+            var result = paymentService.createOrder(order, paymentMethod, { issuer: issuer });
             redirectUrl = result.order.links.checkout.href;
         }
     } catch (e) {

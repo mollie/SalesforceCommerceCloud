@@ -4,36 +4,17 @@
         <!--- payment method --->
         <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
             value="${paymentOption.ID}">
-
-        <isloop items="${pdict.aliases}" alias="alias">
-            <isif condition="${paymentOption.ID == alias.paymentMethod}">
-                <div>
-                    <input type="radio" name="alias-${paymentOption.ID}" value="${alias.alias}">
-                    <isprint value="${alias.brand}" /><br />
-                    Card Number:
-                    <isprint value="${alias.cardNumber}" /><br />
-                    Expiration:
-                    <isprint value="${alias.expiration}" /><br />
-                </div>
-            </isif>
-        </isloop>
-
-        <isif condition="${pdict.allowedPaymentMethodsForAliasRegistration
-            && pdict.allowedPaymentMethodsForAliasRegistration.indexOf(paymentOption.ID) >= 0}"
-        >
-            <div>
-                <input type="radio" name="alias-${paymentOption.ID}" value="false" checked>
-                ${Resource.msg('use_new_card', 'mollie', null)}
-            </div>
-            <div>
-                <input type="checkbox" name="savePaymentMethod" value="true"> ${Resource.msg('save_card', 'mollie', null)}
-            </div>
-        <iselse/>
-            <input type="hidden" class="form-control" name="alias-${paymentOption.ID}" value="false">
-            <input type="hidden" class="form-control" name="savePaymentMethod" value="false">
-        </isif>
-
-        <input type="hidden" class="form-control" name="aliasSelectedPaymentMethod" value="alias-${paymentOption.ID}">
-
+        <div class="issuers">
+            <isloop items="${paymentOption.issuers}" alias="issuer" status="loopStatus">
+                <label class="form-control-label">
+                    <input type="radio" value="${issuer.id}" <isprint
+                        value="${pdict.forms.billingForm.issuer.attributes}" encoding="off" />
+                    <isif condition="${loopStatus.first}">checked</isif>/>
+                    <img class="issuer-image" src="${issuer.image}" height="32" alt="${issuer.name}"
+                        title="${issuer.name}" />
+                    <span>${issuer.name}</span>
+                </label>
+            </isloop>
+        </div>
     </fieldset>
 </div>
