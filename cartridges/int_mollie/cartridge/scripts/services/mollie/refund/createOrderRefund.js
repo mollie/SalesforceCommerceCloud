@@ -1,6 +1,5 @@
 var Logger = require('*/cartridge/scripts/utils/logger');
 var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities');
-var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
 
 /**
  *
@@ -10,7 +9,7 @@ var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
  */
 function payloadBuilder(params) {
     return {
-        amount: new sfccEntities.Currency(params.amount),
+        amount: params.amount,
         lines: []
     };
 }

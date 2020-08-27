@@ -58,10 +58,13 @@ Add the following cartridges to the business manager site:
 - `molliePaymentMethodId`: string - external mollie payment method id
 
 ### PaymentTransaction
-- `mollieTransactionStatus`: string - the payment status recieved from Mollie
-- `mollieTransactionPaymentId`: string - the id of the Mollie order
-- `mollieTransactionOrderId`: string - the id of the Mollie payment
-- `mollieTransactionAPI`: string - api used for creating payment (payment / order)
+- `molliePaymentId`: string - the id of the Mollie payment
+- `molliePaymentStatus`: string - the payment status recieved from Mollie
+
+### Order
+- `mollieOrderId`: string - the id of the Mollie order
+- `mollieOrderStatus`: string - the payment status recieved from Mollie
+- `mollieUsedTransactionAPI`: string - api used for creating payment (payment / order)
 
 ### Profile //TODO
 

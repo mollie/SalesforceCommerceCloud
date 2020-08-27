@@ -6,7 +6,7 @@ module.exports = {
     },
     GET_METHOD: {
         method: 'GET',
-        path: '/v2/methods/${methodId}',
+        path: '/v2/methods/{methodId}',
         serviceName: 'Mollie.GetMethod'
     }
 };

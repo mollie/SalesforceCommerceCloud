@@ -214,6 +214,16 @@ function Line(line) {
     this.discountAmount = new Amount(line.discountAmount);
     this.totalAmount = new Amount(line.totalAmount);
     this.createdAt = line.createdAt;
+    this.quantityShipped = line.quantityShipped;
+    this.amountShipped = new Amount(line.amountShipped);
+    this.quantityRefunded = line.quantityRefunded;
+    this.amountRefunded = new Amount(line.amountRefunded);
+    this.quantityCanceled = line.quantityCanceled;
+    this.amountCanceled = new Amount(line.amountCanceled);
+    this.shippableQuantity = line.shippableQuantity;
+    this.refundableQuantity = line.refundableQuantity;
+    this.cancelableQuantity = line.cancelableQuantity;
+    
 }
 
 module.exports = {

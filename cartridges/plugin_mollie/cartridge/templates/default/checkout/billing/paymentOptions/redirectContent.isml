@@ -23,10 +23,10 @@
         >
             <div>
                 <input type="radio" name="alias-${paymentOption.ID}" value="false" checked>
-                ${Resource.msg('use_new_card', 'saferpay', null)}
+                ${Resource.msg('use_new_card', 'mollie', null)}
             </div>
             <div>
-                <input type="checkbox" name="savePaymentMethod" value="true"> ${Resource.msg('save_card', 'saferpay', null)}
+                <input type="checkbox" name="savePaymentMethod" value="true"> ${Resource.msg('save_card', 'mollie', null)}
             </div>
         <iselse/>
             <input type="hidden" class="form-control" name="alias-${paymentOption.ID}" value="false">

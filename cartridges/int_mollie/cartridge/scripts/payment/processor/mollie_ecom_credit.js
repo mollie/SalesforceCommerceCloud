@@ -78,9 +78,8 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
         var order = OrderMgr.getOrder(orderNumber);
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
         var cardToken = session.forms.billing.creditCardFields.cardToken.value;
-        var enabledTransactionAPI = config.getEnabledTransactionAPI();
 
-        if (enabledTransactionAPI === config.getTransactionAPI().PAYMENT) {
+        if (config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT) {
             var result = paymentService.createPayment(order, paymentMethod, cardToken);
             redirectUrl = result.payment.links.checkout.href;
         } else {

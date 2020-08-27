@@ -7,8 +7,10 @@ var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities
  * @param {Object} params - params object
  * @returns {Object} payload - returns payload
  */
-function payloadBuilder() {
-    return {};
+function payloadBuilder(params) {
+    return {
+        lines: params.lines 
+    };
 }
 
 /**

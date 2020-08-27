@@ -1,9 +1,9 @@
 var ISML = require('dw/template/ISML');
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
-var paymentService = require('*/cartridge/scripts/payment/paymentService');
-var OrderModel = require('*/cartridge/models/order');
 var Logger = require('*/cartridge/scripts/utils/logger');
+var orderHelper = require('*/cartridge/scripts/order/orderHelper');
+var paymentService = require('*/cartridge/scripts/payment/paymentService');
 
 var renderTemplate = function (templateName, viewParams) {
     try {
@@ -14,48 +14,62 @@ var renderTemplate = function (templateName, viewParams) {
     }
 };
 
-var isShipmentAllowed = function (orderNo) {
-    const order = OrderMgr.getOrder(orderNo);
-    if (!order) return false;
-
+var isShipmentAllowed = function (order) {
     const orderStatus = order.status.value;
-    var isShipmentAllowed = (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
-        orderStatus !== Order.ORDER_STATUS_FAILED &&
-        orderStatus !== Order.ORDER_STATUS_CREATED);
+    return (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
+        orderStatus !== Order.ORDER_STATUS_FAILED);
+};
 
-    var result = paymentService.getPaymentOrOrder(order);
-    return isShipmentAllowed && result.isShippable;
+var getShippableLines = function (serviceResult) {
+    return serviceResult.order.lines.filter(function (line) {
+        return line.shippableQuantity >= 1;
+    });
 };
 
 exports.Start = function () {
     const orderNo = request.httpParameterMap.get('order_no').stringValue;
-    if (!isShipmentAllowed(orderNo)) {
-        renderTemplate('order/payment/shipment/order_payment_shipment_not_available.isml');
+    var order = OrderMgr.getOrder(orderNo);
+    if (orderHelper.isMollieOrder(order)) {
+        var result = paymentService.getOrder(orderHelper.getOrderId(order));
+        var shippableLines = getShippableLines(result);
+        if (!isShipmentAllowed(order) || !shippableLines.length) {
+            renderTemplate('order/payment/shipment/order_payment_shipment_not_available.isml');
+        } else {
+            renderTemplate('order/payment/shipment/order_payment_shipment.isml', {
+                orderId: order.orderNo,
+                order: result.order,
+                shippableLines: shippableLines
+            });
+        }
     } else {
-        var order = OrderMgr.getOrder(orderNo);
-
-        renderTemplate('order/payment/shipment/order_payment_shipment.isml', {
-            order: new OrderModel(order, {
-                containerView: 'order'
-            })
-        });
+        renderTemplate('order/payment/shipment/order_payment_shipment_not_available.isml');
     }
 };
 
 exports.Shipment = function () {
-    const orderNo = request.httpParameterMap.get('orderId').stringValue;
-    const order = OrderMgr.getOrder(orderNo);
+    const quantity = request.httpParameterMap.get('quantity').stringValue;
+    const lineId = request.httpParameterMap.get('lineId').stringValue;
+    const orderId = request.httpParameterMap.get('orderId').stringValue;
+    const order = OrderMgr.getOrder(orderId);
+
+    var lines;
+    if (quantity && lineId) {
+        lines = [{
+            id: lineId,
+            quantity: quantity,
+        }];
+    }
 
     const viewParams = {
         success: true,
-        orderId: orderNo
+        orderId: orderId
     };
 
     try {
-        paymentService.createShipment(order);
-        Logger.debug('PAYMENT :: Payment processed for order ' + order.orderNo);
+        paymentService.createShipment(order, lines);
+        Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
     } catch (e) {
-        Logger.error('PAYMENT :: ERROR :: Error while capturing payment for order ' + orderNo + '. ' + e.message);
+        Logger.error('PAYMENT :: ERROR :: Error while creating shipment for order ' + orderId + '. ' + e.message);
         viewParams.success = false;
         viewParams.errorMessage = e.message;
     }
