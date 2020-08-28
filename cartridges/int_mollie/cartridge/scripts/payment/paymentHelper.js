@@ -64,17 +64,17 @@ function processPaymentResult(order, paymentResult, paymentMethodId) {
                     paymentService.cancelPayment(paymentId);
                 }
             }
+            break;
 
         case STATUS.EXPIRED:
         case STATUS.CANCELED:
         case STATUS.FAILED:
+            session.privacy.mollieError = Resource.msg('mollie.payment.error.' + ObjectUtil.getProperty(STATUS, paymentResult.status), 'mollie', null);
+            url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
             Transaction.wrap(function () {
                 var historyItem = 'PAYMENT :: Canceling order, status :: ' + paymentResult.status;
                 orderHelper.failOrCancelOrder(order, historyItem);
             });
-
-            session.privacy.mollieError = Resource.msg('mollie.payment.error.' + ObjectUtil.getProperty(STATUS, paymentResult.status), 'mollie', null);
-            url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
             break;
     }
 

@@ -4,6 +4,7 @@ var server = require('server');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var OrderMgr = require('dw/order/OrderMgr');
 var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
+var URLUtils = require('dw/web/URLUtils');
 
 /**
  * Handling of a payment hook.
@@ -16,9 +17,18 @@ var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException'
  */
 server.get('Redirect', server.middleware.https, function (req, res, next) {
     try {
-        var order = OrderMgr.getOrder(req.querystring.orderId);
-        var url = paymentService.getRedirectUrl(order);
-        res.redirect(url);
+        var orderId = req.querystring.orderId;
+        var order = orderId && OrderMgr.getOrder(orderId);
+        if (order) {
+            var url = paymentService.getRedirectUrl(order);
+            if (url) {
+                res.redirect(url);
+            } else {
+                res.redirect(URLUtils.home().toString());
+            }
+        } else {
+            res.redirect(URLUtils.home().toString());
+        }
     } catch (e) {
         var error = e;
         if (error.name === 'PaymentProviderException') throw error;
@@ -39,17 +49,17 @@ server.get('Redirect', server.middleware.https, function (req, res, next) {
  */
 server.post('Hook', server.middleware.https, function (req, res, next) {
     try {
-        var order = OrderMgr.getOrder(req.querystring.orderId);
+        var orderId = req.querystring.orderId;
         var statusUpdateId = req.form && req.form.id;
-        paymentService.handleStatusUpdate(order, statusUpdateId);
-
-        res.json({
-            success: true
-        });
+        var order = orderId && OrderMgr.getOrder(orderId);
+        if (order && statusUpdateId) {
+            paymentService.handleStatusUpdate(order, statusUpdateId);
+            res.json({ success: true });
+        } else {
+            res.json({ success: false });
+        }
     } catch (e) {
-        var error = e;
-        if (error.name === 'PaymentProviderException') throw error;
-        throw ServiceException.from(error);
+        res.json({ success: false, error: e.message });
     }
 
     return next();
