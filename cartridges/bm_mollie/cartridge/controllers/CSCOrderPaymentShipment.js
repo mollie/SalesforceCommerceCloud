@@ -32,7 +32,7 @@ exports.Start = function () {
     if (orderHelper.isMollieOrder(order)) {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
         var shippableLines = getShippableLines(result);
-        if (!isShipmentAllowed(order) || !shippableLines.length) {
+        if (!(isShipmentAllowed(order) || shippableLines.length || result.order.isShippable())) {
             renderTemplate('order/payment/shipment/order_payment_shipment_not_available.isml');
         } else {
             renderTemplate('order/payment/shipment/order_payment_shipment.isml', {

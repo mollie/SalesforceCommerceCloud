@@ -32,7 +32,7 @@ exports.Start = function () {
     if (orderHelper.isMollieOrder(order)) {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
         var refundableLines = getRefundableLines(result);
-        if (!isRefundAllowed(order) || !refundableLines.length) {
+        if (!(isRefundAllowed(order) || refundableLines.length || result.order.isRefundable())) {
             renderTemplate('order/payment/refund/order_payment_refund_not_available.isml');
         } else {
             renderTemplate('order/payment/refund/order_payment_refund_order.ismll', {

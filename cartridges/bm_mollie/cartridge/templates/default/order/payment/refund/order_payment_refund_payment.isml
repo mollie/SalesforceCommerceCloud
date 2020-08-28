@@ -1,7 +1,5 @@
-<!--- TEMPLATENAME: order/payment/order_payment_details.isml --->
 <isdecorate template="pt_csc.isml">
     <div class="slds-text-heading--medium mb-3">Order Payment Refund</div>
-    <isset name="order" value="${pdict.order}" scope="page" />
     <isloop items="${pdict.payments}" var="payment">
         <div class="card">
             <div class="card-header">
