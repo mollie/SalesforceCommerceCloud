@@ -34,7 +34,7 @@ function Config() {
     var sitePreferences;
     var getPreferenceOrThrow = function (preferences, preferenceName) {
         const pref = preferences[preferenceName];
-        if(typeof pref === "boolean") return pref
+        if (typeof pref === "boolean") return pref
         if (!pref) throw new ServiceException('You must configure sitePreference by name ' + preferenceName + '.');
         return pref;
     };
@@ -52,6 +52,7 @@ function Config() {
     this.logCategory = getPreferenceOrThrow(sitePreferences, 'mollieLogCategory');
     this.componentsEnableTestMode = getPreferenceOrThrow(sitePreferences, 'mollieComponentsEnableTestMode');
     this.componentsProfileId = getPreferenceOrThrow(sitePreferences, 'mollieComponentsProfileId');
+    this.orderDefaultExpiryDays = getPreferenceOrThrow(sitePreferences, 'mollieOrderDefaultExpiryDays');
 
     /**
      * Get SiteId
@@ -91,6 +92,16 @@ function Config() {
      */
     this.getEnabledTransactionAPI = function () {
         return this.enabledTransActionAPI;
+    }
+
+    /**
+     * Get default expiry days
+     * @function
+     * @name Config#getOrderType
+     * @return {Object} Order Types
+     */
+    this.getOrderDefaultExpiryDays = function () {
+        return this.orderDefaultExpiryDays;
     }
 
     /**

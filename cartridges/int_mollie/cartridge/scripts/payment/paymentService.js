@@ -165,7 +165,7 @@ function createOrder(order, paymentMethod, paymentData) {
             amount: order.getTotalGrossPrice(),
             productLineItems: order.getProductLineItems(),
             billingAddress: order.getBillingAddress(),
-            methodId: paymentMethod.custom.molliePaymentMethodId,
+            paymentMethod: paymentMethod,
             profile: order.getCustomer().getProfile(),
             totalGrossPrice: order.getTotalGrossPrice(),
             shipments: order.getShipments(),

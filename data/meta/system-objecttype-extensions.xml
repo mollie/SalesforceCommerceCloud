@@ -11,11 +11,20 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
+            <attribute-definition attribute-id="mollieOrderExpiryDays">
+                <display-name xml:lang="x-default">mollieOrderExpiryDays</display-name>
+                <type>int</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Mollie">
                 <display-name xml:lang="x-default">Mollie</display-name>
                 <attribute attribute-id="molliePaymentMethodId"/>
+                <attribute attribute-id="mollieOrderExpiryDays"/>
             </attribute-group>
         </group-definitions>
     </type-extension>
@@ -95,6 +104,12 @@
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
+            <attribute-definition attribute-id="mollieOrderDefaultExpiryDays">
+                <display-name xml:lang="x-default">Expiry days for order (max 100)</display-name>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
             <attribute-definition attribute-id="mollieLogCategory">
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
@@ -113,7 +128,6 @@
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
-                <default-value>mollie</default-value>
             </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
@@ -121,6 +135,7 @@
                 <display-name xml:lang="x-default">Configuration for Mollie Integration</display-name>
                 <attribute attribute-id="mollieBearerToken"/>
                 <attribute attribute-id="mollieEnabledTransactionAPI"/>
+                <attribute attribute-id="mollieOrderDefaultExpiryDays"/>
                 <attribute attribute-id="mollieLogCategory"/>
                 <attribute attribute-id="mollieComponentsEnableTestMode"/>
                 <attribute attribute-id="mollieComponentsProfileId"/>

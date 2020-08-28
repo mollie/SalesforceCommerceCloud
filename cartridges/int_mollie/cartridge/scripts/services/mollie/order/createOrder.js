@@ -2,6 +2,8 @@ var URLUtils = require('dw/web/URLUtils');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities');
 var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
+var date = require('*/cartridge/scripts/utils/date');
+var config = require('*/cartridge/scripts/mollieConfig');
 
 /**
  *
@@ -10,18 +12,20 @@ var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
  * @returns {Object} payload - returns payload
  */
 function payloadBuilder(params) {
+    var expiryDays = params.paymentMethod.custom.mollieOrderExpiryDays || config.getOrderDefaultExpiryDays();
     var payload = {
         amount: new sfccEntities.Currency(params.totalGrossPrice),
         orderNumber: params.orderId,
         locale: request.getLocale(),
         redirectUrl: URLUtils.https('MolliePayment-Redirect', 'orderId', params.orderId).toString(),
         webhookUrl: URLUtils.https('MolliePayment-Hook', 'orderId', params.orderId).toString(),
-        method: params.methodId,
+        method: params.paymentMethod.custom.molliePaymentMethodId,
         lines: params.productLineItems.toArray().map(function (productLineItem) {
             return new sfccEntities.ProductLineItem(productLineItem);
         }),
         billingAddress: new sfccEntities.Address(params.billingAddress, params.profile),
-        payment: {}
+        payment: {},
+        expiresAt: date.format(date.addDays(date.now(), expiryDays), 'yyyy-MM-dd')
     };
 
     params.shipments.toArray().forEach(function (shipment) {
