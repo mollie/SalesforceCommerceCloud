@@ -90,7 +90,9 @@ function handleStatusUpdate(order, statusUpdateId) {
             orderHelper.getOrderId(order) === statusUpdateId) {
             var result = getOrder(statusUpdateId);
             paymentHelper.processPaymentResult(order, result.order);
-        } else {
+        } else if (orderHelper.getPaymentId(order) === statusUpdateId) {
+            // Instead of searching for payment to update, get last one
+            /*
             var paymentInstruments = order.getPaymentInstruments().toArray().filter(function (instrument) {
                 const paymentMethodId = instrument.getPaymentMethod();
                 return orderHelper.getPaymentId(order, paymentMethodId) === statusUpdateId;
@@ -102,6 +104,9 @@ function handleStatusUpdate(order, statusUpdateId) {
                 var result = getPayment(orderHelper.getPaymentId(order));
                 paymentHelper.processPaymentResult(order, result.payment, paymentMethodId);
             }
+            */
+            var result = getPayment(statusUpdateId);
+            paymentHelper.processPaymentResult(order, result.payment);
         }
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
@@ -213,7 +218,7 @@ function cancelOrderLineItem(order, lines) {
     try {
         const cancelResult = MollieService.cancelOrderLineItem({
             orderId: orderHelper.getOrderId(order),
-            lines: lines
+            lines: lines || []
         });
 
         return cancelResult;
@@ -266,7 +271,7 @@ function createOrderRefund(order, lines) {
     try {
         return MollieService.createOrderRefund({
             orderId: orderHelper.getOrderId(order),
-            lines: lines
+            lines: lines || []
         });
     } catch (e) {
         if (error.name === 'PaymentProviderException') throw error;

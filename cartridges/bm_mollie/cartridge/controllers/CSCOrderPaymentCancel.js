@@ -32,10 +32,10 @@ exports.Start = function () {
     if (orderHelper.isMollieOrder(order)) {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
         var cancelableLines = getCancelableLines(result);
-        if (!(isCancelAllowed(order) || cancelableLines.length || result.order.isCancelable())) {
+        if (!(isCancelAllowed(order) && (cancelableLines.length || result.order.isCancelable()))) {
             renderTemplate('order/payment/cancel/order_payment_cancel_not_available.isml');
         } else {
-            renderTemplate('order/payment/cancel/order_payment_cancel_order.ismll', {
+            renderTemplate('order/payment/cancel/order_payment_cancel_order.isml', {
                 orderId: order.orderNo,
                 order: result.order,
                 cancelableLines: cancelableLines
@@ -122,4 +122,6 @@ exports.CancelOrder = function () {
 };
 
 exports.Start.public = true;
-exports.Shipment.public = true;
+exports.CancelPayment.public = true;
+exports.CancelOrderLine.public = true;
+exports.CancelOrder.public = true;

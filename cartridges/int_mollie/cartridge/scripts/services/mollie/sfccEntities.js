@@ -58,7 +58,7 @@ function ShippingLineItem(shippingLineItem) {
     return {
         name: 'shipping',
         quantity: 1,
-        vatRate: shippingLineItem.getTaxRate(),
+        vatRate: shippingLineItem.getTaxRate() * 100,
         vatAmount: new Currency(shippingLineItem.getTax()),
         unitPrice: shippingCost,
         totalAmount: shippingCost,

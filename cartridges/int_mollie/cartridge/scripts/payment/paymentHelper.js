@@ -34,6 +34,7 @@ function processPaymentResult(order, paymentResult, paymentMethodId) {
                 orderHelper.setOrderShippingStatus(order, Order.SHIPPING_STATUS_SHIPPED);
             });
             break;
+
         case STATUS.PAID:
             historyItem = 'PAYMENT :: Order paid, status :: ' + paymentResult.status;
             if (orderHelper.isNewOrder(order)) {

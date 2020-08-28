@@ -32,10 +32,10 @@ exports.Start = function () {
     if (orderHelper.isMollieOrder(order)) {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
         var refundableLines = getRefundableLines(result);
-        if (!(isRefundAllowed(order) || refundableLines.length || result.order.isRefundable())) {
+        if (!(isRefundAllowed(order) && (refundableLines.length || result.order.isRefundable()))) {
             renderTemplate('order/payment/refund/order_payment_refund_not_available.isml');
         } else {
-            renderTemplate('order/payment/refund/order_payment_refund_order.ismll', {
+            renderTemplate('order/payment/refund/order_payment_refund_order.isml', {
                 orderId: order.orderNo,
                 order: result.order,
                 refundableLines: refundableLines
@@ -70,12 +70,12 @@ exports.RefundPayment = function () {
         paymentService.createPaymentRefund(paymentId, amount);
         Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
     } catch (e) {
-        Logger.error('PAYMENT :: ERROR :: Error while creating shipment for order ' + orderId + '. ' + e.message);
+        Logger.error('PAYMENT :: ERROR :: Error while creating refund for order ' + orderId + '. ' + e.message);
         viewParams.success = false;
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/shipment/order_payment_shipment_confirmation.isml', viewParams);
+    renderTemplate('order/payment/refund/order_payment_refund_confirmation.isml', viewParams);
 };
 
 exports.RefundOrder = function () {
@@ -99,13 +99,14 @@ exports.RefundOrder = function () {
         paymentService.createOrderRefund(order, lines);
         Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
     } catch (e) {
-        Logger.error('PAYMENT :: ERROR :: Error while creating shipment for order ' + orderId + '. ' + e.message);
+        Logger.error('PAYMENT :: ERROR :: Error while creating refund for order ' + orderId + '. ' + e.message);
         viewParams.success = false;
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/shipment/order_payment_shipment_confirmation.isml', viewParams);
+    renderTemplate('order/payment/refund/order_payment_refund_confirmation.isml', viewParams);
 };
 
 exports.Start.public = true;
-exports.Shipment.public = true;
+exports.RefundPayment.public = true;
+exports.RefundOrder.public = true;

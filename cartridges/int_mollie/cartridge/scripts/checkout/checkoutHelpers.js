@@ -7,6 +7,7 @@ var Transaction = require('dw/system/Transaction');
 var Order = require('dw/order/Order');
 var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
 var Logger = require('*/cartridge/scripts/utils/logger');
+var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 
 // Require and extend
 var COHelpers = require('*/cartridge/scripts/utils/superModule')(module);
@@ -17,7 +18,7 @@ var COHelpers = require('*/cartridge/scripts/utils/superModule')(module);
  * @param {string} orderNumber - The order number for the order
  * @returns {Object} an error object
  */
-COHelpers.handlePayments = function(order, orderNumber) {
+COHelpers.handlePayments = function (order, orderNumber) {
     try {
         if (order.totalNetPrice.getValue() === 0) throw new ServiceException('Order has netPrice of 0');
 
@@ -26,10 +27,7 @@ COHelpers.handlePayments = function(order, orderNumber) {
         if (paymentInstruments.length === 0) throw new ServiceException('No paymentInstruments provided');
 
         // DO NOT DO ANYTHING WITH OTHER PAYMENT INSTRUMENTS AT THE MOMENT
-        const mollieInstruments = paymentInstruments.toArray().filter(function (instrument) {
-            var processor = PaymentMgr.getPaymentMethod(instrument.getPaymentMethod()).getPaymentProcessor();
-            return processor && processor.getID().indexOf('MOLLIE') >= 0;
-        });
+        const mollieInstruments = orderHelper.getMolliePaymentInstruments(order);
 
         if (mollieInstruments.length !== 1) throw new ServiceException('Expected exactly 1 Mollie Payment Instrument');
 
@@ -65,7 +63,7 @@ COHelpers.handlePayments = function(order, orderNumber) {
  * @param {orderNumber} orderNumber - Order Id
  * @returns {boolean} Order exists?
  */
-COHelpers.orderExists = function(orderNumber) {
+COHelpers.orderExists = function (orderNumber) {
     return OrderMgr.getOrder(orderNumber) !== null;
 }
 
@@ -74,7 +72,7 @@ COHelpers.orderExists = function(orderNumber) {
  * @param {string} lastOrderNumber - orderId of last order in session
  * @returns {void}
  */
-COHelpers.restoreOpenOrder = function(lastOrderNumber) {
+COHelpers.restoreOpenOrder = function (lastOrderNumber) {
     var currentBasket = BasketMgr.getCurrentBasket();
 
     if (!currentBasket || currentBasket.getProductLineItems().length === 0) {

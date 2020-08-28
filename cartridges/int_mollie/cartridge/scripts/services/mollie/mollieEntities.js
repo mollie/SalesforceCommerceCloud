@@ -110,9 +110,10 @@ function Order(order) {
             order.status === STATUS.AUTHORIZED
     };
     this.isRefundable = function () {
-        return order.status === STATUS.PAID ||
+        return order.status === (STATUS.PAID ||
             order.status === STATUS.SHIPPING ||
-            order.status === STATUS.COMPLETED
+            order.status === STATUS.COMPLETED) 
+            && order.amountRefunded.value !== order.amount.value
     };
     this.metadata = order.metadata;
     this.createdAt = order.createdAt;

@@ -121,6 +121,9 @@
                 <display-name xml:lang="x-default">Configuration for Mollie Integration</display-name>
                 <attribute attribute-id="mollieBearerToken"/>
                 <attribute attribute-id="mollieEnabledTransactionAPI"/>
+                <attribute attribute-id="mollieLogCategory"/>
+                <attribute attribute-id="mollieComponentsEnableTestMode"/>
+                <attribute attribute-id="mollieComponentsProfileId"/>
             </attribute-group>
         </group-definitions>
     </type-extension>
