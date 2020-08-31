@@ -87,4 +87,45 @@ COHelpers.restoreOpenOrder = function (lastOrderNumber) {
     }
 }
 
+/**
+ * Attempts to place order and fails order if attempt fails
+ * @param {dw.order.Order} order - The order object to be placed
+ * @returns {void}
+ */
+COHelpers.placeOrder = function placeOrder(order) {
+    try {
+        var orderStatus = order.getStatus() + '';
+
+        if (orderStatus === Order.ORDER_STATUS_CREATED + '' || orderStatus === Order.ORDER_STATUS_FAILED + '') {
+
+            if (orderStatus === Order.ORDER_STATUS_FAILED + '') {
+                Transaction.begin();
+                var undoFailOrderStatus = OrderMgr.undoFailOrder(order);
+                if (undoFailOrderStatus.isError()) {
+                    throw new Error(undoFailOrderStatus.message);
+                }
+                Transaction.commit();
+            }
+
+            Transaction.begin();
+            var placeOrderStatus = OrderMgr.placeOrder(order);
+
+            if (placeOrderStatus.isError()) {
+                throw new Error(placeOrderStatus.message);
+            }
+
+            order.setConfirmationStatus(Order.CONFIRMATION_STATUS_CONFIRMED);
+            order.setExportStatus(Order.EXPORT_STATUS_READY);
+            Transaction.commit();
+        }
+
+    } catch (e) {
+        OrderMgr.failOrder(order);
+        const errorMessage = 'PAYMENT :: Failed placing the order :: ' + JSON.stringify(e.message);
+        orderHelpers.addItemToOrderHistory(order, errorMessage, true);
+        Transaction.commit();
+        throw new ServiceException(errorMessage);
+    }
+};
+
 module.exports = COHelpers;

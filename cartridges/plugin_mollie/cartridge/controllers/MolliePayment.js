@@ -20,7 +20,7 @@ server.get('Redirect', server.middleware.https, function (req, res, next) {
         var orderId = req.querystring.orderId;
         var order = orderId && OrderMgr.getOrder(orderId);
         if (order) {
-            var url = paymentService.getRedirectUrl(order);
+            var url = paymentService.processPaymentUpdate(order);
             if (url) {
                 res.redirect(url);
             } else {
@@ -53,7 +53,7 @@ server.post('Hook', server.middleware.https, function (req, res, next) {
         var statusUpdateId = req.form && req.form.id;
         var order = orderId && OrderMgr.getOrder(orderId);
         if (order && statusUpdateId) {
-            paymentService.handleStatusUpdate(order, statusUpdateId);
+            paymentService.processPaymentUpdate(order, statusUpdateId);
             res.json({ success: true });
         } else {
             res.json({ success: false });

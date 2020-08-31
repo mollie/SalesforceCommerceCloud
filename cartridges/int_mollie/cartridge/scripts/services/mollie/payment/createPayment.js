@@ -13,8 +13,8 @@ function payloadBuilder(params) {
     var payload = {
         amount: new sfccEntities.Currency(params.totalGrossPrice),
         description: "Order: " + params.orderId,
-        redirectUrl: URLUtils.https('Payment-Redirect', 'id', params.orderId).toString(),
-        webhookUrl: URLUtils.https('Payment-Hook').toString(),
+        redirectUrl: URLUtils.https('MolliePayment-Redirect', 'orderId', params.orderId).toString(),
+        webhookUrl: URLUtils.https('MolliePayment-Hook', 'orderId', params.orderId).toString(),
         locale: request.getLocale(),
         method: params.methodId
     }

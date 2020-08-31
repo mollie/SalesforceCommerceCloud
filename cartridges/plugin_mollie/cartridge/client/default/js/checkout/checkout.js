@@ -342,16 +342,6 @@ var mollieComponents = require('./components');
                                 }
                             } else {
                                 var continueUrl = data.continueUrl;
-                                var urlParams = {
-                                    ID: data.orderID,
-                                    token: data.orderToken
-                                };
-
-                                continueUrl += (continueUrl.indexOf('?') !== -1 ? '&' : '?') +
-                                    Object.keys(urlParams).map(function (key) {
-                                        return key + '=' + encodeURIComponent(urlParams[key]);
-                                    }).join('&');
-
                                 window.location.href = continueUrl;
                                 defer.resolve(data);
                             }

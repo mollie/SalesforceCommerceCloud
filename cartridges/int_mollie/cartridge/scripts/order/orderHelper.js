@@ -60,23 +60,14 @@ function cancelOrder(order, message) {
  * @returns {void}
  */
 function failOrCancelOrder(order, message) {
-    if (order.getStatus() === Order.ORDER_STATUS_CREATED) {
+    var orderStatus = order.getStatus().value;
+    if (orderStatus === Order.ORDER_STATUS_CREATED) {
         failOrder(order, message)
-    } else if (order.getStatus() === Order.ORDER_STATUS_OPEN || order.getStatus() === Order.ORDER_STATUS_NEW) {
+    } else if (orderStatus === Order.ORDER_STATUS_OPEN || orderStatus === Order.ORDER_STATUS_NEW) {
         cancelOrder(order, message)
     } else {
         addItemToOrderHistory(order, 'PAYMENT :: Cannot fail or cancel the order. Order has not the correct status: ' + order.getStatus());
     }
-}
-
-/**
- *
- *
- * @param {dw.order.Order} order - Order object
- * @returns {void}
- */
-function isNewOrder(order) {
-    return order.getStatus() === Order.ORDER_STATUS_CREATED;
 }
 
 /**
@@ -307,7 +298,6 @@ module.exports = {
     failOrder: failOrder,
     cancelOrder: cancelOrder,
     failOrCancelOrder: failOrCancelOrder,
-    isNewOrder: isNewOrder,
     isMollieOrder: isMollieOrder,
     setOrderPaymentStatus: setOrderPaymentStatus,
     setOrderShippingStatus: setOrderShippingStatus,

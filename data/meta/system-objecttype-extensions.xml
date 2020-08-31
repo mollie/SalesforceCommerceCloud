@@ -99,10 +99,18 @@
                 <min-length>0</min-length>
             </attribute-definition>
             <attribute-definition attribute-id="mollieEnabledTransactionAPI">
-                <display-name xml:lang="x-default">Enable order API</display-name>
-                <type>boolean</type>
+                <display-name xml:lang="x-default">Enabled transaction API (order / payment)</display-name>
+                <type>enum-of-string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <value>ORDER</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>PAYMENT</value>
+                    </value-definition>
+                </value-definitions>
             </attribute-definition>
             <attribute-definition attribute-id="mollieOrderDefaultExpiryDays">
                 <display-name xml:lang="x-default">Expiry days for order (max 100)</display-name>

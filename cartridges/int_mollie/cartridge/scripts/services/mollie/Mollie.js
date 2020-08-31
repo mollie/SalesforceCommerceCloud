@@ -56,7 +56,7 @@ function Mollie(configuration) {
         this.configureService(svc, parameters);
         var request = new MollieRequest(this.payloadBuilder(parameters));
         var requestBody = request.toString();
-        Logger.error(this.serviceName + ' :: RequestBody: ' + requestBody);
+        Logger.debug(this.serviceName + ' :: RequestBody: ' + requestBody);
         return requestBody;
     };
 
@@ -69,7 +69,7 @@ function Mollie(configuration) {
             response = client.getText();
         }
 
-        Logger.error('MOLLIE :: ' + this.serviceName + ' : ' + client.getText());
+        Logger.debug('MOLLIE :: ' + this.serviceName + ' : ' + client.getText());
         return this.responseMapper(response);
     };
 

@@ -36,7 +36,7 @@ function createPayment(order, paymentMethod, paymentData) {
     try {
         const paymentResult = MollieService.createPayment({
             orderId: order.orderNo,
-            amount: new sfccEntities.Currency(order.getTotalGrossPrice()),
+            totalGrossPrice: order.getTotalGrossPrice(),
             methodId: paymentMethod.custom.molliePaymentMethodId,
             cardToken: paymentData && paymentData.cardToken,
             issuer: paymentData && paymentData.issuer
@@ -59,38 +59,17 @@ function createPayment(order, paymentMethod, paymentData) {
 /**
  *
  * @param {dw.order.Order} order - Order object
- * @returns {string} - Redirect url
- * @throws {ServiceException}
- */
-function getRedirectUrl(order) {
-    try {
-        if (orderHelper.isMollieOrder(order)) {
-            var result = getOrder(orderHelper.getOrderId(order));
-            return paymentHelper.processPaymentResult(order, result.order).url;
-        } else {
-            var result = getPayment(orderHelper.getPaymentId(order));
-            return paymentHelper.processPaymentResult(order, result.payment).url
-        }
-    } catch (e) {
-        if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
-    }
-}
-
-/**
- *
- * @param {dw.order.Order} order - Order object
  * @param {string} statusUpdateId - id of the order / payment to update
- * @returns {Object} - Redirect url
- * @throws {ServiceException}
+ * @returns {string} - Redirect url
+* @throws {ServiceException}
  */
-function handleStatusUpdate(order, statusUpdateId) {
+function processPaymentUpdate(order, statusUpdateId) {
     try {
         if (orderHelper.isMollieOrder(order) &&
-            orderHelper.getOrderId(order) === statusUpdateId) {
-            var result = getOrder(statusUpdateId);
-            paymentHelper.processPaymentResult(order, result.order);
-        } else if (orderHelper.getPaymentId(order) === statusUpdateId) {
+            (!statusUpdateId || orderHelper.getOrderId(order) === statusUpdateId)) {
+            var result = getOrder(orderHelper.getOrderId(order));
+            return paymentHelper.processPaymentResult(order, result.order).url;
+        } else if (!statusUpdateId || orderHelper.getPaymentId(order) === statusUpdateId) {
             // Instead of searching for payment to update, get last one
             /*
             var paymentInstruments = order.getPaymentInstruments().toArray().filter(function (instrument) {
@@ -105,8 +84,8 @@ function handleStatusUpdate(order, statusUpdateId) {
                 paymentHelper.processPaymentResult(order, result.payment, paymentMethodId);
             }
             */
-            var result = getPayment(statusUpdateId);
-            paymentHelper.processPaymentResult(order, result.payment);
+            var result = getPayment(orderHelper.getPaymentId(order));
+            return paymentHelper.processPaymentResult(order, result.payment).url
         }
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
@@ -162,7 +141,6 @@ function createOrder(order, paymentMethod, paymentData) {
     try {
         var orderResult = MollieService.createOrder({
             orderId: order.orderNo,
-            amount: order.getTotalGrossPrice(),
             productLineItems: order.getProductLineItems(),
             billingAddress: order.getBillingAddress(),
             paymentMethod: paymentMethod,
@@ -320,8 +298,7 @@ function createShipment(order, lines) {
 module.exports = {
     getPayment: getPayment,
     createPayment: createPayment,
-    getRedirectUrl: getRedirectUrl,
-    handleStatusUpdate: handleStatusUpdate,
+    processPaymentUpdate: processPaymentUpdate,
     cancelPayment: cancelPayment,
     getOrder: getOrder,
     createOrder: createOrder,

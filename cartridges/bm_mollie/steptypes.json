@@ -1,0 +1,39 @@
+{
+    "step-types": {
+        "script-module-step": [{
+                "@type-id": "custom.CSComponents.FailExpiredOrders",
+                "module": "bm_mollie/cartridge/scripts/jobsteps/FailExpiredOrders.js",
+                "description": "Fails all unpaid orders which have not been completed within a specified timeframe",
+                "function": "Run",
+                "parameters": {
+                    "parameter": [{
+                            "@name": "ExpireAfterHours",
+                            "description": "Indication of hours",
+                            "@type": "string",
+                            "@trim": "true",
+                            "default-value": "24"
+                        },
+                        {
+                            "@namse": "IsDisabled",
+                            "description": "Mark the step as disabled. This will skip the step and returns a OK status",
+                            "@type": "boolean",
+                            "@required": false,
+                            "@trim": true
+                        }
+                    ]
+                },
+                "status-codes": {
+                    "status": [{
+                            "@code": "ERROR",
+                            "description": "Used when an error occurred."
+                        },
+                        {
+                            "@code": "OK",
+                            "description": "Used when execution was successful."
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

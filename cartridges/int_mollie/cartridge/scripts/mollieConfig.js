@@ -15,8 +15,8 @@ var TRANSACTION_STATUS = {
 }
 
 var TRANSACTION_API = {
-    PAYMENT: "payment",
-    ORDER: "order"
+    PAYMENT: "PAYMENT",
+    ORDER: "ORDER"
 };
 
 var TRANSACTION_CATEGORY = {
@@ -91,7 +91,7 @@ function Config() {
      * @return {Object} Order Types
      */
     this.getEnabledTransactionAPI = function () {
-        return this.enabledTransActionAPI;
+        return this.enabledTransActionAPI.value;
     }
 
     /**

@@ -41,7 +41,7 @@ function payloadBuilder(params) {
     if (params.issuer) {
         payload.payment.issuer = params.issuer;
     }
-    Logger.error(this.serviceName + ' :: Service: ' + JSON.stringify(payload));
+    Logger.debug(this.serviceName + ' :: Service: ' + JSON.stringify(payload));
 
     return payload;
 }
