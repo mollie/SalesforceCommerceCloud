@@ -81,8 +81,8 @@ function processPaymentResult(order, paymentResult) {
 
     Transaction.wrap(function () {
         if (isMollieOrder) {
-            orderHelper.setOrderId(order, paymentResult.id)
-            orderHelper.setOrderStatus(order, paymentResult.status);
+            order.custom.mollieOrderId = paymentResult.id;
+            order.custom.mollieOrderStatus = paymentResult.status;
         } else {
             orderHelper.setPaymentId(order, null, paymentResult.id)
             orderHelper.setPaymentStatus(order, null, paymentResult.status);

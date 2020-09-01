@@ -50,7 +50,7 @@ Add the following cartridges to the business manager site:
 ## Site Preferences 
 
 - `mollieBearerToken`: string
-- `mollieEnabledTransactionAPI`: boolean
+- `mollieEnabledTransactionAPI`: enum of strings
 - `mollieOrderDefaultExpiryDays`: number
 - `mollieLogCategory`: string
 - `mollieComponentsEnableTestMode`: string
@@ -73,6 +73,10 @@ Add the following cartridges to the business manager site:
 
 ### Profile
 - `mollieCustomerId`: string - the id of the Mollie customer (used for single click payments)
+
+### Product
+- `mollieProductCategory`: enum of strings - category used for voucher method
+
 
 ## Custom objects
 

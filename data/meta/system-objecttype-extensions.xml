@@ -107,6 +107,35 @@
         </group-definitions>
     </type-extension>
 
+    <type-extension type-id="Product">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="mollieProductCategory">
+                <display-name xml:lang="x-default">mollieProductCategory</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>meal</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>eco</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>gift</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Mollie">
+                <display-name xml:lang="x-default">Mollie</display-name>
+                <attribute attribute-id="mollieProductCategory"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+    
+
     <type-extension type-id="SitePreferences">
         <custom-attribute-definitions>
             <attribute-definition attribute-id="mollieBearerToken">
@@ -123,10 +152,10 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <value-definitions>
                     <value-definition default="true">
-                        <value>ORDER</value>
+                        <value>order</value>
                     </value-definition>
                     <value-definition>
-                        <value>PAYMENT</value>
+                        <value>payment</value>
                     </value-definition>
                 </value-definitions>
             </attribute-definition>

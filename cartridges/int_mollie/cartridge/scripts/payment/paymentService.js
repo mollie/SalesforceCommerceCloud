@@ -145,7 +145,7 @@ function createOrder(order, paymentMethod, paymentData) {
             productLineItems: order.getProductLineItems(),
             billingAddress: order.getBillingAddress(),
             paymentMethod: paymentMethod,
-            profile: order.getCustomer().getProfile(),
+            email: order.getCustomer().getProfile() ? order.getCustomer().getProfile().getEmail() : order.getCustomerEmail(),
             totalGrossPrice: order.getTotalGrossPrice(),
             shipments: order.getShipments(),
             cardToken: paymentData && paymentData.cardToken,

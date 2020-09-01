@@ -13,10 +13,11 @@ function Currency(money) {
  *
  * @class
  * @param {dw.order.OrderAddress} address - sfcc address object
+ * @param {string} email - user email
  * @param {Object} address - sfcc address object
  * @returns
  */
-function Address(address, profile) {
+function Address(address, email) {
     return {
         organizationName: address.getCompanyName(),
         streetAndNumber: address.getAddress1(),
@@ -27,7 +28,7 @@ function Address(address, profile) {
         title: address.getTitle(),
         givenName: address.getFirstName(),
         familyName: address.getLastName(),
-        email: profile.getEmail()
+        email: email
     }
 }
 
@@ -37,7 +38,7 @@ function Address(address, profile) {
  * @param {dw.order.ProductLineItem} productLineItem - sfcc productLineItem object
  */
 function ProductLineItem(productLineItem) {
-    return {
+    var lineItem = {
         sku: productLineItem.getProductID(),
         name: productLineItem.getProductName(),
         quantity: productLineItem.getQuantityValue(),
@@ -45,7 +46,14 @@ function ProductLineItem(productLineItem) {
         vatAmount: new Currency(productLineItem.getTax()),
         unitPrice: new Currency(productLineItem.getAdjustedGrossPrice().divide(productLineItem.getQuantityValue())),
         totalAmount: new Currency(productLineItem.getAdjustedGrossPrice()),
+    };
+
+    var productCategory = productLineItem.product.custom.mollieProductCategory;
+    if (productCategory) {
+        lineItem.category = productCategory.value;
     }
+
+    return lineItem;
 }
 
 /**

@@ -23,7 +23,7 @@ function payloadBuilder(params) {
         lines: params.productLineItems.toArray().map(function (productLineItem) {
             return new sfccEntities.ProductLineItem(productLineItem);
         }),
-        billingAddress: new sfccEntities.Address(params.billingAddress, params.profile),
+        billingAddress: new sfccEntities.Address(params.billingAddress, params.email),
         payment: {},
         expiresAt: date.format(date.addDays(date.now(), expiryDays), 'yyyy-MM-dd')
     };

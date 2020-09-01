@@ -10,7 +10,6 @@ var Transaction = require('dw/system/Transaction');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var config = require('*/cartridge/scripts/mollieConfig');
-var profileHelper = require('*/cartridge/scripts/profile/profileHelper');
 
 /**
  * Creates a token. This should be replaced by utilizing a tokenization provider
@@ -86,13 +85,14 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
         if (creditCardFields.saveCard.checked) {
             var profile = order.customer.profile;
-            if (!profileHelper.getProfileCustomerId(profile)) {
+            var mollieCustomerId = profile.custom.mollieCustomerId;
+            if (!mollieCustomerId) {
                 var createCustomerResult = paymentService.createCustomer(profile);
                 Transaction.wrap(function () {
-                    profileHelper.setProfileCustomerId(profile, createCustomerResult.customer.id);
+                    profile.custom.mollieCustomerId = createCustomerResult.customer.id;
                 });
             }
-            paymentInfo.customerId = profileHelper.getProfileCustomerId(profile);
+            paymentInfo.customerId = profile.custom.mollieCustomerId;
         }
 
         if (config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT) {

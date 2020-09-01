@@ -3,7 +3,12 @@
     <custom-preferences>
         <all-instances />
         <development>
-            <preference preference-id="mollieEnabledTransactionAPI">true</preference>
+            <preference preference-id="mollieBearerToken">test_cDRPEWKQ84DFtJEMEpdwvhQxFsUmpP</preference>
+            <preference preference-id="mollieEnabledTransactionAPI">order</preference>
+            <preference preference-id="mollieOrderDefaultExpiryDays">50</preference>
+            <preference preference-id="mollieLogCategory">mollie</preference>
+            <preference preference-id="mollieComponentsEnableTestMode">true</preference>
+            <preference preference-id="mollieComponentsProfileId">pfl_T35kcJ5Hkg</preference>
         </development>
         <staging />
         <production />

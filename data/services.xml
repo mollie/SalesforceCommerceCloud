@@ -6,6 +6,16 @@
         <password masked="true">********</password>
     </service-credential>
 
+    <service-profile service-profile-id="Mollie">
+        <timeout-millis>10000</timeout-millis>
+        <rate-limit-enabled>false</rate-limit-enabled>
+        <rate-limit-calls>0</rate-limit-calls>
+        <rate-limit-millis>0</rate-limit-millis>
+        <cb-enabled>false</cb-enabled>
+        <cb-calls>0</cb-calls>
+        <cb-millis>0</cb-millis>
+    </service-profile>
+
     <service service-id="Mollie.GetMethod">
         <service-type>HTTP</service-type>
         <enabled>true</enabled>
