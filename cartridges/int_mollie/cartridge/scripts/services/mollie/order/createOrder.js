@@ -37,10 +37,13 @@ function payloadBuilder(params) {
     if (params.cardToken) {
         payload.payment.cardToken = params.cardToken;
     }
-
     if (params.issuer) {
         payload.payment.issuer = params.issuer;
     }
+    if (params.customerId) {
+        payload.payment.customerId = params.customerId;
+    }
+
     Logger.debug(this.serviceName + ' :: Service: ' + JSON.stringify(payload));
 
     return payload;

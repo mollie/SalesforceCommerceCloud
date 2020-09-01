@@ -10,6 +10,7 @@ var Transaction = require('dw/system/Transaction');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var config = require('*/cartridge/scripts/mollieConfig');
+var profileHelper = require('*/cartridge/scripts/profile/profileHelper');
 
 /**
  * Creates a token. This should be replaced by utilizing a tokenization provider
@@ -31,7 +32,6 @@ function Handle(basket, paymentInformation) {
     var cardErrors = {};
     var serverErrors = [];
     var cardType = paymentInformation.cardType.value;
-
 
     Transaction.wrap(function () {
         var paymentInstruments = currentBasket.getPaymentInstruments();
@@ -77,13 +77,29 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
         var order = OrderMgr.getOrder(orderNumber);
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
-        var cardToken = session.forms.billing.creditCardFields.cardToken.value;
+        var creditCardFields = session.forms.billing.creditCardFields;
+        var paymentInfo = {};
+
+        if (creditCardFields.cardToken.value) {
+            paymentInfo.cardToken = creditCardFields.cardToken.value;
+        }
+
+        if (creditCardFields.saveCard.checked) {
+            var profile = order.customer.profile;
+            if (!profileHelper.getProfileCustomerId(profile)) {
+                var createCustomerResult = paymentService.createCustomer(profile);
+                Transaction.wrap(function () {
+                    profileHelper.setProfileCustomerId(profile, createCustomerResult.customer.id);
+                });
+            }
+            paymentInfo.customerId = profileHelper.getProfileCustomerId(profile);
+        }
 
         if (config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT) {
-            var result = paymentService.createPayment(order, paymentMethod, { cardToken: cardToken });
+            var result = paymentService.createPayment(order, paymentMethod, paymentInfo);
             redirectUrl = result.payment.links.checkout.href;
         } else {
-            var result = paymentService.createOrder(order, paymentMethod, { cardToken: cardToken });
+            var result = paymentService.createOrder(order, paymentMethod, paymentInfo);
             redirectUrl = result.order.links.checkout.href;
         }
     } catch (e) {

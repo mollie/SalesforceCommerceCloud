@@ -71,7 +71,8 @@ Add the following cartridges to the business manager site:
 - `mollieOrderStatus`: string - the payment status recieved from Mollie
 - `mollieUsedTransactionAPI`: string - api used for creating payment (payment / order)
 
-### Profile //TODO
+### Profile
+- `mollieCustomerId`: string - the id of the Mollie customer (used for single click payments)
 
 ## Custom objects
 

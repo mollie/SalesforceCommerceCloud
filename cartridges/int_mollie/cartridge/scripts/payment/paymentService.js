@@ -39,7 +39,8 @@ function createPayment(order, paymentMethod, paymentData) {
             totalGrossPrice: order.getTotalGrossPrice(),
             methodId: paymentMethod.custom.molliePaymentMethodId,
             cardToken: paymentData && paymentData.cardToken,
-            issuer: paymentData && paymentData.issuer
+            issuer: paymentData && paymentData.issuer,
+            customerId: paymentData && paymentData.customerId
         });
 
         Transaction.wrap(function () {
@@ -148,7 +149,8 @@ function createOrder(order, paymentMethod, paymentData) {
             totalGrossPrice: order.getTotalGrossPrice(),
             shipments: order.getShipments(),
             cardToken: paymentData && paymentData.cardToken,
-            issuer: paymentData && paymentData.issuer
+            issuer: paymentData && paymentData.issuer,
+            customerId: paymentData && paymentData.customerId
         });
 
         Transaction.wrap(function () {
@@ -288,7 +290,24 @@ function createShipment(order, lines) {
         return MollieService.createShipment({
             orderId: orderHelper.getOrderId(order),
             lines: lines || []
-        });;
+        });
+    } catch (e) {
+        if (e.name === 'PaymentProviderException') throw e;
+        throw ServiceException.from(e);
+    }
+}
+
+/**
+ *
+ * @param {dw.customer.Profile} profile - Profile object
+ * @returns {object}  - result of the create customer REST call
+ * @throws {ServiceException}
+ */
+function createCustomer(profile) {
+    try {
+        return MollieService.createCustomer({
+            profile: profile
+        });
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
         throw ServiceException.from(e);
@@ -307,5 +326,6 @@ module.exports = {
     getApplicablePaymentMethods: getApplicablePaymentMethods,
     createPaymentRefund: createPaymentRefund,
     createOrderRefund: createOrderRefund,
-    createShipment: createShipment
+    createShipment: createShipment,
+    createCustomer: createCustomer
 }

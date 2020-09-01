@@ -139,4 +139,15 @@
         <credential-id>Mollie</credential-id>
     </service>
 
+    <service service-id="Mollie.CreateCustomer">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_CreateCustomer</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
 </services>

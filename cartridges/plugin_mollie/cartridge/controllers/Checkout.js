@@ -6,6 +6,7 @@ var server = require('server');
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 var URLUtils = require('dw/web/URLUtils');
 var config = require('*/cartridge/scripts/mollieConfig');
+var profileHelper = require('*/cartridge/scripts/profile/profileHelper');
 
 server.extend(Checkout);
 
@@ -23,9 +24,12 @@ server.prepend('Begin', function (req, res, next) {
 
 server.append('Begin', function (req, res, next) {
     var viewData = res.getViewData();
-    viewData.mollieComponents = {
-        profileId: config.getComponentsProfileId(),
-        enableTestMode: config.getComponentsEnableTestMode()
+    viewData.mollie = {
+        customerId: profileHelper.getProfileCustomerId(req.currentCustomer.raw.profile),
+        mollieComponents: {
+            profileId: config.getComponentsProfileId(),
+            enableTestMode: config.getComponentsEnableTestMode()
+        }
     }
 
     next();

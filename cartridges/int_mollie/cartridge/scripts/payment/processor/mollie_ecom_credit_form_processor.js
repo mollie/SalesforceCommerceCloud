@@ -13,7 +13,8 @@ function processForm(req, paymentForm, viewFormData) {
     const PaymentMgr = require('dw/order/PaymentMgr');
     const cardType = PaymentMgr.getPaymentMethod(paymentForm.paymentMethod.value);
 
-    if (!paymentForm.creditCardFields.cardToken.value) {
+    var isReturningCustomer = req.session.privacyCache.get('isReturningCustomer');
+    if (!isReturningCustomer && !paymentForm.creditCardFields.cardToken.value) {
         return {
             fieldErrors: [],
             serverErrors: [Resource.msg('error.invalid.card', 'mollie', null)],

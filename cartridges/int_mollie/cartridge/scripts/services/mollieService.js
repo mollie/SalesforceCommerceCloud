@@ -21,6 +21,9 @@ const getMethod = require('*/cartridge/scripts/services/mollie/method/getMethod'
 const getMethods = require('*/cartridge/scripts/services/mollie/method/getMethods');
 const methodConstants = require('*/cartridge/scripts/services/mollie/method/methodConstants');
 
+const createCustomer = require('*/cartridge/scripts/services/mollie/customer/createCustomer');
+const customerConstants = require('*/cartridge/scripts/services/mollie/customer/customerConstants');
+
 exports.createPayment = function (parameters) {
     var mollie = new Mollie(paymentConstants.CREATE_PAYMENT);
     mollie.addPayloadBuilder(createPayment.payloadBuilder);
@@ -102,5 +105,12 @@ exports.getMethods = function (parameters) {
     var mollie = new Mollie(methodConstants.GET_METHODS);
     mollie.addPayloadBuilder(getMethods.payloadBuilder);
     mollie.addResponseMapper(getMethods.responseMapper);
+    return mollie.execute(parameters);
+};
+
+exports.createCustomer = function (parameters) {
+    var mollie = new Mollie(customerConstants.CREATE_CUSTOMER);
+    mollie.addPayloadBuilder(createCustomer.payloadBuilder);
+    mollie.addResponseMapper(createCustomer.responseMapper);
     return mollie.execute(parameters);
 };

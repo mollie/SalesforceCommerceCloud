@@ -62,10 +62,13 @@ function initEventListeners() {
     addInputEventListener(verificationCodeComponent, verificationCode, verificationCodeError);
 }
 
-async function setCardToken(callback) {
+async function setCardToken() {
     const { token, error } = await mollie.createToken();
     $('#cardToken').val(token);
-    callback(error)
+    if (error) {
+        throw new Error(error.message);
+    }
+    return token;
 }
 
 module.exports = {

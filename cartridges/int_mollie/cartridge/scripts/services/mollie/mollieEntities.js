@@ -242,6 +242,21 @@ function Issuer(issuer) {
     this.image = issuer.image && issuer.image.svg;
 }
 
+/**
+ *
+ * @class
+ * @param {Object} customer - Mollie Customer object
+ */
+function Customer(customer) {
+    customer = customer || {};
+    this.resource = customer.resource;
+    this.id = customer.id;
+    this.name = customer.name;
+    this.email = customer.email;
+    this.locale = customer.locale;
+    this.createdDatetime = customer.createdDatetime;
+}
+
 module.exports = {
     Amount: Amount,
     Link: Link,
@@ -253,5 +268,6 @@ module.exports = {
     Refund: Refund,
     Shipment: Shipment,
     Line: Line,
-    Issuer: Issuer
+    Issuer: Issuer,
+    Customer: Customer
 }
