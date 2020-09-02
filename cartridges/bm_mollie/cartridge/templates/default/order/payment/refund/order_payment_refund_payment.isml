@@ -6,6 +6,8 @@
                 <isprint value="${payment.id}" />
             </div>
             <div class="card-body">
+                Refundable: <isprint value="${payment.amountRemaining.value}" />
+                Refunded: <isprint value="${payment.amountRefunded.value}" />        
                 <form method="post" class="m-0" action="CSCOrderPaymentRefund-RefundPayment" id="orderPaymentRefund-refundPayment"
                     name="orderPaymentRefund-refundPayment">
                     <fieldset>

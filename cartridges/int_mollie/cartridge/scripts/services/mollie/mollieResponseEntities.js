@@ -77,8 +77,8 @@ function Payment(payment) {
         return false;
     };
     this.isRefundable = function () {
-        return payment.status === STATUS.PAID
-        && payment.amountRefunded.value !== payment.amount.value;
+        return payment.amountRemaining
+            && parseFloat(payment.amountRemaining.value) > 0;
     };
     this.expiresAt = payment.expiresAt;
     this.details = payment.details;
