@@ -313,7 +313,8 @@ var mollieComponents = require('./components');
                         });
                     }
 
-                    if ($('.js-mollie-component-tab').hasClass('active') &&
+                    if ($('.js-mollie-components-container').length &&
+                        $('.js-mollie-component-tab').hasClass('active') &&
                         !$('.js-card-info').hasClass('checkout-hidden')) {
                         mollieComponents.setCardToken().then(token => {
                             handlePayment(token);

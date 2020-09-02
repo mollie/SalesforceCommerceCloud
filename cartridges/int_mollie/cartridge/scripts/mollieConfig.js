@@ -44,9 +44,11 @@ function Config() {
     this.bearerToken = getPreferenceOrThrow(sitePreferences, 'mollieBearerToken');
     this.enabledTransActionAPI = getPreferenceOrThrow(sitePreferences, 'mollieEnabledTransactionAPI');
     this.logCategory = getPreferenceOrThrow(sitePreferences, 'mollieLogCategory');
+    this.componentsEnabled = getPreferenceOrThrow(sitePreferences, 'mollieComponentsEnabled');
     this.componentsEnableTestMode = getPreferenceOrThrow(sitePreferences, 'mollieComponentsEnableTestMode');
     this.componentsProfileId = getPreferenceOrThrow(sitePreferences, 'mollieComponentsProfileId');
     this.orderDefaultExpiryDays = getPreferenceOrThrow(sitePreferences, 'mollieOrderDefaultExpiryDays');
+    this.enableSingleClickPayments = getPreferenceOrThrow(sitePreferences, 'mollieEnableSingleClickPayments');
 
     /**
      * Get SiteId
@@ -109,7 +111,17 @@ function Config() {
     };
 
     /**
-     * Get enabled test mode
+     * Get components enabled
+     * @function
+     * @name Config#getOrderType
+     * @return {Object} Order Types
+     */
+    this.getComponentsEnabled = function () {
+        return this.componentsEnabled;
+    }
+
+    /**
+     * Get components enabled test mode
      * @function
      * @name Config#getOrderType
      * @return {Object} Order Types
@@ -126,6 +138,16 @@ function Config() {
      */
     this.getComponentsProfileId = function () {
         return this.componentsProfileId;
+    }
+
+    /**
+     * Get single click payments enabled
+     * @function
+     * @name Config#getOrderType
+     * @return {Object} Order Types
+     */
+    this.getEnableSingleClickPayments = function () {
+        return this.enableSingleClickPayments;
     }
 
     /**

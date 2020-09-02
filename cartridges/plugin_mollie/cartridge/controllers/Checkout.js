@@ -26,7 +26,9 @@ server.append('Begin', function (req, res, next) {
     var profile = req.currentCustomer.raw.profile;
     viewData.mollie = {
         customerId: profile && profile.custom.mollieCustomerId,
+        enableSingleClickPayments: config.getEnableSingleClickPayments(),
         mollieComponents: {
+            enabled: config.getComponentsEnabled(),
             profileId: config.getComponentsProfileId(),
             enableTestMode: config.getComponentsEnableTestMode()
         }

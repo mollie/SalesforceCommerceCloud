@@ -7,8 +7,10 @@
             <preference preference-id="mollieEnabledTransactionAPI">order</preference>
             <preference preference-id="mollieOrderDefaultExpiryDays">50</preference>
             <preference preference-id="mollieLogCategory">mollie</preference>
+            <preference preference-id="mollieComponentsEnabled">true</preference>
             <preference preference-id="mollieComponentsEnableTestMode">true</preference>
             <preference preference-id="mollieComponentsProfileId">pfl_T35kcJ5Hkg</preference>
+            <preference preference-id="mollieEnableSingleClickPayments">true</preference>
         </development>
         <staging />
         <production />

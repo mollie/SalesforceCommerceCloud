@@ -53,8 +53,10 @@ Add the following cartridges to the business manager site:
 - `mollieEnabledTransactionAPI`: enum of strings
 - `mollieOrderDefaultExpiryDays`: number
 - `mollieLogCategory`: string
-- `mollieComponentsEnableTestMode`: string
+- `mollieComponentsEnabled`: boolean
+- `mollieComponentsEnableTestMode`: boolean
 - `mollieComponentsProfileId`: string
+- `mollieEnableSingleClickPayments`: boolean
 
 ## Custom Properties
 

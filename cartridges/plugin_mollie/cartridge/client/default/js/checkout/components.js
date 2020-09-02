@@ -1,10 +1,7 @@
 
 
-const $mollieComponentsContainer = $('.js-mollie-components-container')
-const mollie = Mollie($mollieComponentsContainer.attr('data-components-profile-id'), {
-    locale: $mollieComponentsContainer.attr('data-components-locale'),
-    testmode: $mollieComponentsContainer.attr('data-components-test-mode')
-});
+var mollie;
+const $mollieComponentsContainer = $('.js-mollie-components-container');
 
 var cardHolderComponent;
 const cardHolder = '#card-holder';
@@ -23,11 +20,18 @@ const verificationCode = '#verification-code';
 const verificationCodeError = '#verification-code-error';
 
 function init() {
-    initMollieComponents();
-    initEventListeners();
+    if ($('.js-mollie-components-container').length) {
+        initMollieComponents();
+        initEventListeners();
+    }
 }
 
 function initMollieComponents() {
+    mollie = Mollie($mollieComponentsContainer.attr('data-components-profile-id'), {
+        locale: $mollieComponentsContainer.attr('data-components-locale'),
+        testmode: $mollieComponentsContainer.attr('data-components-test-mode')
+    });
+
     cardHolderComponent = mollie.createComponent('cardHolder');
     cardHolderComponent.mount(cardHolder);
 

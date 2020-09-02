@@ -18,12 +18,14 @@
             </div>
         </isif>
 
-        <fieldset class="js-card-info credit-card-form ${pdict.customer.registeredUser && pdict.mollie.customerId ? 'checkout-hidden' : ''}">
-            <isinclude template="checkout/billing/creditCardForm" />
-            <isif condition="${pdict.customer.registeredUser}">
-                <button class="btn btn-block cancel-new-payment btn-outline-primary ${pdict.customer.registeredUser && pdict.mollie.customerId ? '' : 'checkout-hidden'}" type="button">${Resource.msg('button.back.to.stored.payments', 'checkout', null)}</button>
-            </isif>
-        </fieldset>
+        <isif condition="${pdict.mollie.mollieComponents.enabled}">
+            <fieldset class="js-card-info credit-card-form ${pdict.customer.registeredUser && pdict.mollie.customerId ? 'checkout-hidden' : ''}">
+                <isinclude template="checkout/billing/creditCardForm" />
+                <isif condition="${pdict.customer.registeredUser}">
+                    <button class="btn btn-block cancel-new-payment btn-outline-primary ${pdict.customer.registeredUser && pdict.mollie.customerId ? '' : 'checkout-hidden'}" type="button">${Resource.msg('button.back.to.stored.payments', 'checkout', null)}</button>
+                </isif>
+            </fieldset>    
+        </isif>
 
     </fieldset>
 </div>

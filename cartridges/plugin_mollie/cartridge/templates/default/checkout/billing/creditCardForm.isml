@@ -4,7 +4,8 @@
 </isscript>
 
 <div class="js-mollie-components-container" data-components-profile-id="${pdict.mollie.mollieComponents.profileId}"
-    data-components-test-mode="${pdict.mollie.mollieComponents.enableTestMode}" data-components-locale="${request.locale}">
+    data-components-test-mode="${pdict.mollie.mollieComponents.enableTestMode}"
+    data-components-locale="${request.locale}">
 
     <isset name="creditFields" value="${pdict.forms.billingForm.creditCardFields}" scope="page" />
 
@@ -37,7 +38,7 @@
         <div class="invalid-feedback" id="verification-code-error"></div>
     </div>
 
-    <isif condition="${pdict.customer.registeredUser}">
+    <isif condition="${pdict.customer.registeredUser && pdict.mollie.enableSingleClickPayments}">
         <div class="save-credit-card custom-control custom-checkbox ">
             <input type="checkbox" class="custom-control-input" id="saveCreditCard"
                 name="${creditFields.saveCard.htmlName}" value="true" checked>
