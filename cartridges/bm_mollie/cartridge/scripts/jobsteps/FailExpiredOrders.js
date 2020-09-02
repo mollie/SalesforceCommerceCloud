@@ -28,7 +28,6 @@ var isDisabled = function (params) {
  */
 var run = function () {
     var paymentService = require('*/cartridge/scripts/payment/paymentService');
-    var orderHelper = require('*/cartridge/scripts/order/orderHelper');
     var Logger = require('*/cartridge/scripts/utils/logger');
     var dateUtil = require('*/cartridge/scripts/utils/date');
 
@@ -48,9 +47,7 @@ var run = function () {
         var createdBefore = dateUtil.addHours(dateUtil.now(), -expireAfterHours);
 
         OrderMgr.processOrders(function (order) {
-            Transaction.wrap(function () {
-                paymentService.processPaymentUpdate(order);
-            });
+            paymentService.processPaymentUpdate(order);
         }, 'status = {0} AND creationDate < {1}', Order.ORDER_STATUS_CREATED, createdBefore.getTime());
 
         return new Status(Status.OK);

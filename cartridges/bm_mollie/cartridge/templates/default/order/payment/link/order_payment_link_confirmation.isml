@@ -4,9 +4,9 @@
             Successfully generated link.
         </div>
         <p>${pdict.paymentLink}</p>
-    <iselse>
+    <iselse/>
         <div class="alert alert-danger">
-            Process failed. <isprint value="${pdict.message}">.
+            Process failed. <isprint value="${pdict.message}" />.
         </div>
     </isif>
 </isdecorate>

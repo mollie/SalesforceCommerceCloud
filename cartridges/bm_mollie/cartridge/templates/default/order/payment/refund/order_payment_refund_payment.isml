@@ -1,19 +1,19 @@
 <isdecorate template="pt_csc.isml">
-    <div class="slds-text-heading--medium mb-3">Order Payment Refund</div>
+    <div class="slds-text-heading--medium mb-3">Payments</div>
     <isloop items="${pdict.payments}" var="payment">
         <div class="card">
             <div class="card-header">
-                <isprint value="${payment.description}"> - <isprint value="${payment.id}" />
+                <isprint value="${payment.id}" />
             </div>
             <div class="card-body">
                 <form method="post" class="m-0" action="CSCOrderPaymentRefund-RefundPayment" id="orderPaymentRefund-refundPayment"
                     name="orderPaymentRefund-refundPayment">
                     <fieldset>
-                        <input class="form-control" type="number" min="1" max="${line.amountRemaining.value}"
-                            value="${line.amountRemaining.value}" name="amount" id="amount" />
+                        <input class="form-control" type="number" min="1" max="${payment.amountRemaining.value}"
+                            value="${payment.amountRemaining.value}" name="amount" id="amount" />
                         <input type="hidden" value="${payment.id}" name="paymentId" id="paymentId" />
                         <input type="hidden" value="${pdict.orderId}" name="orderId" id="id" />
-                        <button type="submit" class="btn btn-primary">Refund</button>
+                        <button type="submit" class="btn btn-primary" ${!payment.isRefundable() ? 'disabled': ''}>Refund</button>
                     </fieldset>
                 </form>
             </div>

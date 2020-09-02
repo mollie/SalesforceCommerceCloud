@@ -3,9 +3,9 @@
         <div class="alert alert-success">
             Successfully processed.
         </div>
-    <iselse>
+    <iselse/>
         <div class="alert alert-danger">
-            Process failed. <isprint value="${pdict.message}">.
+            Process failed. <isprint value="${pdict.message}" />.
         </div>
     </isif>
 </isdecorate>

@@ -20,27 +20,17 @@ var isCancelAllowed = function (order) {
         orderStatus !== Order.ORDER_STATUS_FAILED);
 };
 
-var getCancelableLines = function (serviceResult) {
-    return serviceResult.order.lines.filter(function (line) {
-        return line.cancelableQuantity >= 1;
-    });
-};
-
 exports.Start = function () {
     const orderNo = request.httpParameterMap.get('order_no').stringValue;
     var order = OrderMgr.getOrder(orderNo);
-    if (orderHelper.isMollieOrder(order)) {
+    if (!isCancelAllowed(order)) {
+        renderTemplate('order/payment/cancel/order_payment_cancel_not_available.isml');
+    } else if (orderHelper.isMollieOrder(order)) {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
-        var cancelableLines = getCancelableLines(result);
-        if (!(isCancelAllowed(order) && (cancelableLines.length || result.order.isCancelable()))) {
-            renderTemplate('order/payment/cancel/order_payment_cancel_not_available.isml');
-        } else {
-            renderTemplate('order/payment/cancel/order_payment_cancel_order.isml', {
-                orderId: order.orderNo,
-                order: result.order,
-                cancelableLines: cancelableLines
-            });
-        }
+        renderTemplate('order/payment/cancel/order_payment_cancel_order.isml', {
+            orderId: order.orderNo,
+            order: result.order,
+        });
     } else {
         var mollieInstruments = orderHelper.filterMollieInstruments(order);
         var payments = mollieInstruments.map(function (instrument) {
@@ -48,11 +38,14 @@ exports.Start = function () {
             var paymentId = orderHelper.getPaymentId(order, paymentMethodId);
             return paymentService.getPayment(paymentId);
         });
-
-        renderTemplate('order/payment/cancel/order_payment_cancel_payment.isml', {
-            orderId: order.orderNo,
-            payments: payments
-        });
+        if (payments.length) {
+            renderTemplate('order/payment/cancel/order_payment_cancel_payment.isml', {
+                orderId: order.orderNo,
+                payments: payments
+            });
+        } else {
+            renderTemplate('order/payment/cancel/order_payment_cancel_not_available.isml');
+        }
     }
 };
 

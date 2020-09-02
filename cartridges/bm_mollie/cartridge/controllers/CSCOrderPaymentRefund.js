@@ -20,27 +20,18 @@ var isRefundAllowed = function (order) {
         orderStatus !== Order.ORDER_STATUS_FAILED);
 };
 
-var getRefundableLines = function (serviceResult) {
-    return serviceResult.order.lines.filter(function (line) {
-        return line.refundableQuantity >= 1;
-    });
-};
-
 exports.Start = function () {
     const orderNo = request.httpParameterMap.get('order_no').stringValue;
     var order = OrderMgr.getOrder(orderNo);
-    if (orderHelper.isMollieOrder(order)) {
+    if (!isRefundAllowed(order)) {
+        renderTemplate('order/payment/refund/order_payment_refund_not_available.isml');
+    }
+    else if (orderHelper.isMollieOrder(order)) {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
-        var refundableLines = getRefundableLines(result);
-        if (!(isRefundAllowed(order) && (refundableLines.length || result.order.isRefundable()))) {
-            renderTemplate('order/payment/refund/order_payment_refund_not_available.isml');
-        } else {
-            renderTemplate('order/payment/refund/order_payment_refund_order.isml', {
-                orderId: order.orderNo,
-                order: result.order,
-                refundableLines: refundableLines
-            });
-        }
+        renderTemplate('order/payment/refund/order_payment_refund_order.isml', {
+            orderId: order.orderNo,
+            order: result.order,
+        });
     } else {
         var mollieInstruments = orderHelper.filterMollieInstruments(order);
         var payments = mollieInstruments.map(function (instrument) {
@@ -48,11 +39,15 @@ exports.Start = function () {
             var paymentId = orderHelper.getPaymentId(order, paymentMethodId);
             return paymentService.getPayment(paymentId);
         });
+        if (payments.length) {
+            renderTemplate('order/payment/refund/order_payment_refund_payment.isml', {
+                orderId: order.orderNo,
+                payments: payments
+            });
+        } else {
+            renderTemplate('order/payment/cancel/order_payment_refund_not_available.isml');
+        }
 
-        renderTemplate('order/payment/refund/order_payment_refund_payment.isml', {
-            orderId: order.orderNo,
-            payments: payments
-        });
     }
 };
 

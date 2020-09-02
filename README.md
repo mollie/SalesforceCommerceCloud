@@ -22,16 +22,6 @@ the Mollie API.
 
 Contains Payment and Checkout controllers.
 
-## bc_jobs_mollie
-
-Contains a job to check for orders that have not been completed after 24 hours (configurable) and fails them. If by any chance the payment flow was completed for this order but failed to update the state, the job will complete the order.
-
-## bc_csc_mollie
-
-Contains refund action on the order page of the Customer Service Centre.
-
-# Payment Security //TODO
-
 # Configuration
 
 ## Site Management
@@ -43,9 +33,9 @@ Add the following cartridges to the storefront site you want to use the payment 
 
 Add the following cartridges to the business manager site:
 
+- bm_mollie
 - int_mollie
-- bc_csc_mollie
-- bc_jobs_mollie
+- app_storefront_base
 
 ## Site Preferences 
 
@@ -77,12 +67,7 @@ Add the following cartridges to the business manager site:
 - `mollieCustomerId`: string - the id of the Mollie customer (used for single click payments)
 
 ### Product
-- `mollieProductCategory`: enum of strings - category used for voucher method
-
-
-## Custom objects
-
-### Refund
+- `mollieProductCategory`: enum of strings - category used for voucher metho
 
 # NPM scripts
 Use the provided NPM scripts to compile and upload changes to your Sandbox.

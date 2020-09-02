@@ -1,40 +1,48 @@
 <isdecorate template="pt_csc.isml">
-    <div class="slds-text-heading--medium mb-3">Order Payment Refund</div>
     <isset name="order" value="${pdict.order}" scope="page" />
+    <div class="slds-text-heading--medium mb-3">Order: <isprint value="${order.id}" /></div>
     <div class="card">
         <div class="card-header">
-            Order: <isprint value="${order.id}">
+            Refund order
         </div>
         <div class="card-body">
             <form method="post" class="m-0" action="CSCOrderPaymentRefund-RefundOrder" id="orderPaymentRefund-refundOrder"
                 name="orderPaymentRefund-refundOrder">
                 <fieldset>
                     <input type="hidden" value="${pdict.orderId}" name="orderId" id="orderId" />
-                    <button type="submit" class="btn btn-primary">Refund</button>
+                    <button type="submit" class="btn btn-primary" ${!order.isRefundable() ? 'disabled' : ''}>Refund</button>
                 </fieldset>
             </form>
         </div>
     </div>
-    <isloop items="${pdict.refundableLines}" var="line">
-        <div class="card">
-            <div class="card-header">
-                <isprint value="${line.name}"> - <isprint value="${line.sku}">
-            </div>
-            <div class="card-body">
-                Refundable quantity:
-                <isprint value="${line.refundableQuantity}" />
-                <form method="post" class="m-0" action="CSCOrderPaymentRefund-RefundOrder"
-                    id="orderPaymentRefund-refundOrder" name="orderPaymentRefund-refundOrder">
-                    <fieldset>
-                        <input class="form-control" type="number" min="1" max="${line.refundableQuantity}"
-                            value="${line.refundableQuantity}" name="quantity" id="quantity" />
-                        <input type="hidden" value="${line.id}" name="lineId" id="id" />
-                        <input type="hidden" value="${pdict.orderId}" name="orderId" id="id" />
-                        <button type="submit" class="btn btn-primary">Refund</button>
-                    </fieldset>
-                </form>
-            </div>
+    <hr />   
+    <div class="card">
+        <div class="card-header">
+            Refund lines
         </div>
-    </isloop>
+        <div class="card-body">
+            <isloop items="${order.lines}" var="line">
+                <div class="card">
+                    <div class="card-header">
+                        <isprint value="${line.sku}" /> - <isprint value="${line.name}" />
+                    </div>
+                    <div class="card-body">
+                        Refundable: <isprint value="${line.refundableQuantity}" />
+                        Refunded: <isprint value="${line.quantityRefunded}" />
+                        <form method="post" class="m-0" action="CSCOrderPaymentRefund-RefundOrder"
+                            id="orderPaymentRefund-refundOrder" name="orderPaymentRefund-refundOrder">
+                            <fieldset>
+                                <input class="form-control" type="number" min="1" max="${line.refundableQuantity}"
+                                    value="${line.refundableQuantity}" name="quantity" id="quantity" />
+                                <input type="hidden" value="${line.id}" name="lineId" id="id" />
+                                <input type="hidden" value="${pdict.orderId}" name="orderId" id="id" />
+                                <button type="submit" class="btn btn-primary" ${line.refundableQuantity === 0 ? 'disabled' : ''}>Refund</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </isloop>
+        </div>
+    </div>
     <hr />
 </isdecorate>

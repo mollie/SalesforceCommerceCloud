@@ -20,29 +20,17 @@ var isShipmentAllowed = function (order) {
         orderStatus !== Order.ORDER_STATUS_FAILED);
 };
 
-var getShippableLines = function (serviceResult) {
-    return serviceResult.order.lines.filter(function (line) {
-        return line.shippableQuantity >= 1;
-    });
-};
-
 exports.Start = function () {
     const orderNo = request.httpParameterMap.get('order_no').stringValue;
     var order = OrderMgr.getOrder(orderNo);
-    if (orderHelper.isMollieOrder(order)) {
-        var result = paymentService.getOrder(orderHelper.getOrderId(order));
-        var shippableLines = getShippableLines(result);
-        if (!(isShipmentAllowed(order) && (shippableLines.length || result.order.isShippable()))) {
-            renderTemplate('order/payment/shipment/order_payment_shipment_not_available.isml');
-        } else {
-            renderTemplate('order/payment/shipment/order_payment_shipment.isml', {
-                orderId: order.orderNo,
-                order: result.order,
-                shippableLines: shippableLines
-            });
-        }
-    } else {
+    if (!isShipmentAllowed(order)) {
         renderTemplate('order/payment/shipment/order_payment_shipment_not_available.isml');
+    } else if (orderHelper.isMollieOrder(order)) {
+        var result = paymentService.getOrder(orderHelper.getOrderId(order));
+        renderTemplate('order/payment/shipment/order_payment_shipment.isml', {
+            orderId: order.orderNo,
+            order: result.order,
+        });
     }
 };
 

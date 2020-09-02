@@ -77,7 +77,8 @@ function Payment(payment) {
         return false;
     };
     this.isRefundable = function () {
-        return order.status === STATUS.PAID;
+        return payment.status === STATUS.PAID
+        && payment.amountRefunded.value !== payment.amount.value;
     };
     this.expiresAt = payment.expiresAt;
     this.details = payment.details;
@@ -107,12 +108,13 @@ function Order(order) {
     };
     this.isShippable = function () {
         return order.status === STATUS.PAID ||
-            order.status === STATUS.AUTHORIZED
+            order.status === STATUS.AUTHORIZED ||
+            order.status === STATUS.SHIPPING
     };
     this.isRefundable = function () {
-        return order.status === (STATUS.PAID ||
+        return (order.status === STATUS.PAID ||
             order.status === STATUS.SHIPPING ||
-            order.status === STATUS.COMPLETED) 
+            order.status === STATUS.COMPLETED)
             && order.amountRefunded.value !== order.amount.value
     };
     this.metadata = order.metadata;
@@ -124,6 +126,7 @@ function Order(order) {
     this.shopperCountryMustMatchBillingCountry = order.shopperCountryMustMatchBillingCountry;
     this.consumerDateOfBirth = order.consumerDateOfBirth;
     this.orderNumber = order.orderNumber;
+    this.amountRefunded = new Amount(order.amountRefunded);
     this.shippingAddress = new Address(order.shippingAddress);
     this.redirectUrl = order.redirectUrl;
     this.lines = order.lines ? order.lines.map(function (line) {
@@ -134,7 +137,6 @@ function Order(order) {
         order._embedded.payments.map(function (payment) {
             return new Payment(payment);
         }) : null;
-
 }
 
 /**

@@ -1,40 +1,48 @@
 <isdecorate template="pt_csc.isml">
-    <div class="slds-text-heading--medium mb-3">Order Payment Shipment</div>
     <isset name="order" value="${pdict.order}" scope="page" />
+    <div class="slds-text-heading--medium mb-3">Order: <isprint value="${order.id}" /></div>
     <div class="card">
         <div class="card-header">
-            Order: <isprint value="${order.id}">
+            Ship order
         </div>
         <div class="card-body">
             <form method="post" class="m-0" action="CSCOrderPaymentShipment-Shipment" id="orderPaymentShipment-shipment"
                 name="orderPaymentShipment-shipment">
                 <fieldset>
                     <input type="hidden" value="${pdict.orderId}" name="orderId" id="orderId" />
-                    <button type="submit" class="btn btn-primary">Ship</button>
+                    <button type="submit" class="btn btn-primary" ${!order.isShippable() ? 'disabled': ''}>Ship</button>
                 </fieldset>
             </form>
         </div>
     </div>
-    <isloop items="${pdict.shippableLines}" var="line">
-        <div class="card">
-            <div class="card-header">
-                <isprint value="${line.name}"> - <isprint value="${line.sku}">
-            </div>
-            <div class="card-body">
-                Shippable quantity:
-                <isprint value="${line.shippableQuantity}" />
-                <form method="post" class="m-0" action="CSCOrderPaymentShipment-Shipment"
-                    id="orderPaymentShipment-shipment" name="orderPaymentShipment-shipment">
-                    <fieldset>
-                        <input class="form-control" type="number" min="1" max="${line.shippableQuantity}"
-                            value="${line.shippableQuantity}" name="quantity" id="quantity" />
-                        <input type="hidden" value="${line.id}" name="lineId" id="id" />
-                        <input type="hidden" value="${pdict.orderId}" name="orderId" id="id" />
-                        <button type="submit" class="btn btn-primary">Ship</button>
-                    </fieldset>
-                </form>
-            </div>
+    <hr />
+    <div class="card">
+        <div class="card-header">
+            Ship lines
         </div>
-    </isloop>
+        <div class="card-body">
+            <isloop items="${order.lines}" var="line">
+                <div class="card">
+                    <div class="card-header">
+                        <isprint value="${line.sku}" /> - <isprint value="${line.name}" />
+                    </div>
+                    <div class="card-body">
+                        Shippable: <isprint value="${line.shippableQuantity}" />
+                        Shipped: <isprint value="${line.quantityShipped}" />                                        
+                        <form method="post" class="m-0" action="CSCOrderPaymentShipment-Shipment"
+                            id="orderPaymentShipment-shipment" name="orderPaymentShipment-shipment">
+                            <fieldset>
+                                <input class="form-control" type="number" min="1" max="${line.shippableQuantity}"
+                                value="${line.shippableQuantity}" name="quantity" id="quantity" />
+                                <input type="hidden" value="${line.id}" name="lineId" id="id" />
+                                <input type="hidden" value="${pdict.orderId}" name="orderId" id="id" />
+                                <button type="submit" class="btn btn-primary" ${line.shippableQuantity === 0 ? 'disabled' : ''}>Ship</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </isloop>
+        </div>
+    </div>
     <hr />
 </isdecorate>

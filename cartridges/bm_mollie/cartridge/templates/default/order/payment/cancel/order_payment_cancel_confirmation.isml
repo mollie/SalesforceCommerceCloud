@@ -3,9 +3,9 @@
         <div class="alert alert-success">
             Successfully cancelled.
         </div>
-    <iselse>
+    <iselse/>
         <div class="alert alert-danger">
-            Cancel failed. <isprint value="${pdict.errorMessage}">.
+            Cancel failed. <isprint value="${pdict.errorMessage}" />.
         </div>
     </isif>
 </isdecorate>
