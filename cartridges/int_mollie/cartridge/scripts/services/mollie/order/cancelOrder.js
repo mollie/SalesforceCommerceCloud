@@ -1,5 +1,5 @@
 var Logger = require('*/cartridge/scripts/utils/logger');
-var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities');
+var mollieResponseEntities = require('*/cartridge/scripts/services/mollie/mollieResponseEntities');
 
 /**
  *
@@ -19,12 +19,12 @@ function responseMapper(result) {
     Logger.debug('MOLLIE :: CancelOrder: ' + JSON.stringify(result));
     if (!result || typeof result === 'string') {
         return {
-            order: new mollieEntities.Order(),
+            order: new mollieResponseEntities.Order(),
             raw: result || null
         };
     }
     return {
-        order: new mollieEntities.Order(result),
+        order: new mollieResponseEntities.Order(result),
         raw: JSON.stringify(result)
     };
 }

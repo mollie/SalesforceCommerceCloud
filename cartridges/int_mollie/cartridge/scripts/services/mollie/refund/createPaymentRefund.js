@@ -1,6 +1,6 @@
 var Logger = require('*/cartridge/scripts/utils/logger');
-var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities');
-var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
+var mollieResponseEntities = require('*/cartridge/scripts/services/mollie/mollieResponseEntities');
+var mollieRequestEntities = require('*/cartridge/scripts/services/mollie/mollieRequestEntities');
 
 /**
  *
@@ -10,7 +10,7 @@ var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
  */
 function payloadBuilder(params) {
     var payload = {
-        amount: new sfccEntities.Currency(params.amount),
+        amount: new mollieRequestEntities.Currency(params.amount),
     };
     if (params.cardToken) {
         payload.cardToken = params.cardToken;
@@ -28,12 +28,12 @@ function responseMapper(result) {
     Logger.debug('MOLLIE :: CreatePaymentRefund: ' + JSON.stringify(result));
     if (!result || typeof result === 'string') {
         return {
-            refund: new mollieEntities.Refund(),
+            refund: new mollieResponseEntities.Refund(),
             raw: result || null
         };
     }
     return {
-        refund: new mollieEntities.Refund(result),
+        refund: new mollieResponseEntities.Refund(result),
         raw: JSON.stringify(result)
     };
 }

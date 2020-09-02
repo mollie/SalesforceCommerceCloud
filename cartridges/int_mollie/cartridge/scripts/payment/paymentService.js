@@ -1,7 +1,6 @@
 var MollieService = require('*/cartridge/scripts/services/mollieService');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var config = require('*/cartridge/scripts/mollieConfig');
-var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
 var URLUtils = require('dw/web/URLUtils');
 var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
 var Transaction = require('dw/system/Transaction');

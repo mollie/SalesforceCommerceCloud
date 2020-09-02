@@ -1,5 +1,5 @@
 var Logger = require('*/cartridge/scripts/utils/logger');
-var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities');
+var mollieResponseEntities = require('*/cartridge/scripts/services/mollie/mollieResponseEntities');
 
 /**
  *
@@ -26,7 +26,7 @@ function responseMapper(result) {
     return {
         methods: result._embedded ?
             result._embedded.methods.map(function (method) {
-                return new mollieEntities.Method(method);
+                return new mollieResponseEntities.Method(method);
             }) : [],
         raw: JSON.stringify(result)
     };

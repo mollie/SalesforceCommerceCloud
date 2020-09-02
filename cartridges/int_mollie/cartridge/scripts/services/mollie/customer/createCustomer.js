@@ -1,7 +1,5 @@
-var URLUtils = require('dw/web/URLUtils');
 var Logger = require('*/cartridge/scripts/utils/logger');
-var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities');
-var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
+var mollieResponseEntities = require('*/cartridge/scripts/services/mollie/mollieResponseEntities');
 
 /**
  *
@@ -27,12 +25,12 @@ function responseMapper(result) {
     Logger.debug('MOLLIE :: CreateCustomemr: ' + JSON.stringify(result));
     if (!result || typeof result === 'string') {
         return {
-            customer: new mollieEntities.Customer(),
+            customer: new mollieResponseEntities.Customer(),
             raw: result || null
         };
     }
     return {
-        customer: new mollieEntities.Customer(result),
+        customer: new mollieResponseEntities.Customer(result),
         raw: JSON.stringify(result)
     };
 }

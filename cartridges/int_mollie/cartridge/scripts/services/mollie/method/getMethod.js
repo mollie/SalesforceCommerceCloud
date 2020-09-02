@@ -1,5 +1,5 @@
 var Logger = require('*/cartridge/scripts/utils/logger');
-var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities');
+var mollieResponseEntities = require('*/cartridge/scripts/services/mollie/mollieResponseEntities');
 
 /**
  *
@@ -19,12 +19,12 @@ function responseMapper(result) {
     Logger.debug('MOLLIE :: GetMethod: ' + JSON.stringify(result));
     if (!result || typeof result === 'string') {
         return {
-            method: new mollieEntities.Method(),
+            method: new mollieResponseEntities.Method(),
             raw: result || null
         };
     }
     return {
-        method: new mollieEntities.Method(result),
+        method: new mollieResponseEntities.Method(result),
         raw: JSON.stringify(result)
     };
 }

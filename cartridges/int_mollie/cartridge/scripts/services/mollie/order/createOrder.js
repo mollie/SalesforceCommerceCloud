@@ -1,7 +1,7 @@
 var URLUtils = require('dw/web/URLUtils');
 var Logger = require('*/cartridge/scripts/utils/logger');
-var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieEntities');
-var sfccEntities = require('*/cartridge/scripts/services/mollie/sfccEntities');
+var mollieResponseEntities = require('*/cartridge/scripts/services/mollie/mollieResponseEntities');
+var mollieRequestEntities = require('*/cartridge/scripts/services/mollie/mollieRequestEntities');
 var date = require('*/cartridge/scripts/utils/date');
 var config = require('*/cartridge/scripts/mollieConfig');
 
@@ -14,23 +14,23 @@ var config = require('*/cartridge/scripts/mollieConfig');
 function payloadBuilder(params) {
     var expiryDays = params.paymentMethod.custom.mollieOrderExpiryDays || config.getOrderDefaultExpiryDays();
     var payload = {
-        amount: new sfccEntities.Currency(params.totalGrossPrice),
+        amount: new mollieRequestEntities.Currency(params.totalGrossPrice),
         orderNumber: params.orderId,
         locale: request.getLocale(),
         redirectUrl: URLUtils.https('MolliePayment-Redirect', 'orderId', params.orderId).toString(),
         webhookUrl: URLUtils.https('MolliePayment-Hook', 'orderId', params.orderId).toString(),
         method: params.paymentMethod.custom.molliePaymentMethodId,
         lines: params.productLineItems.toArray().map(function (productLineItem) {
-            return new sfccEntities.ProductLineItem(productLineItem);
+            return new mollieRequestEntities.ProductLineItem(productLineItem);
         }),
-        billingAddress: new sfccEntities.Address(params.billingAddress, params.email),
+        billingAddress: new mollieRequestEntities.Address(params.billingAddress, params.email),
         payment: {},
         expiresAt: date.format(date.addDays(date.now(), expiryDays), 'yyyy-MM-dd')
     };
 
     params.shipments.toArray().forEach(function (shipment) {
         shipment.getShippingLineItems().toArray().forEach(function (shippingLineItem) {
-            payload.lines.push(new sfccEntities.ShippingLineItem(shippingLineItem));
+            payload.lines.push(new mollieRequestEntities.ShippingLineItem(shippingLineItem));
         });
     });
 
@@ -59,12 +59,12 @@ function responseMapper(result) {
     Logger.debug('MOLLIE :: CreateOrder: ' + JSON.stringify(result));
     if (!result || typeof result === 'string') {
         return {
-            order: new mollieEntities.Order(),
+            order: new mollieResponseEntities.Order(),
             raw: result || null
         };
     }
     return {
-        order: new mollieEntities.Order(result),
+        order: new mollieResponseEntities.Order(result),
         raw: JSON.stringify(result)
     };
 }
