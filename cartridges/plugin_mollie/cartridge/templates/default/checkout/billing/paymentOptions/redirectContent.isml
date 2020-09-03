@@ -4,7 +4,7 @@
         <!--- payment method --->
         <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
             value="${paymentOption.ID}">
-        <div class="issuers">
+        <form class="issuers">
             <isloop items="${paymentOption.issuers}" alias="issuer" status="loopStatus">
                 <label class="form-control-label">
                     <input type="radio" value="${issuer.id}" <isprint
@@ -15,6 +15,6 @@
                     <span>${issuer.name}</span>
                 </label>
             </isloop>
-        </div>
+        </form>
     </fieldset>
 </div>

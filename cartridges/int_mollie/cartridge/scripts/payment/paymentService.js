@@ -147,6 +147,7 @@ function createOrder(order, paymentMethod, paymentData) {
             email: order.getCustomer().getProfile() ? order.getCustomer().getProfile().getEmail() : order.getCustomerEmail(),
             totalGrossPrice: order.getTotalGrossPrice(),
             shipments: order.getShipments(),
+            priceAdjustments: order.getPriceAdjustments(),
             cardToken: paymentData && paymentData.cardToken,
             issuer: paymentData && paymentData.issuer,
             customerId: paymentData && paymentData.customerId
@@ -210,10 +211,11 @@ function cancelOrderLineItem(order, lines) {
 /**
  *
  * @param {Array} paymentMethods - list of payment methods
+ * @param {dw.order.Basket} currentBasket - the target Basket object
  * @returns {Array} - List of applicable payment methods
  * @throws {ServiceException}
  */
-function getApplicablePaymentMethods(paymentMethods) {
+function getApplicablePaymentMethods(paymentMethods, currentBasket) {
     try {
         var methodResult = MollieService.getMethods();
         var methods = [];
@@ -222,7 +224,11 @@ function getApplicablePaymentMethods(paymentMethods) {
                 return mollieMethod.id === method.custom.molliePaymentMethodId;
             })[0];
 
-            if ((mollieMethod && mollieMethod.isEnabled()) || !mollieMethod) {
+            var mollieMethodAllowed = mollieMethod && currentBasket.totalGrossPrice > parseFloat(mollieMethod.minimumAmount.value) &&
+            currentBasket.totalGrossPrice < parseFloat(mollieMethod.maximumAmount.value) &&
+            mollieMethod.isEnabled();
+
+            if (mollieMethodAllowed || !mollieMethod) {
                 methods.push({
                     ID: method.ID,
                     name: method.name,

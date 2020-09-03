@@ -42,10 +42,11 @@ function ProductLineItem(productLineItem) {
         sku: productLineItem.getProductID(),
         name: productLineItem.getProductName(),
         quantity: productLineItem.getQuantityValue(),
-        vatRate: productLineItem.getTaxRate() * 100,
-        vatAmount: new Currency(productLineItem.getTax()),
-        unitPrice: new Currency(productLineItem.getAdjustedGrossPrice().divide(productLineItem.getQuantityValue())),
+        vatRate: (productLineItem.getTaxRate() * 100).toFixed(2),
+        vatAmount: new Currency(productLineItem.getAdjustedTax()),
+        unitPrice: new Currency(productLineItem.getGrossPrice().divide(productLineItem.getQuantityValue())),
         totalAmount: new Currency(productLineItem.getAdjustedGrossPrice()),
+        discountAmount: new Currency(productLineItem.getGrossPrice().subtract(productLineItem.getAdjustedGrossPrice()))
     };
 
     var productCategory = productLineItem.product.custom.mollieProductCategory;
@@ -62,15 +63,33 @@ function ProductLineItem(productLineItem) {
  * @param {dw.order.ShippingLineItem} shippingLineItem - sfcc shippingLineItem object
  */
 function ShippingLineItem(shippingLineItem) {
-    var shippingCost = new Currency(shippingLineItem.getAdjustedGrossPrice());
     return {
         name: 'shipping',
         quantity: 1,
-        vatRate: shippingLineItem.getTaxRate() * 100,
-        vatAmount: new Currency(shippingLineItem.getTax()),
-        unitPrice: shippingCost,
-        totalAmount: shippingCost,
-        type: 'shipping_fee'
+        vatRate: (shippingLineItem.getTaxRate() * 100).toFixed(2),
+        vatAmount: new Currency(shippingLineItem.getAdjustedTax()),
+        unitPrice: new Currency(shippingLineItem.getGrossPrice()),
+        totalAmount: new Currency(shippingLineItem.getAdjustedGrossPrice()),
+        type: 'shipping_fee',
+        discountAmount: new Currency(shippingLineItem.getGrossPrice().subtract(shippingLineItem.getAdjustedGrossPrice()))
+    }
+}
+
+/**
+ *
+ * @class
+ * @param {dw.order.PriceAdjustment} priceAdjustment - sfcc discountLineItem object
+ */
+function DiscountLineItem(priceAdjustment) {
+    var discount = new Currency(priceAdjustment.getGrossPrice());
+    return {
+        name: priceAdjustment.lineItemText,
+        quantity: 1,
+        vatRate: (priceAdjustment.getTaxRate() * 100).toFixed(2),
+        vatAmount: new Currency(priceAdjustment.getTax()),
+        unitPrice: discount,
+        totalAmount: discount,
+        type: 'discount'
     }
 }
 
@@ -78,5 +97,6 @@ module.exports = {
     Currency: Currency,
     Address: Address,
     ProductLineItem: ProductLineItem,
-    ShippingLineItem: ShippingLineItem
+    ShippingLineItem: ShippingLineItem,
+    DiscountLineItem: DiscountLineItem
 }
