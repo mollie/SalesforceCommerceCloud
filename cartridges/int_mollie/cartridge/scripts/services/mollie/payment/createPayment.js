@@ -23,7 +23,7 @@ function payloadBuilder(params) {
         payload.issuer = params.issuer;
     }
     if (params.customerId) {
-        payload.payment.customerId = params.customerId;
+        payload.customerId = params.customerId;
     }
 
     return payload;

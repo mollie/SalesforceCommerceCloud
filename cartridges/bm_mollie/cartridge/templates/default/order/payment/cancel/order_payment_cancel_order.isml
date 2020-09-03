@@ -26,8 +26,8 @@
                         <isprint value="${line.sku}" /> - <isprint value="${line.name}" />
                     </div>
                     <div class="card-body">
-                        Cancelable: <isprint value="${line.cancelableQuantity}" />
-                        Canceled: <isprint value="${line.quantityCanceled}" />
+                        <p>Cancelable: <isprint value="${line.cancelableQuantity}" /></p>
+                        <p>Canceled: <isprint value="${line.quantityCanceled}" /></p>
                         <form method="post" class="m-0" action="CSCOrderPaymentCancel-CancelOrderLine"
                             id="orderPaymentCancel-cancelOrderLine" name="orderPaymentCancel-cancelOrderLine">
                             <fieldset>

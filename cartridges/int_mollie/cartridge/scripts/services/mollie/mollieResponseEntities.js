@@ -152,9 +152,6 @@ function Method(method) {
     this.minimumAmount = new Amount(method.minimumAmount);
     this.maximumAmount = new Amount(method.maximumAmount);
     this.imageURL = method.image && method.image.svg;
-    this.isEnabled = function () {
-        return method.status === "pending-boarding";
-    };
     this.issuers = method.issuers && method.issuers.map(function (issuer) {
         return new Issuer(issuer);
     });

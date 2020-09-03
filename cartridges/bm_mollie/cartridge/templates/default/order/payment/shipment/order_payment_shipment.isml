@@ -27,8 +27,8 @@
                         <isprint value="${line.sku}" /> - <isprint value="${line.name}" />
                     </div>
                     <div class="card-body">
-                        Shippable: <isprint value="${line.shippableQuantity}" />
-                        Shipped: <isprint value="${line.quantityShipped}" />                                        
+                        <p>Shippable: <isprint value="${line.shippableQuantity}" /></p>
+                        <p>Shipped: <isprint value="${line.quantityShipped}" /></p>
                         <form method="post" class="m-0" action="CSCOrderPaymentShipment-Shipment"
                             id="orderPaymentShipment-shipment" name="orderPaymentShipment-shipment">
                             <fieldset>

@@ -5,7 +5,9 @@
         <div class="card-header">
             Refund order
         </div>
-        <div class="card-body">
+        <div class="card-body"> 
+            <p>Fully refunded: <isprint value="${order.amountRefunded.value === order.amount.value}" /></p>
+            <p>Amount refunded: <isprint value="${order.amountRefunded.value || 0}" /></p>
             <form method="post" class="m-0" action="CSCOrderPaymentRefund-RefundOrder" id="orderPaymentRefund-refundOrder"
                 name="orderPaymentRefund-refundOrder">
                 <fieldset>
@@ -27,8 +29,8 @@
                         <isprint value="${line.sku}" /> - <isprint value="${line.name}" />
                     </div>
                     <div class="card-body">
-                        Refundable: <isprint value="${line.refundableQuantity}" />
-                        Refunded: <isprint value="${line.quantityRefunded}" />
+                        <p>Refundable: <isprint value="${line.refundableQuantity}" /></p>
+                        <p>Refunded: <isprint value="${line.quantityRefunded}" /></p>
                         <form method="post" class="m-0" action="CSCOrderPaymentRefund-RefundOrder"
                             id="orderPaymentRefund-refundOrder" name="orderPaymentRefund-refundOrder">
                             <fieldset>

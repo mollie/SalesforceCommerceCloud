@@ -50,6 +50,26 @@ function Mollie(configuration) {
             this.path = this.path
                 .replace("{methodId}", parameters.methodId);
         }
+
+        if (parameters.amount) {
+            this.path = this.path
+                .replace("{amount}", parameters.amount);
+        }
+
+        if (parameters.resource) {
+            this.path = this.path
+                .replace("{resource}", parameters.resource);
+        }
+
+        if (parameters.billingCountry) {
+            this.path = this.path
+                .replace("{billingCountry}", parameters.billingCountry);
+        }
+
+        if (parameters.currency) {
+            this.path = this.path
+                .replace("{currency}", parameters.currency);
+        }
     }
 
     this.createRequest = function createRequest(svc, parameters) {

@@ -5,6 +5,7 @@ var URLUtils = require('dw/web/URLUtils');
 var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
 var Transaction = require('dw/system/Transaction');
 var paymentHelper = require('*/cartridge/scripts/payment/paymentHelper');
+var config = require('*/cartridge/scripts/mollieConfig');
 
 /**
  *
@@ -217,18 +218,20 @@ function cancelOrderLineItem(order, lines) {
  */
 function getApplicablePaymentMethods(paymentMethods, currentBasket) {
     try {
-        var methodResult = MollieService.getMethods();
+        var methodResult = MollieService.getMethods({
+            amount: currentBasket.adjustedMerchandizeTotalGrossPrice.value,
+            currency: currentBasket.adjustedMerchandizeTotalGrossPrice.currencyCode,
+            resource: config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT ? 'payments' : 'orders',
+            billingCountry: currentBasket.billingAddress.countryCode.value
+        });
+
         var methods = [];
         paymentMethods.toArray().forEach(function (method) {
             var mollieMethod = methodResult.methods.filter(function (mollieMethod) {
                 return mollieMethod.id === method.custom.molliePaymentMethodId;
             })[0];
 
-            var mollieMethodAllowed = mollieMethod && currentBasket.totalGrossPrice > parseFloat(mollieMethod.minimumAmount.value) &&
-            currentBasket.totalGrossPrice < parseFloat(mollieMethod.maximumAmount.value) &&
-            mollieMethod.isEnabled();
-
-            if (mollieMethodAllowed || !mollieMethod) {
+            if (mollieMethod || !method.custom.molliePaymentMethodId)
                 methods.push({
                     ID: method.ID,
                     name: method.name,
@@ -236,7 +239,6 @@ function getApplicablePaymentMethods(paymentMethods, currentBasket) {
                         mollieMethod && mollieMethod.imageURL || URLUtils.staticURL('./images/mollieMethodImage.png'),
                     issuers: mollieMethod && mollieMethod.issuers
                 });
-            }
         });
         return methods;
     } catch (e) {
