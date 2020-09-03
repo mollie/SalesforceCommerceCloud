@@ -261,8 +261,8 @@ function createOrderRefund(order, lines) {
             lines: lines || []
         });
     } catch (e) {
-        if (error.name === 'PaymentProviderException') throw error;
-        throw ServiceException.from(error);
+        if (e.name === 'PaymentProviderException') throw e;
+        throw ServiceException.from(e);
     }
 }
 
@@ -275,13 +275,13 @@ function createOrderRefund(order, lines) {
  */
 function createPaymentRefund(paymentId, amount) {
     try {
-        return MollieService.createOrderRefund({
-            id: paymentId,
+        return MollieService.createPaymentRefund({
+            paymentId: paymentId,
             amount: amount
         });
     } catch (e) {
-        if (error.name === 'PaymentProviderException') throw error;
-        throw ServiceException.from(error);
+        if (e.name === 'PaymentProviderException') throw e;
+        throw ServiceException.from(e);
     }
 }
 

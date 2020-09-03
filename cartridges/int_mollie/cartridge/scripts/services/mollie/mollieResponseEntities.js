@@ -70,6 +70,8 @@ function Payment(payment) {
     this.method = payment.method;
     this.metadata = payment.metadata;
     this.status = payment.status;
+    this.amountRefunded = payment.amountRefunded;
+    this.amountRemaining = payment.amountRemaining;
     this.isCancelable = function () {
         return payment.isCancelable;
     };

@@ -32,11 +32,11 @@ exports.Start = function () {
             order: result.order,
         });
     } else {
-        var mollieInstruments = orderHelper.filterMollieInstruments(order);
+        var mollieInstruments = orderHelper.getMolliePaymentInstruments(order);
         var payments = mollieInstruments.map(function (instrument) {
             var paymentMethodId = instrument.getPaymentMethod();
             var paymentId = orderHelper.getPaymentId(order, paymentMethodId);
-            return paymentService.getPayment(paymentId);
+            return paymentService.getPayment(paymentId).payment;
         });
         if (payments.length) {
             renderTemplate('order/payment/cancel/order_payment_cancel_payment.isml', {

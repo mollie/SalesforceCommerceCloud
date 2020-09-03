@@ -23,15 +23,16 @@ var isShipmentAllowed = function (order) {
 exports.Start = function () {
     const orderNo = request.httpParameterMap.get('order_no').stringValue;
     var order = OrderMgr.getOrder(orderNo);
-    if (!isShipmentAllowed(order)) {
-        renderTemplate('order/payment/shipment/order_payment_shipment_not_available.isml');
-    } else if (orderHelper.isMollieOrder(order)) {
+    if (isShipmentAllowed(order) && orderHelper.isMollieOrder(order)) {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
         renderTemplate('order/payment/shipment/order_payment_shipment.isml', {
             orderId: order.orderNo,
             order: result.order,
         });
+    } else {
+        renderTemplate('order/payment/shipment/order_payment_shipment_not_available.isml');
     }
+    
 };
 
 exports.Shipment = function () {

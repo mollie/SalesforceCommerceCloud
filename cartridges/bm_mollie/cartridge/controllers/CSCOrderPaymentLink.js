@@ -35,7 +35,7 @@ exports.Start = function () {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
         paymentLink = result.order.links.checkout.href;
     } else {
-        var mollieInstruments = orderHelper.filterMollieInstruments(order);
+        var mollieInstruments = orderHelper.getMolliePaymentInstruments(order);
         var lastMollieInstrument = mollieInstruments.pop();
         var paymentMethodId = lastMollieInstrument.getPaymentMethod();
         var result = paymentService.getPayment(orderHelper.getPaymentId(order, paymentMethodId));

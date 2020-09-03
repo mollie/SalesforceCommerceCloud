@@ -33,11 +33,11 @@ exports.Start = function () {
             order: result.order,
         });
     } else {
-        var mollieInstruments = orderHelper.filterMollieInstruments(order);
+        var mollieInstruments = orderHelper.getMolliePaymentInstruments(order);
         var payments = mollieInstruments.map(function (instrument) {
             var paymentMethodId = instrument.getPaymentMethod();
             var paymentId = orderHelper.getPaymentId(order, paymentMethodId);
-            return paymentService.getPayment(paymentId);
+            return paymentService.getPayment(paymentId).payment;
         });
         if (payments.length) {
             renderTemplate('order/payment/refund/order_payment_refund_payment.isml', {
@@ -55,6 +55,7 @@ exports.RefundPayment = function () {
     const orderId = request.httpParameterMap.get('orderId').stringValue;
     const paymentId = request.httpParameterMap.get('paymentId').stringValue;
     const amount = request.httpParameterMap.get('amount').stringValue;
+    const currency = request.httpParameterMap.get('currency').stringValue;
     const order = OrderMgr.getOrder(orderId);
     const viewParams = {
         success: true,
@@ -62,7 +63,10 @@ exports.RefundPayment = function () {
     };
 
     try {
-        paymentService.createPaymentRefund(paymentId, amount);
+        paymentService.createPaymentRefund(paymentId, {
+            value: amount,
+            currency: currency
+        });
         Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
     } catch (e) {
         Logger.error('PAYMENT :: ERROR :: Error while creating refund for order ' + orderId + '. ' + e.message);

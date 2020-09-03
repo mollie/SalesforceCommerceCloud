@@ -9,13 +9,9 @@ var mollieRequestEntities = require('*/cartridge/scripts/services/mollie/mollieR
  * @returns {Object} payload - returns payload
  */
 function payloadBuilder(params) {
-    var payload = {
-        amount: new mollieRequestEntities.Currency(params.amount),
+    return {
+        amount: params.amount,
     };
-    if (params.cardToken) {
-        payload.cardToken = params.cardToken;
-    }
-    return payload;
 }
 
 /**

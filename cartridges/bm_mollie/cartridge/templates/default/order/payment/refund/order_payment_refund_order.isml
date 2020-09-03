@@ -7,7 +7,7 @@
         </div>
         <div class="card-body"> 
             <p>Fully refunded: <isprint value="${order.amountRefunded.value === order.amount.value}" /></p>
-            <p>Amount refunded: <isprint value="${order.amountRefunded.value || 0}" /></p>
+            <p>Amount refunded: <isprint value="${order.amountRefunded.value || 0}" /> <isprint value="${order.amountRefunded.currency}" /></p>
             <form method="post" class="m-0" action="CSCOrderPaymentRefund-RefundOrder" id="orderPaymentRefund-refundOrder"
                 name="orderPaymentRefund-refundOrder">
                 <fieldset>
