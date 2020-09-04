@@ -1,0 +1,9 @@
+--require ./test/testHelper.js
+--recursive
+--exit
+--reporter spec
+--ui bdd
+--timeout 10000
+--colors
+--silly
+--full-trace
