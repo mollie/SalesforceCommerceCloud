@@ -17,10 +17,6 @@ const createOrder = proxyquire(`${base}/int_mollie/cartridge/scripts/services/mo
     '*/cartridge/scripts/services/mollie/mollieRequestEntities': require(`${base}/int_mollie/cartridge/scripts/services/mollie/mollieRequestEntities`)
 });
 
-createOrder.getLinesForParams = stubs.sandbox.stub();
-createOrder.getLinesForParams.returns([]);
-
-
 describe('mollie/createOrder', () => {
     before(function () {
         stubs.init();
@@ -63,6 +59,8 @@ describe('mollie/createOrder', () => {
         });
 
         it('builds a correct payload', () => {
+            createOrder.getLinesForParams = stubs.sandbox.stub();
+            createOrder.getLinesForParams.returns([]);
             const payload = createOrder.payloadBuilder(this.params);
             validate(payload);
             expect(validate(payload)).to.be.eql(true, JSON.stringify(validate.errors));

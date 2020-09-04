@@ -23,7 +23,7 @@ describe('mollie/createPaymentRefund', () => {
         beforeEach(() => {
             this.params = {
                 amount: {
-                    value: faker.random.number(),
+                    value: '4.99',
                     currency: 'EUR'
                 }
             };

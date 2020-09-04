@@ -123,6 +123,22 @@ const dateMock = {
     format: sandbox.stub()
 };
 
+const paymentServiceMock = {
+    getPayment: sandbox.stub(),
+    createPayment: sandbox.stub(),
+    processPaymentUpdate: sandbox.stub(),
+    cancelPayment: sandbox.stub(),
+    getOrder: sandbox.stub(),
+    createOrder: sandbox.stub(),
+    cancelOrder: sandbox.stub(),
+    cancelOrderLineItem: sandbox.stub(),
+    getApplicablePaymentMethods: sandbox.stub(),
+    createOrderRefund: sandbox.stub(),
+    createPaymentRefund: sandbox.stub(),
+    createShipment: sandbox.stub(),
+    createCustomer: sandbox.stub()
+};
+
 /**
  * INITIALIZE ALL MOCKS
  */
@@ -133,6 +149,7 @@ const initMocks = function () {
     Object.keys(loggerMock).map(i => loggerMock[i].reset());
     Object.keys(configMock).map(i => configMock[i].reset());
     Object.keys(dateMock).map(i => dateMock[i].reset());
+    Object.keys(paymentServiceMock).map(i => paymentServiceMock[i].reset());    
     Object.keys(dw.CurrencyMock).map(i => dw.CurrencyMock[i].reset());
     Object.keys(dw.PaymentInstrumentMock).map(i => dw.PaymentInstrumentMock[i].reset());
     Object.keys(dw.PaymentMethodMock).map(i => dw.PaymentMethodMock[i].reset());
@@ -154,6 +171,7 @@ module.exports = {
     loggerMock: loggerMock,
     configMock: configMock,
     dateMock: dateMock,
+    paymentServiceMock: paymentServiceMock,
     MollieMock: MollieMock,
     mollieMockInstance: mollieMockInstance,
     mollieHandlerStub: {

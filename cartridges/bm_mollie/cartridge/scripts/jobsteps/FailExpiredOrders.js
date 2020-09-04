@@ -6,7 +6,6 @@
 
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
-var Transaction = require('dw/system/Transaction');
 var Status = require('dw/system/Status');
 
 /**
