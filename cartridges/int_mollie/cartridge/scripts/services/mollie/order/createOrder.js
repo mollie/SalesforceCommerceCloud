@@ -87,3 +87,4 @@ function responseMapper(result) {
 
 exports.payloadBuilder = payloadBuilder;
 exports.responseMapper = responseMapper;
+exports.getLinesForParams = getLinesForParams;

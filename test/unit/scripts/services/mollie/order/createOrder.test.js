@@ -1,21 +1,27 @@
 const { stubs } = testHelpers;
 const Ajv = require('ajv');
 const ajv = new Ajv({ allErrors: true });
-const validate = ajv.compile(require('../mollieServiceSchemas').createPayment);
+const validate = ajv.compile(require('../mollieServiceSchemas').createOrder);
 
-const paymentStub = stubs.sandbox.stub();
+const orderStub = stubs.sandbox.stub();
 
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
-const createPayment = proxyquire(`${base}/int_mollie/cartridge/scripts/services/mollie/payment/createPayment`, {
+const createOrder = proxyquire(`${base}/int_mollie/cartridge/scripts/services/mollie/order/createOrder`, {
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
     'dw/web/URLUtils': stubs.dw.URLUtilsMock,
     '*/cartridge/scripts/services/mollie/mollieResponseEntities': {
-        Payment: paymentStub
+        Order: orderStub
     },
+    '*/cartridge/scripts/utils/date': stubs.dateMock,
+    '*/cartridge/scripts/mollieConfig': stubs.configMock,
     '*/cartridge/scripts/services/mollie/mollieRequestEntities': require(`${base}/int_mollie/cartridge/scripts/services/mollie/mollieRequestEntities`)
 });
 
-describe('mollie/createPayment', () => {
+createOrder.getLinesForParams = stubs.sandbox.stub();
+createOrder.getLinesForParams.returns([]);
+
+
+describe('mollie/createOrder', () => {
     before(function () {
         stubs.init();
         global.request = {
@@ -36,16 +42,28 @@ describe('mollie/createPayment', () => {
             }
             this.currencyStub = new stubs.dw.CurrencyMock();
             this.currencyStub.getCurrencyCode.returns(this.amount.currency);
-            this.currencyStub.getValue.returns(this.amount.value); 
+            this.currencyStub.getValue.returns(this.amount.value);
+            this.orderAddressMock = new stubs.dw.OrderAddressMock();
             this.params = {
                 totalGrossPrice: this.currencyStub,
-                methodId: faker.lorem.word()
+                orderId: faker.random.uuid(),
+                billingAddress: this.orderAddressMock,
+                email: faker.internet.email(),
+                cardToken: faker.lorem.word(),
+                issuer: faker.lorem.word(),
+                customerId: faker.random.uuid(),
+                paymentMethod: {
+                    custom: {
+                        mollieOrderExpiryDays: faker.random.number(),
+                        molliePaymentMethodId: faker.lorem.word()
+                    }
+                }
             };
             stubs.dw.URLUtilsMock.https.returns(this.returnUrl);
         });
 
         it('builds a correct payload', () => {
-            const payload = createPayment.payloadBuilder(this.params);
+            const payload = createOrder.payloadBuilder(this.params);
             validate(payload);
             expect(validate(payload)).to.be.eql(true, JSON.stringify(validate.errors));
         });
@@ -53,29 +71,29 @@ describe('mollie/createPayment', () => {
 
     context('#responseMapper', () => {
         it('returns a parsed response object', () => {
-            const result = { Payment: 'value' };
-            const response = createPayment.responseMapper(result);
+            const result = { Order: 'value' };
+            const response = createOrder.responseMapper(result);
             expect(response.raw).to.eql(JSON.stringify(result));
-            expect(paymentStub).to.have.been.calledOnce()
+            expect(orderStub).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(result);
         });
 
         it('handles result without expected properties', () => {
-            let response = createPayment.responseMapper({});
-            expect(response).to.eql({ payment: {}, raw: JSON.stringify({}) });
+            let response = createOrder.responseMapper({});
+            expect(response).to.eql({ order: {}, raw: JSON.stringify({}) });
         });
 
         it('handles a null or undefined result', () => {
-            let response = createPayment.responseMapper(null);
-            expect(response).to.eql({ payment: {}, raw: null });
+            let response = createOrder.responseMapper(null);
+            expect(response).to.eql({ order: {}, raw: null });
 
-            response = createPayment.responseMapper();
-            expect(response).to.eql({ payment: {}, raw: null });
+            response = createOrder.responseMapper();
+            expect(response).to.eql({ order: {}, raw: null });
         });
 
         it('handles a string result', () => {
-            const response = createPayment.responseMapper('string');
-            expect(response).to.eql({ payment: {}, raw: 'string' });
+            const response = createOrder.responseMapper('string');
+            expect(response).to.eql({ order: {}, raw: 'string' });
         });
     });
 });

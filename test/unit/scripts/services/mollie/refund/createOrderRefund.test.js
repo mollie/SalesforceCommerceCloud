@@ -23,7 +23,7 @@ describe('mollie/createOrderRefund', () => {
         beforeEach(() => {
             this.params = {
                 lines: [{
-                    id: '1234'
+                    id: faker.random.uuid()
                 }]
             }
         });

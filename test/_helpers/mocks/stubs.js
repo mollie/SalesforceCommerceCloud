@@ -2,8 +2,11 @@ const sinon = require('sinon');
 const sandbox = sinon.createSandbox();
 
 const Order = require('./dw/order/Order');
+const OrderAddress = require('./dw/order/OrderAddress');
+const ProductLineItem = require('./dw/order/ProductLineItem');
 const PaymentMgr = require('./dw/order/PaymentMgr');
 const OrderMgr = require('./dw/order/OrderMgr');
+const Profile = require('./dw/customer/Profile');
 const PaymentInstrument = require('./dw/order/OrderPaymentInstrument');
 const PaymentMethod = require('./dw/order/PaymentMethod');
 const PaymentProcessor = require('./dw/order/PaymentProcessor');
@@ -15,6 +18,27 @@ class OrderMock extends Order {
     constructor() {
         super();
         return sandbox.createStubInstance(Order);
+    }
+}
+
+class OrderAddressMock extends OrderAddress {
+    constructor() {
+        super();
+        return sandbox.createStubInstance(OrderAddress);
+    }
+}
+
+class ProductLineItemMock extends ProductLineItem {
+    constructor() {
+        super();
+        return sandbox.createStubInstance(ProductLineItem);
+    }
+}
+
+class ProfileMock extends Profile {
+    constructor() {
+        super();
+        return sandbox.createStubInstance(Profile);
     }
 }
 
@@ -61,10 +85,13 @@ const mollieMockInstance = {
 };
 
 const dw = {
-    OrderMock: OrderMock,
     OrderMgrMock: sandbox.stub(OrderMgr),
     URLUtilsMock: sandbox.stub(URLUtils),
     PaymentMgrMock: sandbox.stub(PaymentMgr),
+    OrderMock: OrderMock,
+    OrderAddressMock: OrderAddressMock,
+    ProductLineItemMock: ProductLineItemMock,
+    ProfileMock: ProfileMock,
     CurrencyMock: CurrencyMock,
     PaymentInstrumentMock: PaymentInstrumentMock,
     PaymentProcessorMock: PaymentProcessorMock,
@@ -89,6 +116,13 @@ const configMock = {
     getTransactionAPI: sandbox.stub()
 };
 
+const dateMock = {
+    addDays: sandbox.stub(),
+    addHours: sandbox.stub(),
+    now: sandbox.stub(),
+    format: sandbox.stub()
+};
+
 /**
  * INITIALIZE ALL MOCKS
  */
@@ -98,6 +132,7 @@ const initMocks = function () {
     Object.keys(dw.OrderMgrMock).map(i => dw.OrderMgrMock[i].reset());
     Object.keys(loggerMock).map(i => loggerMock[i].reset());
     Object.keys(configMock).map(i => configMock[i].reset());
+    Object.keys(dateMock).map(i => dateMock[i].reset());
     Object.keys(dw.CurrencyMock).map(i => dw.CurrencyMock[i].reset());
     Object.keys(dw.PaymentInstrumentMock).map(i => dw.PaymentInstrumentMock[i].reset());
     Object.keys(dw.PaymentMethodMock).map(i => dw.PaymentMethodMock[i].reset());
@@ -118,6 +153,7 @@ module.exports = {
     authRequest: sandbox.stub(),
     loggerMock: loggerMock,
     configMock: configMock,
+    dateMock: dateMock,
     MollieMock: MollieMock,
     mollieMockInstance: mollieMockInstance,
     mollieHandlerStub: {
