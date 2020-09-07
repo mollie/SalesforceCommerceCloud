@@ -1,7 +1,8 @@
 'use strict';
 
 var addressHelpers = require('base/checkout/address');
-var shippingHelpers = require('base/checkout/shipping');
+var shippingHelpersBase = require('base/checkout/shipping');
+var shippingHelpers = require('../checkout/shipping');
 var billingHelpersBase = require('base/checkout/billing');
 var billingHelpers = require('../checkout/billing');
 var summaryHelpers = require('base/checkout/summary');
@@ -532,10 +533,10 @@ var exports = {
 
     updateCheckoutView: function () {
         $('body').on('checkout:updateCheckoutView', function (e, data) {
-            shippingHelpers.methods.updateMultiShipInformation(data.order);
+            shippingHelpersBase.methods.updateMultiShipInformation(data.order);
             summaryHelpers.updateTotals(data.order.totals);
             data.order.shipping.forEach(function (shipping) {
-                shippingHelpers.methods.updateShippingInformation(
+                shippingHelpersBase.methods.updateShippingInformation(
                     shipping,
                     data.order,
                     data.customer,
@@ -567,7 +568,7 @@ var exports = {
 
 };
 
-[billingHelpersBase, shippingHelpers, addressHelpers].forEach(function (library) {
+[billingHelpersBase, shippingHelpersBase, addressHelpers].forEach(function (library) {
     Object.keys(library).forEach(function (item) {
         if (typeof library[item] === 'object') {
             exports[item] = $.extend({}, exports[item], library[item]);

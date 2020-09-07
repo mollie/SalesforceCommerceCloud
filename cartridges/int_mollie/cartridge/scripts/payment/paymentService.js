@@ -213,16 +213,17 @@ function cancelOrderLineItem(order, lines) {
  *
  * @param {Array} paymentMethods - list of payment methods
  * @param {dw.order.Basket} currentBasket - the target Basket object
+ * @param {string} countryCode - the associated Site countryCode
  * @returns {Array} - List of applicable payment methods
  * @throws {ServiceException}
  */
-function getApplicablePaymentMethods(paymentMethods, currentBasket) {
+function getApplicablePaymentMethods(paymentMethods, currentBasket, countryCode) {
     try {
         var methodResult = MollieService.getMethods({
             amount: currentBasket.adjustedMerchandizeTotalGrossPrice.value,
             currency: currentBasket.adjustedMerchandizeTotalGrossPrice.currencyCode,
             resource: config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT ? 'payments' : 'orders',
-            billingCountry: currentBasket.billingAddress.countryCode.value
+            billingCountry: currentBasket.billingAddress ? currentBasket.billingAddress.countryCode.value : countryCode
         });
 
         var methods = [];

@@ -8,6 +8,8 @@ var Order = require('dw/order/Order');
 var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
+var config = require('*/cartridge/scripts/mollieConfig');
+var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
 
 // Require and extend
 var COHelpers = require('*/cartridge/scripts/utils/superModule')(module);
@@ -127,5 +129,39 @@ COHelpers.placeOrder = function placeOrder(order) {
         throw new ServiceException(errorMessage);
     }
 };
+
+
+/**
+ * Returns mollie viewdata
+ * @param {dw.customer.Profile} profile - Customer Profile object
+ * @returns {object}
+ */
+COHelpers.getMollieViewData = function (profile) {
+    return {
+        customerId: profile && profile.custom.mollieCustomerId,
+        enableSingleClickPayments: config.getEnableSingleClickPayments(),
+        mollieComponents: {
+            enabled: config.getComponentsEnabled(),
+            profileId: config.getComponentsProfileId(),
+            enableTestMode: config.getComponentsEnableTestMode()
+        }
+    }
+}
+
+/**
+ * Returns mollie viewdata
+ * @param {dw.customer.Profile} profile - Customer Profile object
+ * @returns {object}
+ */
+COHelpers.getPaymentOptionsTemplate = function (currentBasket, accountModel, orderModel) {
+    return renderTemplateHelper.getRenderedHtml({
+        customer: accountModel,
+        order: orderModel,
+        forms: {
+            billingForm: COHelpers.prepareBillingForm(currentBasket)
+        },
+        mollie: COHelpers.getMollieViewData(currentBasket.customer.profile)
+    }, 'checkout/billing/paymentOptions');
+}
 
 module.exports = COHelpers;
