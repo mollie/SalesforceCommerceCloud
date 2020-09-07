@@ -6,7 +6,6 @@ var Resource = require('dw/web/Resource');
 var config = require('*/cartridge/scripts/mollieConfig');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
-var ObjectUtil = require('*/cartridge/scripts/utils/object');
 
 /**
  * Process the Order Result from Mollie
@@ -70,11 +69,11 @@ function processPaymentResult(order, paymentResult) {
         case STATUS.EXPIRED:
         case STATUS.CANCELED:
         case STATUS.FAILED:
-            session.privacy.mollieError = Resource.msg('mollie.payment.error.' + ObjectUtil.getProperty(STATUS, paymentResult.status), 'mollie', null);
+            session.privacy.mollieError = Resource.msg('mollie.payment.error.' + paymentResult.status, 'mollie', null);
             url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
-            var historyItem = 'PAYMENT :: Canceling order, status :: ' + paymentResult.status;
+            var cancelHistoryItem = 'PAYMENT :: Canceling order, status :: ' + paymentResult.status;
             Transaction.wrap(function () {
-                orderHelper.failOrCancelOrder(order, historyItem);
+                orderHelper.failOrCancelOrder(order, cancelHistoryItem);
             });
             break;
     }

@@ -59,8 +59,6 @@ describe('mollie/createOrder', () => {
         });
 
         it('builds a correct payload', () => {
-            createOrder.getLinesForParams = stubs.sandbox.stub();
-            createOrder.getLinesForParams.returns([]);
             const payload = createOrder.payloadBuilder(this.params);
             validate(payload);
             expect(validate(payload)).to.be.eql(true, JSON.stringify(validate.errors));

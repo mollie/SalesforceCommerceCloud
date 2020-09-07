@@ -31,7 +31,6 @@ describe('mollie/createPaymentRefund', () => {
 
         it('builds a correct payload', () => {
             const payload = createPaymentRefund.payloadBuilder(this.params);
-            console.log(JSON.stringify(payload));
             validate(payload);
             expect(validate(payload)).to.be.eql(true, JSON.stringify(validate.errors));
         });

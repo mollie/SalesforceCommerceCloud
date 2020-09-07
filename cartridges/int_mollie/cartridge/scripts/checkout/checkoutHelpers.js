@@ -122,7 +122,7 @@ COHelpers.placeOrder = function placeOrder(order) {
     } catch (e) {
         OrderMgr.failOrder(order);
         const errorMessage = 'PAYMENT :: Failed placing the order :: ' + JSON.stringify(e.message);
-        orderHelpers.addItemToOrderHistory(order, errorMessage, true);
+        orderHelper.addItemToOrderHistory(order, errorMessage, true);
         Transaction.commit();
         throw new ServiceException(errorMessage);
     }
