@@ -35,7 +35,7 @@ function onBillingCountryChange() {
             data: billingAddressForm,
             success: function (data) {
                 $('body').trigger('checkout:enableButton', '.next-step-button button');
-                updatePaymentInformation(data);
+                updatePaymentOptions(data);
             },
             error: function () {
                 $('body').trigger('checkout:enableButton', '.next-step-button button');
