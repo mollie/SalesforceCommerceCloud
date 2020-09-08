@@ -1,4 +1,3 @@
-const { order } = require('../order/orderHelper.test');
 const { stubs } = testHelpers;
 const MollieMock = stubs.MollieMock;
 const mollieMockInstance = stubs.mollieMockInstance;

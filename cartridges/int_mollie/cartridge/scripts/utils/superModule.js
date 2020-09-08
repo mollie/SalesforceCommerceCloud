@@ -1,3 +1,3 @@
 module.exports = function (parentModule) {
-    return parentModule.superModule
-}
+    return parentModule.superModule;
+};

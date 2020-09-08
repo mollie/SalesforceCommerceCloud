@@ -1,6 +1,7 @@
 {
   "env": {
-    "mocha": true
+    "mocha": true,
+    "es6": true
   },
   "rules": {
     "require-jsdoc": "off",
@@ -18,5 +19,8 @@
     "faker": "readonly",
     "testHelpers": "readonly",
     "base": "readonly"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018
   }
 }

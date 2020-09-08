@@ -11,7 +11,7 @@ function payloadBuilder(params) {
     var payload = {
         name: params.profile.getFirstName() + ' ' + params.profile.getLastName(),
         email: params.profile.getEmail()
-    }
+    };
     return payload;
 }
 

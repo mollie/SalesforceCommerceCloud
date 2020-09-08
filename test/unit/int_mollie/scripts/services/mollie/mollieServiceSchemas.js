@@ -48,7 +48,7 @@ exports.createCustomer = {
 exports.createOrderRefund = {
     required: ['lines'],
     properties: Object.assign({}, lines)
-}
+};
 
 exports.createPaymentRefund = {
     required: ['amount'],

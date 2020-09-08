@@ -28,7 +28,7 @@ server.prepend('Begin', function (req, res, next) {
 server.append('Begin', function (req, res, next) {
     var viewData = res.getViewData();
     var profile = req.currentCustomer.raw.profile;
-    viewData.mollie = COHelpers.getMollieViewData(profile)
+    viewData.mollie = COHelpers.getMollieViewData(profile);
 
     next();
 });

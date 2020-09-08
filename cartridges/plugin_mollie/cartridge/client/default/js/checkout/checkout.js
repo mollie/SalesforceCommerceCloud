@@ -312,7 +312,8 @@ var mollieComponents = require('./components');
                                 }
                             }
                         });
-                    }
+                        return defer;
+                    };
 
                     if ($('.js-mollie-components-container').length &&
                         $('.js-mollie-component-tab').hasClass('active') &&

@@ -5,12 +5,11 @@ var URLUtils = require('dw/web/URLUtils');
 var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
 var Transaction = require('dw/system/Transaction');
 var paymentHelper = require('*/cartridge/scripts/payment/paymentHelper');
-var config = require('*/cartridge/scripts/mollieConfig');
 
 /**
  *
  * @param {string} paymentId - paymentId
- * @returns {object} - Payment
+ * @returns {Object} - Payment
  * @throws {ServiceException}
  */
 function getPayment(paymentId) {
@@ -26,9 +25,27 @@ function getPayment(paymentId) {
 
 /**
  *
+ * @param {string} orderId - orderId
+ * @returns {Object} - Order
+ * @throws {ServiceException}
+ */
+function getOrder(orderId) {
+    try {
+        return MollieService.getOrder({
+            orderId: orderId
+        });
+    } catch (e) {
+        if (e.name === 'PaymentProviderException') throw e;
+        throw ServiceException.from(e);
+    }
+}
+
+
+/**
+ *
  * @param {dw.order.Order} order - Order object
  * @param {dw.order.PaymentMethod} paymentMethod - Order paymentMethod
- * @param {object} paymentData - object containing method specific data
+ * @param {Object} paymentData - object containing method specific data
  * @returns {string} - Redirect url
  * @throws {ServiceException}
  */
@@ -62,14 +79,15 @@ function createPayment(order, paymentMethod, paymentData) {
  * @param {dw.order.Order} order - Order object
  * @param {string} statusUpdateId - id of the order / payment to update
  * @returns {string} - Redirect url
-* @throws {ServiceException}
+ * @throws {ServiceException}
  */
 function processPaymentUpdate(order, statusUpdateId) {
     try {
+        var url;
         if (orderHelper.isMollieOrder(order) &&
             (!statusUpdateId || orderHelper.getOrderId(order) === statusUpdateId)) {
-            var result = getOrder(orderHelper.getOrderId(order));
-            return paymentHelper.processPaymentResult(order, result.order).url;
+            var getOrderResult = getOrder(orderHelper.getOrderId(order));
+            url = paymentHelper.processPaymentResult(order, getOrderResult.order).url;
         } else if (!statusUpdateId || orderHelper.getPaymentId(order) === statusUpdateId) {
             // Instead of searching for payment to update, get last one
             /*
@@ -85,9 +103,10 @@ function processPaymentUpdate(order, statusUpdateId) {
                 paymentHelper.processPaymentResult(order, result.payment, paymentMethodId);
             }
             */
-            var result = getPayment(orderHelper.getPaymentId(order));
-            return paymentHelper.processPaymentResult(order, result.payment).url
+            var getPaymentResult = getPayment(orderHelper.getPaymentId(order));
+            url = paymentHelper.processPaymentResult(order, getPaymentResult.payment).url;
         }
+        return url;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
         throw ServiceException.from(e);
@@ -96,8 +115,8 @@ function processPaymentUpdate(order, statusUpdateId) {
 
 /**
  *
- * @param {dw.order.Order} order - Order object
  * @param {string} paymentId - paymentMethodId
+ * @returns {Object} - canceled payment
  * @throws {ServiceException}
  */
 function cancelPayment(paymentId) {
@@ -115,27 +134,10 @@ function cancelPayment(paymentId) {
 
 /**
  *
- * @param {string} orderId - orderId
- * @returns {object} - Order
- * @throws {ServiceException}
- */
-function getOrder(orderId) {
-    try {
-        return MollieService.getOrder({
-            orderId: orderId
-        });
-    } catch (e) {
-        if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
-    }
-}
-
-/**
- *
  * @param {dw.order.Order} order - Order object
  * @param {dw.order.PaymentMethod} paymentMethod - Order paymentMethod
- * @param {object} paymentData - object containing method specific data
- * @returns {string} - redirect url
+ * @param {Object} paymentData - object containing method specific data
+ * @returns {Object} - created order
  * @throws {ServiceException}
  */
 function createOrder(order, paymentMethod, paymentData) {
@@ -162,24 +164,22 @@ function createOrder(order, paymentMethod, paymentData) {
         });
 
         return orderResult;
-
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
         throw ServiceException.from(e);
     }
 }
 
-
 /**
  *
  * @param {dw.order.Order} order - Order object
- * @returns {object}  - result of the cancel order REST call
+ * @returns {Object} - result of the cancel order REST call
  * @throws {ServiceException}
  */
 function cancelOrder(order) {
     try {
         const cancelResult = MollieService.cancelOrder({
-            orderId: orderHelper.getOrderId(order),
+            orderId: orderHelper.getOrderId(order)
         });
 
         return cancelResult;
@@ -192,7 +192,8 @@ function cancelOrder(order) {
 /**
  *
  * @param {dw.order.Order} order - Order object
- * @returns {object}  - result of the cancel order REST call
+ * @param {Array} lines - lines to cancel
+ * @returns {Object}  - result of the cancel order REST call
  * @throws {ServiceException}
  */
 function cancelOrderLineItem(order, lines) {
@@ -228,18 +229,19 @@ function getApplicablePaymentMethods(paymentMethods, currentBasket, countryCode)
 
         var methods = [];
         paymentMethods.toArray().forEach(function (method) {
-            var mollieMethod = methodResult.methods.filter(function (mollieMethod) {
+            var molliePaymentMethod = methodResult.methods.filter(function (mollieMethod) {
                 return mollieMethod.id === method.custom.molliePaymentMethodId;
             })[0];
 
-            if (mollieMethod || !method.custom.molliePaymentMethodId)
+            if (molliePaymentMethod || !method.custom.molliePaymentMethodId) {
                 methods.push({
                     ID: method.ID,
                     name: method.name,
                     image: (method.image) ? method.image.URL.toString() :
-                        mollieMethod && mollieMethod.imageURL || URLUtils.staticURL('./images/mollieMethodImage.png'),
-                    issuers: mollieMethod && mollieMethod.issuers
+                        (molliePaymentMethod && molliePaymentMethod.imageURL) || URLUtils.staticURL('./images/mollieMethodImage.png'),
+                    issuers: molliePaymentMethod && molliePaymentMethod.issuers
                 });
+            }
         });
         return methods;
     } catch (e) {
@@ -252,7 +254,7 @@ function getApplicablePaymentMethods(paymentMethods, currentBasket, countryCode)
  *
  * @param {dw.order.Order} order - order object
  * @param {objeect} lines - object containing lines
- * @returns {object}  - result of the refund order REST call
+ * @returns {Object}  - result of the refund order REST call
  * @throws {ServiceException}
  */
 function createOrderRefund(order, lines) {
@@ -271,7 +273,7 @@ function createOrderRefund(order, lines) {
  *
  * @param {string} paymentId - payment id
  * @param {number} amount - amount to refund
- * @returns {object}  - result of the refund order REST call
+ * @returns {Object}  - result of the refund order REST call
  * @throws {ServiceException}
  */
 function createPaymentRefund(paymentId, amount) {
@@ -290,7 +292,7 @@ function createPaymentRefund(paymentId, amount) {
  *
  * @param {orderId} order - Order object
  * @param {objet} lines - lines
- * @returns {object}  - result of the create shipment REST call
+ * @returns {Object}  - result of the create shipment REST call
  * @throws {ServiceException}
  */
 function createShipment(order, lines) {
@@ -308,7 +310,7 @@ function createShipment(order, lines) {
 /**
  *
  * @param {dw.customer.Profile} profile - Profile object
- * @returns {object}  - result of the create customer REST call
+ * @returns {Object}  - result of the create customer REST call
  * @throws {ServiceException}
  */
 function createCustomer(profile) {
@@ -336,4 +338,4 @@ module.exports = {
     createOrderRefund: createOrderRefund,
     createShipment: createShipment,
     createCustomer: createCustomer
-}
+};

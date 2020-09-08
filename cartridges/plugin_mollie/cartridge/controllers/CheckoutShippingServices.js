@@ -11,7 +11,7 @@ server.append('SubmitShipping', function (req, res, next) {
         var viewData = res.getViewData();
         if (viewData.order && viewData.customer) {
             viewData.paymentOptionsTemplate = COHelpers.getPaymentOptionsTemplate(BasketMgr.getCurrentBasket(),
-                viewData.customer, viewData.order)
+                viewData.customer, viewData.order);
         }
         res.json(viewData);
     });

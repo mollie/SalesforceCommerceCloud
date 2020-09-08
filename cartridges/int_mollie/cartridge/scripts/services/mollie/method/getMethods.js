@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 var Logger = require('*/cartridge/scripts/utils/logger');
 var mollieResponseEntities = require('*/cartridge/scripts/services/mollie/mollieResponseEntities');
 

@@ -18,23 +18,23 @@ const job = proxyquire(`${base}/bm_mollie/cartridge/scripts/jobsteps/FailExpired
     'dw/system/Status': StatusMock,
     '*/cartridge/scripts/payment/paymentService': stubs.paymentServiceMock,
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
-    '*/cartridge/scripts/utils/date': stubs.dateMock,
+    '*/cartridge/scripts/utils/date': stubs.dateMock
 });
 
 global.empty = stubs.sandbox.stub();
 
 describe('bm_mollie/jobsteps/FailExpiredOrders', () => {
     before(() => {
-        stubs.init()
+        stubs.init();
         this.orderId = faker.random.uuid();
         this.order = {
             orderNo: this.orderId
-        }
+        };
     });
     afterEach(() => stubs.reset());
     after(() => stubs.restore());
     beforeEach(() => {
-        global.empty.returns(false)
+        global.empty.returns(false);
     });
 
     it('skips the job is IsDisabled flag is set', () => {

@@ -29,7 +29,7 @@ exports.Start = function () {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
         renderTemplate('order/payment/cancel/order_payment_cancel_order.isml', {
             orderId: order.orderNo,
-            order: result.order,
+            order: result.order
         });
     } else {
         var mollieInstruments = orderHelper.getMolliePaymentInstruments(order);
@@ -82,7 +82,7 @@ exports.CancelOrderLine = function () {
     try {
         paymentService.cancelOrderLineItem(order, [{
             id: lineId,
-            quantity: quantity,
+            quantity: quantity
         }]);
         Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
     } catch (e) {

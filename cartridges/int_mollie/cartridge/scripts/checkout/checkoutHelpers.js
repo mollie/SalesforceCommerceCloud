@@ -18,7 +18,7 @@ var COHelpers = require('*/cartridge/scripts/utils/superModule')(module);
  * handles the payment authorization for each payment instrument
  * @param {dw.order.Order} order - the order object
  * @param {string} orderNumber - The order number for the order
- * @returns {Object} an error object
+ * @returns {Object} authorization result
  */
 COHelpers.handlePayments = function (order, orderNumber) {
     try {
@@ -57,7 +57,7 @@ COHelpers.handlePayments = function (order, orderNumber) {
         if (e.name === 'ServiceException') return { continueUrl: URLUtils.url('Checkout-Begin').toString() };
         return { error: true };
     }
-}
+};
 
 /**
  *
@@ -67,7 +67,7 @@ COHelpers.handlePayments = function (order, orderNumber) {
  */
 COHelpers.orderExists = function (orderNumber) {
     return OrderMgr.getOrder(orderNumber) !== null;
-}
+};
 
 /**
  * Restores a basket based on the last created order that has not been paid.
@@ -87,7 +87,7 @@ COHelpers.restoreOpenOrder = function (lastOrderNumber) {
             }
         }
     }
-}
+};
 
 /**
  * Attempts to place order and fails order if attempt fails
@@ -99,7 +99,6 @@ COHelpers.placeOrder = function placeOrder(order) {
         var orderStatus = order.getStatus() + '';
 
         if (orderStatus === Order.ORDER_STATUS_CREATED + '' || orderStatus === Order.ORDER_STATUS_FAILED + '') {
-
             if (orderStatus === Order.ORDER_STATUS_FAILED + '') {
                 Transaction.begin();
                 var undoFailOrderStatus = OrderMgr.undoFailOrder(order);
@@ -120,7 +119,6 @@ COHelpers.placeOrder = function placeOrder(order) {
             order.setExportStatus(Order.EXPORT_STATUS_READY);
             Transaction.commit();
         }
-
     } catch (e) {
         OrderMgr.failOrder(order);
         const errorMessage = 'PAYMENT :: Failed placing the order :: ' + JSON.stringify(e.message);
@@ -132,9 +130,9 @@ COHelpers.placeOrder = function placeOrder(order) {
 
 
 /**
- * Returns mollie viewdata
+ * Get mollie viewdata
  * @param {dw.customer.Profile} profile - Customer Profile object
- * @returns {object}
+ * @returns {Object} Mollie viewData
  */
 COHelpers.getMollieViewData = function (profile) {
     return {
@@ -145,13 +143,15 @@ COHelpers.getMollieViewData = function (profile) {
             profileId: config.getComponentsProfileId(),
             enableTestMode: config.getComponentsEnableTestMode()
         }
-    }
-}
+    };
+};
 
 /**
- * Returns mollie viewdata
- * @param {dw.customer.Profile} profile - Customer Profile object
- * @returns {object}
+ * Get mollie viewdata
+ * @param {dw.order.Basket} currentBasket - the target Basket object
+ * @param {Object} accountModel - The account model for the current customer
+ * @param {Object} orderModel - The current customer's order history
+ * @returns {Object} Rendered payment options template
  */
 COHelpers.getPaymentOptionsTemplate = function (currentBasket, accountModel, orderModel) {
     return renderTemplateHelper.getRenderedHtml({
@@ -162,6 +162,6 @@ COHelpers.getPaymentOptionsTemplate = function (currentBasket, accountModel, ord
         },
         mollie: COHelpers.getMollieViewData(currentBasket.customer.profile)
     }, 'checkout/billing/paymentOptions');
-}
+};
 
 module.exports = COHelpers;

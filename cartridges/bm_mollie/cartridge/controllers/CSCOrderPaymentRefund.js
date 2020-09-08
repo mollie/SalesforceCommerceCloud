@@ -25,12 +25,11 @@ exports.Start = function () {
     var order = OrderMgr.getOrder(orderNo);
     if (!isRefundAllowed(order)) {
         renderTemplate('order/payment/refund/order_payment_refund_not_available.isml');
-    }
-    else if (orderHelper.isMollieOrder(order)) {
+    } else if (orderHelper.isMollieOrder(order)) {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
         renderTemplate('order/payment/refund/order_payment_refund_order.isml', {
             orderId: order.orderNo,
-            order: result.order,
+            order: result.order
         });
     } else {
         var mollieInstruments = orderHelper.getMolliePaymentInstruments(order);
@@ -47,7 +46,6 @@ exports.Start = function () {
         } else {
             renderTemplate('order/payment/cancel/order_payment_refund_not_available.isml');
         }
-
     }
 };
 
@@ -92,7 +90,7 @@ exports.RefundOrder = function () {
         if (quantity && lineId) {
             lines = [{
                 id: lineId,
-                quantity: quantity,
+                quantity: quantity
             }];
         }
         paymentService.createOrderRefund(order, lines);

@@ -47,7 +47,6 @@ function cancelOrder(order, message) {
 
     var failOrderStatus = OrderMgr.cancelOrder(order);
     if (failOrderStatus.isError()) {
-
         addItemToOrderHistory(order, 'PAYMENT :: Failed canceling the order. User basket not restored: ' + JSON.stringify(failOrderStatus.getMessage()), true);
     }
 }
@@ -62,22 +61,12 @@ function cancelOrder(order, message) {
 function failOrCancelOrder(order, message) {
     var orderStatus = order.getStatus().value;
     if (orderStatus === Order.ORDER_STATUS_CREATED) {
-        failOrder(order, message)
+        failOrder(order, message);
     } else if (orderStatus === Order.ORDER_STATUS_OPEN || orderStatus === Order.ORDER_STATUS_NEW) {
-        cancelOrder(order, message)
+        cancelOrder(order, message);
     } else {
         addItemToOrderHistory(order, 'PAYMENT :: Cannot fail or cancel the order. Order has not the correct status: ' + order.getStatus());
     }
-}
-
-/**
- *
- *
- * @param {dw.order.Order} order - Order object
- * @returns {boolean} is mollie order
- */
-function isMollieOrder(order) {
-    return getUsedTransactionAPI(order) === config.getTransactionAPI().ORDER;
 }
 
 /**
@@ -144,7 +133,7 @@ function setTransactionCustomProperty(order, paymentMethodId, custom) {
     if (paymentInstrument) {
         paymentInstrument.getPaymentTransaction().custom[custom.key] = custom.value;
     }
-};
+}
 
 /**
  *
@@ -160,7 +149,7 @@ function getTransactionCustomProperty(order, paymentMethodId, custom) {
     if (!paymentInstrument) return null;
     const customProperty = paymentInstrument.getPaymentTransaction().custom[custom.key];
     return customProperty && customProperty.toString();
-};
+}
 
 /**
  *
@@ -169,8 +158,8 @@ function getTransactionCustomProperty(order, paymentMethodId, custom) {
  * @param {Object} custom - custom
  */
 function setOrderCustomProperty(order, custom) {
-    order.custom[custom.key] = custom.value;
-};
+    order.custom[custom.key] = custom.value; // eslint-disable-line no-param-reassign
+}
 
 /**
  *
@@ -182,7 +171,7 @@ function setOrderCustomProperty(order, custom) {
 function getOrderCustomProperty(order, custom) {
     const customProperty = order.custom[custom.key];
     return customProperty && customProperty.toString();
-};
+}
 
 /**
  *
@@ -193,7 +182,7 @@ function getOrderCustomProperty(order, custom) {
  * @returns {void}
  */
 function setPaymentId(order, paymentMethodId, paymentId) {
-    setTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentId', value: new String(paymentId).toString() });
+    setTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentId', value: paymentId });
 }
 
 /**
@@ -212,11 +201,11 @@ function getPaymentId(order, paymentMethodId) {
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {string} paymentMethodId - payment method id
- * @param {string} transactionId - Mollie payment / order status
+ * @param {string} status - Mollie payment / order status
  * @returns {void}
  */
 function setPaymentStatus(order, paymentMethodId, status) {
-    setTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentStatus', value: new String(status).toString() });
+    setTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentStatus', value: status });
 }
 
 /**
@@ -238,7 +227,7 @@ function getPaymentStatus(order, paymentMethodId) {
  * @returns {void}
  */
 function setOrderId(order, orderId) {
-    setOrderCustomProperty(order, { key: 'mollieOrderId', value: new String(orderId).toString() });
+    setOrderCustomProperty(order, { key: 'mollieOrderId', value: orderId });
 }
 
 /**
@@ -255,11 +244,11 @@ function getOrderId(order) {
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} orderId - Mollie order id
+ * @param {string} orderStatus - payment / order status
  * @returns {void}
  */
 function setOrderStatus(order, orderStatus) {
-    setOrderCustomProperty(order, { key: 'mollieOrderStatus', value: new String(orderStatus).toString() });
+    setOrderCustomProperty(order, { key: 'mollieOrderStatus', value: orderStatus });
 }
 
 /**
@@ -280,7 +269,7 @@ function getOrderStatus(order) {
  * @returns {void}
  */
 function setUsedTransactionAPI(order, usedTransactionAPI) {
-    setOrderCustomProperty(order, { key: 'mollieUsedTransactionAPI', value: new String(usedTransactionAPI).toString() });
+    setOrderCustomProperty(order, { key: 'mollieUsedTransactionAPI', value: usedTransactionAPI });
 }
 
 /**
@@ -291,6 +280,16 @@ function setUsedTransactionAPI(order, usedTransactionAPI) {
  */
 function getUsedTransactionAPI(order) {
     return getOrderCustomProperty(order, { key: 'mollieUsedTransactionAPI' });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - Order object
+ * @returns {boolean} is mollie order
+ */
+function isMollieOrder(order) {
+    return getUsedTransactionAPI(order) === config.getTransactionAPI().ORDER;
 }
 
 module.exports = {

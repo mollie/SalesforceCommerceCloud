@@ -53,7 +53,7 @@ function processForm(req, paymentForm, viewFormData) {
  * @param {dw.order.Basket} basket - The current basket
  * @param {Object} billingData - payment information
  */
-function savePaymentInformation(req, basket, billingData) { }
+function savePaymentInformation(req, basket, billingData) { } // eslint-disable-line no-unused-vars
 
 exports.processForm = processForm;
 exports.savePaymentInformation = savePaymentInformation;

@@ -27,12 +27,11 @@ exports.Start = function () {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
         renderTemplate('order/payment/shipment/order_payment_shipment.isml', {
             orderId: order.orderNo,
-            order: result.order,
+            order: result.order
         });
     } else {
         renderTemplate('order/payment/shipment/order_payment_shipment_not_available.isml');
     }
-    
 };
 
 exports.Shipment = function () {
@@ -50,7 +49,7 @@ exports.Shipment = function () {
         if (quantity && lineId) {
             lines = [{
                 id: lineId,
-                quantity: quantity,
+                quantity: quantity
             }];
         }
 

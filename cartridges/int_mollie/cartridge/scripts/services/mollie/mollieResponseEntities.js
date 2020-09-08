@@ -1,12 +1,14 @@
+/* eslint-disable no-underscore-dangle */
+
 var config = require('*/cartridge/scripts/mollieConfig');
 
 /**
  *
  * @class
- * @param {Object} amount - Mollie Amount object
+ * @param {Object} mollieAmount - Mollie Amount object
  */
-function Amount(amount) {
-    amount = amount || {};
+function Amount(mollieAmount) {
+    var amount = mollieAmount || {};
     this.value = amount.value;
     this.currency = amount.currency;
 }
@@ -14,10 +16,10 @@ function Amount(amount) {
 /**
  *
  * @class
- * @param {Object} link - Mollie Link object
+ * @param {Object} mollieLink - Mollie Link object
  */
-function Link(link) {
-    link = link || {};
+function Link(mollieLink) {
+    var link = mollieLink || {};
     this.href = link.href;
     this.type = link.type;
 }
@@ -25,10 +27,10 @@ function Link(link) {
 /**
  *
  * @class
- * @param {Object} links - Mollie Links object
+ * @param {Object} mollieLinks - Mollie Links object
  */
-function Links(links) {
-    links = links || {};
+function Links(mollieLinks) {
+    var links = mollieLinks || {};
     this.self = new Link(links.self);
     this.checkout = new Link(links.checkout);
     this.documentation = new Link(links.documentation);
@@ -37,10 +39,10 @@ function Links(links) {
 /**
  *
  * @class
- * @param {Object} address - Mollie Address object
+ * @param {Object} mollieAddress - Mollie Address object
  */
-function Address(address) {
-    address = address || {};
+function Address(mollieAddress) {
+    var address = mollieAddress || {};
     this.organizationName = address.organizationName;
     this.streetAndNumber = address.streetAndNumber;
     this.streetAdditional = address.streetAdditional;
@@ -57,10 +59,10 @@ function Address(address) {
 /**
  *
  * @class
- * @param {Object} payment - Mollie Payment object
+ * @param {Object} molliePayment - Mollie Payment object
  */
-function Payment(payment) {
-    payment = payment || {};
+function Payment(molliePayment) {
+    var payment = molliePayment || {};
     this.resource = payment.resource;
     this.id = payment.id;
     this.mode = payment.mode;
@@ -94,115 +96,10 @@ function Payment(payment) {
 /**
  *
  * @class
- * @param {Object} order - Mollie Order object
+ * @param {Object} mollieLine - Mollie Line object
  */
-function Order(order) {
-    const STATUS = config.getTransactionStatus();
-    order = order || {};
-    this.resource = order.resource;
-    this.id = order.id;
-    this.profileId = order.profileId;
-    this.method = order.method;
-    this.amount = new Amount(order.amount);
-    this.status = order.status;
-    this.isCancelable = function () {
-        return order.isCancelable;
-    };
-    this.isShippable = function () {
-        return order.status === STATUS.PAID ||
-            order.status === STATUS.AUTHORIZED ||
-            order.status === STATUS.SHIPPING
-    };
-    this.isRefundable = function () {
-        return (order.status === STATUS.PAID ||
-            order.status === STATUS.SHIPPING ||
-            order.status === STATUS.COMPLETED)
-            && order.amountRefunded.value !== order.amount.value
-    };
-    this.metadata = order.metadata;
-    this.createdAt = order.createdAt;
-    this.expiresAt = order.expiresAt;
-    this.mode = order.mode;
-    this.locale = order.locale;
-    this.billingAddress = new Address(order.billingAddress);
-    this.shopperCountryMustMatchBillingCountry = order.shopperCountryMustMatchBillingCountry;
-    this.consumerDateOfBirth = order.consumerDateOfBirth;
-    this.orderNumber = order.orderNumber;
-    this.amountRefunded = new Amount(order.amountRefunded);
-    this.shippingAddress = new Address(order.shippingAddress);
-    this.redirectUrl = order.redirectUrl;
-    this.lines = order.lines ? order.lines.map(function (line) {
-        return new Line(line);
-    }) : null;
-    this.links = new Links(order._links);
-    this.payments = order._embedded && order._embedded.payments ?
-        order._embedded.payments.map(function (payment) {
-            return new Payment(payment);
-        }) : null;
-}
-
-/**
- *
- * @class
- * @param {Object} method - Mollie Method object
- */
-function Method(method) {
-    method = method || {};
-    this.resource = method.resource;
-    this.id = method.id;
-    this.description = method.description;
-    this.minimumAmount = new Amount(method.minimumAmount);
-    this.maximumAmount = new Amount(method.maximumAmount);
-    this.imageURL = method.image && method.image.svg;
-    this.issuers = method.issuers && method.issuers.map(function (issuer) {
-        return new Issuer(issuer);
-    });
-}
-
-/**
- *
- * @class
- * @param {Object} refund - Mollie Refund object
- */
-function Refund(refund) {
-    refund = refund || {};
-    this.resource = refund.resource;
-    this.id = refund.id;
-    this.amount = new Amount(refund.amount);
-    this.createdAt = refund.createdAt;
-    this.description = refund.description;
-    this.paymentId = refund.paymentId;
-    this.orderId = refund.orderId;
-    this.lines = refund.lines ? refund.lines.map(function (line) {
-        return new Line(line);
-    }) : null;
-    this.isSuccessful = function () {
-        return refund.status === "pending";
-    };
-}
-
-/**
- *
- * @class
- * @param {Object} shipment - Mollie Shipment object
- */
-function Shipment(shipment) {
-    shipment = shipment || {};
-    this.resource = shipment.resource;
-    this.id = shipment.id;
-    this.orderId = shipment.orderId;
-    this.lines = shipment.lines ? shipment.lines.map(function (line) {
-        return new Line(line);
-    }) : null;
-}
-
-/**
- *
- * @class
- * @param {Object} line - Mollie Line object
- */
-function Line(line) {
-    line = line || {};
+function Line(mollieLine) {
+    var line = mollieLine || {};
     this.resource = line.resource;
     this.id = line.id;
     this.orderId = line.orderId;
@@ -233,10 +130,60 @@ function Line(line) {
 /**
  *
  * @class
- * @param {Object} issuer - Mollie Issuer object
+ * @param {Object} mollieOrder - Mollie Order object
  */
-function Issuer(issuer) {
-    issuer = issuer || {};
+function Order(mollieOrder) {
+    var order = mollieOrder || {};
+    const STATUS = config.getTransactionStatus();
+    this.resource = order.resource;
+    this.id = order.id;
+    this.profileId = order.profileId;
+    this.method = order.method;
+    this.amount = new Amount(order.amount);
+    this.status = order.status;
+    this.isCancelable = function () {
+        return order.isCancelable;
+    };
+    this.isShippable = function () {
+        return order.status === STATUS.PAID ||
+            order.status === STATUS.AUTHORIZED ||
+            order.status === STATUS.SHIPPING;
+    };
+    this.isRefundable = function () {
+        return (order.status === STATUS.PAID ||
+            order.status === STATUS.SHIPPING ||
+            order.status === STATUS.COMPLETED)
+            && order.amountRefunded.value !== order.amount.value;
+    };
+    this.metadata = order.metadata;
+    this.createdAt = order.createdAt;
+    this.expiresAt = order.expiresAt;
+    this.mode = order.mode;
+    this.locale = order.locale;
+    this.billingAddress = new Address(order.billingAddress);
+    this.shopperCountryMustMatchBillingCountry = order.shopperCountryMustMatchBillingCountry;
+    this.consumerDateOfBirth = order.consumerDateOfBirth;
+    this.orderNumber = order.orderNumber;
+    this.amountRefunded = new Amount(order.amountRefunded);
+    this.shippingAddress = new Address(order.shippingAddress);
+    this.redirectUrl = order.redirectUrl;
+    this.lines = order.lines ? order.lines.map(function (line) {
+        return new Line(line);
+    }) : null;
+    this.links = new Links(order._links);
+    this.payments = order._embedded && order._embedded.payments ?
+        order._embedded.payments.map(function (payment) {
+            return new Payment(payment);
+        }) : null;
+}
+
+/**
+ *
+ * @class
+ * @param {Object} mollieIssuer - Mollie Issuer object
+ */
+function Issuer(mollieIssuer) {
+    var issuer = mollieIssuer || {};
     this.resource = issuer.resource;
     this.id = issuer.id;
     this.name = issuer.name;
@@ -246,10 +193,65 @@ function Issuer(issuer) {
 /**
  *
  * @class
- * @param {Object} customer - Mollie Customer object
+ * @param {Object} mollieMethod - Mollie Method object
  */
-function Customer(customer) {
-    customer = customer || {};
+function Method(mollieMethod) {
+    var method = mollieMethod || {};
+    this.resource = method.resource;
+    this.id = method.id;
+    this.description = method.description;
+    this.minimumAmount = new Amount(method.minimumAmount);
+    this.maximumAmount = new Amount(method.maximumAmount);
+    this.imageURL = method.image && method.image.svg;
+    this.issuers = method.issuers && method.issuers.map(function (issuer) {
+        return new Issuer(issuer);
+    });
+}
+
+/**
+ *
+ * @class
+ * @param {Object} mollieRefund - Mollie Refund object
+ */
+function Refund(mollieRefund) {
+    var refund = mollieRefund || {};
+    this.resource = refund.resource;
+    this.id = refund.id;
+    this.amount = new Amount(refund.amount);
+    this.createdAt = refund.createdAt;
+    this.description = refund.description;
+    this.paymentId = refund.paymentId;
+    this.orderId = refund.orderId;
+    this.lines = refund.lines ? refund.lines.map(function (line) {
+        return new Line(line);
+    }) : null;
+    this.isSuccessful = function () {
+        return refund.status === 'pending';
+    };
+}
+
+/**
+ *
+ * @class
+ * @param {Object} mollieShipment - Mollie Shipment object
+ */
+function Shipment(mollieShipment) {
+    var shipment = mollieShipment || {};
+    this.resource = shipment.resource;
+    this.id = shipment.id;
+    this.orderId = shipment.orderId;
+    this.lines = shipment.lines ? shipment.lines.map(function (line) {
+        return new Line(line);
+    }) : null;
+}
+
+/**
+ *
+ * @class
+ * @param {Object} mollieCustomer - Mollie Customer object
+ */
+function Customer(mollieCustomer) {
+    var customer = mollieCustomer || {};
     this.resource = customer.resource;
     this.id = customer.id;
     this.name = customer.name;
@@ -271,4 +273,4 @@ module.exports = {
     Line: Line,
     Issuer: Issuer,
     Customer: Customer
-}
+};

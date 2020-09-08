@@ -96,11 +96,11 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
         }
 
         if (config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT) {
-            var result = paymentService.createPayment(order, paymentMethod, paymentInfo);
-            redirectUrl = result.payment.links.checkout.href;
+            var createPaymentResult = paymentService.createPayment(order, paymentMethod, paymentInfo);
+            redirectUrl = createPaymentResult.payment.links.checkout.href;
         } else {
-            var result = paymentService.createOrder(order, paymentMethod, paymentInfo);
-            redirectUrl = result.order.links.checkout.href;
+            var createOrderResult = paymentService.createOrder(order, paymentMethod, paymentInfo);
+            redirectUrl = createOrderResult.order.links.checkout.href;
         }
     } catch (e) {
         Logger.error(e.javaMessage + '\n\r' + e.stack);

@@ -67,11 +67,11 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
         var issuer = session.forms.billing.issuer.value;
 
         if (config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT) {
-            var result = paymentService.createPayment(order, paymentMethod, { issuer: issuer });
-            redirectUrl = result.payment.links.checkout.href;
+            var createPaymentResult = paymentService.createPayment(order, paymentMethod, { issuer: issuer });
+            redirectUrl = createPaymentResult.payment.links.checkout.href;
         } else {
-            var result = paymentService.createOrder(order, paymentMethod, { issuer: issuer });
-            redirectUrl = result.order.links.checkout.href;
+            var createOrderResult = paymentService.createOrder(order, paymentMethod, { issuer: issuer });
+            redirectUrl = createOrderResult.order.links.checkout.href;
         }
     } catch (e) {
         Logger.error(e.javaMessage + '\n\r' + e.stack);

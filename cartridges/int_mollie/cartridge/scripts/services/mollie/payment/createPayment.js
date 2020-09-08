@@ -12,12 +12,12 @@ var mollieRequestEntities = require('*/cartridge/scripts/services/mollie/mollieR
 function payloadBuilder(params) {
     var payload = {
         amount: new mollieRequestEntities.Currency(params.totalGrossPrice),
-        description: "Order: " + params.orderId,
+        description: 'Order: ' + params.orderId,
         redirectUrl: URLUtils.https('MolliePayment-Redirect', 'orderId', params.orderId).toString(),
         webhookUrl: URLUtils.https('MolliePayment-Hook', 'orderId', params.orderId).toString(),
         locale: request.getLocale(),
         method: params.methodId
-    }
+    };
 
     if (params.issuer) {
         payload.issuer = params.issuer;

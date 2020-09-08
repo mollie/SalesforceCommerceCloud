@@ -1,9 +1,11 @@
+var HookMgr = require('dw/system/HookMgr');
 var ISML = require('dw/template/ISML');
 var OrderMgr = require('dw/order/OrderMgr');
-var Order = require('dw/order/Order');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
+var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
+var PaymentMgr = require('dw/order/PaymentMgr');
 
 var renderTemplate = function (templateName, viewParams) {
     try {
@@ -25,26 +27,26 @@ var sendPaymentLink = function (email, paymentLink) {
         email,
         paymentLink
     );
-}
+};
 
 exports.Start = function () {
     const orderNo = request.httpParameterMap.get('order_no').stringValue;
     var order = OrderMgr.getOrder(orderNo);
     var paymentLink;
     if (orderHelper.isMollieOrder(order)) {
-        var result = paymentService.getOrder(orderHelper.getOrderId(order));
-        paymentLink = result.order.links.checkout.href;
+        var getOrderResult = paymentService.getOrder(orderHelper.getOrderId(order));
+        paymentLink = getOrderResult.order.links.checkout.href;
     } else {
         var mollieInstruments = orderHelper.getMolliePaymentInstruments(order);
         var lastMollieInstrument = mollieInstruments.pop();
         var paymentMethodId = lastMollieInstrument.getPaymentMethod();
-        var result = paymentService.getPayment(orderHelper.getPaymentId(order, paymentMethodId));
-        if (result.payment.checkout.href) {
-            paymentLink = result.payment.checkout.href;
+        var getPaymentResult = paymentService.getPayment(orderHelper.getPaymentId(order, paymentMethodId));
+        if (getPaymentResult.payment.checkout.href) {
+            paymentLink = getPaymentResult.payment.checkout.href;
         } else {
-            var paymentMethod = PaymentMgr.getPaymentMethod(paymentMethodID)
-            var result = paymentService.createPayment(order, paymentMethod);
-            paymentLink = result.payment.checkout.href;
+            var paymentMethod = PaymentMgr.getPaymentMethod(paymentMethodId);
+            var createPaymentresult = paymentService.createPayment(order, paymentMethod);
+            paymentLink = createPaymentresult.payment.checkout.href;
         }
     }
     if (paymentLink) {
@@ -56,7 +58,6 @@ exports.Start = function () {
     } else {
         renderTemplate('order/payment/link/order_payment_link_not_available.isml');
     }
-
 };
 
 exports.SendMail = function () {
@@ -65,11 +66,11 @@ exports.SendMail = function () {
     const email = request.httpParameterMap.get('email').stringValue;
     const viewParams = {
         success: true,
-        orderId: orderId,
+        orderId: orderId
     };
 
     try {
-        sendPaymentLink(email, paymentLink)
+        sendPaymentLink(email, paymentLink);
         Logger.debug('PAYMENT :: Sending link ' + paymentLink + ' for order: ' + orderId + '.');
     } catch (e) {
         Logger.error('PAYMENT :: ERROR :: Error while sending link: ' + paymentLink + ' for order: ' + orderId + '.' + e.message);

@@ -47,4 +47,4 @@ exports.now = function () {
  */
 exports.format = function (calendar, format) {
     return formatCalendar(calendar, format);
-}
+};

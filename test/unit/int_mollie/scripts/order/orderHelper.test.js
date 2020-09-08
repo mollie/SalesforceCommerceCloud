@@ -272,7 +272,7 @@ describe('order/orderHelper', () => {
         });
         it('getPaymentStatus', () => {
             expect(orderHelper.getPaymentStatus(this.order, 'paymentMethodID')).to.eql('paymentStatus');
-        })
+        });
         it('returns null if no paymentInstrument is found', () => {
             this.order.getPaymentInstruments.returns({ toArray: () => [] });
             expect(orderHelper.getPaymentId(this.order, 'paymentMethodID')).to.be.null();

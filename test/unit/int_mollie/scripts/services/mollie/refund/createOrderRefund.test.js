@@ -25,7 +25,7 @@ describe('mollie/createOrderRefund', () => {
                 lines: [{
                     id: faker.random.uuid()
                 }]
-            }
+            };
         });
 
         it('builds a correct payload', () => {

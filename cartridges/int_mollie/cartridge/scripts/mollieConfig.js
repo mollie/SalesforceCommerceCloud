@@ -2,21 +2,21 @@ var Site = require('dw/system/Site');
 var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
 
 var TRANSACTION_STATUS = {
-    OPEN: "open",
-    CREATED: "created",
-    PENDING: "pending",
-    AUTHORIZED: "authorized",
-    PAID: "paid",
-    SHIPPING: "shipping",
-    COMPLETED: "completed",
-    EXPIRED: "expired",
-    CANCELED: "canceled",
-    FAILED: "failed"
-}
+    OPEN: 'open',
+    CREATED: 'created',
+    PENDING: 'pending',
+    AUTHORIZED: 'authorized',
+    PAID: 'paid',
+    SHIPPING: 'shipping',
+    COMPLETED: 'completed',
+    EXPIRED: 'expired',
+    CANCELED: 'canceled',
+    FAILED: 'failed'
+};
 
 var TRANSACTION_API = {
-    PAYMENT: "payment",
-    ORDER: "order"
+    PAYMENT: 'payment',
+    ORDER: 'order'
 };
 
 // Mollie Configuration
@@ -28,7 +28,7 @@ function Config() {
     var sitePreferences;
     var getPreferenceOrThrow = function (preferences, preferenceName) {
         const pref = preferences[preferenceName];
-        if (typeof pref === "boolean") return pref
+        if (typeof pref === 'boolean') return pref;
         if (!pref) throw new ServiceException('You must configure sitePreference by name ' + preferenceName + '.');
         return pref;
     };
@@ -40,7 +40,7 @@ function Config() {
         throw new ServiceException('SITE_PREFRENCES :: ' + e.message);
     }
 
-    //#region GENERAL CONFIG
+    // #region GENERAL CONFIG
     this.bearerToken = getPreferenceOrThrow(sitePreferences, 'mollieBearerToken');
     this.enabledTransActionAPI = getPreferenceOrThrow(sitePreferences, 'mollieEnabledTransactionAPI');
     this.logCategory = getPreferenceOrThrow(sitePreferences, 'mollieLogCategory');
@@ -78,7 +78,7 @@ function Config() {
      */
     this.getTransactionStatus = function () {
         return TRANSACTION_STATUS;
-    }
+    };
 
     /**
      * Get enabled transaction api (payment / order)
@@ -88,7 +88,7 @@ function Config() {
      */
     this.getEnabledTransactionAPI = function () {
         return this.enabledTransActionAPI.value;
-    }
+    };
 
     /**
      * Get default expiry days
@@ -98,7 +98,7 @@ function Config() {
      */
     this.getOrderDefaultExpiryDays = function () {
         return this.orderDefaultExpiryDays;
-    }
+    };
 
     /**
      * Get LogCategory
@@ -118,7 +118,7 @@ function Config() {
      */
     this.getComponentsEnabled = function () {
         return this.componentsEnabled;
-    }
+    };
 
     /**
      * Get components enabled test mode
@@ -128,7 +128,7 @@ function Config() {
      */
     this.getComponentsEnableTestMode = function () {
         return this.componentsEnableTestMode;
-    }
+    };
 
     /**
      * Get components profile id
@@ -138,7 +138,7 @@ function Config() {
      */
     this.getComponentsProfileId = function () {
         return this.componentsProfileId;
-    }
+    };
 
     /**
      * Get single click payments enabled
@@ -148,7 +148,7 @@ function Config() {
      */
     this.getEnableSingleClickPayments = function () {
         return this.enableSingleClickPayments;
-    }
+    };
 
     /**
      * Get Transaction API constant
@@ -158,9 +158,9 @@ function Config() {
      */
     this.getTransactionAPI = function () {
         return TRANSACTION_API;
-    }
+    };
 
-    //#endregion
+    // #endregion
 }
 
 module.exports = new Config();

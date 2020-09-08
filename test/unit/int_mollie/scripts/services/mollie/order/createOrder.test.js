@@ -35,7 +35,7 @@ describe('mollie/createOrder', () => {
             this.amount = {
                 value: faker.random.number(),
                 currency: 'EUR'
-            }
+            };
             this.currencyStub = new stubs.dw.CurrencyMock();
             this.currencyStub.getCurrencyCode.returns(this.amount.currency);
             this.currencyStub.getValue.returns(this.amount.value);

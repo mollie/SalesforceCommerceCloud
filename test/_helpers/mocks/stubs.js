@@ -119,7 +119,7 @@ const dw = {
         wrap: sandbox.stub()
     },
     statusMock: { isError: sandbox.stub(), message: 'errorMessage', getMessage: sandbox.stub(), items: [] },
-    HookMgrMock: sandbox.stub(HookMgr),
+    HookMgrMock: sandbox.stub(HookMgr)
 };
 
 const loggerMock = { debug: sandbox.stub(), error: sandbox.stub() };
@@ -171,7 +171,7 @@ const checkoutHelpersMock = {
 };
 
 const renderTemplateHelperMock = {
-    getRenderedHtml: sandbox.stub(),
+    getRenderedHtml: sandbox.stub()
 };
 
 const dateMock = {
@@ -235,7 +235,7 @@ const initMocks = function () {
     dw.TransactionMock.wrap.callsFake(function (cb) {
         cb();
     });
-}
+};
 
 module.exports = {
     sandbox: sandbox,
@@ -257,7 +257,7 @@ module.exports = {
     },
     dw: dw,
     superModule: () => {
-        return sandbox.stub()
+        return sandbox.stub();
     },
     reset: initMocks,
     init: () => {

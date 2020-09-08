@@ -10,8 +10,8 @@ var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 /**
  * Process the Order Result from Mollie
  *
- * @param {dw.order.Order} order
- * @param {Object} paymentResult
+ * @param {dw.order.Order} order order
+ * @param {Object} paymentResult paymentResult from getOrder or getPayment call
  * @return {string} url
  */
 function processPaymentResult(order, paymentResult) {
@@ -22,7 +22,7 @@ function processPaymentResult(order, paymentResult) {
 
     var orderId = order.orderNo;
     var orderToken = order.orderToken;
-    var url = URLUtils.https('Order-Confirm', 'ID', orderId, 'token', orderToken).toString()
+    var url = URLUtils.https('Order-Confirm', 'ID', orderId, 'token', orderToken).toString();
     var historyItem;
 
     // PROCESS STATUS
@@ -66,9 +66,10 @@ function processPaymentResult(order, paymentResult) {
             });
             break;
 
-        case STATUS.EXPIRED:
-        case STATUS.CANCELED:
-        case STATUS.FAILED:
+        // STATUS.EXPIRED
+        // STATUS.CANCELED
+        // STATUS.FAILED
+        default:
             session.privacy.mollieError = Resource.msg('mollie.payment.error.' + paymentResult.status, 'mollie', null);
             url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
             var cancelHistoryItem = 'PAYMENT :: Canceling order, status :: ' + paymentResult.status;
@@ -80,10 +81,10 @@ function processPaymentResult(order, paymentResult) {
 
     Transaction.wrap(function () {
         if (isMollieOrder) {
-            order.custom.mollieOrderId = paymentResult.id;
-            order.custom.mollieOrderStatus = paymentResult.status;
+            orderHelper.setOrderId(order, paymentResult.id);
+            orderHelper.setOrderStatus(order, paymentResult.status);
         } else {
-            orderHelper.setPaymentId(order, null, paymentResult.id)
+            orderHelper.setPaymentId(order, null, paymentResult.id);
             orderHelper.setPaymentStatus(order, null, paymentResult.status);
         }
         if (historyItem) {

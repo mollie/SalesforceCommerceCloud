@@ -9,7 +9,7 @@ var mollieResponseEntities = require('*/cartridge/scripts/services/mollie/mollie
  */
 function payloadBuilder(params) {
     return {
-        lines: params.lines 
+        lines: params.lines
     };
 }
 

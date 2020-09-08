@@ -3,13 +3,6 @@
 var components = require('./components');
 
 /**
- * Init billing functions
- */
-function init() {
-    onBillingCountryChange();
-}
-
-/**
  * Updates the payment information in checkout, based on the supplied order model
  * @param {Object} order - checkout model to use as basis of new truth
  */
@@ -60,7 +53,14 @@ function updatePaymentOptions(data) {
         $('.js-payment-options').replaceWith(data.paymentOptionsTemplate);
         components.init();
     }
-};
+}
+
+/**
+ * Init billing functions
+ */
+function init() {
+    onBillingCountryChange();
+}
 
 module.exports = {
     init: init,

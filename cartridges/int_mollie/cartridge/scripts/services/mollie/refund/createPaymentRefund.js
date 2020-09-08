@@ -1,6 +1,5 @@
 var Logger = require('*/cartridge/scripts/utils/logger');
 var mollieResponseEntities = require('*/cartridge/scripts/services/mollie/mollieResponseEntities');
-var mollieRequestEntities = require('*/cartridge/scripts/services/mollie/mollieRequestEntities');
 
 /**
  *
@@ -10,7 +9,7 @@ var mollieRequestEntities = require('*/cartridge/scripts/services/mollie/mollieR
  */
 function payloadBuilder(params) {
     return {
-        amount: params.amount,
+        amount: params.amount
     };
 }
 

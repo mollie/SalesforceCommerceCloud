@@ -2,7 +2,7 @@ var Logger = require('*/cartridge/scripts/utils/logger');
 var mollieResponseEntities = require('*/cartridge/scripts/services/mollie/mollieResponseEntities');
 
 /**
- *
+ * @param {Object} params - params object
  * @returns {Object} payload - returns payload
  */
 function payloadBuilder(params) {

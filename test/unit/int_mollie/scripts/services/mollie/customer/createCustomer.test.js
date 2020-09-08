@@ -24,7 +24,7 @@ describe('mollie/createCustomer', () => {
                 firstName: faker.lorem.word(),
                 lastName: faker.lorem.word(),
                 email: faker.lorem.word()
-            }
+            };
             this.profileStub = new stubs.dw.ProfileMock();
             this.profileStub.getFirstName.returns(this.customer.firstName);
             this.profileStub.getLastName.returns(this.customer.lastName);

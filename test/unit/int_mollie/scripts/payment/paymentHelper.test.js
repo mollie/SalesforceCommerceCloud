@@ -11,21 +11,21 @@ const paymentHelper = proxyquire(`${base}/int_mollie/cartridge/scripts/payment/p
     '*/cartridge/scripts/mollieConfig': stubs.configMock,
     '*/cartridge/scripts/order/orderHelper': stubs.orderHelperMock,
     '*/cartridge/scripts/checkout/checkoutHelpers': stubs.checkoutHelpersMock,
-    '*/cartridge/scripts/payment/paymentService': stubs.paymentServiceMock,
+    '*/cartridge/scripts/payment/paymentService': stubs.paymentServiceMock
 });
 
 var STATUSMOCK = {
-    OPEN: "open",
-    CREATED: "created",
-    PENDING: "pending",
-    AUTHORIZED: "authorized",
-    PAID: "paid",
-    SHIPPING: "shipping",
-    COMPLETED: "completed",
-    EXPIRED: "expired",
-    CANCELED: "canceled",
-    FAILED: "failed"
-}
+    OPEN: 'open',
+    CREATED: 'created',
+    PENDING: 'pending',
+    AUTHORIZED: 'authorized',
+    PAID: 'paid',
+    SHIPPING: 'shipping',
+    COMPLETED: 'completed',
+    EXPIRED: 'expired',
+    CANCELED: 'canceled',
+    FAILED: 'failed'
+};
 
 describe('payment/paymentHelper', () => {
     before(function () { stubs.init(); });
@@ -126,7 +126,7 @@ describe('payment/paymentHelper', () => {
 
             expect(stubs.dw.TransactionMock.wrap).have.to.been.calledTwice();
             expect(stubs.paymentServiceMock.cancelOrder).not.have.to.been.called();
-            expect(stubs.orderHelperMock.getPaymentId).to.have.been.called.calledOnce()
+            expect(stubs.orderHelperMock.getPaymentId).to.have.been.called.calledOnce();
             expect(stubs.paymentServiceMock.cancelPayment).to.have.to.been.calledOnce();
             expect(stubs.orderHelperMock.failOrCancelOrder).have.to.been.calledOnce();
         });

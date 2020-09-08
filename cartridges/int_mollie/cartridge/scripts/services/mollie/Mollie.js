@@ -38,39 +38,39 @@ function Mollie(configuration) {
     this.replaceId = function (parameters) {
         if (parameters.paymentId) {
             this.path = this.path
-                .replace("{paymentId}", parameters.paymentId);
+                .replace('{paymentId}', parameters.paymentId);
         }
 
         if (parameters.orderId) {
             this.path = this.path
-                .replace("{orderId}", parameters.orderId);
+                .replace('{orderId}', parameters.orderId);
         }
 
         if (parameters.methodId) {
             this.path = this.path
-                .replace("{methodId}", parameters.methodId);
+                .replace('{methodId}', parameters.methodId);
         }
 
         if (parameters.amount) {
             this.path = this.path
-                .replace("{amount}", parameters.amount);
+                .replace('{amount}', parameters.amount);
         }
 
         if (parameters.resource) {
             this.path = this.path
-                .replace("{resource}", parameters.resource);
+                .replace('{resource}', parameters.resource);
         }
 
         if (parameters.billingCountry) {
             this.path = this.path
-                .replace("{billingCountry}", parameters.billingCountry);
+                .replace('{billingCountry}', parameters.billingCountry);
         }
 
         if (parameters.currency) {
             this.path = this.path
-                .replace("{currency}", parameters.currency);
+                .replace('{currency}', parameters.currency);
         }
-    }
+    };
 
     this.createRequest = function createRequest(svc, parameters) {
         this.configureService(svc, parameters);

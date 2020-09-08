@@ -2,11 +2,13 @@
  *
  * @class
  * @param {Object} money - sfcc Money object
+ * @returns {Object} Request Currency object
  */
 function Currency(money) {
-    money = money || {};
-    this.currency = money.getCurrencyCode();
-    this.value = money.getValue().toFixed(2);
+    return {
+        currency: money.getCurrencyCode(),
+        value: money.getValue().toFixed(2)
+    };
 }
 
 /**
@@ -14,8 +16,7 @@ function Currency(money) {
  * @class
  * @param {dw.order.OrderAddress} address - sfcc address object
  * @param {string} email - user email
- * @param {Object} address - sfcc address object
- * @returns
+ * @returns {Object} Request Address object
  */
 function Address(address, email) {
     return {
@@ -29,13 +30,14 @@ function Address(address, email) {
         givenName: address.getFirstName(),
         familyName: address.getLastName(),
         email: email
-    }
+    };
 }
 
 /**
  *
  * @class
  * @param {dw.order.ProductLineItem} productLineItem - sfcc productLineItem object
+ * @returns {Object} Request ProductLineItem object
  */
 function ProductLineItem(productLineItem) {
     var lineItem = {
@@ -61,6 +63,7 @@ function ProductLineItem(productLineItem) {
  *
  * @class
  * @param {dw.order.ShippingLineItem} shippingLineItem - sfcc shippingLineItem object
+ * @returns {Object} Request ShippingLineItem object
  */
 function ShippingLineItem(shippingLineItem) {
     return {
@@ -72,13 +75,14 @@ function ShippingLineItem(shippingLineItem) {
         totalAmount: new Currency(shippingLineItem.getAdjustedGrossPrice()),
         type: 'shipping_fee',
         discountAmount: new Currency(shippingLineItem.getGrossPrice().subtract(shippingLineItem.getAdjustedGrossPrice()))
-    }
+    };
 }
 
 /**
  *
  * @class
  * @param {dw.order.PriceAdjustment} priceAdjustment - sfcc discountLineItem object
+ * @returns {Object} Request DiscountLineItem object
  */
 function DiscountLineItem(priceAdjustment) {
     var discount = new Currency(priceAdjustment.getGrossPrice());
@@ -90,7 +94,7 @@ function DiscountLineItem(priceAdjustment) {
         unitPrice: discount,
         totalAmount: discount,
         type: 'discount'
-    }
+    };
 }
 
 module.exports = {
@@ -99,4 +103,4 @@ module.exports = {
     ProductLineItem: ProductLineItem,
     ShippingLineItem: ShippingLineItem,
     DiscountLineItem: DiscountLineItem
-}
+};
