@@ -97,10 +97,39 @@ function DiscountLineItem(priceAdjustment) {
     };
 }
 
+/**
+ *
+ * @class
+ * @param {dw.util.Collection<dw.order.ProductLineItem>} productLineItems - the product product line items
+ * @param {dw.util.Collection<dw.order.ShippingLineItem>} shippingLineItem - the product shipping line items
+ * @param {dw.util.Collection<dw.order.PriceAdjustment>} priceAdjustments - the product price adjustments
+ * @returns {Object} Request Lines object
+ */
+function Lines(productLineItems, shipments, priceAdjustments) {
+    var lines = [];
+
+    productLineItems.toArray().forEach(function (productLineItem) {
+        lines.push(new ProductLineItem(productLineItem));
+    });
+
+    shipments.toArray().forEach(function (shipment) {
+        shipment.getShippingLineItems().toArray().forEach(function (shippingLineItem) {
+            lines.push(new ShippingLineItem(shippingLineItem));
+        });
+    });
+
+    priceAdjustments.toArray().forEach(function (priceAdjustment) {
+        lines.push(new DiscountLineItem(priceAdjustment));
+    });
+
+    return lines;
+}
+
 module.exports = {
     Currency: Currency,
     Address: Address,
     ProductLineItem: ProductLineItem,
     ShippingLineItem: ShippingLineItem,
-    DiscountLineItem: DiscountLineItem
+    DiscountLineItem: DiscountLineItem,
+    Lines: Lines
 };

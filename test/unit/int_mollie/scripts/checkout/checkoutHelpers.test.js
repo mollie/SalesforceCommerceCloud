@@ -11,10 +11,10 @@ const checkoutHelpers = proxyquire(`${base}/int_mollie/cartridge/scripts/checkou
     'dw/web/URLUtils': stubs.dw.URLUtilsMock,
     'dw/system/Transaction': stubs.dw.TransactionMock,
     'dw/order/Order': stubs.dw.OrderMock,
-    '*/cartridge/scripts/config': stubs.configMock,
+    '*/cartridge/scripts/mollieConfig': stubs.configMock,
     '*/cartridge/scripts/renderTemplateHelper': stubs.renderTemplateHelperMock,
     '*/cartridge/scripts/order/orderHelper': stubs.orderHelperMock,
-    '*/cartridge/scripts/exceptions/ServiceException': stubs.serviceExceptionMock,
+    '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
     '*/cartridge/scripts/utils/superModule': stubs.superModule
 });
@@ -244,7 +244,7 @@ describe('checkout/checkoutHelpers', () => {
                 .and.to.have.been.calledWithExactly('Checkout-Begin');
         });
 
-        it('fails an order and returns { error } when error is not of type ServiceException', () => {
+        it('fails an order and returns { error } when error is not of type MollieServiceException', () => {
             const order = new stubs.dw.OrderMock();
             order.orderNo = faker.random.number();
             order.totalNetPrice = { getValue: () => faker.random.number() };
@@ -288,7 +288,7 @@ describe('checkout/checkoutHelpers', () => {
             var lastOrderNumber = faker.random.number();
             var order = new stubs.dw.OrderMock();
 
-            order.getStatus.returns(stubs.dw.OrderMock.ORDER_STATUS_CREATED);
+            order.getStatus.returns({ value: stubs.dw.OrderMock.ORDER_STATUS_CREATED });
             stubs.dw.BasketMgrMock.getCurrentBasket.returns({ getProductLineItems: () => [] });
             stubs.dw.OrderMgrMock.getOrder.returns(order);
 
@@ -315,7 +315,7 @@ describe('checkout/checkoutHelpers', () => {
             var lastOrderNumber = faker.random.number();
             var order = new stubs.dw.OrderMock();
 
-            order.getStatus.returns(stubs.dw.OrderMock.ORDER_STATUS_OPEN);
+            order.getStatus.returns({ value: stubs.dw.OrderMock.ORDER_STATUS_OPEN });
             stubs.dw.BasketMgrMock.getCurrentBasket.returns({ getProductLineItems: () => [] });
             stubs.dw.OrderMgrMock.getOrder.returns(order);
 
@@ -345,7 +345,7 @@ describe('checkout/checkoutHelpers', () => {
             const order = new stubs.dw.OrderMock();
             stubs.dw.OrderMgrMock.placeOrder.returns({ isError: () => false });
             stubs.dw.OrderMgrMock.undoFailOrder.returns({ isError: () => false });
-            order.getStatus.returns(stubs.dw.OrderMock.ORDER_STATUS_CREATED);
+            order.getStatus.returns({ value: stubs.dw.OrderMock.ORDER_STATUS_CREATED });
 
             checkoutHelpers.placeOrder(order);
 
@@ -361,7 +361,7 @@ describe('checkout/checkoutHelpers', () => {
             const order = new stubs.dw.OrderMock();
             stubs.dw.OrderMgrMock.placeOrder.returns({ isError: () => true, message: 'BOOM' });
             stubs.dw.OrderMgrMock.undoFailOrder.returns({ isError: () => false });
-            order.getStatus.returns(stubs.dw.OrderMock.ORDER_STATUS_CREATED);
+            order.getStatus.returns({ value: stubs.dw.OrderMock.ORDER_STATUS_CREATED });
 
             expect(() => checkoutHelpers.placeOrder(order)).to.throw();
 
@@ -380,7 +380,7 @@ describe('checkout/checkoutHelpers', () => {
             const order = new stubs.dw.OrderMock();
             stubs.dw.OrderMgrMock.placeOrder.returns({ isError: () => false });
             stubs.dw.OrderMgrMock.undoFailOrder.returns({ isError: () => false });
-            order.getStatus.returns(stubs.dw.OrderMock.ORDER_STATUS_FAILED);
+            order.getStatus.returns({ value: stubs.dw.OrderMock.ORDER_STATUS_FAILED });
 
             checkoutHelpers.placeOrder(order);
 
@@ -397,7 +397,7 @@ describe('checkout/checkoutHelpers', () => {
             const order = new stubs.dw.OrderMock();
             stubs.dw.OrderMgrMock.placeOrder.returns({ isError: () => false });
             stubs.dw.OrderMgrMock.undoFailOrder.returns({ isError: () => true, message: 'BOOM' });
-            order.getStatus.returns(stubs.dw.OrderMock.ORDER_STATUS_FAILED);
+            order.getStatus.returns({ value: stubs.dw.OrderMock.ORDER_STATUS_FAILED });
 
             expect(() => checkoutHelpers.placeOrder(order)).to.throw();
 

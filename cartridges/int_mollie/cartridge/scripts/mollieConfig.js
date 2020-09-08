@@ -1,5 +1,5 @@
 var Site = require('dw/system/Site');
-var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
+var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 
 var TRANSACTION_STATUS = {
     OPEN: 'open',
@@ -29,7 +29,7 @@ function Config() {
     var getPreferenceOrThrow = function (preferences, preferenceName) {
         const pref = preferences[preferenceName];
         if (typeof pref === 'boolean') return pref;
-        if (!pref) throw new ServiceException('You must configure sitePreference by name ' + preferenceName + '.');
+        if (!pref) throw new MollieServiceException('You must configure sitePreference by name ' + preferenceName + '.');
         return pref;
     };
 
@@ -37,7 +37,7 @@ function Config() {
         sitePreferences = Site.getCurrent().getPreferences().getCustom();
         this.siteId = Site.getCurrent().getID();
     } catch (e) {
-        throw new ServiceException('SITE_PREFRENCES :: ' + e.message);
+        throw new MollieServiceException('SITE_PREFRENCES :: ' + e.message);
     }
 
     // #region GENERAL CONFIG

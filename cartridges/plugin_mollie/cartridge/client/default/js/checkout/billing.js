@@ -1,7 +1,9 @@
 'use strict';
 
 var components = require('./components');
+var applePay = require('./applePay');
 var billing = require('base/checkout/billing');
+
 /**
  * Updates the payment information in checkout, based on the supplied order model
  * @param {Object} order - checkout model to use as basis of new truth
@@ -21,6 +23,26 @@ function updatePaymentInformation(order) {
     $paymentSummary.empty().append(htmlToAppend);
 }
 
+/**
+ * Updates the payment options based on the supplied rendered template response
+ * @param {Object} data - data returned from controller
+ */
+function updatePaymentOptions(data) {
+    if (data.paymentOptionsTemplate) {
+        if ($('.js-mollie-components-container').length) {
+            components.unmountMollieComponents();
+        }
+        $('.js-payment-options').replaceWith(data.paymentOptionsTemplate);
+        billing.addNewPaymentInstrument();
+        billing.cancelNewPayment();
+        billing.paymentTabs();
+        applePay.checkApplePaySupport();
+        if ($('.js-mollie-components-container').length) {
+            components.mountMollieComponents();
+            components.initEventListeners();
+        }
+    }
+}
 
 /**
  * Handles billing country change
@@ -42,26 +64,6 @@ function onBillingCountryChange() {
             }
         });
     });
-}
-
-/**
- * Updates the payment options based on the supplied rendered template response
- * @param {Object} data - data returned from controller
- */
-function updatePaymentOptions(data) {
-    if (data.paymentOptionsTemplate) {
-        if ($('.js-mollie-components-container').length) {
-            components.unmountMollieComponents();
-        }
-        $('.js-payment-options').replaceWith(data.paymentOptionsTemplate);
-        billing.addNewPaymentInstrument();
-        billing.cancelNewPayment();
-        billing.paymentTabs();
-        if ($('.js-mollie-components-container').length) {
-            components.mountMollieComponents();
-            components.initEventListeners();
-        }
-    }
 }
 
 /**

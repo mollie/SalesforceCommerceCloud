@@ -9,30 +9,6 @@ var config = require('*/cartridge/scripts/mollieConfig');
  *
  *
  * @param {Object} params - params object
- * @returns {Object} object containing lines
- */
-function getLinesForParams(params) {
-    var lines = params.productLineItems.toArray().map(function (productLineItem) {
-        return new mollieRequestEntities.ProductLineItem(productLineItem);
-    });
-
-    params.shipments.toArray().forEach(function (shipment) {
-        shipment.getShippingLineItems().toArray().forEach(function (shippingLineItem) {
-            lines.push(new mollieRequestEntities.ShippingLineItem(shippingLineItem));
-        });
-    });
-
-    params.priceAdjustments.toArray().forEach(function (priceAdjustment) {
-        lines.push(new mollieRequestEntities.DiscountLineItem(priceAdjustment));
-    });
-
-    return lines;
-}
-
-/**
- *
- *
- * @param {Object} params - params object
  * @returns {Object} payload - returns payload
  */
 function payloadBuilder(params) {
@@ -44,7 +20,7 @@ function payloadBuilder(params) {
         redirectUrl: URLUtils.https('MolliePayment-Redirect', 'orderId', params.orderId).toString(),
         webhookUrl: URLUtils.https('MolliePayment-Hook', 'orderId', params.orderId).toString(),
         method: params.paymentMethod.custom.molliePaymentMethodId,
-        lines: getLinesForParams(params),
+        lines: new mollieRequestEntities.Lines(params.productLineItems, params.shipments, params.priceAdjustments),
         billingAddress: new mollieRequestEntities.Address(params.billingAddress, params.email),
         payment: {},
         expiresAt: date.format(date.addDays(date.now(), expiryDays), 'yyyy-MM-dd')

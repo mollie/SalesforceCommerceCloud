@@ -5,7 +5,7 @@ var OrderMgr = require('dw/order/OrderMgr');
 var URLUtils = require('dw/web/URLUtils');
 var Transaction = require('dw/system/Transaction');
 var Order = require('dw/order/Order');
-var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
+var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var config = require('*/cartridge/scripts/mollieConfig');
@@ -22,23 +22,23 @@ var COHelpers = require('*/cartridge/scripts/utils/superModule')(module);
  */
 COHelpers.handlePayments = function (order, orderNumber) {
     try {
-        if (order.totalNetPrice.getValue() === 0) throw new ServiceException('Order has netPrice of 0');
+        if (order.totalNetPrice.getValue() === 0) throw new MollieServiceException('Order has netPrice of 0');
 
         var paymentInstruments = order.getPaymentInstruments();
 
-        if (paymentInstruments.length === 0) throw new ServiceException('No paymentInstruments provided');
+        if (paymentInstruments.length === 0) throw new MollieServiceException('No paymentInstruments provided');
 
         // DO NOT DO ANYTHING WITH OTHER PAYMENT INSTRUMENTS AT THE MOMENT
         const mollieInstruments = orderHelper.getMolliePaymentInstruments(order);
 
-        if (mollieInstruments.length !== 1) throw new ServiceException('Expected exactly 1 Mollie Payment Instrument');
+        if (mollieInstruments.length !== 1) throw new MollieServiceException('Expected exactly 1 Mollie Payment Instrument');
 
         var paymentInstrument = mollieInstruments.pop();
         var paymentMethodID = paymentInstrument.getPaymentMethod();
         var paymentProcessor = PaymentMgr.getPaymentMethod(paymentMethodID).getPaymentProcessor();
         var hookName = 'app.payment.processor.' + paymentProcessor.getID().toLowerCase();
 
-        if (!HookMgr.hasHook(hookName)) throw new ServiceException('Hook ' + hookName + ' not supported.');
+        if (!HookMgr.hasHook(hookName)) throw new MollieServiceException('Hook ' + hookName + ' not supported.');
 
         const authorizationResult = HookMgr.callHook(
             hookName,
@@ -48,13 +48,13 @@ COHelpers.handlePayments = function (order, orderNumber) {
             paymentProcessor
         );
 
-        if (authorizationResult.error) throw new ServiceException('Authorization hook failed');
+        if (authorizationResult.error) throw new MollieServiceException('Authorization hook failed');
 
         return authorizationResult;
     } catch (e) {
         Logger.debug('PAYMENT :: ERROR :: ' + e.message);
         Transaction.wrap(function () { OrderMgr.failOrder(order); });
-        if (e.name === 'ServiceException') return { continueUrl: URLUtils.url('Checkout-Begin').toString() };
+        if (e.name === 'MollieServiceException') return { continueUrl: URLUtils.url('Checkout-Begin').toString() };
         return { error: true };
     }
 };
@@ -80,7 +80,7 @@ COHelpers.restoreOpenOrder = function (lastOrderNumber) {
     if (!currentBasket || currentBasket.getProductLineItems().length === 0) {
         if (lastOrderNumber) {
             var order = OrderMgr.getOrder(lastOrderNumber);
-            if (order && Number(order.getStatus()) === Order.ORDER_STATUS_CREATED) {
+            if (order && order.getStatus().value === Order.ORDER_STATUS_CREATED) {
                 Transaction.wrap(function () {
                     OrderMgr.failOrder(order);
                 });
@@ -96,10 +96,9 @@ COHelpers.restoreOpenOrder = function (lastOrderNumber) {
  */
 COHelpers.placeOrder = function placeOrder(order) {
     try {
-        var orderStatus = order.getStatus() + '';
-
-        if (orderStatus === Order.ORDER_STATUS_CREATED + '' || orderStatus === Order.ORDER_STATUS_FAILED + '') {
-            if (orderStatus === Order.ORDER_STATUS_FAILED + '') {
+        var orderStatus = order.getStatus().value;
+        if (orderStatus === Order.ORDER_STATUS_CREATED || orderStatus === Order.ORDER_STATUS_FAILED) {
+            if (orderStatus === Order.ORDER_STATUS_FAILED) {
                 Transaction.begin();
                 var undoFailOrderStatus = OrderMgr.undoFailOrder(order);
                 if (undoFailOrderStatus.isError()) {
@@ -124,7 +123,7 @@ COHelpers.placeOrder = function placeOrder(order) {
         const errorMessage = 'PAYMENT :: Failed placing the order :: ' + JSON.stringify(e.message);
         orderHelper.addItemToOrderHistory(order, errorMessage, true);
         Transaction.commit();
-        throw new ServiceException(errorMessage);
+        throw new MollieServiceException(errorMessage);
     }
 };
 
@@ -147,7 +146,7 @@ COHelpers.getMollieViewData = function (profile) {
 };
 
 /**
- * Get mollie viewdata
+ * Get mollie payment options template
  * @param {dw.order.Basket} currentBasket - the target Basket object
  * @param {Object} accountModel - The account model for the current customer
  * @param {Object} orderModel - The current customer's order history

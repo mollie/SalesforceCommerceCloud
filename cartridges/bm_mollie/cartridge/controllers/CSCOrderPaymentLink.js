@@ -1,29 +1,21 @@
 var HookMgr = require('dw/system/HookMgr');
-var ISML = require('dw/template/ISML');
 var OrderMgr = require('dw/order/OrderMgr');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
-var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
+var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var PaymentMgr = require('dw/order/PaymentMgr');
+var renderTemplate = require('*/cartridge/scripts/helpers/renderTemplateHelper').renderTemplate;
 
-var renderTemplate = function (templateName, viewParams) {
-    try {
-        ISML.renderTemplate(templateName, viewParams);
-    } catch (e) {
-        Logger.error('Error while rendering template ' + templateName);
-        throw e;
-    }
-};
-
-var sendPaymentLink = function (email, paymentLink) {
+var sendPaymentLink = function (order, email, paymentLink) {
     var hookName = 'mollie.send.payment.link';
 
-    if (!HookMgr.hasHook(hookName)) throw new ServiceException('Hook ' + hookName + ' not supported.');
+    if (!HookMgr.hasHook(hookName)) throw new MollieServiceException('Hook ' + hookName + ' not supported.');
 
     return HookMgr.callHook(
         hookName,
         'sendPaymentLink',
+        order,
         email,
         paymentLink
     );
@@ -39,14 +31,16 @@ exports.Start = function () {
     } else {
         var mollieInstruments = orderHelper.getMolliePaymentInstruments(order);
         var lastMollieInstrument = mollieInstruments.pop();
-        var paymentMethodId = lastMollieInstrument.getPaymentMethod();
-        var getPaymentResult = paymentService.getPayment(orderHelper.getPaymentId(order, paymentMethodId));
-        if (getPaymentResult.payment.checkout.href) {
-            paymentLink = getPaymentResult.payment.checkout.href;
-        } else {
-            var paymentMethod = PaymentMgr.getPaymentMethod(paymentMethodId);
-            var createPaymentresult = paymentService.createPayment(order, paymentMethod);
-            paymentLink = createPaymentresult.payment.checkout.href;
+        if (lastMollieInstrument) {
+            var paymentMethodId = lastMollieInstrument.getPaymentMethod();
+            var getPaymentResult = paymentService.getPayment(orderHelper.getPaymentId(order, paymentMethodId));
+            if (getPaymentResult.payment.checkout.href) {
+                paymentLink = getPaymentResult.payment.checkout.href;
+            } else {
+                var paymentMethod = PaymentMgr.getPaymentMethod(paymentMethodId);
+                var createPaymentresult = paymentService.createPayment(order, paymentMethod);
+                paymentLink = createPaymentresult.payment.checkout.href;
+            }
         }
     }
     if (paymentLink) {
@@ -64,13 +58,14 @@ exports.SendMail = function () {
     const paymentLink = request.httpParameterMap.get('paymentLink').stringValue;
     const orderId = request.httpParameterMap.get('orderId').stringValue;
     const email = request.httpParameterMap.get('email').stringValue;
+    const order = OrderMgr.getOrder(orderId);
     const viewParams = {
         success: true,
         orderId: orderId
     };
 
     try {
-        sendPaymentLink(email, paymentLink);
+        sendPaymentLink(order, email, paymentLink);
         Logger.debug('PAYMENT :: Sending link ' + paymentLink + ' for order: ' + orderId + '.');
     } catch (e) {
         Logger.error('PAYMENT :: ERROR :: Error while sending link: ' + paymentLink + ' for order: ' + orderId + '.' + e.message);

@@ -51,7 +51,7 @@ function processPaymentResult(order, paymentResult) {
 
         case STATUS.OPEN:
         case STATUS.CREATED:
-            historyItem = 'PAYMENT :: Canceling payment and returning to checkout because of bad status, status :: ' + paymentResult.status;
+            var cancelHistoryItem = 'PAYMENT :: Canceling payment and returning to checkout because of bad status, status :: ' + paymentResult.status;
             url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
             if (paymentResult.isCancelable()) {
                 if (isMollieOrder) {
@@ -62,21 +62,26 @@ function processPaymentResult(order, paymentResult) {
                 }
             }
             Transaction.wrap(function () {
-                orderHelper.failOrCancelOrder(order, historyItem);
-            });
-            break;
-
-        // STATUS.EXPIRED
-        // STATUS.CANCELED
-        // STATUS.FAILED
-        default:
-            session.privacy.mollieError = Resource.msg('mollie.payment.error.' + paymentResult.status, 'mollie', null);
-            url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
-            var cancelHistoryItem = 'PAYMENT :: Canceling order, status :: ' + paymentResult.status;
-            Transaction.wrap(function () {
                 orderHelper.failOrCancelOrder(order, cancelHistoryItem);
             });
             break;
+
+        case STATUS.EXPIRED:
+        case STATUS.CANCELED:
+        case STATUS.FAILED:
+            var failHistoryItem = 'PAYMENT :: Canceling order, status :: ' + paymentResult.status;
+            session.privacy.mollieError = Resource.msg('mollie.payment.error.' + paymentResult.status, 'mollie', null);
+            url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
+            Transaction.wrap(function () {
+                orderHelper.failOrCancelOrder(order, failHistoryItem);
+            });
+            break;
+
+        case STATUS.SHIPPING:
+            break;
+
+        default:
+            historyItem = 'PAYMENT :: Unknown Mollie status update :: ' + paymentResult.status;
     }
 
     Transaction.wrap(function () {

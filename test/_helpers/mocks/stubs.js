@@ -1,7 +1,7 @@
 const sinon = require('sinon');
 const sandbox = sinon.createSandbox();
 
-const ServiceException = require('../../../cartridges/int_mollie/cartridge/scripts/exceptions/ServiceException');
+const MollieServiceException = require('../../../cartridges/int_mollie/cartridge/scripts/exceptions/MollieServiceException');
 const Resource = require('./dw/web/Resource');
 const BasketMgr = require('./dw/order/BasketMgr');
 const Order = require('./dw/order/Order');
@@ -88,7 +88,7 @@ class CurrencyMock extends Currency {
     }
 }
 
-const serviceExceptionMock = sandbox.spy(ServiceException);
+const serviceExceptionMock = sandbox.spy(MollieServiceException);
 
 const MollieMock = sandbox.stub();
 const mollieMockInstance = {

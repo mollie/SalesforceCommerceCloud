@@ -1,10 +1,10 @@
-const ServiceException = require(`${base}/int_mollie/cartridge/scripts/exceptions/ServiceException`);
+const MollieServiceException = require(`${base}/int_mollie/cartridge/scripts/exceptions/MollieServiceException`);
 
-describe('exceptions/ServiceException', function () {
+describe('exceptions/MollieServiceException', function () {
     context('#new', function () {
         before(function () {
             this.errorMessage = 'message';
-            this.exception = new ServiceException(this.errorMessage);
+            this.exception = new MollieServiceException(this.errorMessage);
         });
 
         it('must be constructed with a message', function () {
@@ -15,7 +15,7 @@ describe('exceptions/ServiceException', function () {
             const errorDetail = {
                 more: 'information'
             };
-            const exceptionWithDetail = new ServiceException('message', errorDetail);
+            const exceptionWithDetail = new MollieServiceException('message', errorDetail);
             expect(exceptionWithDetail.errorDetail).to.eql(errorDetail);
         });
 
@@ -29,11 +29,11 @@ describe('exceptions/ServiceException', function () {
 
         it('has a stacktrace', function () {
             expect(this.exception.stack).to.be.a('string');
-            expect(this.exception.stack).to.have.string('ServiceException\n');
+            expect(this.exception.stack).to.have.string('MollieServiceException\n');
         });
 
         it('has a name', function () {
-            expect(this.exception.name).to.eql('ServiceException');
+            expect(this.exception.name).to.eql('MollieServiceException');
         });
 
         it('it inherits from Error', function () {
@@ -45,7 +45,7 @@ describe('exceptions/ServiceException', function () {
         before(function () {
             this.errorMessage = 'message';
             this.error = new Error(this.errorMessage);
-            this.exception = ServiceException.from(this.error);
+            this.exception = MollieServiceException.from(this.error);
         });
 
         it('has a message', function () {
@@ -54,11 +54,11 @@ describe('exceptions/ServiceException', function () {
 
         it('has a stacktrace containing the original stack', function () {
             expect(this.exception.stack).to.be.a('string');
-            expect(this.exception.stack).to.match(/^ServiceException/);
+            expect(this.exception.stack).to.match(/^MollieServiceException/);
         });
 
         it('has a name', function () {
-            expect(this.exception.name).to.eql('ServiceException');
+            expect(this.exception.name).to.eql('MollieServiceException');
         });
 
         it('it inherits from Error', function () {
@@ -68,7 +68,7 @@ describe('exceptions/ServiceException', function () {
         it('creates a stackTrace if original error has none', function () {
             const e = new Error(this.errorMessage);
             delete e.stack;
-            const exception = ServiceException.from(e);
+            const exception = MollieServiceException.from(e);
             expect(exception.stack).not.to.be.null();
         });
     });

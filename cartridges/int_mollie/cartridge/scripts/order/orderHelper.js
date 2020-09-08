@@ -190,7 +190,7 @@ function setPaymentId(order, paymentMethodId, paymentId) {
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {string} paymentMethodId - payment method id
- * @returns {string} - payment id
+ * @returns {string} - Mollie payment id
  */
 function getPaymentId(order, paymentMethodId) {
     return getTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentId' });
@@ -201,7 +201,7 @@ function getPaymentId(order, paymentMethodId) {
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {string} paymentMethodId - payment method id
- * @param {string} status - Mollie payment / order status
+ * @param {string} status - Mollie payment status
  * @returns {void}
  */
 function setPaymentStatus(order, paymentMethodId, status) {
@@ -213,7 +213,7 @@ function setPaymentStatus(order, paymentMethodId, status) {
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {string} paymentMethodId - payment method id
- * @returns {string} - captureId
+ * @returns {string} - Mollie payment status
  */
 function getPaymentStatus(order, paymentMethodId) {
     return getTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentStatus' });
@@ -234,7 +234,7 @@ function setOrderId(order, orderId) {
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @returns {string} - order id
+ * @returns {string} - Mollie order id
  */
 function getOrderId(order) {
     return getOrderCustomProperty(order, { key: 'mollieOrderId' });
@@ -244,7 +244,7 @@ function getOrderId(order) {
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} orderStatus - payment / order status
+ * @param {string} orderStatus - Mollie order status
  * @returns {void}
  */
 function setOrderStatus(order, orderStatus) {
@@ -255,7 +255,7 @@ function setOrderStatus(order, orderStatus) {
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @returns {string} - order status
+ * @returns {string} - Mollie order status
  */
 function getOrderStatus(order) {
     return getOrderCustomProperty(order, { key: 'mollieOrderStatus' });
@@ -265,7 +265,7 @@ function getOrderStatus(order) {
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @param {string} usedTransactionAPI - Mollie order id
+ * @param {string} usedTransactionAPI - Mollie used transaction API (order / payment)
  * @returns {void}
  */
 function setUsedTransactionAPI(order, usedTransactionAPI) {
@@ -276,7 +276,7 @@ function setUsedTransactionAPI(order, usedTransactionAPI) {
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
- * @returns {string} - order id
+ * @returns {string} - Mollie used transaction API (order / payment)
  */
 function getUsedTransactionAPI(order) {
     return getOrderCustomProperty(order, { key: 'mollieUsedTransactionAPI' });
@@ -286,7 +286,7 @@ function getUsedTransactionAPI(order) {
  *
  *
  * @param {dw.order.Order} order - Order object
- * @returns {boolean} is mollie order
+ * @returns {boolean} is mollie order?
  */
 function isMollieOrder(order) {
     return getUsedTransactionAPI(order) === config.getTransactionAPI().ORDER;

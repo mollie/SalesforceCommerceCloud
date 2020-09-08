@@ -36,7 +36,6 @@ function createMollieComponents() {
     cardNumberComponent = mollie.createComponent('cardNumber');
     expiryDateComponent = mollie.createComponent('expiryDate');
     verificationCodeComponent = mollie.createComponent('verificationCode');
-
 }
 
 /**

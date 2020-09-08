@@ -1,21 +1,12 @@
-var ISML = require('dw/template/ISML');
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
-
-var renderTemplate = function (templateName, viewParams) {
-    try {
-        ISML.renderTemplate(templateName, viewParams);
-    } catch (e) {
-        Logger.error('Error while rendering template ' + templateName);
-        throw e;
-    }
-};
+var renderTemplate = require('*/cartridge/scripts/helpers/renderTemplateHelper').renderTemplate;
 
 var isShipmentAllowed = function (order) {
-    const orderStatus = order.status.value;
+    const orderStatus = order.getStatus().value;
     return (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
         orderStatus !== Order.ORDER_STATUS_FAILED);
 };

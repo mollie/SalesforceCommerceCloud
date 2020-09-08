@@ -3,7 +3,7 @@
 var server = require('server');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var OrderMgr = require('dw/order/OrderMgr');
-var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
+var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var URLUtils = require('dw/web/URLUtils');
 
 /**
@@ -32,7 +32,7 @@ server.get('Redirect', server.middleware.https, function (req, res, next) {
     } catch (e) {
         var error = e;
         if (error.name === 'PaymentProviderException') throw error;
-        throw ServiceException.from(error);
+        throw MollieServiceException.from(error);
     }
 
     return next();

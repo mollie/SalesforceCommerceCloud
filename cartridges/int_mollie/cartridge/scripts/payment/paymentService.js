@@ -2,15 +2,15 @@ var MollieService = require('*/cartridge/scripts/services/mollieService');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var config = require('*/cartridge/scripts/mollieConfig');
 var URLUtils = require('dw/web/URLUtils');
-var ServiceException = require('*/cartridge/scripts/exceptions/ServiceException');
+var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var Transaction = require('dw/system/Transaction');
 var paymentHelper = require('*/cartridge/scripts/payment/paymentHelper');
 
 /**
  *
  * @param {string} paymentId - paymentId
- * @returns {Object} - Payment
- * @throws {ServiceException}
+ * @returns {Object} - result of the get payment REST call
+ * @throws {MollieServiceException}
  */
 function getPayment(paymentId) {
     try {
@@ -19,15 +19,15 @@ function getPayment(paymentId) {
         });
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
+        throw MollieServiceException.from(e);
     }
 }
 
 /**
  *
  * @param {string} orderId - orderId
- * @returns {Object} - Order
- * @throws {ServiceException}
+ * @returns {Object} - result of the get order REST call
+ * @throws {MollieServiceException}
  */
 function getOrder(orderId) {
     try {
@@ -36,7 +36,7 @@ function getOrder(orderId) {
         });
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
+        throw MollieServiceException.from(e);
     }
 }
 
@@ -46,8 +46,8 @@ function getOrder(orderId) {
  * @param {dw.order.Order} order - Order object
  * @param {dw.order.PaymentMethod} paymentMethod - Order paymentMethod
  * @param {Object} paymentData - object containing method specific data
- * @returns {string} - Redirect url
- * @throws {ServiceException}
+ * @returns {Object} - result of the create payment REST call
+ * @throws {MollieServiceException}
  */
 function createPayment(order, paymentMethod, paymentData) {
     try {
@@ -70,7 +70,7 @@ function createPayment(order, paymentMethod, paymentData) {
         return paymentResult;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
+        throw MollieServiceException.from(e);
     }
 }
 
@@ -79,7 +79,7 @@ function createPayment(order, paymentMethod, paymentData) {
  * @param {dw.order.Order} order - Order object
  * @param {string} statusUpdateId - id of the order / payment to update
  * @returns {string} - Redirect url
- * @throws {ServiceException}
+ * @throws {MollieServiceException}
  */
 function processPaymentUpdate(order, statusUpdateId) {
     try {
@@ -109,15 +109,15 @@ function processPaymentUpdate(order, statusUpdateId) {
         return url;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
+        throw MollieServiceException.from(e);
     }
 }
 
 /**
  *
  * @param {string} paymentId - paymentMethodId
- * @returns {Object} - canceled payment
- * @throws {ServiceException}
+ * @returns {Object} - result of the cancel payment REST call
+ * @throws {MollieServiceException}
  */
 function cancelPayment(paymentId) {
     try {
@@ -128,7 +128,7 @@ function cancelPayment(paymentId) {
         return paymentResult;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
+        throw MollieServiceException.from(e);
     }
 }
 
@@ -137,8 +137,8 @@ function cancelPayment(paymentId) {
  * @param {dw.order.Order} order - Order object
  * @param {dw.order.PaymentMethod} paymentMethod - Order paymentMethod
  * @param {Object} paymentData - object containing method specific data
- * @returns {Object} - created order
- * @throws {ServiceException}
+ * @returns {Object} - result of the create order REST call
+ * @throws {MollieServiceException}
  */
 function createOrder(order, paymentMethod, paymentData) {
     try {
@@ -166,7 +166,7 @@ function createOrder(order, paymentMethod, paymentData) {
         return orderResult;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
+        throw MollieServiceException.from(e);
     }
 }
 
@@ -174,7 +174,7 @@ function createOrder(order, paymentMethod, paymentData) {
  *
  * @param {dw.order.Order} order - Order object
  * @returns {Object} - result of the cancel order REST call
- * @throws {ServiceException}
+ * @throws {MollieServiceException}
  */
 function cancelOrder(order) {
     try {
@@ -185,7 +185,7 @@ function cancelOrder(order) {
         return cancelResult;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
+        throw MollieServiceException.from(e);
     }
 }
 
@@ -193,8 +193,8 @@ function cancelOrder(order) {
  *
  * @param {dw.order.Order} order - Order object
  * @param {Array} lines - lines to cancel
- * @returns {Object}  - result of the cancel order REST call
- * @throws {ServiceException}
+ * @returns {Object}  - result of the cancel order line REST call
+ * @throws {MollieServiceException}
  */
 function cancelOrderLineItem(order, lines) {
     try {
@@ -206,7 +206,7 @@ function cancelOrderLineItem(order, lines) {
         return cancelResult;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
+        throw MollieServiceException.from(e);
     }
 }
 
@@ -216,7 +216,7 @@ function cancelOrderLineItem(order, lines) {
  * @param {dw.order.Basket} currentBasket - the target Basket object
  * @param {string} countryCode - the associated Site countryCode
  * @returns {Array} - List of applicable payment methods
- * @throws {ServiceException}
+ * @throws {MollieServiceException}
  */
 function getApplicablePaymentMethods(paymentMethods, currentBasket, countryCode) {
     try {
@@ -246,7 +246,7 @@ function getApplicablePaymentMethods(paymentMethods, currentBasket, countryCode)
         return methods;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
+        throw MollieServiceException.from(e);
     }
 }
 
@@ -254,8 +254,8 @@ function getApplicablePaymentMethods(paymentMethods, currentBasket, countryCode)
  *
  * @param {dw.order.Order} order - order object
  * @param {objeect} lines - object containing lines
- * @returns {Object}  - result of the refund order REST call
- * @throws {ServiceException}
+ * @returns {Object}  - result of the create order refund REST call
+ * @throws {MollieServiceException}
  */
 function createOrderRefund(order, lines) {
     try {
@@ -265,7 +265,7 @@ function createOrderRefund(order, lines) {
         });
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
+        throw MollieServiceException.from(e);
     }
 }
 
@@ -273,8 +273,8 @@ function createOrderRefund(order, lines) {
  *
  * @param {string} paymentId - payment id
  * @param {number} amount - amount to refund
- * @returns {Object}  - result of the refund order REST call
- * @throws {ServiceException}
+ * @returns {Object}  - result of the create payment refund REST call
+ * @throws {MollieServiceException}
  */
 function createPaymentRefund(paymentId, amount) {
     try {
@@ -284,7 +284,7 @@ function createPaymentRefund(paymentId, amount) {
         });
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
+        throw MollieServiceException.from(e);
     }
 }
 
@@ -293,7 +293,7 @@ function createPaymentRefund(paymentId, amount) {
  * @param {orderId} order - Order object
  * @param {objet} lines - lines
  * @returns {Object}  - result of the create shipment REST call
- * @throws {ServiceException}
+ * @throws {MollieServiceException}
  */
 function createShipment(order, lines) {
     try {
@@ -303,7 +303,7 @@ function createShipment(order, lines) {
         });
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
+        throw MollieServiceException.from(e);
     }
 }
 
@@ -311,7 +311,7 @@ function createShipment(order, lines) {
  *
  * @param {dw.customer.Profile} profile - Profile object
  * @returns {Object}  - result of the create customer REST call
- * @throws {ServiceException}
+ * @throws {MollieServiceException}
  */
 function createCustomer(profile) {
     try {
@@ -320,7 +320,7 @@ function createCustomer(profile) {
         });
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
-        throw ServiceException.from(e);
+        throw MollieServiceException.from(e);
     }
 }
 
