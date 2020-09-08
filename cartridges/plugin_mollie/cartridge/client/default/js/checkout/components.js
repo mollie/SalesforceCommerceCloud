@@ -24,25 +24,39 @@ const verificationCodeError = '#verification-code-error';
 
 
 /**
- * Initialize Mollie components
+ * Create Mollie components
  */
-function initMollieComponents() {
+function createMollieComponents() {
     mollie = Mollie($mollieComponentsContainer.attr('data-components-profile-id'), {
         locale: $mollieComponentsContainer.attr('data-components-locale'),
         testmode: $mollieComponentsContainer.attr('data-components-test-mode')
     });
 
     cardHolderComponent = mollie.createComponent('cardHolder');
-    cardHolderComponent.mount(cardHolder);
-
     cardNumberComponent = mollie.createComponent('cardNumber');
-    cardNumberComponent.mount(cardNumber);
-
     expiryDateComponent = mollie.createComponent('expiryDate');
-    expiryDateComponent.mount(expiryDate);
-
     verificationCodeComponent = mollie.createComponent('verificationCode');
+
+}
+
+/**
+ * Mounts mollie components
+ */
+function mountMollieComponents() {
+    cardHolderComponent.mount(cardHolder);
+    cardNumberComponent.mount(cardNumber);
+    expiryDateComponent.mount(expiryDate);
     verificationCodeComponent.mount(verificationCode);
+}
+
+/**
+ * Unmount mollie components
+ */
+function unmountMollieComponents() {
+    cardHolderComponent.unmount();
+    cardNumberComponent.unmount();
+    expiryDateComponent.unmount();
+    verificationCodeComponent.unmount();
 }
 
 /**
@@ -92,12 +106,16 @@ async function setCardToken() {
  */
 function init() {
     if ($('.js-mollie-components-container').length) {
-        initMollieComponents();
+        createMollieComponents();
+        mountMollieComponents();
         initEventListeners();
     }
 }
 
 module.exports = {
     init: init,
-    setCardToken: setCardToken
+    setCardToken: setCardToken,
+    mountMollieComponents: mountMollieComponents,
+    unmountMollieComponents: unmountMollieComponents,
+    initEventListeners: initEventListeners
 };

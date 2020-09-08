@@ -1,7 +1,7 @@
 'use strict';
 
 var components = require('./components');
-
+var billing = require('base/checkout/billing');
 /**
  * Updates the payment information in checkout, based on the supplied order model
  * @param {Object} order - checkout model to use as basis of new truth
@@ -50,8 +50,17 @@ function onBillingCountryChange() {
  */
 function updatePaymentOptions(data) {
     if (data.paymentOptionsTemplate) {
+        if ($('.js-mollie-components-container').length) {
+            components.unmountMollieComponents();
+        }
         $('.js-payment-options').replaceWith(data.paymentOptionsTemplate);
-        components.init();
+        billing.addNewPaymentInstrument();
+        billing.cancelNewPayment();
+        billing.paymentTabs();
+        if ($('.js-mollie-components-container').length) {
+            components.mountMollieComponents();
+            components.initEventListeners();
+        }
     }
 }
 
