@@ -1,0 +1,26 @@
+<isdecorate template="pt_csc.isml">
+    <div class="slds-text-heading--medium mb-3">Payments</div>
+    <isloop items="${pdict.payments}" var="payment">
+        <div class="card">
+            <div class="card-header">
+                Payment: <isprint value="${payment.id}" />
+            </div>
+            <div class="card-body">
+                <p>Refundable: <isprint value="${payment.amountRemaining.value}" /> <isprint value="${payment.amountRemaining.currency}" /></p>
+                <p>Refunded: <isprint value="${payment.amountRefunded.value}" /> <isprint value="${payment.amountRefunded.currency}" /></p>
+                <form method="post" class="m-0" action="CSCOrderPaymentRefund-RefundPayment" id="orderPaymentRefund-refundPayment"
+                    name="orderPaymentRefund-refundPayment">
+                    <fieldset>
+                        <input class="form-control" type="number" step="0.01" min="0.01" max="${payment.amountRemaining.value}"
+                            value="${payment.amountRemaining.value}" name="amount" id="amount" />
+                        <input type="hidden" value="${payment.id}" name="paymentId" id="paymentId" />
+                        <input type="hidden" value="${pdict.orderId}" name="orderId" id="id" />
+                        <input type="hidden" value="${payment.amountRefunded.currency}" name="currency" id="currency" />
+                        <button type="submit" class="btn btn-primary" ${!payment.isRefundable() ? 'disabled': ''}>Refund</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </isloop>
+    <hr />
+</isdecorate>

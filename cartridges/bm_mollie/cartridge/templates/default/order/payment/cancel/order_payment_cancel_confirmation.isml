@@ -1,0 +1,11 @@
+<isdecorate template="pt_csc.isml">
+    <isif condition="${pdict.success}">
+        <div class="alert alert-success">
+            Successfully cancelled.
+        </div>
+    <iselse/>
+        <div class="alert alert-danger">
+            Cancel failed. <isprint value="${pdict.errorMessage}" />.
+        </div>
+    </isif>
+</isdecorate>

@@ -1,0 +1,12 @@
+<isdecorate template="pt_csc.isml">
+    <isif condition="${pdict.success}">
+        <div class="alert alert-success">
+            Successfully generated link.
+        </div>
+        <p>${pdict.paymentLink}</p>
+    <iselse/>
+        <div class="alert alert-danger">
+            Process failed. <isprint value="${pdict.message}" />.
+        </div>
+    </isif>
+</isdecorate>

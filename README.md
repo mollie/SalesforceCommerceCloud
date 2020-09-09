@@ -22,16 +22,6 @@ the Mollie API.
 
 Contains Payment and Checkout controllers.
 
-## bc_jobs_mollie
-
-Contains a job to check for orders that have not been completed after 24 hours (configurable) and fails them. If by any chance the payment flow was completed for this order but failed to update the state, the job will complete the order.
-
-## bc_csc_mollie
-
-Contains refund action on the order page of the Customer Service Centre.
-
-# Payment Security //TODO
-
 # Configuration
 
 ## Site Management
@@ -43,23 +33,41 @@ Add the following cartridges to the storefront site you want to use the payment 
 
 Add the following cartridges to the business manager site:
 
+- bm_mollie
 - int_mollie
-- bc_csc_mollie
-- bc_jobs_mollie
+- app_storefront_base
 
-## Site Preferences //TODO
+## Site Preferences 
+
+- `mollieBearerToken`: string
+- `mollieEnabledTransactionAPI`: enum of strings
+- `mollieOrderDefaultExpiryDays`: number
+- `mollieLogCategory`: string
+- `mollieComponentsEnabled`: boolean
+- `mollieComponentsEnableTestMode`: boolean
+- `mollieComponentsProfileId`: string
+- `mollieEnableSingleClickPayments`: boolean
 
 ## Custom Properties
 
-### PaymentMethod //TODO
+### PaymentMethod
+- `molliePaymentMethodId`: string - external mollie payment method id
+- `mollieOrderExpiryDays`: number - expiry days of order
 
-### PaymentTransaction //TODO
+### PaymentTransaction
+- `molliePaymentId`: string - the id of the Mollie payment
+- `molliePaymentStatus`: string - the payment status recieved from Mollie
 
-### Profile //TODO
+### Order
+- `mollieOrderId`: string - the id of the Mollie order
+- `mollieOrderStatus`: string - the payment status recieved from Mollie
+- `mollieUsedTransactionAPI`: string - api used for creating payment (payment / order)
 
-## Custom objects
+### Profile
+- `mollieCustomerId`: string - the id of the Mollie customer (used for single click payments)
 
-### Refund
+### Product
+- `mollieProductCategory`: enum of strings - category used for voucher metho
 
 # NPM scripts
 Use the provided NPM scripts to compile and upload changes to your Sandbox.

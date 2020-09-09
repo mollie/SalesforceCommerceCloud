@@ -1,1 +1,10 @@
 @charset "UTF-8";
+
+.invalid-feedback {
+    display: block;
+}
+
+.issuers {
+    display: flex;
+    flex-direction: column;
+}

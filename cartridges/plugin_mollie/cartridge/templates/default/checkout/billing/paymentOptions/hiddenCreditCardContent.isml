@@ -1,0 +1,13 @@
+<isset name="creditFields" value="${pdict.forms.billingForm.creditCardFields}" scope="page"/>
+
+<!--- Hidden input for credit card type --->
+<input type="hidden" id="cardType"
+    name="${creditFields.cardType.htmlName}"
+    value="">
+
+<!--- Hidden input for credit card number --->
+<input type="hidden" class="cardNumber" id="cardNumber"
+    name="${creditFields.cardNumber.htmlName}"
+    value=""
+    <isprint value=${creditFields.cardNumber.attributes} encoding="off"/>
+>

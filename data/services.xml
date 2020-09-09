@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns="http://www.demandware.com/xml/impex/services/2014-09-26">
+    <service-credential service-credential-id="Mollie">
+        <url>https://api.mollie.com</url>
+        <user-id/>
+        <password masked="true">********</password>
+    </service-credential>
+
+    <service-profile service-profile-id="Mollie">
+        <timeout-millis>10000</timeout-millis>
+        <rate-limit-enabled>false</rate-limit-enabled>
+        <rate-limit-calls>0</rate-limit-calls>
+        <rate-limit-millis>0</rate-limit-millis>
+        <cb-enabled>false</cb-enabled>
+        <cb-calls>0</cb-calls>
+        <cb-millis>0</cb-millis>
+    </service-profile>
+
+    <service service-id="Mollie.GetMethod">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_GetMethod</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
+    <service service-id="Mollie.GetMethods">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_GetMethods</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
+    <service service-id="Mollie.CancelOrder">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_CancelOrder</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
+    <service service-id="Mollie.CancelOrderLineItem">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_CancelOrderLineItem</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
+    <service service-id="Mollie.CreateOrder">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_CreateOrder</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
+    <service service-id="Mollie.GetOrder">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_GetOrder</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
+    <service service-id="Mollie.CancelPayment">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_CancelPayment</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
+    <service service-id="Mollie.CreatePayment">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_CreatePayment</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
+    <service service-id="Mollie.GetPayment">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_GetPayment</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
+    <service service-id="Mollie.CreatePaymentRefund">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_CreatePaymentRefund</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
+
+    <service service-id="Mollie.CreateOrderRefund">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_CreateOrderRefund</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
+    <service service-id="Mollie.CreateShipment">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_CreateShipment</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
+    <service service-id="Mollie.CreateCustomer">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>Mollie_CreateCustomer</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>Mollie</profile-id>
+        <credential-id>Mollie</credential-id>
+    </service>
+
+</services>

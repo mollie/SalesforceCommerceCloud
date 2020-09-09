@@ -1,0 +1,48 @@
+<isdecorate template="pt_csc.isml">
+    <isset name="order" value="${pdict.order}" scope="page" />
+    <div class="slds-text-heading--medium mb-3">Order: <isprint value="${order.id}" /></div>
+    <div class="card">
+        <div class="card-header">
+            Ship order
+        </div>
+        <div class="card-body">
+            <form method="post" class="m-0" action="CSCOrderPaymentShipment-Shipment" id="orderPaymentShipment-shipment"
+                name="orderPaymentShipment-shipment">
+                <fieldset>
+                    <input type="hidden" value="${pdict.orderId}" name="orderId" id="orderId" />
+                    <button type="submit" class="btn btn-primary" ${!order.isShippable() ? 'disabled': ''}>Ship</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <hr />
+    <div class="card">
+        <div class="card-header">
+            Ship lines
+        </div>
+        <div class="card-body">
+            <isloop items="${order.lines}" var="line">
+                <div class="card">
+                    <div class="card-header">
+                        <isprint value="${line.sku}" /> - <isprint value="${line.name}" />
+                    </div>
+                    <div class="card-body">
+                        <p>Shippable: <isprint value="${line.shippableQuantity}" /></p>
+                        <p>Shipped: <isprint value="${line.quantityShipped}" /></p>
+                        <form method="post" class="m-0" action="CSCOrderPaymentShipment-Shipment"
+                            id="orderPaymentShipment-shipment" name="orderPaymentShipment-shipment">
+                            <fieldset>
+                                <input class="form-control" type="number" min="1" max="${line.shippableQuantity}"
+                                value="${line.shippableQuantity}" name="quantity" id="quantity" />
+                                <input type="hidden" value="${line.id}" name="lineId" id="id" />
+                                <input type="hidden" value="${pdict.orderId}" name="orderId" id="id" />
+                                <button type="submit" class="btn btn-primary" ${line.shippableQuantity === 0 ? 'disabled' : ''}>Ship</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </isloop>
+        </div>
+    </div>
+    <hr />
+</isdecorate>

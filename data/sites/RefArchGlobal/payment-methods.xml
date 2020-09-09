@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<payment-settings xmlns="http://www.demandware.com/xml/impex/paymentsettings/2009-09-15">
+
+    <payment-method method-id="MOLLIE_BANCONTACT">
+        <name xml:lang="x-default">Bancontact</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">bancontact</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="CREDIT_CARD">
+        <name xml:lang="x-default">Credit card</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_CREDIT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">creditcard</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_PAYPAL">
+        <name xml:lang="x-default">PayPal</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">paypal</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_IDEAL">
+        <name xml:lang="x-default">iDEAL</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">ideal</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_SOFORT">
+        <name xml:lang="x-default">SOFORT Banking</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">sofort</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_APPLE_PAY">
+        <name xml:lang="x-default">Apple Pay</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">applepay</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_BANKTRANSFER">
+        <name xml:lang="x-default">Bank transfer</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">banktransfer</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_BELFIUS">
+        <name xml:lang="x-default">Belfius</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">belfius</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_KBC">
+        <name xml:lang="x-default">KBC</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">kbc</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_KLARNA_PAY_LATER">
+        <name xml:lang="x-default">Pay later</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">klarnapaylater</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">28</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_KLARNA_SLICE_IT">
+        <name xml:lang="x-default">Slice it</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">klarnasliceit</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">28</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_GIFTCARD">
+        <name xml:lang="x-default">Gift cards</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">giftcard</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_ING_HOME_PAY">
+        <name xml:lang="x-default">ING Home'Pay</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">inghomepay</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_GIROPAY">
+        <name xml:lang="x-default">Giropay</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">giropay</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_EPS">
+        <name xml:lang="x-default">eps</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">eps</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_PRZELEWY">
+        <name xml:lang="x-default">Przelewy24</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="molliePaymentMethodId">przelewy24</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-card card-type="Credit card">
+        <name xml:lang="x-default">Credit card</name>
+        <enabled-flag>true</enabled-flag>
+        <card-number-settings>
+            <enable-checksum-verification>true</enable-checksum-verification>
+            <number-length/>
+            <number-prefix/>
+        </card-number-settings>
+        <security-code-length>0</security-code-length>
+    </payment-card>
+
+</payment-settings>
