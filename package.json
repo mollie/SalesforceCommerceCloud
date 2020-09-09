@@ -7,8 +7,21 @@
   "engines": {
     "node": ">=4.0"
   },
+  "nyc": {
+    "all": true,
+    "include": [
+      "**/*.js"
+    ],
+    "exclude": [
+      "**/static/**",
+      "**/client/**",
+      "**/test/**",
+      "webpack.config.js"
+    ]
+  },
   "scripts": {
     "test:coverage": "nyc npm run test",
+    "test:help": "nyc --help",
     "test": "sgmf-scripts --test test/unit/**/*.js",
     "cover": "sgmf-scripts --cover",
     "compile:scss": "sgmf-scripts --compile css",

@@ -66,7 +66,7 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
         var issuer = session.forms.billing.issuer.value;
 
-        if (config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT) {
+        if (config.getEnabledTransactionAPI().value === config.getTransactionAPI().PAYMENT) {
             var createPaymentResult = paymentService.createPayment(order, paymentMethod, { issuer: issuer });
             redirectUrl = createPaymentResult.payment.links.checkout.href;
         } else {

@@ -87,7 +87,7 @@ function Config() {
      * @return {Object} Order Types
      */
     this.getEnabledTransactionAPI = function () {
-        return this.enabledTransActionAPI.value;
+        return this.enabledTransActionAPI;
     };
 
     /**

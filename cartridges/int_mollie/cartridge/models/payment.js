@@ -1,6 +1,6 @@
 'use strict';
 
-var base = module.superModule;
+var base = require('*/cartridge/scripts/utils/superModule')(module);
 
 const paymentService = require('*/cartridge/scripts/payment/paymentService');
 const PaymentMgr = require('dw/order/PaymentMgr');

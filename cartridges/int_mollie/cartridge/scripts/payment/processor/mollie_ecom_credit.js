@@ -95,7 +95,7 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
             paymentInfo.customerId = profile.custom.mollieCustomerId;
         }
 
-        if (config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT) {
+        if (config.getEnabledTransactionAPI().value === config.getTransactionAPI().PAYMENT) {
             var createPaymentResult = paymentService.createPayment(order, paymentMethod, paymentInfo);
             redirectUrl = createPaymentResult.payment.links.checkout.href;
         } else {
