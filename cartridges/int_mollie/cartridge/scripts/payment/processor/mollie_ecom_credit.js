@@ -36,7 +36,10 @@ function Handle(basket, paymentInformation) {
         var paymentInstruments = currentBasket.getPaymentInstruments();
 
         collections.forEach(paymentInstruments, function (item) {
-            currentBasket.removePaymentInstrument(item);
+            var paymentMethod = PaymentMgr.getPaymentMethod(item.getPaymentMethod());
+            if (paymentMethod && paymentMethod.getPaymentProcessor().getID().indexOf('MOLLIE') >= 0) {
+                currentBasket.removePaymentInstrument(item);
+            }
         });
 
         var paymentInstrument = currentBasket.createPaymentInstrument(
