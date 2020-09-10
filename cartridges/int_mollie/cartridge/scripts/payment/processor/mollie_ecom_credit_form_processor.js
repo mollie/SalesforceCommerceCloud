@@ -28,7 +28,7 @@ function processForm(req, paymentForm, viewFormData) {
     };
 
     viewData.paymentInformation = {
-        paymentMethod: viewData.paymentMethod,
+        paymentMethod: viewData.paymentMethod.value,
         cardType: {
             value: cardType.getName(),
             htmlName: paymentForm.creditCardFields.cardType.htmlName
