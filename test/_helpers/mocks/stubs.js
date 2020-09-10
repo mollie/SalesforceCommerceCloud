@@ -20,6 +20,7 @@ const Currency = require('./dw/util/Currency');
 const URLUtils = require('./dw/web/URLUtils');
 const StringUtils = require('./dw/util/StringUtils');
 const Calendar = require('./dw/util/Calendar');
+const ISML = require('./dw/template/ISML');
 
 class ResourceMock extends Resource {
     constructor() {
@@ -138,6 +139,7 @@ const dw = {
     StringUtilsMock: sandbox.stub(StringUtils),
     PaymentMgrMock: sandbox.stub(PaymentMgr),
     BasketMgrMock: sandbox.stub(BasketMgr),
+    ISMLMock: sandbox.stub(ISML),
     ResourceMock: ResourceMock,
     OrderMock: OrderMock,
     BasketMock: BasketMock,
@@ -258,6 +260,7 @@ const initMocks = function () {
     Object.keys(orderHelperMock).map(i => orderHelperMock[i].reset());
     Object.keys(checkoutHelpersMock).map(i => checkoutHelpersMock[i].reset());
     Object.keys(renderTemplateHelperMock).map(i => renderTemplateHelperMock[i].reset());
+    Object.keys(dw.ISMLMock).map(i => dw.ISMLMock[i].reset());
     Object.keys(dw.HookMgrMock).map(i => dw.HookMgrMock[i].reset());
     Object.keys(dw.CurrencyMock).map(i => dw.CurrencyMock[i].reset());
     Object.keys(dw.TransactionMock).map(i => dw.TransactionMock[i].reset());

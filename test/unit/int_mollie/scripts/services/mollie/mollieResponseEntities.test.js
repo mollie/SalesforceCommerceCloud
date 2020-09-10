@@ -1,5 +1,3 @@
-const { fake } = require('sinon');
-
 const { stubs } = testHelpers;
 
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
@@ -384,6 +382,200 @@ describe('mollie/mollieResponseEntities', () => {
         });
         it('initializes without input', () => {
             expect(new Line()).to.be.an.instanceOf(Line);
+        });
+    });
+
+    describe('Issuer', () => {
+        after(function () { stubs.reset(); });
+        before(() => {
+            this.response = {
+                resource: faker.lorem.word(),
+                id: faker.lorem.word(),
+                name: faker.lorem.word(),
+                image: {
+                    svg: faker.lorem.word()
+                }
+            };
+            this.default = new Issuer(this.response);
+        });
+
+        it('has a resource', () => {
+            expect(this.default.resource).to.eql(this.response.resource);
+        });
+        it('has an id', () => {
+            expect(this.default.id).to.eql(this.response.id);
+        });
+        it('has an name', () => {
+            expect(this.default.name).to.eql(this.response.name);
+        });
+        it('has an image', () => {
+            expect(this.default.image).to.eql(this.response.image.svg);
+        });
+        it('initializes without input', () => {
+            expect(new Issuer()).to.be.an.instanceOf(Issuer);
+        });
+    });
+
+    describe('Method', () => {
+        after(function () { stubs.reset(); });
+        before(() => {
+            this.response = {
+                resource: faker.lorem.word(),
+                id: faker.lorem.word(),
+                description: faker.lorem.word(),
+                minimumAmount: {
+                    value: faker.random.number(),
+                    currency: faker.lorem.word()
+                },
+                maximumAmount: {
+                    value: faker.random.number(),
+                    currency: faker.lorem.word()
+                },
+                image: {
+                    svg: faker.lorem.word()
+                },
+                issuers: []
+            };
+            this.default = new Method(this.response);
+        });
+
+        it('has a resource', () => {
+            expect(this.default.resource).to.eql(this.response.resource);
+        });
+        it('has an id', () => {
+            expect(this.default.id).to.eql(this.response.id);
+        });
+        it('has an description', () => {
+            expect(this.default.description).to.eql(this.response.description);
+        });
+        it('has an minimumAmount', () => {
+            expect(this.default.minimumAmount).to.eql(new Amount(this.response.minimumAmount));
+        });
+        it('has an maximumAmount', () => {
+            expect(this.default.maximumAmount).to.eql(new Amount(this.response.maximumAmount));
+        });
+        it('has an imageURL', () => {
+            expect(this.default.imageURL).to.eql(this.response.image.svg);
+        });
+        it('has an list of issuers', () => {
+            expect(this.default.issuers).to.eql(this.response.issuers);
+        });
+        it('initializes without input', () => {
+            expect(new Method()).to.be.an.instanceOf(Method);
+        });
+    });
+
+    describe('Refund', () => {
+        after(function () { stubs.reset(); });
+        before(() => {
+            this.response = {
+                resource: faker.lorem.word(),
+                id: faker.lorem.word(),
+                amount: {
+                    value: faker.random.number(),
+                    currency: faker.lorem.word()
+                },
+                createdAt: faker.lorem.word(),
+                description: faker.lorem.word(),
+                paymentId: faker.random.number(),
+                orderId: faker.random.number(),
+                lines: []
+            };
+            this.default = new Refund(this.response);
+        });
+
+        it('has a resource', () => {
+            expect(this.default.resource).to.eql(this.response.resource);
+        });
+        it('has an id', () => {
+            expect(this.default.id).to.eql(this.response.id);
+        });
+        it('has an amount', () => {
+            expect(this.default.amount).to.eql(new Amount(this.response.amount));
+        });
+        it('has an createdAt', () => {
+            expect(this.default.createdAt).to.eql(this.response.createdAt);
+        });
+        it('has an description', () => {
+            expect(this.default.description).to.eql(this.response.description);
+        });
+        it('has an paymentId', () => {
+            expect(this.default.paymentId).to.eql(this.response.paymentId);
+        });
+        it('has an orderId', () => {
+            expect(this.default.orderId).to.eql(this.response.orderId);
+        });
+        it('has an list of lines', () => {
+            expect(this.default.lines).to.eql(this.response.lines);
+        });
+        it('initializes without input', () => {
+            expect(new Refund()).to.be.an.instanceOf(Refund);
+        });
+    });
+
+    describe('Shipment', () => {
+        after(function () { stubs.reset(); });
+        before(() => {
+            this.response = {
+                resource: faker.lorem.word(),
+                id: faker.lorem.word(),
+                orderId: faker.lorem.word(),
+                lines: []
+            };
+            this.default = new Refund(this.response);
+        });
+
+        it('has a resource', () => {
+            expect(this.default.resource).to.eql(this.response.resource);
+        });
+        it('has an id', () => {
+            expect(this.default.id).to.eql(this.response.id);
+        });
+        it('has an orderId', () => {
+            expect(this.default.orderId).to.eql(this.response.orderId);
+        });
+        it('has an list of lines', () => {
+            expect(this.default.lines).to.eql(this.response.lines);
+        });
+        it('initializes without input', () => {
+            expect(new Shipment()).to.be.an.instanceOf(Shipment);
+        });
+    });
+
+    describe('Customer', () => {
+        after(function () { stubs.reset(); });
+        before(() => {
+            this.response = {
+                resource: faker.lorem.word(),
+                id: faker.lorem.word(),
+                name: faker.lorem.word(),
+                email: faker.internet.email(),
+                locale: faker.lorem.word(),
+                createdDatetime: faker.lorem.word()
+            };
+            this.default = new Customer(this.response);
+        });
+
+        it('has a resource', () => {
+            expect(this.default.resource).to.eql(this.response.resource);
+        });
+        it('has an id', () => {
+            expect(this.default.id).to.eql(this.response.id);
+        });
+        it('has an name', () => {
+            expect(this.default.name).to.eql(this.response.name);
+        });
+        it('has an name', () => {
+            expect(this.default.name).to.eql(this.response.name);
+        });
+        it('has an email', () => {
+            expect(this.default.email).to.eql(this.response.email);
+        });
+        it('has an locale', () => {
+            expect(this.default.locale).to.eql(this.response.locale);
+        });
+        it('initializes without input', () => {
+            expect(new Customer()).to.be.an.instanceOf(Customer);
         });
     });
 });

@@ -225,9 +225,6 @@ function Refund(mollieRefund) {
     this.lines = refund.lines ? refund.lines.map(function (line) {
         return new Line(line);
     }) : null;
-    this.isSuccessful = function () {
-        return refund.status === 'pending';
-    };
 }
 
 /**

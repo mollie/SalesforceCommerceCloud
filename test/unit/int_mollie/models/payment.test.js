@@ -1,7 +1,8 @@
 'use strict';
 
+const { stubs } = testHelpers;
+
 var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
-const stubs = require('../../../_helpers/mocks/stubs');
 
 describe('models/payment', () => {
     before(() => { stubs.init(); });
