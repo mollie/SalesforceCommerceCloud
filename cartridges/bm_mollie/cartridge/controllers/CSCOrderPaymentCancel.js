@@ -6,7 +6,8 @@ var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var renderTemplate = require('*/cartridge/scripts/helpers/renderTemplateHelper').renderTemplate;
 
 var isCancelAllowed = function (order) {
-    const orderStatus = order.getStatus().value;
+    if (!order) return false;
+    const orderStatus = order.status.value;
     return (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
         orderStatus !== Order.ORDER_STATUS_FAILED);
 };
@@ -52,18 +53,18 @@ exports.CancelPayment = function () {
         paymentService.cancelPayment(paymentId);
         Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
     } catch (e) {
-        Logger.error('PAYMENT :: ERROR :: Error while creating shipment for order ' + orderId + '. ' + e.message);
+        Logger.error('PAYMENT :: ERROR :: Error while canceling order ' + orderId + '. ' + e.message);
         viewParams.success = false;
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/shipment/order_payment_shipment_confirmation.isml', viewParams);
+    renderTemplate('order/payment/cancel/order_payment_cancel_confirmation.isml', viewParams);
 };
 
 exports.CancelOrderLine = function () {
-    const quantity = request.httpParameterMap.get('quantity').stringValue;
-    const lineId = request.httpParameterMap.get('lineId').stringValue;
     const orderId = request.httpParameterMap.get('orderId').stringValue;
+    const lineId = request.httpParameterMap.get('lineId').stringValue;
+    const quantity = request.httpParameterMap.get('quantity').stringValue;
     const order = OrderMgr.getOrder(orderId);
     const viewParams = {
         success: true,
@@ -77,12 +78,12 @@ exports.CancelOrderLine = function () {
         }]);
         Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
     } catch (e) {
-        Logger.error('PAYMENT :: ERROR :: Error while creating shipment for order ' + orderId + '. ' + e.message);
+        Logger.error('PAYMENT :: ERROR :: Error while canceling order ' + orderId + '. ' + e.message);
         viewParams.success = false;
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/shipment/order_payment_shipment_confirmation.isml', viewParams);
+    renderTemplate('order/payment/cancel/order_payment_cancel_confirmation.isml', viewParams);
 };
 
 exports.CancelOrder = function () {
@@ -90,19 +91,19 @@ exports.CancelOrder = function () {
     const order = OrderMgr.getOrder(orderId);
     const viewParams = {
         success: true,
-        orderId: order.orderNo
+        orderId: orderId
     };
 
     try {
         paymentService.cancelOrder(order);
         Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
     } catch (e) {
-        Logger.error('PAYMENT :: ERROR :: Error while creating shipment for order ' + orderId + '. ' + e.message);
+        Logger.error('PAYMENT :: ERROR :: Error while canceling order ' + orderId + '. ' + e.message);
         viewParams.success = false;
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/shipment/order_payment_shipment_confirmation.isml', viewParams);
+    renderTemplate('order/payment/cancel/order_payment_cancel_confirmation.isml', viewParams);
 };
 
 exports.Start.public = true;

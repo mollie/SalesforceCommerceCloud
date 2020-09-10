@@ -216,7 +216,8 @@ const checkoutHelpersMock = {
 };
 
 const renderTemplateHelperMock = {
-    getRenderedHtml: sandbox.stub()
+    getRenderedHtml: sandbox.stub(),
+    renderTemplate: sandbox.stub()
 };
 
 const dateMock = {

@@ -6,7 +6,8 @@ var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var renderTemplate = require('*/cartridge/scripts/helpers/renderTemplateHelper').renderTemplate;
 
 var isRefundAllowed = function (order) {
-    const orderStatus = order.getStatus().value;
+    if (!order) return false;
+    const orderStatus = order.status.value;
     return (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
         orderStatus !== Order.ORDER_STATUS_FAILED);
 };
@@ -45,10 +46,9 @@ exports.RefundPayment = function () {
     const paymentId = request.httpParameterMap.get('paymentId').stringValue;
     const amount = request.httpParameterMap.get('amount').stringValue;
     const currency = request.httpParameterMap.get('currency').stringValue;
-    const order = OrderMgr.getOrder(orderId);
     const viewParams = {
         success: true,
-        orderId: order.orderNo
+        orderId: orderId
     };
 
     try {
@@ -67,13 +67,13 @@ exports.RefundPayment = function () {
 };
 
 exports.RefundOrder = function () {
-    const quantity = request.httpParameterMap.get('quantity').stringValue;
-    const lineId = request.httpParameterMap.get('lineId').stringValue;
     const orderId = request.httpParameterMap.get('orderId').stringValue;
+    const lineId = request.httpParameterMap.get('lineId').stringValue;
+    const quantity = request.httpParameterMap.get('quantity').stringValue;
     const order = OrderMgr.getOrder(orderId);
     const viewParams = {
         success: true,
-        orderId: order.orderNo
+        orderId: orderId
     };
 
     try {

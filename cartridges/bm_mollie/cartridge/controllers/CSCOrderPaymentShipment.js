@@ -6,7 +6,8 @@ var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var renderTemplate = require('*/cartridge/scripts/helpers/renderTemplateHelper').renderTemplate;
 
 var isShipmentAllowed = function (order) {
-    const orderStatus = order.getStatus().value;
+    if (!order) return false;
+    const orderStatus = order.status.value;
     return (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
         orderStatus !== Order.ORDER_STATUS_FAILED);
 };
@@ -26,13 +27,13 @@ exports.Start = function () {
 };
 
 exports.Shipment = function () {
-    const quantity = request.httpParameterMap.get('quantity').stringValue;
-    const lineId = request.httpParameterMap.get('lineId').stringValue;
     const orderId = request.httpParameterMap.get('orderId').stringValue;
+    const lineId = request.httpParameterMap.get('lineId').stringValue;
+    const quantity = request.httpParameterMap.get('quantity').stringValue;
     const order = OrderMgr.getOrder(orderId);
     const viewParams = {
         success: true,
-        orderId: order.orderNo
+        orderId: orderId
     };
 
     try {
