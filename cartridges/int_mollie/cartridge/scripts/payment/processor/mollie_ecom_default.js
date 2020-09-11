@@ -65,8 +65,9 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
         var order = OrderMgr.getOrder(orderNumber);
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
         var issuer = session.forms.billing.issuer.value;
-
-        if (config.getEnabledTransactionAPI().value === config.getTransactionAPI().PAYMENT) {
+        var enabledTransactionAPI = paymentMethod.custom.mollieEnabledTransactionAPI ? paymentMethod.custom.mollieEnabledTransactionAPI.value : config.getDefaultEnabledTransactionAPI().value;
+        
+        if (enabledTransactionAPI === config.getTransactionAPI().PAYMENT) {
             var createPaymentResult = paymentService.createPayment(order, paymentMethod, { issuer: issuer });
             redirectUrl = createPaymentResult.payment.links.checkout.href;
         } else {

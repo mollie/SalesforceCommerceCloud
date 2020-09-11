@@ -79,6 +79,7 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
         var order = OrderMgr.getOrder(orderNumber);
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
+
         var creditCardFields = session.forms.billing.creditCardFields;
         var paymentInfo = {};
 
@@ -98,7 +99,9 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
             paymentInfo.customerId = profile.custom.mollieCustomerId;
         }
 
-        if (config.getEnabledTransactionAPI().value === config.getTransactionAPI().PAYMENT) {
+        var enabledTransactionAPI = paymentMethod.custom.mollieEnabledTransactionAPI ? paymentMethod.custom.mollieEnabledTransactionAPI.value : config.getDefaultEnabledTransactionAPI().value;
+
+        if (enabledTransactionAPI === config.getTransactionAPI().PAYMENT) {
             var createPaymentResult = paymentService.createPayment(order, paymentMethod, paymentInfo);
             redirectUrl = createPaymentResult.payment.links.checkout.href;
         } else {

@@ -173,15 +173,15 @@ const loggerMock = { debug: sandbox.stub(), error: sandbox.stub() };
 
 const configMock = {
     getSiteId: sandbox.stub(),
+    getEnableTestMode: sandbox.stub(),
     getBearerToken: sandbox.stub(),
-    getTransactionStatus: sandbox.stub(),
-    getEnabledTransactionAPI: sandbox.stub(),
-    getOrderDefaultExpiryDays: sandbox.stub(),
-    getLogCategory: sandbox.stub(),
-    getComponentsEnabled: sandbox.stub(),
-    getComponentsEnableTestMode: sandbox.stub(),
-    getComponentsProfileId: sandbox.stub(),
+    getDefaultEnabledTransactionAPI: sandbox.stub(),
+    getDefaultOrderExpiryDays: sandbox.stub(),
     getEnableSingleClickPayments: sandbox.stub(),
+    getComponentsEnabled: sandbox.stub(),
+    getComponentsProfileId: sandbox.stub(),
+    getLogCategory: sandbox.stub(),
+    getTransactionStatus: sandbox.stub(),
     getTransactionAPI: sandbox.stub()
 };
 

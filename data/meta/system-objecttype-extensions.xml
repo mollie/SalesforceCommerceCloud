@@ -4,7 +4,8 @@
     <type-extension type-id="PaymentMethod">
         <custom-attribute-definitions>
             <attribute-definition attribute-id="molliePaymentMethodId">
-                <display-name xml:lang="x-default">molliePaymentMethodId</display-name>
+                <display-name xml:lang="x-default">Payment method ID</display-name>
+                <description xml:lang="x-default">The payment method ID of Mollie https://docs.mollie.com/index#</description>
                 <type>string</type>
                 <localizable-flag>false</localizable-flag>
                 <mandatory-flag>false</mandatory-flag>
@@ -12,12 +13,28 @@
                 <min-length>0</min-length>
             </attribute-definition>
             <attribute-definition attribute-id="mollieOrderExpiryDays">
-                <display-name xml:lang="x-default">mollieOrderExpiryDays</display-name>
+                <display-name xml:lang="x-default">Order expiry days</display-name>
+                <description xml:lang="x-default">The expiry days used when creating order with the ORDER API https://docs.mollie.com/index#</description>
                 <type>int</type>
                 <localizable-flag>false</localizable-flag>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieEnabledTransactionAPI">
+                <display-name xml:lang="x-default">Enabled transaction API</display-name>
+                <description xml:lang="x-default">The API that is used to create the order (order/payment) https://docs.mollie.com/index#</description>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <value>order</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>payment</value>
+                    </value-definition>
+                </value-definitions>
             </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
@@ -25,6 +42,7 @@
                 <display-name xml:lang="x-default">Mollie</display-name>
                 <attribute attribute-id="molliePaymentMethodId"/>
                 <attribute attribute-id="mollieOrderExpiryDays"/>
+                <attribute attribute-id="mollieEnabledTransactionAPI"/>
             </attribute-group>
         </group-definitions>
     </type-extension>
@@ -32,14 +50,16 @@
     <type-extension type-id="PaymentTransaction">
         <custom-attribute-definitions>
             <attribute-definition attribute-id="molliePaymentId">
-                <display-name xml:lang="x-default">molliePaymentId</display-name>
+                <display-name xml:lang="x-default">Mollie payment ID</display-name>
+                <description xml:lang="x-default">The Mollie payment ID https://docs.mollie.com/index#</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
             <attribute-definition attribute-id="molliePaymentStatus">
-                <display-name xml:lang="x-default">molliePaymentStatus</display-name>
+                <display-name xml:lang="x-default">Mollie payment status</display-name>
+                <description xml:lang="x-default">The Mollie payment status https://docs.mollie.com/index#</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -58,21 +78,24 @@
     <type-extension type-id="Order">
         <custom-attribute-definitions>
             <attribute-definition attribute-id="mollieOrderId">
-                <display-name xml:lang="x-default">mollieOrderId</display-name>
+                <display-name xml:lang="x-default">Mollie order ID</display-name>
+                <description xml:lang="x-default">The Mollie order ID https://docs.mollie.com/index#</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
             <attribute-definition attribute-id="mollieOrderStatus">
-                <display-name xml:lang="x-default">mollieOrderStatus</display-name>
+                <display-name xml:lang="x-default">Mollie order status</display-name>
+                <description xml:lang="x-default">The Mollie order status https://docs.mollie.com/index#</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
             <attribute-definition attribute-id="mollieUsedTransactionAPI">
-                <display-name xml:lang="x-default">mollieUsedTransactionAPI</display-name>
+                <display-name xml:lang="x-default">Used transaction API</display-name>
+                <description xml:lang="x-default">The used transaction API to create this order (order/payment) https://docs.mollie.com/index#</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -92,7 +115,8 @@
     <type-extension type-id="Profile">
         <custom-attribute-definitions>
             <attribute-definition attribute-id="mollieCustomerId">
-                <display-name xml:lang="x-default">mollieCustomerId</display-name>
+                <display-name xml:lang="x-default">Mollie customer ID</display-name>
+                <description xml:lang="x-default">The Mollie customer ID used for single click payments https://docs.mollie.com/index#</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -110,7 +134,8 @@
     <type-extension type-id="Product">
         <custom-attribute-definitions>
             <attribute-definition attribute-id="mollieProductCategory">
-                <display-name xml:lang="x-default">mollieProductCategory</display-name>
+                <display-name xml:lang="x-default">Mollie product category</display-name>
+                <description xml:lang="x-default">The product category that is send to Mollie with the order (meal/eco/gift)</description>
                 <type>enum-of-string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -134,19 +159,35 @@
             </attribute-group>
         </group-definitions>
     </type-extension>
-    
 
     <type-extension type-id="SitePreferences">
         <custom-attribute-definitions>
+            <attribute-definition attribute-id="mollieEnableTestMode">
+                <display-name xml:lang="x-default">Enable test mode</display-name>
+                <description xml:lang="x-default">This setting enables Mollie components test mode and will use the test API key https://docs.mollie.com/index#</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
             <attribute-definition attribute-id="mollieBearerToken">
-                <display-name xml:lang="x-default">Bearer token</display-name>
+                <display-name xml:lang="x-default">API key</display-name>
+                <description xml:lang="x-default">Mollie API key found on the Mollie dashboard (this API key will be used when "Enable test mode" is turned off) https://docs.mollie.com/index#</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
-            <attribute-definition attribute-id="mollieEnabledTransactionAPI">
-                <display-name xml:lang="x-default">Enabled transaction API (order / payment)</display-name>
+            <attribute-definition attribute-id="mollieBearerTestToken">
+                <display-name xml:lang="x-default">Test API key</display-name>
+                <description xml:lang="x-default">Mollie test API key found on the Mollie dashboard (this API key will be used when "Enable test mode" is turned on) https://docs.mollie.com/index#</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieDefaultEnabledTransactionAPI">
+                <display-name xml:lang="x-default">Default enabled transaction API</display-name>
+                <description xml:lang="x-default">The default enabled transaction API (order/payment) https://docs.mollie.com/index#</description>
                 <type>enum-of-string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -159,57 +200,60 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="mollieOrderDefaultExpiryDays">
-                <display-name xml:lang="x-default">Expiry days for order (max 100)</display-name>
+            <attribute-definition attribute-id="mollieDefaultOrderExpiryDays">
+                <display-name xml:lang="x-default">Default order expiry days</display-name>
+                <description xml:lang="x-default">Default expiry days for orders created with the order API (max 100) https://docs.mollie.com/index#</description>
                 <type>int</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
+                <max-value>100</max-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieEnableSingleClickPayments">
+                <display-name xml:lang="x-default">Enable single click payments</display-name>
+                <description xml:lang="x-default">When enabled, this will show the "Save card" checkbox in the checkout https://docs.mollie.com/index#</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieComponentsEnabled">
+                <display-name xml:lang="x-default">Enable Mollie components</display-name>
+                <description xml:lang="x-default">This will enable Mollie components and render the card inputs in the checkout https://docs.mollie.com/index#</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieComponentsProfileId">
+                <display-name xml:lang="x-default">Components Profile ID</display-name>
+                <description xml:lang="x-default">Mollie profile ID found on the Mollie dashboard https://docs.mollie.com/index#</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
             </attribute-definition>
             <attribute-definition attribute-id="mollieLogCategory">
+                <display-name xml:lang="x-default">Log category</display-name>
+                <description xml:lang="x-default">Log category used by SFCC</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
                 <default-value>mollie</default-value>
             </attribute-definition>
-            <attribute-definition attribute-id="mollieComponentsEnabled">
-                <display-name xml:lang="x-default">Enable components</display-name>
-                <type>boolean</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <default-value>true</default-value>
-            </attribute-definition>
-            <attribute-definition attribute-id="mollieComponentsEnableTestMode">
-                <display-name xml:lang="x-default">Enable components test mode</display-name>
-                <type>boolean</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-            </attribute-definition>
-            <attribute-definition attribute-id="mollieComponentsProfileId">
-                <type>string</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <min-length>0</min-length>
-            </attribute-definition>
-            <attribute-definition attribute-id="mollieEnableSingleClickPayments">
-                <display-name xml:lang="x-default">Enable single click payments</display-name>
-                <type>boolean</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <default-value>true</default-value>
-            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Mollie Config">
                 <display-name xml:lang="x-default">Configuration for Mollie Integration</display-name>
+                <attribute attribute-id="mollieEnableTestMode"/>
                 <attribute attribute-id="mollieBearerToken"/>
-                <attribute attribute-id="mollieEnabledTransactionAPI"/>
-                <attribute attribute-id="mollieOrderDefaultExpiryDays"/>
-                <attribute attribute-id="mollieLogCategory"/>
-                <attribute attribute-id="mollieComponentsEnabled"/>
-                <attribute attribute-id="mollieComponentsEnableTestMode"/>
-                <attribute attribute-id="mollieComponentsProfileId"/>
+                <attribute attribute-id="mollieBearerTestToken"/>
+                <attribute attribute-id="mollieDefaultEnabledTransactionAPI"/>
+                <attribute attribute-id="mollieDefaultOrderExpiryDays"/>
                 <attribute attribute-id="mollieEnableSingleClickPayments"/>
+                <attribute attribute-id="mollieComponentsEnabled"/>
+                <attribute attribute-id="mollieComponentsProfileId"/>
+                <attribute attribute-id="mollieLogCategory"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

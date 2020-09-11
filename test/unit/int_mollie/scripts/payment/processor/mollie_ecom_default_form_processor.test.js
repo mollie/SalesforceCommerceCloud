@@ -35,9 +35,9 @@ describe('payment/processor/mollie_ecom_default_form_processor', () => {
             var result = mollieEcomDefaultFormFrocessor.processForm(this.req, this.paymentForm, this.viewFormData);
 
             expect(result.error).to.be.false;
-            expect(result.viewData.paymentInformation.paymentMethod).to.deep.equal(result.viewData.paymentMethod);
+            expect(result.viewData.paymentInformation.paymentMethod).to.deep.equal(result.viewData.paymentMethod.value);
 
-            expect(result.viewData.paymentInformation.paymentMethod.value).to.equal(this.paymentForm.paymentMethod.value);
+            expect(result.viewData.paymentInformation.paymentMethod).to.equal(this.paymentForm.paymentMethod.value);
             expect(result.viewData.paymentInformation.cardType.value).to.equal(cardType);
         });
     });

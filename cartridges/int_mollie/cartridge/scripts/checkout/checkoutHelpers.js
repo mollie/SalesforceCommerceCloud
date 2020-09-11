@@ -140,7 +140,7 @@ COHelpers.getMollieViewData = function (profile) {
         mollieComponents: {
             enabled: config.getComponentsEnabled(),
             profileId: config.getComponentsProfileId(),
-            enableTestMode: config.getComponentsEnableTestMode()
+            enableTestMode: config.getEnableTestMode()
         }
     };
 };

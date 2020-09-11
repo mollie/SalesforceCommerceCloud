@@ -223,7 +223,7 @@ function getApplicablePaymentMethods(paymentMethods, currentBasket, countryCode)
         var methodResult = MollieService.getMethods({
             amount: currentBasket.adjustedMerchandizeTotalGrossPrice.value,
             currency: currentBasket.adjustedMerchandizeTotalGrossPrice.currencyCode,
-            resource: config.getEnabledTransactionAPI().value === config.getTransactionAPI().PAYMENT ? 'payments' : 'orders',
+            resource: config.getDefaultEnabledTransactionAPI().value === config.getTransactionAPI().PAYMENT ? 'payments' : 'orders',
             billingCountry: currentBasket.billingAddress ? currentBasket.billingAddress.countryCode.value : countryCode
         });
 

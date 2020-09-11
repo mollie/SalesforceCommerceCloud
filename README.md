@@ -39,20 +39,22 @@ Add the following cartridges to the business manager site:
 
 ## Site Preferences 
 
+- `mollieEnableTestMode`: boolean
 - `mollieBearerToken`: string
-- `mollieEnabledTransactionAPI`: enum of strings
-- `mollieOrderDefaultExpiryDays`: number
-- `mollieLogCategory`: string
-- `mollieComponentsEnabled`: boolean
-- `mollieComponentsEnableTestMode`: boolean
-- `mollieComponentsProfileId`: string
+- `mollieBearerTestToken`: string
+- `mollieDefaultOrderExpiryDays`: number
+- `mollieDefaultEnabledTransactionAPI`: enum of strings
 - `mollieEnableSingleClickPayments`: boolean
+- `mollieComponentsEnabled`: boolean
+- `mollieComponentsProfileId`: string
+- `mollieLogCategory`: string
 
 ## Custom Properties
 
 ### PaymentMethod
 - `molliePaymentMethodId`: string - external mollie payment method id
 - `mollieOrderExpiryDays`: number - expiry days of order
+- `mollieEnabledTransactionAPI`: enum of strings - the enabled transaction API
 
 ### PaymentTransaction
 - `molliePaymentId`: string - the id of the Mollie payment
