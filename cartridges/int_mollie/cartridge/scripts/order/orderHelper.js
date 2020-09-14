@@ -285,6 +285,27 @@ function getUsedTransactionAPI(order) {
 /**
  *
  *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} refundStatus - Mollie refund status
+ * @returns {void}
+ */
+function setRefundStatus(order, refundStatus) {
+    setOrderCustomProperty(order, { key: 'mollieRefundStatus', value: refundStatus });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @returns {string} - Mollie refund status
+ */
+function getRefundStatus(order) {
+    return getOrderCustomProperty(order, { key: 'mollieRefundStatus' });
+}
+
+/**
+ *
+ *
  * @param {dw.order.Order} order - Order object
  * @returns {boolean} is mollie order?
  */
@@ -314,5 +335,7 @@ module.exports = {
     setOrderStatus: setOrderStatus,
     getOrderStatus: getOrderStatus,
     setUsedTransactionAPI: setUsedTransactionAPI,
-    getUsedTransactionAPI: getUsedTransactionAPI
+    getUsedTransactionAPI: getUsedTransactionAPI,
+    setRefundStatus: setRefundStatus,
+    getRefundStatus: getRefundStatus
 };

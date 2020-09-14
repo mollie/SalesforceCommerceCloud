@@ -35,7 +35,7 @@ describe('Config', () => {
         expect(getConfig(preferences).getEnableTestMode()).to.eql(preferences.mollieEnableTestMode);
     });
     it('gets mollieBearerToken', () => {
-        preferences.mollieEnableTestMode = false; 
+        preferences.mollieEnableTestMode = false;
         expect(getConfig(preferences).getBearerToken()).to.eql(preferences.mollieBearerToken);
     });
     it('gets mollieBearerTestToken', () => {

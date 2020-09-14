@@ -46,6 +46,7 @@ exports.Shipment = function () {
         }
 
         paymentService.createShipment(order, lines);
+        paymentService.processPaymentUpdate(order);
         Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
     } catch (e) {
         Logger.error('PAYMENT :: ERROR :: Error while creating shipment for order ' + orderId + '. ' + e.message);

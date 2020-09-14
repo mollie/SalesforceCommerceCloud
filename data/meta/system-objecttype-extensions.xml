@@ -101,6 +101,27 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
+            <attribute-definition attribute-id="mollieRefundStatus">
+                <display-name xml:lang="x-default">Refund status</display-name>
+                <description xml:lang="x-default">The current mollie refund status https://docs.mollie.com/index#</description>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">NOTREFUNDED</display>
+                        <value>REFUND_STATUS_NOTREFUNDED</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">PARTREFUNDED</display>
+                        <value>REFUND_STATUS_PARTREFUNDED</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">REFUNDED</display>
+                        <value>REFUND_STATUS_REFUNDED</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Mollie">
@@ -108,6 +129,7 @@
                 <attribute attribute-id="mollieOrderId"/>
                 <attribute attribute-id="mollieOrderStatus"/>
                 <attribute attribute-id="mollieUsedTransactionAPI" />
+                <attribute attribute-id="mollieRefundStatus" />
             </attribute-group>
         </group-definitions>
     </type-extension>

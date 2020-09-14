@@ -19,6 +19,12 @@ var TRANSACTION_API = {
     ORDER: 'order'
 };
 
+var REFUND_STATUS = {
+    NOTREFUNDED: 'REFUND_STATUS_NOTREFUNDED',
+    PARTREFUNDED: 'REFUND_STATUS_PARTREFUNDED',
+    REFUNDED: 'REFUND_STATUS_REFUNDED'
+};
+
 // Mollie Configuration
 /**
  *
@@ -68,7 +74,7 @@ function Config() {
      * @return {string} bearerToken
      */
     this.getEnableTestMode = function () {
-        return this.enableTestMode ;
+        return this.enableTestMode;
     };
 
     /**
@@ -154,11 +160,21 @@ function Config() {
     /**
      * Get Transaction API constant
      * @function
-     * @name Config#getOrderType
+     * @name Config#getTransactionAPI
      * @return {Object} Order Types
      */
     this.getTransactionAPI = function () {
         return TRANSACTION_API;
+    };
+
+    /**
+     * Get Refund status constant
+     * @function
+     * @name Config#getRefundStatus
+     * @return {Object} Order Types
+     */
+    this.getRefundStatus = function () {
+        return REFUND_STATUS;
     };
 
     // #endregion

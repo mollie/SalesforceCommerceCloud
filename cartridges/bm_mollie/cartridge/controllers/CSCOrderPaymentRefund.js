@@ -23,6 +23,7 @@ exports.Start = function () {
             orderId: order.orderNo,
             order: result.order
         });
+        paymentService.processPaymentUpdate(order);
     } else {
         var mollieInstruments = orderHelper.getMolliePaymentInstruments(order);
         var payments = mollieInstruments.map(function (instrument) {
@@ -35,6 +36,7 @@ exports.Start = function () {
                 orderId: order.orderNo,
                 payments: payments
             });
+            paymentService.processPaymentUpdate(order);
         } else {
             renderTemplate('order/payment/cancel/order_payment_refund_not_available.isml');
         }
