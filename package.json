@@ -87,6 +87,7 @@
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
     "babel-loader": "^8.0.5",
+    "bootstrap": "^4.5.2",
     "cleave.js": "^1.0.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",

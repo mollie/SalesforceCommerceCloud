@@ -1,10 +1,30 @@
 @charset "UTF-8";
 
-.invalid-feedback {
-    display: block;
-}
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
 
-.issuers {
-    display: flex;
-    flex-direction: column;
+.data-checkout-stage {
+    .payment-options-container {
+        .mollie-components-container .invalid-feedback {
+            display: block;
+        }
+
+        .issuers {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-tabs .nav-item {
+            flex: unset;
+
+            @include media-breakpoint-up(lg) {
+                width: calc(100% / 4);
+            }
+
+            @include media-breakpoint-down(lg) {
+                width: calc(100% / 2);
+            }
+        }
+    }
 }
