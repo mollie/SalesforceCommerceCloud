@@ -163,4 +163,15 @@ COHelpers.getPaymentOptionsTemplate = function (currentBasket, accountModel, ord
     }, 'checkout/billing/paymentOptions');
 };
 
+/**
+ * Get mollie summary template
+ * @param {Object} orderModel - The current customer's order history
+ * @returns {Object} Rendered payment options template
+ */
+COHelpers.getPaymentSummaryTemplate = function (orderModel) {
+    return renderTemplateHelper.getRenderedHtml({
+        order: orderModel
+    }, 'checkout/billing/paymentOptions/paymentOptionsSummary');
+};
+
 module.exports = COHelpers;

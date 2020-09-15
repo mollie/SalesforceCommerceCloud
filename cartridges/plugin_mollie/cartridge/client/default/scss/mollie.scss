@@ -27,4 +27,9 @@
             }
         }
     }
+
+    .summary-details .redirect-type {
+        display: flex;
+        flex-direction: column;
+    }
 }

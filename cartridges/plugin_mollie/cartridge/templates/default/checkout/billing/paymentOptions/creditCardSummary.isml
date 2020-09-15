@@ -1,3 +1,9 @@
 <div class="redirect-type">
-    <span>${payment.paymentMethod}</span>
+    <span>${Resource.msgf('label.payment.summary.method', 'mollie', null, payment.paymentMethod)}</span>
+    <isif condition="${payment.paymentMethodDescription}">
+        <span>${payment.paymentMethodDescription}</span>
+    </isif>
+    <isif condition="${payment.issuer}">
+        <span>${Resource.msgf('label.payment.summary.issuer', 'mollie', null, payment.issuer)}</span>
+    </isif>
 </div>

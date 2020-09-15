@@ -36,7 +36,8 @@ function Handle(basket, paymentInformation) {
             }
         }));
 
-        currentBasket.createPaymentInstrument(pm, currentBasket.totalGrossPrice);
+        var paymentInstrument = currentBasket.createPaymentInstrument(pm, currentBasket.totalGrossPrice);
+        paymentInstrument.getPaymentTransaction().custom.mollieIssuerData = paymentInformation.issuer.value;
     });
 
     // Payment forms are managed by Mollie, so field and server errors are irrelevant her.
@@ -67,14 +68,15 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
         });
 
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
-        var issuer = session.forms.billing.issuer.value;
+        var issuerData = orderHelper.getIssuerData(order);
+        var issuerId = JSON.parse(issuerData).id;
         var enabledTransactionAPI = paymentMethod.custom.mollieEnabledTransactionAPI ? paymentMethod.custom.mollieEnabledTransactionAPI.value : config.getDefaultEnabledTransactionAPI().value;
 
         if (enabledTransactionAPI === config.getTransactionAPI().PAYMENT) {
-            var createPaymentResult = paymentService.createPayment(order, paymentMethod, { issuer: issuer });
+            var createPaymentResult = paymentService.createPayment(order, paymentMethod, { issuer: issuerId });
             redirectUrl = createPaymentResult.payment.links.checkout.href;
         } else {
-            var createOrderResult = paymentService.createOrder(order, paymentMethod, { issuer: issuer });
+            var createOrderResult = paymentService.createOrder(order, paymentMethod, { issuer: issuerId });
             redirectUrl = createOrderResult.order.links.checkout.href;
         }
     } catch (e) {

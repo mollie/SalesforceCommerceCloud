@@ -65,12 +65,21 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
+            <attribute-definition attribute-id="mollieIssuerData">
+                <display-name xml:lang="x-default">Mollie issuer data</display-name>
+                <description xml:lang="x-default">Selected Mollie issuer data https://docs.mollie.com/index#</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Mollie">
                 <display-name xml:lang="x-default">Mollie</display-name>
                 <attribute attribute-id="molliePaymentId"/>
                 <attribute attribute-id="molliePaymentStatus"/>
+                <attribute attribute-id="mollieIssuerData"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

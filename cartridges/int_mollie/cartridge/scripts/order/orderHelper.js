@@ -223,6 +223,29 @@ function getPaymentStatus(order, paymentMethodId) {
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} paymentMethodId - payment method id
+ * @returns {string} - Mollie issuer data
+ */
+function getIssuerData(order, paymentMethodId) {
+    return getTransactionCustomProperty(order, paymentMethodId, { key: 'mollieIssuerData' });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} paymentMethodId - payment method id
+ * @param {string} issuerData - Mollie issuer data
+ * @returns {void}
+ */
+function setIssuerData(order, paymentMethodId, issuerData) {
+    setTransactionCustomProperty(order, paymentMethodId, { key: 'mollieIssuerData', value: issuerData });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {string} orderId - Mollie order id
  * @returns {void}
  */
@@ -328,6 +351,8 @@ module.exports = {
     getOrderCustomProperty: getOrderCustomProperty,
     setPaymentId: setPaymentId,
     getPaymentId: getPaymentId,
+    getIssuerData: getIssuerData,
+    setIssuerData: setIssuerData,
     setPaymentStatus: setPaymentStatus,
     getPaymentStatus: getPaymentStatus,
     setOrderId: setOrderId,

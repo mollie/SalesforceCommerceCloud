@@ -59,6 +59,7 @@ Add the following cartridges to the business manager site:
 ### PaymentTransaction
 - `molliePaymentId`: string - the id of the Mollie payment
 - `molliePaymentStatus`: string - the payment status recieved from Mollie
+- `mollieIssuerData`: text - selected issuer data
 
 ### Order
 - `mollieOrderId`: string - the id of the Mollie order
