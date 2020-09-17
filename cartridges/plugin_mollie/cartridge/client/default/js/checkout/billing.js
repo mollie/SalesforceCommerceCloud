@@ -9,8 +9,8 @@ var billing = require('base/checkout/billing');
  * @param {Object} data - data returned from controller
  */
 function updatePaymentInformation(data) {
-    if (data.paymentSummaryTemplate) {
-        $('.js-payment-details').html(data.paymentSummaryTemplate);
+    if (data.order.paymentSummaryTemplate) {
+        $('.js-payment-details').html(data.order.paymentSummaryTemplate);
     }
 }
 
@@ -28,6 +28,7 @@ function updatePaymentOptions(data) {
         billing.addNewPaymentInstrument();
         billing.cancelNewPayment();
         billing.paymentTabs();
+        billing.handleCreditCardNumber();
         applePay.checkApplePaySupport();
         if ($($mollieComponentsContainer).length) {
             components.mountMollieComponents();

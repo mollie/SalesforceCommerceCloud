@@ -168,7 +168,7 @@ server.append('SubmitPayment', function (req, res, next) {
     this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
         var viewData = res.getViewData();
         if (viewData.order) {
-            viewData.paymentSummaryTemplate = COHelpers.getPaymentSummaryTemplate(viewData.order);
+            viewData.order.paymentSummaryTemplate = COHelpers.getPaymentSummaryTemplate(viewData.order);
         }
         res.json(viewData);
     });

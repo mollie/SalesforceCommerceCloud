@@ -2,9 +2,9 @@
 
 var base = require('*/cartridge/scripts/utils/superModule')(module);
 
-const paymentService = require('*/cartridge/scripts/payment/paymentService');
-const PaymentMgr = require('dw/order/PaymentMgr');
-const collections = require('*/cartridge/scripts/util/collections');
+var paymentService = require('*/cartridge/scripts/payment/paymentService');
+var PaymentMgr = require('dw/order/PaymentMgr');
+var collections = require('*/cartridge/scripts/util/collections');
 
 /**
  * Creates an array of objects containing selected payment information

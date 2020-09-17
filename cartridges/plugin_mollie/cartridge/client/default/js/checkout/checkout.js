@@ -113,7 +113,7 @@ var mollieComponents = require('./components');
                                 $('body').trigger('checkout:enableButton', '.next-step-button button');
                                 if (!data.error) {
                                     $('body').trigger('checkout:updateCheckoutView',
-                                        { order: data.order, customer: data.customer, paymentSummaryTemplate: data.paymentSummaryTemplate });
+                                        { order: data.order, customer: data.customer });
                                     defer.resolve();
                                 } else if (data.message && $('.shipping-error .alert-danger').length < 1) {
                                     var errorMsg = data.message;
@@ -286,7 +286,7 @@ var mollieComponents = require('./components');
                                     // Populate the Address Summary
                                     //
                                     $('body').trigger('checkout:updateCheckoutView',
-                                        { order: data.order, customer: data.customer, paymentSummaryTemplate: data.paymentSummaryTemplate });
+                                        { order: data.order, customer: data.customer });
 
                                     if (data.renderedPaymentInstruments) {
                                         $('.stored-payments').empty().html(

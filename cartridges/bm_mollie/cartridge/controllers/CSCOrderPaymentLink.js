@@ -10,7 +10,7 @@ var renderTemplate = require('*/cartridge/scripts/helpers/renderTemplateHelper')
 
 var isLinkAllowed = function (order) {
     if (!order) return false;
-    const orderStatus = order.status.value;
+    var orderStatus = order.status.value;
     return (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
         orderStatus !== Order.ORDER_STATUS_FAILED);
 };
@@ -30,7 +30,7 @@ var sendPaymentLink = function (order, email, paymentLink) {
 };
 
 exports.Start = function () {
-    const orderNo = request.httpParameterMap.get('order_no').stringValue;
+    var orderNo = request.httpParameterMap.get('order_no').stringValue;
     var order = OrderMgr.getOrder(orderNo);
     var paymentLink;
     if (!isLinkAllowed(order)) {
@@ -66,11 +66,11 @@ exports.Start = function () {
 };
 
 exports.SendMail = function () {
-    const paymentLink = request.httpParameterMap.get('paymentLink').stringValue;
-    const orderId = request.httpParameterMap.get('orderId').stringValue;
-    const email = request.httpParameterMap.get('email').stringValue;
-    const order = OrderMgr.getOrder(orderId);
-    const viewParams = {
+    var paymentLink = request.httpParameterMap.get('paymentLink').stringValue;
+    var orderId = request.httpParameterMap.get('orderId').stringValue;
+    var email = request.httpParameterMap.get('email').stringValue;
+    var order = OrderMgr.getOrder(orderId);
+    var viewParams = {
         success: true,
         orderId: orderId
     };

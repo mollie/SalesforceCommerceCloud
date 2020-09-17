@@ -7,13 +7,13 @@ var renderTemplate = require('*/cartridge/scripts/helpers/renderTemplateHelper')
 
 var isCancelAllowed = function (order) {
     if (!order) return false;
-    const orderStatus = order.status.value;
+    var orderStatus = order.status.value;
     return (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
         orderStatus !== Order.ORDER_STATUS_FAILED);
 };
 
 exports.Start = function () {
-    const orderNo = request.httpParameterMap.get('order_no').stringValue;
+    var orderNo = request.httpParameterMap.get('order_no').stringValue;
     var order = OrderMgr.getOrder(orderNo);
     if (!isCancelAllowed(order)) {
         renderTemplate('order/payment/cancel/order_payment_cancel_not_available.isml');
@@ -42,9 +42,9 @@ exports.Start = function () {
 };
 
 exports.CancelPayment = function () {
-    const paymentId = request.httpParameterMap.get('paymentId').stringValue;
-    const orderId = request.httpParameterMap.get('orderId').stringValue;
-    const viewParams = {
+    var paymentId = request.httpParameterMap.get('paymentId').stringValue;
+    var orderId = request.httpParameterMap.get('orderId').stringValue;
+    var viewParams = {
         success: true,
         orderId: orderId
     };
@@ -62,11 +62,11 @@ exports.CancelPayment = function () {
 };
 
 exports.CancelOrderLine = function () {
-    const orderId = request.httpParameterMap.get('orderId').stringValue;
-    const lineId = request.httpParameterMap.get('lineId').stringValue;
-    const quantity = request.httpParameterMap.get('quantity').stringValue;
-    const order = OrderMgr.getOrder(orderId);
-    const viewParams = {
+    var orderId = request.httpParameterMap.get('orderId').stringValue;
+    var lineId = request.httpParameterMap.get('lineId').stringValue;
+    var quantity = request.httpParameterMap.get('quantity').stringValue;
+    var order = OrderMgr.getOrder(orderId);
+    var viewParams = {
         success: true,
         orderId: orderId
     };
@@ -87,9 +87,9 @@ exports.CancelOrderLine = function () {
 };
 
 exports.CancelOrder = function () {
-    const orderId = request.httpParameterMap.get('orderId').stringValue;
-    const order = OrderMgr.getOrder(orderId);
-    const viewParams = {
+    var orderId = request.httpParameterMap.get('orderId').stringValue;
+    var order = OrderMgr.getOrder(orderId);
+    var viewParams = {
         success: true,
         orderId: orderId
     };

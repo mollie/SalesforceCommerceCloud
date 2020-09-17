@@ -111,8 +111,8 @@ function setOrderShippingStatus(order, shippingStatus) {
  * @returns {dw.order.OrderPaymentInstrument[]} - Mollie PaymentInstruments
  */
 function getMolliePaymentInstruments(order, paymentMethodId) {
-    const filterFunction = function (instrument) {
-        const paymentMethod = PaymentMgr.getPaymentMethod(instrument.getPaymentMethod());
+    var filterFunction = function (instrument) {
+        var paymentMethod = PaymentMgr.getPaymentMethod(instrument.getPaymentMethod());
         return paymentMethod && paymentMethod.getPaymentProcessor().getID().indexOf('MOLLIE') >= 0;
     };
     return paymentMethodId
@@ -128,7 +128,7 @@ function getMolliePaymentInstruments(order, paymentMethodId) {
  * @param {Object} custom - custom
  */
 function setTransactionCustomProperty(order, paymentMethodId, custom) {
-    const paymentInstrument = getMolliePaymentInstruments(order, paymentMethodId).pop();
+    var paymentInstrument = getMolliePaymentInstruments(order, paymentMethodId).pop();
 
     if (paymentInstrument) {
         paymentInstrument.getPaymentTransaction().custom[custom.key] = custom.value;
@@ -144,10 +144,10 @@ function setTransactionCustomProperty(order, paymentMethodId, custom) {
  * @returns {Object} - transaction custom property
  */
 function getTransactionCustomProperty(order, paymentMethodId, custom) {
-    const paymentInstrument = getMolliePaymentInstruments(order, paymentMethodId).pop();
+    var paymentInstrument = getMolliePaymentInstruments(order, paymentMethodId).pop();
 
     if (!paymentInstrument) return null;
-    const customProperty = paymentInstrument.getPaymentTransaction().custom[custom.key];
+    var customProperty = paymentInstrument.getPaymentTransaction().custom[custom.key];
     return customProperty && customProperty.toString();
 }
 
@@ -169,7 +169,7 @@ function setOrderCustomProperty(order, custom) {
  * @returns {Object} - transaction custom property
  */
 function getOrderCustomProperty(order, custom) {
-    const customProperty = order.custom[custom.key];
+    var customProperty = order.custom[custom.key];
     return customProperty && customProperty.toString();
 }
 

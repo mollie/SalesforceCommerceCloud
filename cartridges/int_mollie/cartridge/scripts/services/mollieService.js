@@ -1,31 +1,31 @@
-const Mollie = require('*/cartridge/scripts/services/mollie/Mollie');
-const createPayment = require('*/cartridge/scripts/services/mollie/payment/createPayment');
-const getPayment = require('*/cartridge/scripts/services/mollie/payment/getPayment');
-const cancelPayment = require('*/cartridge/scripts/services/mollie/payment/cancelPayment');
-const paymentConstants = require('*/cartridge/scripts/services/mollie/payment/paymentConstants');
+var Mollie = require('*/cartridge/scripts/services/mollie/Mollie');
+var createPayment = require('*/cartridge/scripts/services/mollie/payment/createPayment');
+var getPayment = require('*/cartridge/scripts/services/mollie/payment/getPayment');
+var cancelPayment = require('*/cartridge/scripts/services/mollie/payment/cancelPayment');
+var paymentConstants = require('*/cartridge/scripts/services/mollie/payment/paymentConstants');
 
-const createOrder = require('*/cartridge/scripts/services/mollie/order/createOrder');
-const getOrder = require('*/cartridge/scripts/services/mollie/order/getOrder');
-const cancelOrder = require('*/cartridge/scripts/services/mollie/order/cancelOrder');
-const cancelOrderLineItem = require('*/cartridge/scripts/services/mollie/order/cancelOrderLineItem');
-const orderConstants = require('*/cartridge/scripts/services/mollie/order/orderConstants');
+var createOrder = require('*/cartridge/scripts/services/mollie/order/createOrder');
+var getOrder = require('*/cartridge/scripts/services/mollie/order/getOrder');
+var cancelOrder = require('*/cartridge/scripts/services/mollie/order/cancelOrder');
+var cancelOrderLineItem = require('*/cartridge/scripts/services/mollie/order/cancelOrderLineItem');
+var orderConstants = require('*/cartridge/scripts/services/mollie/order/orderConstants');
 
-const createOrderRefund = require('*/cartridge/scripts/services/mollie/refund/createOrderRefund');
-const createPaymentRefund = require('*/cartridge/scripts/services/mollie/refund/createPaymentRefund');
-const refundConstants = require('*/cartridge/scripts/services/mollie/refund/refundConstants');
+var createOrderRefund = require('*/cartridge/scripts/services/mollie/refund/createOrderRefund');
+var createPaymentRefund = require('*/cartridge/scripts/services/mollie/refund/createPaymentRefund');
+var refundConstants = require('*/cartridge/scripts/services/mollie/refund/refundConstants');
 
-const createShipment = require('*/cartridge/scripts/services/mollie/shipment/createShipment');
-const shipmentConstants = require('*/cartridge/scripts/services/mollie/shipment/shipmentConstants');
+var createShipment = require('*/cartridge/scripts/services/mollie/shipment/createShipment');
+var shipmentConstants = require('*/cartridge/scripts/services/mollie/shipment/shipmentConstants');
 
-const getMethod = require('*/cartridge/scripts/services/mollie/method/getMethod');
-const getMethods = require('*/cartridge/scripts/services/mollie/method/getMethods');
-const methodConstants = require('*/cartridge/scripts/services/mollie/method/methodConstants');
+var getMethod = require('*/cartridge/scripts/services/mollie/method/getMethod');
+var getMethods = require('*/cartridge/scripts/services/mollie/method/getMethods');
+var methodConstants = require('*/cartridge/scripts/services/mollie/method/methodConstants');
 
-const createCustomer = require('*/cartridge/scripts/services/mollie/customer/createCustomer');
-const customerConstants = require('*/cartridge/scripts/services/mollie/customer/customerConstants');
+var createCustomer = require('*/cartridge/scripts/services/mollie/customer/createCustomer');
+var customerConstants = require('*/cartridge/scripts/services/mollie/customer/customerConstants');
 
-const requestPaymentSession = require('*/cartridge/scripts/services/mollie/applePay/requestPaymentSession');
-const applePayConstants = require('*/cartridge/scripts/services/mollie/method/methodConstants');
+var requestPaymentSession = require('*/cartridge/scripts/services/mollie/applePay/requestPaymentSession');
+var applePayConstants = require('*/cartridge/scripts/services/mollie/method/methodConstants');
 
 exports.createPayment = function (parameters) {
     var mollie = new Mollie(paymentConstants.CREATE_PAYMENT);

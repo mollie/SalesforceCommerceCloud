@@ -33,7 +33,7 @@ var REFUND_STATUS = {
 function Config() {
     var sitePreferences;
     var getPreferenceOrThrow = function (preferences, preferenceName) {
-        const pref = preferences[preferenceName];
+        var pref = preferences[preferenceName];
         if (typeof pref === 'boolean') return pref;
         if (!pref) throw new MollieServiceException('You must configure sitePreference by name ' + preferenceName + '.');
         return pref;

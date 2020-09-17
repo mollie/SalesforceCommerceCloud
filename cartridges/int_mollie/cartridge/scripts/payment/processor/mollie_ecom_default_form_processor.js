@@ -10,8 +10,8 @@ var PaymentMgr = require('dw/order/PaymentMgr');
  * @returns {Object} an object that has error information or payment information
  */
 function processForm(req, paymentForm, viewFormData) {
-    const viewData = viewFormData;
-    const cardType = PaymentMgr.getPaymentMethod(paymentForm.paymentMethod.value);
+    var viewData = viewFormData;
+    var cardType = PaymentMgr.getPaymentMethod(paymentForm.paymentMethod.value);
 
     viewData.paymentMethod = {
         value: paymentForm.paymentMethod.value,

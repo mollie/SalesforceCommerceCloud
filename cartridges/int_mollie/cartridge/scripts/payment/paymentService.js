@@ -51,7 +51,7 @@ function getOrder(orderId) {
  */
 function createPayment(order, paymentMethod, paymentData) {
     try {
-        const paymentResult = MollieService.createPayment({
+        var paymentResult = MollieService.createPayment({
             orderId: order.orderNo,
             totalGrossPrice: order.getTotalGrossPrice(),
             methodId: paymentMethod.custom.molliePaymentMethodId,
@@ -92,7 +92,7 @@ function processPaymentUpdate(order, statusUpdateId) {
             // Instead of searching for payment to update, get last one
             /*
             var paymentInstruments = order.getPaymentInstruments().toArray().filter(function (instrument) {
-                const paymentMethodId = instrument.getPaymentMethod();
+                var paymentMethodId = instrument.getPaymentMethod();
                 return orderHelper.getPaymentId(order, paymentMethodId) === statusUpdateId;
             });
 
@@ -121,7 +121,7 @@ function processPaymentUpdate(order, statusUpdateId) {
  */
 function cancelPayment(paymentId) {
     try {
-        const paymentResult = MollieService.cancelPayment({
+        var paymentResult = MollieService.cancelPayment({
             paymentId: paymentId
         });
 
@@ -178,7 +178,7 @@ function createOrder(order, paymentMethod, paymentData) {
  */
 function cancelOrder(order) {
     try {
-        const cancelResult = MollieService.cancelOrder({
+        var cancelResult = MollieService.cancelOrder({
             orderId: orderHelper.getOrderId(order)
         });
 
@@ -198,7 +198,7 @@ function cancelOrder(order) {
  */
 function cancelOrderLineItem(order, lines) {
     try {
-        const cancelResult = MollieService.cancelOrderLineItem({
+        var cancelResult = MollieService.cancelOrderLineItem({
             orderId: orderHelper.getOrderId(order),
             lines: lines || []
         });

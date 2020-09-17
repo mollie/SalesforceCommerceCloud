@@ -39,8 +39,8 @@ function checkMollieRefundStatus(order, paymentResult) {
 function processPaymentResult(order, paymentResult) {
     var paymentService = require('*/cartridge/scripts/payment/paymentService');
 
-    const STATUS = config.getTransactionStatus();
-    const isMollieOrder = orderHelper.isMollieOrder(order);
+    var STATUS = config.getTransactionStatus();
+    var isMollieOrder = orderHelper.isMollieOrder(order);
 
     var orderId = order.orderNo;
     var orderToken = order.orderToken;

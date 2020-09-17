@@ -134,7 +134,7 @@ function Line(mollieLine) {
  */
 function Order(mollieOrder) {
     var order = mollieOrder || {};
-    const STATUS = config.getTransactionStatus();
+    var STATUS = config.getTransactionStatus();
     this.resource = order.resource;
     this.id = order.id;
     this.profileId = order.profileId;

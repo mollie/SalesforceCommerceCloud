@@ -102,8 +102,7 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
             paymentInfo.customerId = profile.custom.mollieCustomerId;
         }
 
-        var enabledTransactionAPI = paymentMethod.custom.mollieEnabledTransactionAPI ? paymentMethod.custom.mollieEnabledTransactionAPI.value : config.getDefaultEnabledTransactionAPI().value;
-
+        var enabledTransactionAPI = paymentMethod.custom.mollieEnabledTransactionAPI.value || config.getDefaultEnabledTransactionAPI().value;
         if (enabledTransactionAPI === config.getTransactionAPI().PAYMENT) {
             var createPaymentResult = paymentService.createPayment(order, paymentMethod, paymentInfo);
             redirectUrl = createPaymentResult.payment.links.checkout.href;
