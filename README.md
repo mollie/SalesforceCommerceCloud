@@ -48,6 +48,7 @@ Add the following cartridges to the business manager site:
 - `mollieComponentsEnabled`: boolean
 - `mollieComponentsProfileId`: string
 - `mollieLogCategory`: string
+- `mollieApplePayVerificationString`: string
 
 ## Custom Properties
 
