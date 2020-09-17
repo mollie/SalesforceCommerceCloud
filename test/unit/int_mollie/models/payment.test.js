@@ -12,7 +12,8 @@ describe('models/payment', () => {
     var PaymentModel = proxyquire(`${base}/int_mollie/cartridge/models/payment`, {
         'dw/order/PaymentMgr': stubs.dw.PaymentMgrMock,
         '*/cartridge/scripts/payment/paymentService': stubs.paymentServiceMock,
-        '*/cartridge/scripts/utils/superModule': stubs.superModule
+        '*/cartridge/scripts/utils/superModule': stubs.superModule,
+        '*/cartridge/scripts/util/collections': stubs.collectionsMock
     });
 
     it('should call the Mollie service to get the enabled and allowed methods', function () {

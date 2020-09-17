@@ -39,7 +39,8 @@ describe('mollie/createPayment', () => {
             this.currencyStub.getValue.returns(this.amount.value);
             this.params = {
                 totalGrossPrice: this.currencyStub,
-                methodId: faker.lorem.word()
+                methodId: faker.lorem.word(),
+                description: faker.lorem.word()
             };
             stubs.dw.URLUtilsMock.https.returns(this.returnUrl);
         });

@@ -3,15 +3,16 @@ const { stubs } = testHelpers;
 
 var preferences = {
     siteID: 'siteID',
-    mollieEnableTestMode: faker.random.boolean(),
-    mollieBearerToken: faker.random.word(),
-    mollieBearerTestToken: faker.random.word(),
+    siteName: 'siteName',
+    mollieEnabledMode: faker.lorem.word(),
+    mollieBearerTestToken: faker.lorem.word(),
+    mollieBearerToken: faker.lorem.word(),
+    mollieProfileId: faker.lorem.word(),
     mollieDefaultEnabledTransactionAPI: [faker.lorem.word(), faker.lorem.word()],
     mollieDefaultOrderExpiryDays: faker.random.number(),
     mollieEnableSingleClickPayments: faker.random.boolean(),
     mollieComponentsEnabled: faker.random.boolean(),
-    mollieComponentsProfileId: faker.lorem.word(),
-    mollieLogCategory: faker.random.word()
+    mollieLogCategory: faker.lorem.word()
 };
 
 const getConfig = prefs => {
@@ -31,15 +32,18 @@ describe('Config', () => {
     it('gets siteID', () => {
         expect(getConfig(preferences).getSiteId()).to.eql(preferences.siteID);
     });
-    it('gets mollieEnableTestMode', () => {
-        expect(getConfig(preferences).getEnableTestMode()).to.eql(preferences.mollieEnableTestMode);
+    it('gets siteName', () => {
+        expect(getConfig(preferences).getSiteName()).to.eql(preferences.siteName);
+    });
+    it('gets mollieEnabledMode', () => {
+        expect(getConfig(preferences).getEnabledMode()).to.eql(preferences.mollieEnabledMode);
     });
     it('gets mollieBearerToken', () => {
-        preferences.mollieEnableTestMode = false;
+        preferences.mollieEnabledMode = { value: 'LIVE' };
         expect(getConfig(preferences).getBearerToken()).to.eql(preferences.mollieBearerToken);
     });
     it('gets mollieBearerTestToken', () => {
-        preferences.mollieEnableTestMode = true;
+        preferences.mollieEnabledMode = { value: 'TEST' };
         expect(getConfig(preferences).getBearerToken()).to.eql(preferences.mollieBearerTestToken);
     });
     it('gets mollieDefaultEnabledTransactionAPI', () => {
@@ -55,8 +59,8 @@ describe('Config', () => {
     it('gets mollieComponentsEnabled', () => {
         expect(getConfig(preferences).getComponentsEnabled()).to.eql(preferences.mollieComponentsEnabled);
     });
-    it('gets mollieComponentsProfileId', () => {
-        expect(getConfig(preferences).getComponentsProfileId()).to.eql(preferences.mollieComponentsProfileId);
+    it('gets mollieProfileId', () => {
+        expect(getConfig(preferences).getProfileId()).to.eql(preferences.mollieProfileId);
     });
     it('gets mollieLogCategory', () => {
         expect(getConfig(preferences).getLogCategory()).to.eql(preferences.mollieLogCategory);

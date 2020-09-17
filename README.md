@@ -39,14 +39,14 @@ Add the following cartridges to the business manager site:
 
 ## Site Preferences 
 
-- `mollieEnableTestMode`: boolean
-- `mollieBearerToken`: string
+- `mollieEnabledMode`: enum of strings
 - `mollieBearerTestToken`: string
+- `mollieBearerToken`: string
+- `mollieProfileId`: string
 - `mollieDefaultOrderExpiryDays`: number
 - `mollieDefaultEnabledTransactionAPI`: enum of strings
 - `mollieEnableSingleClickPayments`: boolean
 - `mollieComponentsEnabled`: boolean
-- `mollieComponentsProfileId`: string
 - `mollieLogCategory`: string
 - `mollieApplePayVerificationString`: string
 

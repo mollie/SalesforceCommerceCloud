@@ -107,7 +107,8 @@ const SiteMock = {
         getPreferences: () => ({
             getCustom: customMock
         }),
-        getID: () => 'siteID'
+        getID: () => 'siteID',
+        getName: () => 'siteName'
     })
 };
 
@@ -170,22 +171,29 @@ const dw = {
 };
 
 const loggerMock = { debug: sandbox.stub(), error: sandbox.stub() };
+const collectionsMock = { map: sandbox.stub() };
 
 const configMock = {
     getSiteId: sandbox.stub(),
-    getEnableTestMode: sandbox.stub(),
+    getSiteName: sandbox.stub(),
+    getEnabledMode: sandbox.stub(),
     getBearerToken: sandbox.stub(),
     getDefaultEnabledTransactionAPI: sandbox.stub(),
     getDefaultOrderExpiryDays: sandbox.stub(),
     getEnableSingleClickPayments: sandbox.stub(),
     getComponentsEnabled: sandbox.stub(),
-    getComponentsProfileId: sandbox.stub(),
+    getProfileId: sandbox.stub(),
     getLogCategory: sandbox.stub(),
     getTransactionStatus: sandbox.stub(),
-    getTransactionAPI: sandbox.stub()
+    getTransactionAPI: sandbox.stub(),
+    getRefundStatus: sandbox.stub()
 };
 
 const orderHelperMock = {
+    getPaymentDescription: sandbox.stub(),
+    checkMollieRefundStatus: sandbox.stub(),
+    getIssuerData: sandbox.stub(),
+    setRefundStatus: sandbox.stub(),
     addItemToOrderHistory: sandbox.stub(),
     failOrder: sandbox.stub(),
     cancelOrder: sandbox.stub(),
@@ -299,6 +307,7 @@ module.exports = {
     mollieRequest: sandbox.stub(),
     authRequest: sandbox.stub(),
     loggerMock: loggerMock,
+    collectionsMock: collectionsMock,
     configMock: configMock,
     dateMock: dateMock,
     paymentServiceMock: paymentServiceMock,

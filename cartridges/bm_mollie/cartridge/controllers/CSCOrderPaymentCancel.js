@@ -9,7 +9,8 @@ var isCancelAllowed = function (order) {
     if (!order) return false;
     var orderStatus = order.status.value;
     return (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
-        orderStatus !== Order.ORDER_STATUS_FAILED);
+        orderStatus !== Order.ORDER_STATUS_FAILED &&
+        orderStatus !== Order.ORDER_STATUS_CREATED);
 };
 
 exports.Start = function () {

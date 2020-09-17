@@ -139,8 +139,8 @@ COHelpers.getMollieViewData = function (profile) {
         enableSingleClickPayments: config.getEnableSingleClickPayments(),
         mollieComponents: {
             enabled: config.getComponentsEnabled(),
-            profileId: config.getComponentsProfileId(),
-            enableTestMode: config.getEnableTestMode()
+            profileId: config.getProfileId(),
+            enableTestMode: config.getEnabledMode().value === 'TEST'
         }
     };
 };

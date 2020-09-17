@@ -8,28 +8,6 @@ var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 
 /**
- * Checks the mollie refund status and updates SFCC order
- *
- * @param {dw.order.Order} order order
- * @param {Object} paymentResult paymentResult from getOrder or getPayment call
- */
-function checkMollieRefundStatus(order, paymentResult) {
-    if (paymentResult.amountRefunded.value) {
-        var REFUND_STATUS = config.getRefundStatus();
-        if (paymentResult.amountRefunded.value === paymentResult.amount.value
-            && orderHelper.getRefundStatus(order).value !== REFUND_STATUS.REFUNDED) {
-            Transaction.wrap(function () {
-                orderHelper.setRefundStatus(order, REFUND_STATUS.REFUNDED);
-            });
-        } else if (orderHelper.getRefundStatus(order).value !== REFUND_STATUS.PARTREFUNDED) {
-            Transaction.wrap(function () {
-                orderHelper.setRefundStatus(order, REFUND_STATUS.PARTREFUNDED);
-            });
-        }
-    }
-}
-
-/**
  * Process the Order Result from Mollie
  *
  * @param {dw.order.Order} order order
@@ -109,7 +87,7 @@ function processPaymentResult(order, paymentResult) {
             historyItem = 'PAYMENT :: Unknown Mollie status update :: ' + paymentResult.status;
     }
 
-    checkMollieRefundStatus(order, paymentResult);
+    orderHelper.checkMollieRefundStatus(order, paymentResult);
 
     Transaction.wrap(function () {
         if (isMollieOrder) {

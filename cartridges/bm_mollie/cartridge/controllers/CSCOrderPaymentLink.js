@@ -11,8 +11,7 @@ var renderTemplate = require('*/cartridge/scripts/helpers/renderTemplateHelper')
 var isLinkAllowed = function (order) {
     if (!order) return false;
     var orderStatus = order.status.value;
-    return (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
-        orderStatus !== Order.ORDER_STATUS_FAILED);
+    return orderStatus === Order.ORDER_STATUS_CREATED;
 };
 
 var sendPaymentLink = function (order, email, paymentLink) {

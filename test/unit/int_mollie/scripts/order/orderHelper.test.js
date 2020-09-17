@@ -5,6 +5,7 @@ const orderHelper = proxyquire(`${base}/int_mollie/cartridge/scripts/order/order
     'dw/order/PaymentMgr': stubs.dw.PaymentMgrMock,
     'dw/order/OrderMgr': stubs.dw.OrderMgrMock,
     'dw/order/Order': stubs.dw.OrderMock,
+    'dw/system/Transaction': stubs.dw.TransactionMock,
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
     '*/cartridge/scripts/mollieConfig': stubs.configMock
 });

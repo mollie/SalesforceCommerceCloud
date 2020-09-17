@@ -57,11 +57,12 @@ function createPayment(order, paymentMethod, paymentData) {
             methodId: paymentMethod.custom.molliePaymentMethodId,
             cardToken: paymentData && paymentData.cardToken,
             issuer: paymentData && paymentData.issuer,
-            customerId: paymentData && paymentData.customerId
+            customerId: paymentData && paymentData.customerId,
+            description: orderHelper.getPaymentDescription(order, paymentMethod)
         });
 
         Transaction.wrap(function () {
-            var historyItem = 'PAYMENT :: Create payment: ' + paymentResult.raw;
+            var historyItem = 'PAYMENT :: Created payment with id: ' + paymentResult.payment.id;
             orderHelper.addItemToOrderHistory(order, historyItem, true);
             orderHelper.setUsedTransactionAPI(order, config.getTransactionAPI().PAYMENT);
             orderHelper.setPaymentId(order, paymentMethod.getID(), paymentResult.payment.id);
@@ -157,7 +158,7 @@ function createOrder(order, paymentMethod, paymentData) {
         });
 
         Transaction.wrap(function () {
-            var historyItem = 'PAYMENT :: Create order payment: ' + orderResult.raw;
+            var historyItem = 'PAYMENT :: Created order payment with id: ' + orderResult.order.id;
             orderHelper.addItemToOrderHistory(order, historyItem, true);
             orderHelper.setUsedTransactionAPI(order, config.getTransactionAPI().ORDER);
             orderHelper.setOrderId(order, orderResult.order.id);
@@ -221,7 +222,7 @@ function cancelOrderLineItem(order, lines) {
 function getApplicablePaymentMethods(paymentMethods, currentBasket, countryCode) {
     try {
         var methodResult = MollieService.getMethods({
-            amount: currentBasket.adjustedMerchandizeTotalGrossPrice.value,
+            amount: currentBasket.adjustedMerchandizeTotalGrossPrice.value.toFixed(2),
             currency: currentBasket.adjustedMerchandizeTotalGrossPrice.currencyCode,
             resource: config.getDefaultEnabledTransactionAPI().value === config.getTransactionAPI().PAYMENT ? 'payments' : 'orders',
             billingCountry: currentBasket.billingAddress ? currentBasket.billingAddress.countryCode.value : countryCode

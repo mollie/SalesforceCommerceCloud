@@ -47,7 +47,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
         });
         it('renders a template for Mollie order with viewParams', () => {
             order.status = {
-                value: stubs.dw.OrderMock.ORDER_STATUS_NEW
+                value: stubs.dw.OrderMock.ORDER_STATUS_CREATED
             };
             const paymentLink = faker.internet.url();
             const getOrderResponse = {
@@ -74,7 +74,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
         });
         it('renders a template for Mollie payment with viewParams', () => {
             order.status = {
-                value: stubs.dw.OrderMock.ORDER_STATUS_NEW
+                value: stubs.dw.OrderMock.ORDER_STATUS_CREATED
             };
             const paymentLink = faker.internet.url();
             const getPaymentResponse = {
@@ -103,7 +103,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
         });
         it('renders link not available template when order has no mollie instruments', () => {
             order.status = {
-                value: stubs.dw.OrderMock.ORDER_STATUS_NEW
+                value: stubs.dw.OrderMock.ORDER_STATUS_CREATED
             };
             stubs.orderHelperMock.isMollieOrder.returns(false);
             stubs.orderHelperMock.getMolliePaymentInstruments.returns([]);
@@ -115,7 +115,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
         });
         it('throws when rendering template fails', () => {
             order.status = {
-                value: stubs.dw.OrderMock.ORDER_STATUS_NEW
+                value: stubs.dw.OrderMock.ORDER_STATUS_CREATED
             };
             const paymentLink = faker.internet.url();
             const getOrderResponse = {

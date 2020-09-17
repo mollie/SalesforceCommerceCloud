@@ -25,7 +25,7 @@ var createCustomer = require('*/cartridge/scripts/services/mollie/customer/creat
 var customerConstants = require('*/cartridge/scripts/services/mollie/customer/customerConstants');
 
 var requestPaymentSession = require('*/cartridge/scripts/services/mollie/applePay/requestPaymentSession');
-var applePayConstants = require('*/cartridge/scripts/services/mollie/method/methodConstants');
+var applePayConstants = require('*/cartridge/scripts/services/mollie/applePay/applePayConstants');
 
 exports.createPayment = function (parameters) {
     var mollie = new Mollie(paymentConstants.CREATE_PAYMENT);

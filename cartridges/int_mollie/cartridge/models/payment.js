@@ -21,7 +21,6 @@ function getSelectedPaymentInstruments(selectedPaymentInstruments) {
         var results = {
             paymentMethodId: paymentMethod.getID(),
             paymentMethod: paymentMethod.getName(),
-            paymentMethodDescription: paymentMethod.getDescription(),
             amount: paymentInstrument.paymentTransaction.amount.value,
             issuer: issuerData && issuerData.name
         };

@@ -3,6 +3,34 @@ var PaymentMgr = require('dw/order/PaymentMgr');
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
 var config = require('*/cartridge/scripts/mollieConfig');
+var Transaction = require('dw/system/Transaction');
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {dw.order.PaymentMethod} paymentMethod - Order paymentMethod
+ * @returns {void}
+ */
+function getPaymentDescription(order, paymentMethod) {
+    var description = paymentMethod.description.markup;
+    var stringMapping = {
+        '{orderNumber}': order.orderNo,
+        '{storeName}': config.getSiteName(),
+        '{cart.id}': 'CART ID',
+        '{order.reference}': order.customerOrderReference,
+        '{customer.firstname}': order.customer.profile.firstName,
+        '{customer.lastName}': order.customer.profile.lastName,
+        '{customer.company}': order.customer.profile.companyName,
+        '{storename}': config.getSiteName()
+    };
+
+    Object.keys(stringMapping).forEach(function (key) {
+        var value = stringMapping[key];
+        description = value ? description.replace(key, value) : description.replace(key, '');
+    });
+    return description;
+}
 
 /**
  *
@@ -336,7 +364,30 @@ function isMollieOrder(order) {
     return getUsedTransactionAPI(order) === config.getTransactionAPI().ORDER;
 }
 
+/**
+ * Checks the mollie refund status and updates SFCC order
+ *
+ * @param {dw.order.Order} order order
+ * @param {Object} paymentResult paymentResult from getOrder or getPayment call
+ */
+function checkMollieRefundStatus(order, paymentResult) {
+    if (paymentResult.amountRefunded.value) {
+        var REFUND_STATUS = config.getRefundStatus();
+        if (paymentResult.amountRefunded.value === paymentResult.amount.value
+            && getRefundStatus(order).value !== REFUND_STATUS.REFUNDED) {
+            Transaction.wrap(function () {
+                setRefundStatus(order, REFUND_STATUS.REFUNDED);
+            });
+        } else if (getRefundStatus(order).value !== REFUND_STATUS.PARTREFUNDED) {
+            Transaction.wrap(function () {
+                setRefundStatus(order, REFUND_STATUS.PARTREFUNDED);
+            });
+        }
+    }
+}
+
 module.exports = {
+    getPaymentDescription: getPaymentDescription,
     addItemToOrderHistory: addItemToOrderHistory,
     failOrder: failOrder,
     cancelOrder: cancelOrder,
@@ -362,5 +413,6 @@ module.exports = {
     setUsedTransactionAPI: setUsedTransactionAPI,
     getUsedTransactionAPI: getUsedTransactionAPI,
     setRefundStatus: setRefundStatus,
-    getRefundStatus: getRefundStatus
+    getRefundStatus: getRefundStatus,
+    checkMollieRefundStatus: checkMollieRefundStatus
 };
