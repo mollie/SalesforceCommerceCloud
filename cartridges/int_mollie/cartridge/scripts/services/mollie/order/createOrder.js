@@ -12,7 +12,7 @@ var config = require('*/cartridge/scripts/mollieConfig');
  * @returns {Object} payload - returns payload
  */
 function payloadBuilder(params) {
-    var expiryDays = params.paymentMethod.custom.mollieOrderExpiryDays || config.getDefaultOrderExpiryDays();
+    var expiryDays = params.paymentMethod.custom.mollieOrderExpiryDays.value || config.getDefaultOrderExpiryDays().value;
     var payload = {
         amount: new mollieRequestEntities.Currency(params.totalGrossPrice),
         orderNumber: params.orderId,
