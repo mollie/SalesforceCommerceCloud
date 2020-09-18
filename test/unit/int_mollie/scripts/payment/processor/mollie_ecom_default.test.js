@@ -72,7 +72,7 @@ describe('payment/processor/mollie_ecom_default', () => {
             this.createdInstrument = new stubs.dw.PaymentInstrumentMock();
             this.currentBasket.createPaymentInstrument.returns(this.createdInstrument);
             this.paymentTransaction = new stubs.dw.PaymentTransactionMock();
-            this.createdInstrument.getPaymentTransaction.returns(this.paymentTransaction)
+            this.createdInstrument.getPaymentTransaction.returns(this.paymentTransaction);
         });
 
         it('creates a new paymentInstrument for the current basket', () => {
@@ -114,7 +114,7 @@ describe('payment/processor/mollie_ecom_default', () => {
             this.paymentInstrument = new stubs.dw.PaymentInstrumentMock();
             this.paymentInstrument.getPaymentTransaction.returns(this.paymentTransaction);
             this.paymentInstrument.getPaymentMethod.returns(this.paymentMethodMock);
-            this.paymentMethodMock.custom.mollieEnabledTransactionAPI = {}
+            this.paymentMethodMock.custom.mollieEnabledTransactionAPI = {};
 
             stubs.configMock.getTransactionAPI.returns(TRANSACTION_API);
             stubs.configMock.getRefundStatus.returns(REFUND_STATUS);
