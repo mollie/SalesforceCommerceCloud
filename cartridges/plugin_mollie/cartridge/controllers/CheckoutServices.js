@@ -3,6 +3,8 @@ var server = require('server');
 
 server.extend(CheckoutServices);
 
+var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
+
 server.replace('PlaceOrder', server.middleware.https, function (req, res, next) {
     var BasketMgr = require('dw/order/BasketMgr');
     var Resource = require('dw/web/Resource');
@@ -10,7 +12,6 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
     var URLUtils = require('dw/web/URLUtils');
     var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
     var hooksHelper = require('*/cartridge/scripts/helpers/hooks');
-    var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
     var validationHelpers = require('*/cartridge/scripts/helpers/basketValidationHelpers');
     var addressHelpers = require('*/cartridge/scripts/helpers/addressHelpers');
 
@@ -163,6 +164,15 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
 server.append('SubmitPayment', function (req, res, next) {
     var isReturningCustomer = (req.form.isReturningCustomer === 'true');
     req.session.privacyCache.set('isReturningCustomer', isReturningCustomer);
+
+    this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
+        var viewData = res.getViewData();
+        if (viewData.order) {
+            viewData.order.paymentSummaryTemplate = COHelpers.getPaymentSummaryTemplate(viewData.order);
+        }
+        res.json(viewData);
+    });
+
     next();
 });
 

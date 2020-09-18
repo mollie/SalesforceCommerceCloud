@@ -14,7 +14,7 @@
 
     <field formid="subscribe" type="boolean" checked="false" default-value="false" mandatory="false" />
 
-    <field formid="issuer" type="string" />
+    <field formid="issuer" type="string" name="issuer" />
 
 </form>
 

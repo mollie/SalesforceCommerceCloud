@@ -29,7 +29,7 @@ COHelpers.handlePayments = function (order, orderNumber) {
         if (paymentInstruments.length === 0) throw new MollieServiceException('No paymentInstruments provided');
 
         // DO NOT DO ANYTHING WITH OTHER PAYMENT INSTRUMENTS AT THE MOMENT
-        const mollieInstruments = orderHelper.getMolliePaymentInstruments(order);
+        var mollieInstruments = orderHelper.getMolliePaymentInstruments(order);
 
         if (mollieInstruments.length !== 1) throw new MollieServiceException('Expected exactly 1 Mollie Payment Instrument');
 
@@ -40,7 +40,7 @@ COHelpers.handlePayments = function (order, orderNumber) {
 
         if (!HookMgr.hasHook(hookName)) throw new MollieServiceException('Hook ' + hookName + ' not supported.');
 
-        const authorizationResult = HookMgr.callHook(
+        var authorizationResult = HookMgr.callHook(
             hookName,
             'Authorize',
             orderNumber,
@@ -120,7 +120,7 @@ COHelpers.placeOrder = function placeOrder(order) {
         }
     } catch (e) {
         OrderMgr.failOrder(order);
-        const errorMessage = 'PAYMENT :: Failed placing the order :: ' + JSON.stringify(e.message);
+        var errorMessage = 'PAYMENT :: Failed placing the order :: ' + JSON.stringify(e.message);
         orderHelper.addItemToOrderHistory(order, errorMessage, true);
         Transaction.commit();
         throw new MollieServiceException(errorMessage);
@@ -139,8 +139,8 @@ COHelpers.getMollieViewData = function (profile) {
         enableSingleClickPayments: config.getEnableSingleClickPayments(),
         mollieComponents: {
             enabled: config.getComponentsEnabled(),
-            profileId: config.getComponentsProfileId(),
-            enableTestMode: config.getComponentsEnableTestMode()
+            profileId: config.getProfileId(),
+            enableTestMode: config.getEnabledMode().value === 'TEST'
         }
     };
 };
@@ -161,6 +161,17 @@ COHelpers.getPaymentOptionsTemplate = function (currentBasket, accountModel, ord
         },
         mollie: COHelpers.getMollieViewData(currentBasket.customer.profile)
     }, 'checkout/billing/paymentOptions');
+};
+
+/**
+ * Get mollie summary template
+ * @param {Object} orderModel - The current customer's order history
+ * @returns {Object} Rendered payment options template
+ */
+COHelpers.getPaymentSummaryTemplate = function (orderModel) {
+    return renderTemplateHelper.getRenderedHtml({
+        order: orderModel
+    }, 'checkout/billing/paymentOptions/paymentOptionsSummary');
 };
 
 module.exports = COHelpers;

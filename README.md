@@ -39,29 +39,34 @@ Add the following cartridges to the business manager site:
 
 ## Site Preferences 
 
+- `mollieEnabledMode`: enum of strings
+- `mollieBearerTestToken`: string
 - `mollieBearerToken`: string
-- `mollieEnabledTransactionAPI`: enum of strings
-- `mollieOrderDefaultExpiryDays`: number
-- `mollieLogCategory`: string
-- `mollieComponentsEnabled`: boolean
-- `mollieComponentsEnableTestMode`: boolean
-- `mollieComponentsProfileId`: string
+- `mollieProfileId`: string
+- `mollieDefaultOrderExpiryDays`: number
+- `mollieDefaultEnabledTransactionAPI`: enum of strings
 - `mollieEnableSingleClickPayments`: boolean
+- `mollieComponentsEnabled`: boolean
+- `mollieLogCategory`: string
+- `mollieApplePayVerificationString`: string
 
 ## Custom Properties
 
 ### PaymentMethod
 - `molliePaymentMethodId`: string - external mollie payment method id
 - `mollieOrderExpiryDays`: number - expiry days of order
+- `mollieEnabledTransactionAPI`: enum of strings - the enabled transaction API
 
 ### PaymentTransaction
 - `molliePaymentId`: string - the id of the Mollie payment
 - `molliePaymentStatus`: string - the payment status recieved from Mollie
+- `mollieIssuerData`: text - selected issuer data
 
 ### Order
 - `mollieOrderId`: string - the id of the Mollie order
 - `mollieOrderStatus`: string - the payment status recieved from Mollie
 - `mollieUsedTransactionAPI`: string - api used for creating payment (payment / order)
+- `mollieRefundStatus`: enum of strings - the status of the refund
 
 ### Profile
 - `mollieCustomerId`: string - the id of the Mollie customer (used for single click payments)

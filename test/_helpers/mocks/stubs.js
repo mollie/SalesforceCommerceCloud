@@ -4,6 +4,7 @@ const sandbox = sinon.createSandbox();
 const MollieServiceException = require('../../../cartridges/int_mollie/cartridge/scripts/exceptions/MollieServiceException');
 const Resource = require('./dw/web/Resource');
 const BasketMgr = require('./dw/order/BasketMgr');
+const Basket = require('./dw/order/Basket');
 const Order = require('./dw/order/Order');
 const OrderAddress = require('./dw/order/OrderAddress');
 const ProductLineItem = require('./dw/order/ProductLineItem');
@@ -17,6 +18,9 @@ const PaymentProcessor = require('./dw/order/PaymentProcessor');
 const PaymentTransaction = require('./dw/order/PaymentTransaction');
 const Currency = require('./dw/util/Currency');
 const URLUtils = require('./dw/web/URLUtils');
+const StringUtils = require('./dw/util/StringUtils');
+const Calendar = require('./dw/util/Calendar');
+const ISML = require('./dw/template/ISML');
 
 class ResourceMock extends Resource {
     constructor() {
@@ -29,6 +33,13 @@ class OrderMock extends Order {
     constructor() {
         super();
         return sandbox.createStubInstance(Order);
+    }
+}
+
+class BasketMock extends Basket {
+    constructor() {
+        super();
+        return sandbox.createStubInstance(Basket);
     }
 }
 
@@ -90,20 +101,49 @@ class CurrencyMock extends Currency {
 
 const serviceExceptionMock = sandbox.spy(MollieServiceException);
 
+const customMock = sandbox.stub();
+const SiteMock = {
+    getCurrent: () => ({
+        getPreferences: () => ({
+            getCustom: customMock
+        }),
+        getID: () => 'siteID',
+        getName: () => 'siteName'
+    })
+};
+
 const MollieMock = sandbox.stub();
 const mollieMockInstance = {
     execute: sandbox.stub(),
     addPayloadBuilder: sandbox.stub(),
     addResponseMapper: sandbox.stub()
 };
+const mollieServiceMock = {
+    createPayment: sandbox.stub(),
+    getPayment: sandbox.stub(),
+    cancelPayment: sandbox.stub(),
+    createOrder: sandbox.stub(),
+    getOrder: sandbox.stub(),
+    cancelOrder: sandbox.stub(),
+    cancelOrderLineItem: sandbox.stub(),
+    createOrderRefund: sandbox.stub(),
+    createPaymentRefund: sandbox.stub(),
+    createShipment: sandbox.stub(),
+    getMethod: sandbox.stub(),
+    getMethods: sandbox.stub(),
+    createCustomer: sandbox.stub()
+};
 
 const dw = {
     OrderMgrMock: sandbox.stub(OrderMgr),
     URLUtilsMock: sandbox.stub(URLUtils),
+    StringUtilsMock: sandbox.stub(StringUtils),
     PaymentMgrMock: sandbox.stub(PaymentMgr),
     BasketMgrMock: sandbox.stub(BasketMgr),
+    ISMLMock: sandbox.stub(ISML),
     ResourceMock: ResourceMock,
     OrderMock: OrderMock,
+    BasketMock: BasketMock,
     OrderAddressMock: OrderAddressMock,
     ProductLineItemMock: ProductLineItemMock,
     ProfileMock: ProfileMock,
@@ -118,27 +158,42 @@ const dw = {
         commit: sandbox.stub(),
         wrap: sandbox.stub()
     },
+    loggerMock: {
+        getLogger: sandbox.stub()
+    },
+    localServiceRegistryMock: {
+        createService: sandbox.stub()
+    },
     statusMock: { isError: sandbox.stub(), message: 'errorMessage', getMessage: sandbox.stub(), items: [] },
-    HookMgrMock: sandbox.stub(HookMgr)
+    HookMgrMock: sandbox.stub(HookMgr),
+    CalendarMock: sandbox.stub(),
+    Site: SiteMock
 };
 
 const loggerMock = { debug: sandbox.stub(), error: sandbox.stub() };
+const collectionsMock = { map: sandbox.stub() };
 
 const configMock = {
     getSiteId: sandbox.stub(),
+    getSiteName: sandbox.stub(),
+    getEnabledMode: sandbox.stub(),
     getBearerToken: sandbox.stub(),
-    getTransactionStatus: sandbox.stub(),
-    getEnabledTransactionAPI: sandbox.stub(),
-    getOrderDefaultExpiryDays: sandbox.stub(),
-    getLogCategory: sandbox.stub(),
-    getComponentsEnabled: sandbox.stub(),
-    getComponentsEnableTestMode: sandbox.stub(),
-    getComponentsProfileId: sandbox.stub(),
+    getDefaultEnabledTransactionAPI: sandbox.stub(),
+    getDefaultOrderExpiryDays: sandbox.stub(),
     getEnableSingleClickPayments: sandbox.stub(),
-    getTransactionAPI: sandbox.stub()
+    getComponentsEnabled: sandbox.stub(),
+    getProfileId: sandbox.stub(),
+    getLogCategory: sandbox.stub(),
+    getTransactionStatus: sandbox.stub(),
+    getTransactionAPI: sandbox.stub(),
+    getRefundStatus: sandbox.stub()
 };
 
 const orderHelperMock = {
+    getPaymentDescription: sandbox.stub(),
+    checkMollieRefundStatus: sandbox.stub(),
+    getIssuerData: sandbox.stub(),
+    setRefundStatus: sandbox.stub(),
     addItemToOrderHistory: sandbox.stub(),
     failOrder: sandbox.stub(),
     cancelOrder: sandbox.stub(),
@@ -171,7 +226,8 @@ const checkoutHelpersMock = {
 };
 
 const renderTemplateHelperMock = {
-    getRenderedHtml: sandbox.stub()
+    getRenderedHtml: sandbox.stub(),
+    renderTemplate: sandbox.stub()
 };
 
 const dateMock = {
@@ -203,6 +259,7 @@ const paymentServiceMock = {
 
 const initMocks = function () {
     Object.keys(dw.URLUtilsMock).map(i => dw.URLUtilsMock[i].reset());
+    Object.keys(dw.StringUtilsMock).map(i => dw.StringUtilsMock[i].reset());
     Object.keys(dw.OrderMgrMock).map(i => dw.OrderMgrMock[i].reset());
     Object.keys(loggerMock).map(i => loggerMock[i].reset());
     Object.keys(configMock).map(i => configMock[i].reset());
@@ -211,6 +268,7 @@ const initMocks = function () {
     Object.keys(orderHelperMock).map(i => orderHelperMock[i].reset());
     Object.keys(checkoutHelpersMock).map(i => checkoutHelpersMock[i].reset());
     Object.keys(renderTemplateHelperMock).map(i => renderTemplateHelperMock[i].reset());
+    Object.keys(dw.ISMLMock).map(i => dw.ISMLMock[i].reset());
     Object.keys(dw.HookMgrMock).map(i => dw.HookMgrMock[i].reset());
     Object.keys(dw.CurrencyMock).map(i => dw.CurrencyMock[i].reset());
     Object.keys(dw.TransactionMock).map(i => dw.TransactionMock[i].reset());
@@ -219,6 +277,7 @@ const initMocks = function () {
     Object.keys(dw.PaymentProcessorMock).map(i => dw.PaymentProcessorMock[i].reset());
     Object.keys(dw.PaymentTransactionMock).map(i => dw.PaymentTransactionMock[i].reset());
     Object.keys(mollieMockInstance).map(i => mollieMockInstance[i].reset());
+    Object.keys(mollieServiceMock).map(i => mollieServiceMock[i].reset());
     MollieMock.reset();
     dw.statusMock.isError.reset();
     dw.statusMock.getMessage.reset();
@@ -231,10 +290,16 @@ const initMocks = function () {
     MollieMock.returns(mollieMockInstance);
     dw.OrderMgrMock.failOrder.returns(dw.statusMock);
     dw.OrderMgrMock.cancelOrder.returns(dw.statusMock);
-
     dw.TransactionMock.wrap.callsFake(function (cb) {
         cb();
     });
+    dw.localServiceRegistryMock.createService.callsFake(function () {
+        return {
+            createRequest: sandbox.stub,
+            parseResponse: sandbox.stub
+        };
+    });
+    dw.CalendarMock.returns(sandbox.createStubInstance(Calendar));
 };
 
 module.exports = {
@@ -242,6 +307,7 @@ module.exports = {
     mollieRequest: sandbox.stub(),
     authRequest: sandbox.stub(),
     loggerMock: loggerMock,
+    collectionsMock: collectionsMock,
     configMock: configMock,
     dateMock: dateMock,
     paymentServiceMock: paymentServiceMock,
@@ -251,6 +317,7 @@ module.exports = {
     renderTemplateHelperMock: renderTemplateHelperMock,
     MollieMock: MollieMock,
     mollieMockInstance: mollieMockInstance,
+    mollieServiceMock: mollieServiceMock,
     mollieHandlerStub: {
         payloadBuilder: sandbox.stub(),
         responseMapper: sandbox.stub()

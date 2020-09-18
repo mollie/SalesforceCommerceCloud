@@ -3,14 +3,15 @@
     <custom-preferences>
         <all-instances />
         <development>
-            <preference preference-id="mollieBearerToken">test_cDRPEWKQ84DFtJEMEpdwvhQxFsUmpP</preference>
-            <preference preference-id="mollieEnabledTransactionAPI">order</preference>
-            <preference preference-id="mollieOrderDefaultExpiryDays">50</preference>
-            <preference preference-id="mollieLogCategory">mollie</preference>
-            <preference preference-id="mollieComponentsEnabled">true</preference>
-            <preference preference-id="mollieComponentsEnableTestMode">true</preference>
-            <preference preference-id="mollieComponentsProfileId">pfl_T35kcJ5Hkg</preference>
+            <preference preference-id="mollieEnabledMode">TEST</preference>
+            <preference preference-id="mollieBearerTestToken">test_cDRPEWKQ84DFtJEMEpdwvhQxFsUmpP</preference>
+            <preference preference-id="mollieBearerToken">NOTUSED</preference>
+            <preference preference-id="mollieProfileId">pfl_T35kcJ5Hkg</preference>
+            <preference preference-id="mollieDefaultEnabledTransactionAPI">order</preference>
+            <preference preference-id="mollieDefaultOrderExpiryDays">50</preference>
             <preference preference-id="mollieEnableSingleClickPayments">true</preference>
+            <preference preference-id="mollieComponentsEnabled">true</preference>
+            <preference preference-id="mollieLogCategory">mollie</preference>
         </development>
         <staging />
         <production />

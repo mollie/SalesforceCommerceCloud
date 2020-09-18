@@ -1,13 +1,14 @@
 'use strict';
 
-const Resource = require('dw/web/Resource');
-const Transaction = require('dw/system/Transaction');
-const OrderMgr = require('dw/order/OrderMgr');
-const PaymentMgr = require('dw/order/PaymentMgr');
-const Logger = require('*/cartridge/scripts/utils/logger');
-const paymentService = require('*/cartridge/scripts/payment/paymentService');
-const collections = require('*/cartridge/scripts/util/collections');
-const config = require('*/cartridge/scripts/mollieConfig');
+var Resource = require('dw/web/Resource');
+var Transaction = require('dw/system/Transaction');
+var OrderMgr = require('dw/order/OrderMgr');
+var PaymentMgr = require('dw/order/PaymentMgr');
+var Logger = require('*/cartridge/scripts/utils/logger');
+var paymentService = require('*/cartridge/scripts/payment/paymentService');
+var collections = require('*/cartridge/scripts/util/collections');
+var config = require('*/cartridge/scripts/mollieConfig');
+var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 
 /**
  * Creates the payment instrument based on the given information.
@@ -35,7 +36,8 @@ function Handle(basket, paymentInformation) {
             }
         }));
 
-        currentBasket.createPaymentInstrument(pm, currentBasket.totalGrossPrice);
+        var paymentInstrument = currentBasket.createPaymentInstrument(pm, currentBasket.totalGrossPrice);
+        paymentInstrument.getPaymentTransaction().custom.mollieIssuerData = paymentInformation.issuer.value;
     });
 
     // Payment forms are managed by Mollie, so field and server errors are irrelevant her.
@@ -57,20 +59,24 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
     var error = false;
     var redirectUrl;
     try {
+        var order = OrderMgr.getOrder(orderNumber);
+
         Transaction.wrap(function () {
             paymentInstrument.getPaymentTransaction().setTransactionID(orderNumber);
             paymentInstrument.getPaymentTransaction().setPaymentProcessor(paymentProcessor);
+            orderHelper.setRefundStatus(order, config.getRefundStatus().NOTREFUNDED);
         });
 
-        var order = OrderMgr.getOrder(orderNumber);
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
-        var issuer = session.forms.billing.issuer.value;
+        var issuerData = orderHelper.getIssuerData(order);
+        var issuerId = issuerData && JSON.parse(issuerData).id;
+        var enabledTransactionAPI = paymentMethod.custom.mollieEnabledTransactionAPI.value || config.getDefaultEnabledTransactionAPI().value;
 
-        if (config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT) {
-            var createPaymentResult = paymentService.createPayment(order, paymentMethod, { issuer: issuer });
+        if (enabledTransactionAPI === config.getTransactionAPI().PAYMENT) {
+            var createPaymentResult = paymentService.createPayment(order, paymentMethod, { issuer: issuerId });
             redirectUrl = createPaymentResult.payment.links.checkout.href;
         } else {
-            var createOrderResult = paymentService.createOrder(order, paymentMethod, { issuer: issuer });
+            var createOrderResult = paymentService.createOrder(order, paymentMethod, { issuer: issuerId });
             redirectUrl = createOrderResult.order.links.checkout.href;
         }
     } catch (e) {

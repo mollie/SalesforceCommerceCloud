@@ -1,5 +1,7 @@
 'use strict';
 
+var PaymentMgr = require('dw/order/PaymentMgr');
+
 /**
  * Verifies the required information for billing form is provided.
  * @param {Object} req - The request object
@@ -8,24 +10,22 @@
  * @returns {Object} an object that has error information or payment information
  */
 function processForm(req, paymentForm, viewFormData) {
-    const viewData = viewFormData;
-    const PaymentMgr = require('dw/order/PaymentMgr');
-    const cardType = PaymentMgr.getPaymentMethod(paymentForm.paymentMethod.value);
+    var viewData = viewFormData;
+    var cardType = PaymentMgr.getPaymentMethod(paymentForm.paymentMethod.value);
 
     viewData.paymentMethod = {
         value: paymentForm.paymentMethod.value,
-        htmlName: paymentForm.paymentMethod.value
-    };
-
-    viewData.issuer = {
-        value: paymentForm.issuer.value,
-        htmlName: paymentForm.issuer.value
+        htmlName: paymentForm.paymentMethod.htmlName
     };
 
     viewData.paymentInformation = {
         paymentMethod: viewData.paymentMethod.value,
         cardType: {
             value: cardType.getName()
+        },
+        issuer: {
+            value: paymentForm.issuer.value,
+            htmlName: paymentForm.issuer.htmlName
         }
     };
 

@@ -549,7 +549,7 @@ var exports = {
                 data.customer,
                 data.options
             );
-            billingHelpers.methods.updatePaymentInformation(data.order, data.options);
+            billingHelpers.methods.updatePaymentInformation(data);
             summaryHelpers.updateOrderProductSummaryInformation(data.order, data.options);
         });
     },

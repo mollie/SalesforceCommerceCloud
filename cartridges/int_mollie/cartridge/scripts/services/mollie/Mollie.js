@@ -1,8 +1,8 @@
-const ServiceRegistry = require('dw/svc/LocalServiceRegistry');
-const Logger = require('*/cartridge/scripts/utils/logger');
-const PaymentProviderException = require('*/cartridge/scripts/exceptions/PaymentProviderException');
-const MollieRequest = require('*/cartridge/scripts/services/mollie/mollieRequest');
-const config = require('*/cartridge/scripts/mollieConfig');
+var ServiceRegistry = require('dw/svc/LocalServiceRegistry');
+var Logger = require('*/cartridge/scripts/utils/logger');
+var PaymentProviderException = require('*/cartridge/scripts/exceptions/PaymentProviderException');
+var MollieRequest = require('*/cartridge/scripts/services/mollie/mollieRequest');
+var config = require('*/cartridge/scripts/mollieConfig');
 
 /**
  *

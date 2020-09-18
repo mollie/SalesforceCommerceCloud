@@ -1,5 +1,6 @@
 'use strict';
 var Resource = require('dw/web/Resource');
+var PaymentMgr = require('dw/order/PaymentMgr');
 
 /**
  * Verifies the required information for billing form is provided.
@@ -9,9 +10,8 @@ var Resource = require('dw/web/Resource');
  * @returns {Object} an object that has error information or payment information
  */
 function processForm(req, paymentForm, viewFormData) {
-    const viewData = viewFormData;
-    const PaymentMgr = require('dw/order/PaymentMgr');
-    const cardType = PaymentMgr.getPaymentMethod(paymentForm.paymentMethod.value);
+    var viewData = viewFormData;
+    var cardType = PaymentMgr.getPaymentMethod(paymentForm.paymentMethod.value);
 
     var isReturningCustomer = req.session.privacyCache.get('isReturningCustomer');
     if (!isReturningCustomer && !paymentForm.creditCardFields.cardToken.value) {
@@ -24,7 +24,7 @@ function processForm(req, paymentForm, viewFormData) {
 
     viewData.paymentMethod = {
         value: paymentForm.paymentMethod.value,
-        htmlName: paymentForm.paymentMethod.value
+        htmlName: paymentForm.paymentMethod.htmlName
     };
 
     viewData.paymentInformation = {

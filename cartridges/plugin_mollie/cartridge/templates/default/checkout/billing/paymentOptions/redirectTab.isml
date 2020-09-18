@@ -1,4 +1,4 @@
-<li class="nav-item ${paymentOption.ID === 'MOLLIE_APPLE_PAY' ? 'js-apple-pay-button d-none' : ''}" data-method-id="${paymentOption.ID}">
+<li class="nav-item js-payment-method-tab ${paymentOption.ID === 'MOLLIE_APPLE_PAY' ? 'js-apple-pay-content d-none' : ''}" data-method-id="${paymentOption.ID}">
     <a class="nav-link ${paymentOption.ID}-tab" data-toggle="tab" href="${'#' + paymentOption.ID}-content" role="tab">
         <img class="default-option"
                 src="${paymentOption.image}"

@@ -134,7 +134,7 @@ function Line(mollieLine) {
  */
 function Order(mollieOrder) {
     var order = mollieOrder || {};
-    const STATUS = config.getTransactionStatus();
+    var STATUS = config.getTransactionStatus();
     this.resource = order.resource;
     this.id = order.id;
     this.profileId = order.profileId;
@@ -225,9 +225,6 @@ function Refund(mollieRefund) {
     this.lines = refund.lines ? refund.lines.map(function (line) {
         return new Line(line);
     }) : null;
-    this.isSuccessful = function () {
-        return refund.status === 'pending';
-    };
 }
 
 /**

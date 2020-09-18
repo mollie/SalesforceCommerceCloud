@@ -6,13 +6,15 @@ var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var renderTemplate = require('*/cartridge/scripts/helpers/renderTemplateHelper').renderTemplate;
 
 var isShipmentAllowed = function (order) {
-    const orderStatus = order.getStatus().value;
+    if (!order) return false;
+    var orderStatus = order.status.value;
     return (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
-        orderStatus !== Order.ORDER_STATUS_FAILED);
+        orderStatus !== Order.ORDER_STATUS_FAILED &&
+        orderStatus !== Order.ORDER_STATUS_CREATED);
 };
 
 exports.Start = function () {
-    const orderNo = request.httpParameterMap.get('order_no').stringValue;
+    var orderNo = request.httpParameterMap.get('order_no').stringValue;
     var order = OrderMgr.getOrder(orderNo);
     if (isShipmentAllowed(order) && orderHelper.isMollieOrder(order)) {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
@@ -26,13 +28,13 @@ exports.Start = function () {
 };
 
 exports.Shipment = function () {
-    const quantity = request.httpParameterMap.get('quantity').stringValue;
-    const lineId = request.httpParameterMap.get('lineId').stringValue;
-    const orderId = request.httpParameterMap.get('orderId').stringValue;
-    const order = OrderMgr.getOrder(orderId);
-    const viewParams = {
+    var orderId = request.httpParameterMap.get('orderId').stringValue;
+    var lineId = request.httpParameterMap.get('lineId').stringValue;
+    var quantity = request.httpParameterMap.get('quantity').stringValue;
+    var order = OrderMgr.getOrder(orderId);
+    var viewParams = {
         success: true,
-        orderId: order.orderNo
+        orderId: orderId
     };
 
     try {
@@ -45,6 +47,7 @@ exports.Shipment = function () {
         }
 
         paymentService.createShipment(order, lines);
+        paymentService.processPaymentUpdate(order);
         Logger.debug('PAYMENT :: Payment processed for order ' + orderId);
     } catch (e) {
         Logger.error('PAYMENT :: ERROR :: Error while creating shipment for order ' + orderId + '. ' + e.message);

@@ -19,6 +19,12 @@ var TRANSACTION_API = {
     ORDER: 'order'
 };
 
+var REFUND_STATUS = {
+    NOTREFUNDED: 'REFUND_STATUS_NOTREFUNDED',
+    PARTREFUNDED: 'REFUND_STATUS_PARTREFUNDED',
+    REFUNDED: 'REFUND_STATUS_REFUNDED'
+};
+
 // Mollie Configuration
 /**
  *
@@ -27,7 +33,7 @@ var TRANSACTION_API = {
 function Config() {
     var sitePreferences;
     var getPreferenceOrThrow = function (preferences, preferenceName) {
-        const pref = preferences[preferenceName];
+        var pref = preferences[preferenceName];
         if (typeof pref === 'boolean') return pref;
         if (!pref) throw new MollieServiceException('You must configure sitePreference by name ' + preferenceName + '.');
         return pref;
@@ -36,68 +42,110 @@ function Config() {
     try {
         sitePreferences = Site.getCurrent().getPreferences().getCustom();
         this.siteId = Site.getCurrent().getID();
+        this.siteName = Site.getCurrent().getName();
     } catch (e) {
         throw new MollieServiceException('SITE_PREFRENCES :: ' + e.message);
     }
 
     // #region GENERAL CONFIG
+    this.enabledMode = getPreferenceOrThrow(sitePreferences, 'mollieEnabledMode');
+    this.bearerTestToken = getPreferenceOrThrow(sitePreferences, 'mollieBearerTestToken');
     this.bearerToken = getPreferenceOrThrow(sitePreferences, 'mollieBearerToken');
-    this.enabledTransActionAPI = getPreferenceOrThrow(sitePreferences, 'mollieEnabledTransactionAPI');
-    this.logCategory = getPreferenceOrThrow(sitePreferences, 'mollieLogCategory');
-    this.componentsEnabled = getPreferenceOrThrow(sitePreferences, 'mollieComponentsEnabled');
-    this.componentsEnableTestMode = getPreferenceOrThrow(sitePreferences, 'mollieComponentsEnableTestMode');
-    this.componentsProfileId = getPreferenceOrThrow(sitePreferences, 'mollieComponentsProfileId');
-    this.orderDefaultExpiryDays = getPreferenceOrThrow(sitePreferences, 'mollieOrderDefaultExpiryDays');
+    this.profileId = getPreferenceOrThrow(sitePreferences, 'mollieProfileId');
+    this.defaultEnabledTransActionAPI = getPreferenceOrThrow(sitePreferences, 'mollieDefaultEnabledTransactionAPI');
+    this.defaultOrderExpiryDays = getPreferenceOrThrow(sitePreferences, 'mollieDefaultOrderExpiryDays');
     this.enableSingleClickPayments = getPreferenceOrThrow(sitePreferences, 'mollieEnableSingleClickPayments');
+    this.componentsEnabled = getPreferenceOrThrow(sitePreferences, 'mollieComponentsEnabled');
+    this.logCategory = getPreferenceOrThrow(sitePreferences, 'mollieLogCategory');
 
     /**
      * Get SiteId
      * @function
      * @name Config#getSiteId
-     * @return {string} paymentSecurityLevel
+     * @return {string} siteId
      */
     this.getSiteId = function () {
         return this.siteId;
     };
 
     /**
-     * Get Bearer Token
+     * Get SiteName
+     * @function
+     * @name Config#getSiteName
+     * @return {string} siteName
+     */
+    this.getSiteName = function () {
+        return this.siteName;
+    };
+
+    /**
+     * Get Enabled mode
+     * @function
+     * @name Config#getBearerToken
+     * @return {string} enabledMode
+     */
+    this.getEnabledMode = function () {
+        return this.enabledMode;
+    };
+
+    /**
+     * Get Enabled test mode
      * @function
      * @name Config#getBearerToken
      * @return {string} bearerToken
      */
     this.getBearerToken = function () {
-        return this.bearerToken;
+        return this.enabledMode.value === 'TEST' ? this.bearerTestToken : this.bearerToken;
     };
 
     /**
-     * Get Transaction Status constant
+     * Get components profile id
      * @function
-     * @name Config#getTransactionStatus
-     * @return {Object} Transaction Statuses
+     * @name Config#getProfileId
+     * @return {Object} profileId
      */
-    this.getTransactionStatus = function () {
-        return TRANSACTION_STATUS;
+    this.getProfileId = function () {
+        return this.profileId;
     };
 
     /**
      * Get enabled transaction api (payment / order)
      * @function
-     * @name Config#getOrderType
-     * @return {Object} Order Types
+     * @name Config#getDefaultEnabledTransactionAPI
+     * @return {Object} Enabled transaction API
      */
-    this.getEnabledTransactionAPI = function () {
-        return this.enabledTransActionAPI.value;
+    this.getDefaultEnabledTransactionAPI = function () {
+        return this.defaultEnabledTransActionAPI;
     };
 
     /**
      * Get default expiry days
      * @function
-     * @name Config#getOrderType
-     * @return {Object} Order Types
+     * @name Config#getDefaultOrderExpiryDays
+     * @return {Object} defaultOrderExpiryDays
      */
-    this.getOrderDefaultExpiryDays = function () {
-        return this.orderDefaultExpiryDays;
+    this.getDefaultOrderExpiryDays = function () {
+        return this.defaultOrderExpiryDays;
+    };
+
+    /**
+    * Get single click payments enabled
+    * @function
+    * @name Config#getEnableSingleClickPayments
+    * @return {Object} enableSingleClickPayments
+    */
+    this.getEnableSingleClickPayments = function () {
+        return this.enableSingleClickPayments;
+    };
+
+    /**
+     * Get components enabled
+     * @function
+     * @name Config#getComponentsEnabled
+     * @return {Object} componentsEnabled
+     */
+    this.getComponentsEnabled = function () {
+        return this.componentsEnabled;
     };
 
     /**
@@ -111,53 +159,33 @@ function Config() {
     };
 
     /**
-     * Get components enabled
+     * Get Transaction Status constant
      * @function
-     * @name Config#getOrderType
-     * @return {Object} Order Types
+     * @name Config#getTransactionStatus
+     * @return {Object} Transaction statuses
      */
-    this.getComponentsEnabled = function () {
-        return this.componentsEnabled;
-    };
-
-    /**
-     * Get components enabled test mode
-     * @function
-     * @name Config#getOrderType
-     * @return {Object} Order Types
-     */
-    this.getComponentsEnableTestMode = function () {
-        return this.componentsEnableTestMode;
-    };
-
-    /**
-     * Get components profile id
-     * @function
-     * @name Config#getOrderType
-     * @return {Object} Order Types
-     */
-    this.getComponentsProfileId = function () {
-        return this.componentsProfileId;
-    };
-
-    /**
-     * Get single click payments enabled
-     * @function
-     * @name Config#getOrderType
-     * @return {Object} Order Types
-     */
-    this.getEnableSingleClickPayments = function () {
-        return this.enableSingleClickPayments;
+    this.getTransactionStatus = function () {
+        return TRANSACTION_STATUS;
     };
 
     /**
      * Get Transaction API constant
      * @function
-     * @name Config#getOrderType
-     * @return {Object} Order Types
+     * @name Config#getTransactionAPI
+     * @return {Object} Transaction API
      */
     this.getTransactionAPI = function () {
         return TRANSACTION_API;
+    };
+
+    /**
+     * Get Refund status constant
+     * @function
+     * @name Config#getRefundStatus
+     * @return {Object} Refund statuses
+     */
+    this.getRefundStatus = function () {
+        return REFUND_STATUS;
     };
 
     // #endregion

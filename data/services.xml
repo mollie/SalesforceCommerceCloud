@@ -52,7 +52,7 @@
     <service service-id="Mollie.CancelOrderLineItem">
         <service-type>HTTP</service-type>
         <enabled>true</enabled>
-        <log-prefix>Mollie_CancelOrderLineItem</log-prefix>
+        <log-prefix>Mollie_CancelOrderLineIte</log-prefix>
         <comm-log-enabled>false</comm-log-enabled>
         <force-prd-enabled>true</force-prd-enabled>
         <mock-mode-enabled>false</mock-mode-enabled>
@@ -118,14 +118,13 @@
     <service service-id="Mollie.CreatePaymentRefund">
         <service-type>HTTP</service-type>
         <enabled>true</enabled>
-        <log-prefix>Mollie_CreatePaymentRefund</log-prefix>
+        <log-prefix>Mollie_CreatePaymentRefun</log-prefix>
         <comm-log-enabled>false</comm-log-enabled>
         <force-prd-enabled>true</force-prd-enabled>
         <mock-mode-enabled>false</mock-mode-enabled>
         <profile-id>Mollie</profile-id>
         <credential-id>Mollie</credential-id>
     </service>
-
 
     <service service-id="Mollie.CreateOrderRefund">
         <service-type>HTTP</service-type>

@@ -6,21 +6,12 @@ var billing = require('base/checkout/billing');
 
 /**
  * Updates the payment information in checkout, based on the supplied order model
- * @param {Object} order - checkout model to use as basis of new truth
+ * @param {Object} data - data returned from controller
  */
-function updatePaymentInformation(order) {
-    // update payment details
-    var $paymentSummary = $('.payment-details');
-    var htmlToAppend = '';
-
-    if (order.billing.payment && order.billing.payment.selectedPaymentInstruments &&
-        order.billing.payment.selectedPaymentInstruments.length > 0) {
-        htmlToAppend += '<span>' +
-            order.billing.payment.selectedPaymentInstruments[0].paymentMethod +
-            '</span>';
+function updatePaymentInformation(data) {
+    if (data.order.paymentSummaryTemplate) {
+        $('.js-payment-details').html(data.order.paymentSummaryTemplate);
     }
-
-    $paymentSummary.empty().append(htmlToAppend);
 }
 
 /**
@@ -28,16 +19,18 @@ function updatePaymentInformation(order) {
  * @param {Object} data - data returned from controller
  */
 function updatePaymentOptions(data) {
+    const $mollieComponentsContainer = '.js-mollie-components-container';
     if (data.paymentOptionsTemplate) {
-        if ($('.js-mollie-components-container').length) {
+        if ($($mollieComponentsContainer).length) {
             components.unmountMollieComponents();
         }
         $('.js-payment-options').replaceWith(data.paymentOptionsTemplate);
         billing.addNewPaymentInstrument();
         billing.cancelNewPayment();
         billing.paymentTabs();
+        billing.handleCreditCardNumber();
         applePay.checkApplePaySupport();
-        if ($('.js-mollie-components-container').length) {
+        if ($($mollieComponentsContainer).length) {
             components.mountMollieComponents();
             components.initEventListeners();
         }

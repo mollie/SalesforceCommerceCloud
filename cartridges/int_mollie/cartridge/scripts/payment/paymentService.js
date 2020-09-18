@@ -51,17 +51,18 @@ function getOrder(orderId) {
  */
 function createPayment(order, paymentMethod, paymentData) {
     try {
-        const paymentResult = MollieService.createPayment({
+        var paymentResult = MollieService.createPayment({
             orderId: order.orderNo,
             totalGrossPrice: order.getTotalGrossPrice(),
             methodId: paymentMethod.custom.molliePaymentMethodId,
             cardToken: paymentData && paymentData.cardToken,
             issuer: paymentData && paymentData.issuer,
-            customerId: paymentData && paymentData.customerId
+            customerId: paymentData && paymentData.customerId,
+            description: orderHelper.getPaymentDescription(order, paymentMethod)
         });
 
         Transaction.wrap(function () {
-            var historyItem = 'PAYMENT :: Create payment: ' + paymentResult.raw;
+            var historyItem = 'PAYMENT :: Created payment with id: ' + paymentResult.payment.id;
             orderHelper.addItemToOrderHistory(order, historyItem, true);
             orderHelper.setUsedTransactionAPI(order, config.getTransactionAPI().PAYMENT);
             orderHelper.setPaymentId(order, paymentMethod.getID(), paymentResult.payment.id);
@@ -92,7 +93,7 @@ function processPaymentUpdate(order, statusUpdateId) {
             // Instead of searching for payment to update, get last one
             /*
             var paymentInstruments = order.getPaymentInstruments().toArray().filter(function (instrument) {
-                const paymentMethodId = instrument.getPaymentMethod();
+                var paymentMethodId = instrument.getPaymentMethod();
                 return orderHelper.getPaymentId(order, paymentMethodId) === statusUpdateId;
             });
 
@@ -121,7 +122,7 @@ function processPaymentUpdate(order, statusUpdateId) {
  */
 function cancelPayment(paymentId) {
     try {
-        const paymentResult = MollieService.cancelPayment({
+        var paymentResult = MollieService.cancelPayment({
             paymentId: paymentId
         });
 
@@ -157,7 +158,7 @@ function createOrder(order, paymentMethod, paymentData) {
         });
 
         Transaction.wrap(function () {
-            var historyItem = 'PAYMENT :: Create order payment: ' + orderResult.raw;
+            var historyItem = 'PAYMENT :: Created order payment with id: ' + orderResult.order.id;
             orderHelper.addItemToOrderHistory(order, historyItem, true);
             orderHelper.setUsedTransactionAPI(order, config.getTransactionAPI().ORDER);
             orderHelper.setOrderId(order, orderResult.order.id);
@@ -178,7 +179,7 @@ function createOrder(order, paymentMethod, paymentData) {
  */
 function cancelOrder(order) {
     try {
-        const cancelResult = MollieService.cancelOrder({
+        var cancelResult = MollieService.cancelOrder({
             orderId: orderHelper.getOrderId(order)
         });
 
@@ -198,7 +199,7 @@ function cancelOrder(order) {
  */
 function cancelOrderLineItem(order, lines) {
     try {
-        const cancelResult = MollieService.cancelOrderLineItem({
+        var cancelResult = MollieService.cancelOrderLineItem({
             orderId: orderHelper.getOrderId(order),
             lines: lines || []
         });
@@ -221,9 +222,9 @@ function cancelOrderLineItem(order, lines) {
 function getApplicablePaymentMethods(paymentMethods, currentBasket, countryCode) {
     try {
         var methodResult = MollieService.getMethods({
-            amount: currentBasket.adjustedMerchandizeTotalGrossPrice.value,
+            amount: currentBasket.adjustedMerchandizeTotalGrossPrice.value.toFixed(2),
             currency: currentBasket.adjustedMerchandizeTotalGrossPrice.currencyCode,
-            resource: config.getEnabledTransactionAPI() === config.getTransactionAPI().PAYMENT ? 'payments' : 'orders',
+            resource: config.getDefaultEnabledTransactionAPI().value === config.getTransactionAPI().PAYMENT ? 'payments' : 'orders',
             billingCountry: currentBasket.billingAddress ? currentBasket.billingAddress.countryCode.value : countryCode
         });
 

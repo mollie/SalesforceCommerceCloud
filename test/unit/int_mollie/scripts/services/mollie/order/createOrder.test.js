@@ -40,7 +40,7 @@ describe('mollie/createOrder', () => {
             this.currencyStub.getCurrencyCode.returns(this.amount.currency);
             this.currencyStub.getValue.returns(this.amount.value);
             this.orderAddressMock = new stubs.dw.OrderAddressMock();
-            this.orderAddressMock.getCountryCode.returns({ value: faker.lorem.word })
+            this.orderAddressMock.getCountryCode.returns({ value: faker.lorem.word });
             this.params = {
                 totalGrossPrice: this.currencyStub,
                 orderId: faker.random.uuid(),
@@ -55,9 +55,9 @@ describe('mollie/createOrder', () => {
                         molliePaymentMethodId: faker.lorem.word()
                     }
                 },
-                priceAdjustments: { toArray: () => { return [] } },
-                productLineItems: { toArray: () => { return [] } },
-                shipments: { toArray: () => { return [] } }
+                priceAdjustments: { toArray: () => { return []; } },
+                productLineItems: { toArray: () => { return []; } },
+                shipments: { toArray: () => { return []; } }
             };
             stubs.dw.URLUtilsMock.https.returns(this.returnUrl);
         });

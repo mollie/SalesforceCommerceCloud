@@ -8,7 +8,8 @@ const refundConstants = require(`${base}/int_mollie/cartridge/scripts/services/m
 const shipmentConstants = require(`${base}/int_mollie/cartridge/scripts/services/mollie/shipment/shipmentConstants`);
 const methodConstants = require(`${base}/int_mollie/cartridge/scripts/services/mollie/method/methodConstants`);
 const customerConstants = require(`${base}/int_mollie/cartridge/scripts/services/mollie/customer/customerConstants`);
-const constants = { ...paymentConstants, ...orderConstants, ...refundConstants, ...shipmentConstants, ...methodConstants, ...customerConstants };
+const applePayConstants = require(`${base}/int_mollie/cartridge/scripts/services/mollie/applePay/applePayConstants`);
+const constants = { ...paymentConstants, ...orderConstants, ...refundConstants, ...shipmentConstants, ...methodConstants, ...customerConstants, ...applePayConstants };
 
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const mollieService = proxyquire(`${base}/int_mollie/cartridge/scripts/services/mollieService`, {
@@ -31,6 +32,8 @@ const mollieService = proxyquire(`${base}/int_mollie/cartridge/scripts/services/
     '*/cartridge/scripts/services/mollie/method/methodConstants': methodConstants,
     '*/cartridge/scripts/services/mollie/customer/createCustomer': stubs.mollieHandlerStub,
     '*/cartridge/scripts/services/mollie/customer/customerConstants': customerConstants,
+    '*/cartridge/scripts/services/mollie/applePay/requestPaymentSession': stubs.mollieHandlerStub,
+    '*/cartridge/scripts/services/mollie/applePay/applePayConstants': applePayConstants,
     '*/cartridge/scripts/services/mollie/Mollie': MollieMock
 });
 
