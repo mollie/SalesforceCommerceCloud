@@ -493,7 +493,7 @@
     <type-extension type-id="SitePreferences">
         <custom-attribute-definitions>
             <attribute-definition attribute-id="mollieEnabledMode">
-                <display-name xml:lang="x-default">Enable test mode</display-name>
+                <display-name xml:lang="x-default">Environment</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -865,7 +865,7 @@
             </attribute-definition>
             <attribute-definition attribute-id="mollieComponentsEnabled">
                 <display-name xml:lang="x-default">Use Mollie Components for CreditCards</display-name>
-                <description xml:lang="x-default">Read more about Mollie Components and how it improves your conversion: https://www.mollie.com/en/news/post/better-checkout-flows-with-mollie-components</description>
+                <description xml:lang="x-default">Read more about Mollie Components and how it improves your conversion. https://www.mollie.com/en/news/post/better-checkout-flows-with-mollie-components</description>
                 <type>boolean</type>
                 <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>

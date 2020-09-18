@@ -67,7 +67,7 @@ function ProductLineItem(productLineItem) {
  */
 function ShippingLineItem(shippingLineItem) {
     return {
-        name: 'shipping',
+        name: shippingLineItem.lineItemText,
         quantity: 1,
         vatRate: (shippingLineItem.getTaxRate() * 100).toFixed(2),
         vatAmount: new Currency(shippingLineItem.getAdjustedTax()),
@@ -110,6 +110,9 @@ function Lines(productLineItems, shipments, priceAdjustments) {
 
     productLineItems.toArray().forEach(function (productLineItem) {
         lines.push(new ProductLineItem(productLineItem));
+        if (productLineItem.shippingLineItem) {
+            lines.push(new ShippingLineItem(productLineItem.shippingLineItem));
+        }
     });
 
     shipments.toArray().forEach(function (shipment) {
