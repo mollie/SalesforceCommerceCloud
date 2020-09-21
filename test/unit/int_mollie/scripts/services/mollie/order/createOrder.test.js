@@ -51,8 +51,12 @@ describe('mollie/createOrder', () => {
                 customerId: faker.random.uuid(),
                 paymentMethod: {
                     custom: {
-                        mollieOrderExpiryDays: faker.random.number(),
-                        molliePaymentMethodId: faker.lorem.word()
+                        mollieOrderExpiryDays: {
+                            value: faker.random.number()
+                        },
+                        molliePaymentMethodId: {
+                            value: faker.lorem.word()
+                        }
                     }
                 },
                 priceAdjustments: { toArray: () => { return []; } },

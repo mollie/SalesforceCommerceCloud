@@ -30,18 +30,7 @@ const mollieEcomDefault = proxyquire(`${base}/int_mollie/cartridge/scripts/payme
 });
 
 describe('payment/processor/mollie_ecom_default', () => {
-    before(function () {
-        stubs.init();
-        global.session = {
-            forms: {
-                billing: {
-                    issuer: {
-                        value: faker.lorem.word()
-                    }
-                }
-            }
-        };
-    });
+    before(function () { stubs.init(); });
     afterEach(function () { stubs.reset(); });
     after(function () { stubs.restore(); });
     beforeEach(() => {
@@ -64,7 +53,6 @@ describe('payment/processor/mollie_ecom_default', () => {
 
             this.paymentMethod = new stubs.dw.PaymentMethodMock();
             this.paymentMethod.getPaymentProcessor.returns(this.paymentProcessor);
-
 
             this.paymentInstrument = new stubs.dw.PaymentInstrumentMock();
             this.paymentInstrument.getPaymentMethod.returns('paymentMethodID');
@@ -110,18 +98,18 @@ describe('payment/processor/mollie_ecom_default', () => {
             this.orderNumber = faker.random.number();
             this.paymentProcessor = faker.random.word();
             this.paymentTransaction = new stubs.dw.PaymentTransactionMock();
-            this.paymentMethodMock = new stubs.dw.PaymentMethodMock();
+            this.paymentMethod = new stubs.dw.PaymentMethodMock();
+            this.paymentMethod.custom.mollieEnabledTransactionAPI = {};
             this.paymentInstrument = new stubs.dw.PaymentInstrumentMock();
             this.paymentInstrument.getPaymentTransaction.returns(this.paymentTransaction);
-            this.paymentInstrument.getPaymentMethod.returns(this.paymentMethodMock);
-            this.paymentMethodMock.custom.mollieEnabledTransactionAPI = {};
 
+            stubs.dw.PaymentMgrMock.getPaymentMethod.returns(this.paymentMethod);
             stubs.configMock.getTransactionAPI.returns(TRANSACTION_API);
             stubs.configMock.getRefundStatus.returns(REFUND_STATUS);
         });
         it('Authorize payment with payment API', () => {
             const redirectUrl = faker.internet.url();
-            const payment = {
+            const createPaymentResult = {
                 payment: {
                     links: {
                         checkout: {
@@ -132,13 +120,15 @@ describe('payment/processor/mollie_ecom_default', () => {
             };
 
             stubs.dw.OrderMgrMock.getOrder.returns(this.order);
-            stubs.paymentServiceMock.createPayment.returns(payment);
+            stubs.paymentServiceMock.createPayment.returns(createPaymentResult);
             stubs.configMock.getDefaultEnabledTransactionAPI.returns({ value: TRANSACTION_API.PAYMENT });
-            stubs.orderHelperMock.getIssuerData.returns(`{ "id": ${faker.random.number()} }`);
+            const issuerId = faker.random.number();
+            stubs.orderHelperMock.getIssuerData.returns(`{ "id": ${issuerId} }`);
             var result = mollieEcomDefault.Authorize(this.orderNumber, this.paymentInstrument, this.paymentProcessor);
 
             expect(result.redirectUrl).to.eql(redirectUrl);
-            expect(stubs.paymentServiceMock.createPayment).to.been.calledOnce();
+            expect(stubs.paymentServiceMock.createPayment).to.been.calledOnce()
+                .and.to.have.been.calledWithExactly(this.order, this.paymentMethod, { issuer: issuerId });
             expect(stubs.dw.OrderMgrMock.getOrder).to.been.calledOnce();
 
             expect(result.error).to.be.false;
@@ -147,7 +137,7 @@ describe('payment/processor/mollie_ecom_default', () => {
         });
         it('Authorize payment with order API', () => {
             const redirectUrl = faker.internet.url();
-            const order = {
+            const createOrderResult = {
                 order: {
                     links: {
                         checkout: {
@@ -158,13 +148,15 @@ describe('payment/processor/mollie_ecom_default', () => {
             };
 
             stubs.dw.OrderMgrMock.getOrder.returns(this.order);
-            stubs.paymentServiceMock.createOrder.returns(order);
+            stubs.paymentServiceMock.createOrder.returns(createOrderResult);
             stubs.configMock.getDefaultEnabledTransactionAPI.returns({ value: TRANSACTION_API.ORDER });
-            stubs.orderHelperMock.getIssuerData.returns(`{ "id": ${faker.random.number()} }`);
+            const issuerId = faker.random.number();
+            stubs.orderHelperMock.getIssuerData.returns(`{ "id": ${issuerId} }`);
             var result = mollieEcomDefault.Authorize(this.orderNumber, this.paymentInstrument, this.paymentProcessor);
 
             expect(result.redirectUrl).to.eql(redirectUrl);
-            expect(stubs.paymentServiceMock.createOrder).to.been.calledOnce();
+            expect(stubs.paymentServiceMock.createOrder).to.been.calledOnce()
+                .and.to.have.been.calledWithExactly(this.order, this.paymentMethod, { issuer: issuerId });
             expect(stubs.dw.OrderMgrMock.getOrder).to.been.calledOnce();
 
             expect(result.error).to.be.false;

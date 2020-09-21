@@ -187,5 +187,18 @@ describe('payment/paymentHelper', () => {
             expect(stubs.dw.TransactionMock.wrap).have.to.been.calledTwice();
             expect(stubs.orderHelperMock.failOrCancelOrder).have.to.been.calledOnce();
         });
+        it('should call checkMollieRefundStatus', () => {
+            var paymentResult = {
+                status: STATUSMOCK.CREATED,
+                isCancelable: () => { return true; }
+            };
+
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.dw.URLUtilsMock.https.returns('Order-Confirm');
+
+            paymentHelper.processPaymentResult(this.order, paymentResult);
+
+            expect(stubs.orderHelperMock.checkMollieRefundStatus).have.to.been.calledOnce();
+        });
     });
 });

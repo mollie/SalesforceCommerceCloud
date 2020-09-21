@@ -131,7 +131,8 @@ const mollieServiceMock = {
     createShipment: sandbox.stub(),
     getMethod: sandbox.stub(),
     getMethods: sandbox.stub(),
-    createCustomer: sandbox.stub()
+    createCustomer: sandbox.stub(),
+    requestPaymentSession: sandbox.stub()
 };
 
 const dw = {
@@ -253,6 +254,10 @@ const paymentServiceMock = {
     createCustomer: sandbox.stub()
 };
 
+const paymentHelperMock = {
+    processPaymentResult: sandbox.stub()
+};
+
 /**
  * INITIALIZE ALL MOCKS
  */
@@ -265,6 +270,7 @@ const initMocks = function () {
     Object.keys(configMock).map(i => configMock[i].reset());
     Object.keys(dateMock).map(i => dateMock[i].reset());
     Object.keys(paymentServiceMock).map(i => paymentServiceMock[i].reset());
+    Object.keys(paymentHelperMock).map(i => paymentHelperMock[i].reset());
     Object.keys(orderHelperMock).map(i => orderHelperMock[i].reset());
     Object.keys(checkoutHelpersMock).map(i => checkoutHelpersMock[i].reset());
     Object.keys(renderTemplateHelperMock).map(i => renderTemplateHelperMock[i].reset());
@@ -311,6 +317,7 @@ module.exports = {
     configMock: configMock,
     dateMock: dateMock,
     paymentServiceMock: paymentServiceMock,
+    paymentHelperMock: paymentHelperMock,
     orderHelperMock: orderHelperMock,
     checkoutHelpersMock: checkoutHelpersMock,
     serviceExceptionMock: serviceExceptionMock,

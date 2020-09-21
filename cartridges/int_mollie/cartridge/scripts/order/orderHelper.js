@@ -17,12 +17,11 @@ function getPaymentDescription(order, paymentMethod) {
     var stringMapping = {
         '{orderNumber}': order.orderNo,
         '{storeName}': config.getSiteName(),
-        '{cart.id}': 'CART ID',
+        '{cart.id}': 'CART ID', // TODO
         '{order.reference}': order.customerOrderReference,
         '{customer.firstname}': order.customer.profile.firstName,
         '{customer.lastName}': order.customer.profile.lastName,
-        '{customer.company}': order.customer.profile.companyName,
-        '{storename}': config.getSiteName()
+        '{customer.company}': order.customer.profile.companyName
     };
 
     Object.keys(stringMapping).forEach(function (key) {

@@ -67,14 +67,14 @@ server.post('Hook', server.middleware.https, function (req, res, next) {
 });
 
 /**
- * Handling of pay with paypal
+ * Handling of pay with Apple Pay
  *
  * @param {Object} req - The request
  * @param {Object} res - The response
  * @param {Object} next - The next object
  * @return {Object} returns the next object
  */
-server.post('Paypal', server.middleware.https, function (req, res, next) {
+server.post('ApplePay', server.middleware.https, function (req, res, next) {
     try {
         var validationURL = req.body.validationURL;
         var result = MollieService.requestPaymentSession({

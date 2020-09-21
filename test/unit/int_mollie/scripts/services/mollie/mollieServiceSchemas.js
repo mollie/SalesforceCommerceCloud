@@ -55,6 +55,11 @@ exports.createPaymentRefund = {
     properties: Object.assign({}, amount)
 };
 
+exports.requestPaymentSession = {
+    required: ['validationUrl'],
+    properties: Object.assign({})
+};
+
 exports.getOrder = empty;
 exports.cancelOrder = empty;
 exports.cancelOrderLineItem = empty;

@@ -1,9 +1,9 @@
+var URLUtils = require('dw/web/URLUtils');
+var Transaction = require('dw/system/Transaction');
 var MollieService = require('*/cartridge/scripts/services/mollieService');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var config = require('*/cartridge/scripts/mollieConfig');
-var URLUtils = require('dw/web/URLUtils');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
-var Transaction = require('dw/system/Transaction');
 var paymentHelper = require('*/cartridge/scripts/payment/paymentHelper');
 
 /**
@@ -84,10 +84,11 @@ function createPayment(order, paymentMethod, paymentData) {
  */
 function processPaymentUpdate(order, statusUpdateId) {
     try {
+        var paymentService = require('*/cartridge/scripts/payment/paymentService');
         var url;
         if (orderHelper.isMollieOrder(order) &&
             (!statusUpdateId || orderHelper.getOrderId(order) === statusUpdateId)) {
-            var getOrderResult = getOrder(orderHelper.getOrderId(order));
+            var getOrderResult = paymentService.getOrder(orderHelper.getOrderId(order));
             url = paymentHelper.processPaymentResult(order, getOrderResult.order).url;
         } else if (!statusUpdateId || orderHelper.getPaymentId(order) === statusUpdateId) {
             // Instead of searching for payment to update, get last one
@@ -104,7 +105,7 @@ function processPaymentUpdate(order, statusUpdateId) {
                 paymentHelper.processPaymentResult(order, result.payment, paymentMethodId);
             }
             */
-            var getPaymentResult = getPayment(orderHelper.getPaymentId(order));
+            var getPaymentResult = paymentService.getPayment(orderHelper.getPaymentId(order));
             url = paymentHelper.processPaymentResult(order, getPaymentResult.payment).url;
         }
         return url;
@@ -325,6 +326,23 @@ function createCustomer(profile) {
     }
 }
 
+/**
+ *
+ * @param {string} validationURL - validation URL returned from Apple Pay
+ * @returns {Object}  - result of the request payment session REST call
+ * @throws {MollieServiceException}
+ */
+function requestPaymentSession(validationURL) {
+    try {
+        return MollieService.requestPaymentSession({
+            validationURL: validationURL
+        });
+    } catch (e) {
+        if (e.name === 'PaymentProviderException') throw e;
+        throw MollieServiceException.from(e);
+    }
+}
+
 module.exports = {
     getPayment: getPayment,
     createPayment: createPayment,
@@ -338,5 +356,6 @@ module.exports = {
     createPaymentRefund: createPaymentRefund,
     createOrderRefund: createOrderRefund,
     createShipment: createShipment,
-    createCustomer: createCustomer
+    createCustomer: createCustomer,
+    requestPaymentSession: requestPaymentSession
 };

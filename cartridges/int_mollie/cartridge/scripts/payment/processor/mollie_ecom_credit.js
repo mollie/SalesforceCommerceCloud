@@ -1,7 +1,5 @@
 'use strict';
 
-var collections = require('*/cartridge/scripts/util/collections');
-
 var PaymentInstrument = require('dw/order/PaymentInstrument');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var OrderMgr = require('dw/order/OrderMgr');
@@ -11,6 +9,7 @@ var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var config = require('*/cartridge/scripts/mollieConfig');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
+var collections = require('*/cartridge/scripts/util/collections');
 
 /**
  * Creates a token. This should be replaced by utilizing a tokenization provider
