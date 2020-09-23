@@ -1,6 +1,8 @@
 var Site = require('dw/system/Site');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 
+var DEFAULT_ATTRIBUTE_VALUE = 'default';
+
 var TRANSACTION_STATUS = {
     OPEN: 'open',
     CREATED: 'created',
@@ -156,6 +158,16 @@ function Config() {
      */
     this.getLogCategory = function () {
         return this.logCategory;
+    };
+
+    /**
+     * Get attribute default value
+     * @function
+     * @name Config#getDefaultAttributeValue
+     * @return {Object} Transaction statuses
+     */
+    this.getDefaultAttributeValue = function () {
+        return DEFAULT_ATTRIBUTE_VALUE;
     };
 
     /**

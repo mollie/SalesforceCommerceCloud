@@ -37,10 +37,10 @@ describe('mollie/createOrder', () => {
                 currency: 'EUR'
             };
             this.currencyStub = new stubs.dw.CurrencyMock();
-            this.currencyStub.getCurrencyCode.returns(this.amount.currency);
-            this.currencyStub.getValue.returns(this.amount.value);
+            this.currencyStub.currencyCode = this.amount.currency;
+            this.currencyStub.value = this.amount.value;
             this.orderAddressMock = new stubs.dw.OrderAddressMock();
-            this.orderAddressMock.getCountryCode.returns({ value: faker.lorem.word });
+            this.orderAddressMock.countryCode = { value: faker.lorem.word };
             this.params = {
                 totalGrossPrice: this.currencyStub,
                 orderId: faker.random.uuid(),

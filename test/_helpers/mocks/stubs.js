@@ -187,7 +187,8 @@ const configMock = {
     getLogCategory: sandbox.stub(),
     getTransactionStatus: sandbox.stub(),
     getTransactionAPI: sandbox.stub(),
-    getRefundStatus: sandbox.stub()
+    getRefundStatus: sandbox.stub(),
+    getDefaultAttributeValue: sandbox.stub()
 };
 
 const orderHelperMock = {
@@ -195,6 +196,7 @@ const orderHelperMock = {
     checkMollieRefundStatus: sandbox.stub(),
     getIssuerData: sandbox.stub(),
     setRefundStatus: sandbox.stub(),
+    getRefundStatus: sandbox.stub(),
     addItemToOrderHistory: sandbox.stub(),
     failOrder: sandbox.stub(),
     cancelOrder: sandbox.stub(),

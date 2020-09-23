@@ -3,6 +3,8 @@
 const { expect } = require('chai');
 const { stubs } = testHelpers;
 
+const DEFAULT_ATTRIBUTE_VALUE = 'default';
+
 const TRANSACTION_API = {
     PAYMENT: 'payment',
     ORDER: 'order'
@@ -102,7 +104,7 @@ describe('payment/processor/mollie_ecom_credit', () => {
             this.paymentProcessor = faker.random.word();
             this.paymentTransaction = new stubs.dw.PaymentTransactionMock();
             this.paymentMethod = new stubs.dw.PaymentMethodMock();
-            this.paymentMethod.custom.mollieEnabledTransactionAPI = {};
+            this.paymentMethod.custom.mollieEnabledTransactionAPI = { value: DEFAULT_ATTRIBUTE_VALUE };
             this.paymentInstrument = new stubs.dw.PaymentInstrumentMock();
             this.paymentInstrument.getPaymentTransaction.returns(this.paymentTransaction);
 
@@ -140,6 +142,7 @@ describe('payment/processor/mollie_ecom_credit', () => {
 
             stubs.dw.OrderMgrMock.getOrder.returns(this.order);
             stubs.paymentServiceMock.createPayment.returns(createPaymentResult);
+            stubs.configMock.getDefaultAttributeValue.returns(DEFAULT_ATTRIBUTE_VALUE);
             stubs.configMock.getDefaultEnabledTransactionAPI.returns({ value: TRANSACTION_API.PAYMENT });
             var result = mollieEcomCredit.Authorize(this.orderNumber, this.paymentInstrument, this.paymentProcessor);
 
@@ -167,6 +170,7 @@ describe('payment/processor/mollie_ecom_credit', () => {
 
             stubs.dw.OrderMgrMock.getOrder.returns(this.order);
             stubs.paymentServiceMock.createOrder.returns(createOrderResult);
+            stubs.configMock.getDefaultAttributeValue.returns(DEFAULT_ATTRIBUTE_VALUE);
             stubs.configMock.getDefaultEnabledTransactionAPI.returns({ value: TRANSACTION_API.ORDER });
             var result = mollieEcomCredit.Authorize(this.orderNumber, this.paymentInstrument, this.paymentProcessor);
 
@@ -203,6 +207,7 @@ describe('payment/processor/mollie_ecom_credit', () => {
 
             stubs.dw.OrderMgrMock.getOrder.returns(this.order);
             stubs.paymentServiceMock.createOrder.returns(createOrderResult);
+            stubs.configMock.getDefaultAttributeValue.returns(DEFAULT_ATTRIBUTE_VALUE);
             stubs.configMock.getDefaultEnabledTransactionAPI.returns({ value: TRANSACTION_API.ORDER });
             var result = mollieEcomCredit.Authorize(this.orderNumber, this.paymentInstrument, this.paymentProcessor);
 
@@ -247,6 +252,7 @@ describe('payment/processor/mollie_ecom_credit', () => {
             stubs.dw.OrderMgrMock.getOrder.returns(this.order);
             stubs.paymentServiceMock.createOrder.returns(createOrderResult);
             stubs.paymentServiceMock.createCustomer.returns(createCustomerResult);
+            stubs.configMock.getDefaultAttributeValue.returns(DEFAULT_ATTRIBUTE_VALUE);
             stubs.configMock.getDefaultEnabledTransactionAPI.returns({ value: TRANSACTION_API.ORDER });
             var result = mollieEcomCredit.Authorize(this.orderNumber, this.paymentInstrument, this.paymentProcessor);
 

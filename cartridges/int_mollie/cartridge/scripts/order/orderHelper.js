@@ -360,7 +360,8 @@ function getRefundStatus(order) {
  * @returns {boolean} is mollie order?
  */
 function isMollieOrder(order) {
-    return getUsedTransactionAPI(order) === config.getTransactionAPI().ORDER;
+    var orderHelper = require('*/cartridges/scripts/order/orderHelper');
+    return orderHelper.getUsedTransactionAPI(order) === config.getTransactionAPI().ORDER;
 }
 
 /**
@@ -370,16 +371,18 @@ function isMollieOrder(order) {
  * @param {Object} paymentResult paymentResult from getOrder or getPayment call
  */
 function checkMollieRefundStatus(order, paymentResult) {
+    var orderHelper = require('*/cartridges/scripts/order/orderHelper');
     if (paymentResult.amountRefunded.value) {
         var REFUND_STATUS = config.getRefundStatus();
         if (paymentResult.amountRefunded.value === paymentResult.amount.value
-            && getRefundStatus(order).value !== REFUND_STATUS.REFUNDED) {
+            && orderHelper.getRefundStatus(order).value !== REFUND_STATUS.REFUNDED) {
             Transaction.wrap(function () {
-                setRefundStatus(order, REFUND_STATUS.REFUNDED);
+                orderHelper.setRefundStatus(order, REFUND_STATUS.REFUNDED);
             });
-        } else if (getRefundStatus(order).value !== REFUND_STATUS.PARTREFUNDED) {
+        } else if (paymentResult.amountRefunded.value !== paymentResult.amount.value
+            && orderHelper.getRefundStatus(order).value !== REFUND_STATUS.PARTREFUNDED) {
             Transaction.wrap(function () {
-                setRefundStatus(order, REFUND_STATUS.PARTREFUNDED);
+                orderHelper.setRefundStatus(order, REFUND_STATUS.PARTREFUNDED);
             });
         }
     }

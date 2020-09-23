@@ -30,19 +30,33 @@ describe('payment/paymentService', () => {
     context('#getPayment', () => {
         it('Should call getPayment', () => {
             const paymentId = faker.random.uuid();
+            const getPaymentResult = {
+                payment: {
+                    id: faker.random.uuid()
+                }
+            };
+            stubs.mollieServiceMock.getPayment.returns(getPaymentResult);
 
-            paymentService.getPayment(paymentId);
+            var result = paymentService.getPayment(paymentId);
 
             expect(stubs.mollieServiceMock.getPayment).have.to.been.calledOnce();
+            expect(result).to.eql(getPaymentResult);
         });
     });
     context('#getOrder', () => {
         it('Should call getOrder', () => {
             const orderId = faker.random.uuid();
+            const getOrderResult = {
+                order: {
+                    id: faker.random.uuid()
+                }
+            };
+            stubs.mollieServiceMock.getOrder.returns(getOrderResult);
 
-            paymentService.getOrder(orderId);
+            var result = paymentService.getOrder(orderId);
 
             expect(stubs.mollieServiceMock.getOrder).have.to.been.calledOnce();
+            expect(result).to.eql(getOrderResult);
         });
     });
     context('#createPayment', () => {
@@ -140,10 +154,17 @@ describe('payment/paymentService', () => {
     context('#cancelPayment', () => {
         it('Should call cancelPayment', () => {
             const paymentId = faker.random.uuid();
+            const cancelPaymentResult = {
+                payment: {
+                    id: faker.random.uuid()
+                }
+            };
+            stubs.mollieServiceMock.cancelPayment.returns(cancelPaymentResult);
 
-            paymentService.cancelPayment(paymentId);
+            var result = paymentService.cancelPayment(paymentId);
 
             expect(stubs.mollieServiceMock.cancelPayment).have.to.been.calledOnce();
+            expect(result).to.eql(cancelPaymentResult);
         });
     });
     context('#createOrder', () => {
@@ -170,19 +191,33 @@ describe('payment/paymentService', () => {
     context('#cancelOrder', () => {
         it('Should call cancelOrder', () => {
             const orderId = faker.random.uuid();
+            const cancelOrderResult = {
+                order: {
+                    id: faker.random.uuid()
+                }
+            };
+            stubs.mollieServiceMock.cancelOrder.returns(cancelOrderResult);
 
-            paymentService.cancelOrder(orderId);
+            var result = paymentService.cancelOrder(orderId);
 
             expect(stubs.mollieServiceMock.cancelOrder).have.to.been.calledOnce();
+            expect(result).to.eql(cancelOrderResult);
         });
     });
     context('#cancelOrderLineItem', () => {
         it('Should call cancelOrderLineItem', () => {
             const order = new stubs.dw.OrderMock();
+            const cancelOrderLineItemResult = {
+                order: {
+                    id: faker.random.uuid()
+                }
+            };
+            stubs.mollieServiceMock.cancelOrderLineItem.returns(cancelOrderLineItemResult);
 
-            paymentService.cancelOrderLineItem(order);
+            var result = paymentService.cancelOrderLineItem(order);
 
             expect(stubs.mollieServiceMock.cancelOrderLineItem).have.to.been.calledOnce();
+            expect(result).to.eql(cancelOrderLineItemResult);
         });
     });
     context('#getApplicablePaymentMethods', () => {
@@ -193,47 +228,82 @@ describe('payment/paymentService', () => {
     context('#createOrderRefund', () => {
         it('Should call createOrderRefund', () => {
             const order = new stubs.dw.OrderMock();
+            const createOrderRefundResult = {
+                order: {
+                    id: faker.random.uuid()
+                }
+            };
+            stubs.mollieServiceMock.createOrderRefund.returns(createOrderRefundResult);
 
-            paymentService.createOrderRefund(order);
+            var result = paymentService.createOrderRefund(order);
 
             expect(stubs.mollieServiceMock.createOrderRefund).have.to.been.calledOnce();
+            expect(result).to.eql(createOrderRefundResult);
         });
     });
     context('#createPaymentRefund', () => {
         it('Should call createPaymentRefund', () => {
             const paymentId = faker.random.uuid();
             const amount = faker.random.number().toString();
+            const createPaymentRefundResult = {
+                order: {
+                    id: faker.random.uuid()
+                }
+            };
+            stubs.mollieServiceMock.createPaymentRefund.returns(createPaymentRefundResult);
 
-            paymentService.createPaymentRefund(paymentId, amount);
+            var result = paymentService.createPaymentRefund(paymentId, amount);
 
             expect(stubs.mollieServiceMock.createPaymentRefund).have.to.been.calledOnce();
+            expect(result).to.eql(createPaymentRefundResult);
         });
     });
     context('#createShipment', () => {
         it('Should call createShipment', () => {
             const order = new stubs.dw.OrderMock();
+            const createShipmentResult = {
+                shipment: {
+                    id: faker.random.uuid()
+                }
+            };
+            stubs.mollieServiceMock.createShipment.returns(createShipmentResult);
 
-            paymentService.createShipment(order);
+            var result = paymentService.createShipment(order);
 
             expect(stubs.mollieServiceMock.createShipment).have.to.been.calledOnce();
+            expect(result).to.eql(createShipmentResult);
         });
     });
     context('#createCustomer', () => {
         it('Should call createCustomer', () => {
             const profile = new stubs.dw.ProfileMock();
+            const createCustomerResult = {
+                customer: {
+                    id: faker.random.uuid()
+                }
+            };
+            stubs.mollieServiceMock.createCustomer.returns(createCustomerResult);
 
-            paymentService.createCustomer(profile);
+            var result = paymentService.createCustomer(profile);
 
             expect(stubs.mollieServiceMock.createCustomer).have.to.been.calledOnce();
+            expect(result).to.eql(createCustomerResult);
         });
     });
     context('#requestPaymentSession', () => {
         it('Should call requestPaymentSession', () => {
             const validationURL = faker.internet.url();
+            const requestPaymentSessionResult = {
+                paymentSession: {
+                    id: faker.random.uuid()
+                }
+            };
+            stubs.mollieServiceMock.requestPaymentSession.returns(requestPaymentSessionResult);
 
-            paymentService.requestPaymentSession(validationURL);
+            var result = paymentService.requestPaymentSession(validationURL);
 
             expect(stubs.mollieServiceMock.requestPaymentSession).have.to.been.calledOnce();
+            expect(result).to.eql(requestPaymentSessionResult);
         });
     });
 });
