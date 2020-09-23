@@ -5,6 +5,7 @@ const { stubs } = testHelpers;
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const paymentService = proxyquire(`${base}/int_mollie/cartridge/scripts/payment/paymentService`, {
     'dw/web/URLUtils': stubs.dw.URLUtilsMock,
+    'dw/web/Resource': stubs.dw.ResourceMock,
     'dw/system/Transaction': stubs.dw.TransactionMock,
     '*/cartridge/scripts/services/mollieService': stubs.mollieServiceMock,
     '*/cartridge/scripts/order/orderHelper': stubs.orderHelperMock,

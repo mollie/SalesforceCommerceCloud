@@ -1,6 +1,5 @@
 'use strict';
 
-var PaymentInstrument = require('dw/order/PaymentInstrument');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var OrderMgr = require('dw/order/OrderMgr');
 var Resource = require('dw/web/Resource');
@@ -31,6 +30,7 @@ function Handle(basket, paymentInformation) {
     var cardErrors = {};
     var serverErrors = [];
     var cardType = paymentInformation.cardType.value;
+    var pm = paymentInformation.paymentMethod;
 
     Transaction.wrap(function () {
         var paymentInstruments = currentBasket.getPaymentInstruments();
@@ -42,9 +42,7 @@ function Handle(basket, paymentInformation) {
             }
         });
 
-        var paymentInstrument = currentBasket.createPaymentInstrument(
-            PaymentInstrument.METHOD_CREDIT_CARD, currentBasket.totalGrossPrice
-        );
+        var paymentInstrument = currentBasket.createPaymentInstrument(pm, currentBasket.totalGrossPrice);
 
         paymentInstrument.setCreditCardType(cardType);
         paymentInstrument.setCreditCardHolder(currentBasket.billingAddress.fullName);

@@ -1,4 +1,5 @@
 var Transaction = require('dw/system/Transaction');
+var Resource = require('dw/web/Resource');
 var MollieService = require('*/cartridge/scripts/services/mollieService');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var config = require('*/cartridge/scripts/mollieConfig');
@@ -57,7 +58,7 @@ function createPayment(order, paymentMethod, paymentData) {
             cardToken: paymentData && paymentData.cardToken,
             issuer: paymentData && paymentData.issuer,
             customerId: paymentData && paymentData.customerId,
-            description: orderHelper.getPaymentDescription(order, paymentMethod)
+            description: orderHelper.getPaymentDescription(order, paymentMethod) || Resource.msgf('order.details.description', 'mollie', null, order.orderNo)
         });
 
         Transaction.wrap(function () {

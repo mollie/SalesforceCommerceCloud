@@ -6,14 +6,14 @@
             <attribute-definition attribute-id="molliePaymentMethodId">
                 <display-name xml:lang="x-default">Payment method ID</display-name>
                 <type>string</type>
-                <mandatory-flag>true</mandatory-flag>
+                <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
             <attribute-definition attribute-id="mollieOrderExpiryDays">
                 <display-name xml:lang="x-default">Order expiry days</display-name>
                 <description xml:lang="x-default">expiry days for orders created with the Orders API</description>
-                <type>enum-of-int</type>
+                <type>enum-of-string</type>
                 <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <value-definitions>
@@ -327,7 +327,7 @@
                 <display-name xml:lang="x-default">Method</display-name>
                 <description xml:lang="x-default">Read more about the differences between the Payment and Orders API: https://docs.mollie.com/orders/why-use-orders</description>
                 <type>enum-of-string</type>
-                <mandatory-flag>false</mandatory-flag>
+                <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <value-definitions>
                     <value-definition default="true">

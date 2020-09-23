@@ -10,7 +10,7 @@ const orderHelper = proxyquire(`${base}/int_mollie/cartridge/scripts/order/order
     'dw/system/Transaction': stubs.dw.TransactionMock,
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
     '*/cartridge/scripts/mollieConfig': stubs.configMock,
-    '*/cartridges/scripts/order/orderHelper': stubs.orderHelperMock
+    '*/cartridge/scripts/order/orderHelper': stubs.orderHelperMock
 });
 
 const REFUND_STATUS = {

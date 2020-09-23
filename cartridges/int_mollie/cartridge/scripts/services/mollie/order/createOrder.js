@@ -13,7 +13,7 @@ var config = require('*/cartridge/scripts/mollieConfig');
  */
 function payloadBuilder(params) {
     var paymentMethodExpiryDays = params.paymentMethod.custom.mollieOrderExpiryDays.value;
-    var expiryDays = paymentMethodExpiryDays === config.getDefaultAttributeValue() ? config.getDefaultOrderExpiryDays().value : paymentMethodExpiryDays;
+    var expiryDays = paymentMethodExpiryDays === config.getDefaultAttributeValue() ? config.getDefaultOrderExpiryDays().value : parseInt(paymentMethodExpiryDays);
     var payload = {
         amount: new mollieRequestEntities.Currency(params.totalGrossPrice),
         orderNumber: params.orderId,
