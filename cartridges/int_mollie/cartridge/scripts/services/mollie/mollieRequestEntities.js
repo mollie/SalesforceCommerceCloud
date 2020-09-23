@@ -106,23 +106,24 @@ function DiscountLineItem(priceAdjustment) {
  * @returns {Object} Request Lines object
  */
 function Lines(productLineItems, shipments, priceAdjustments) {
+    var mollieRequestEntities = require('*/cartridge/scripts/services/mollie/mollieRequestEntities');
     var lines = [];
 
     productLineItems.toArray().forEach(function (productLineItem) {
-        lines.push(new ProductLineItem(productLineItem));
+        lines.push(new mollieRequestEntities.ProductLineItem(productLineItem));
         if (productLineItem.shippingLineItem) {
-            lines.push(new ShippingLineItem(productLineItem.shippingLineItem));
+            lines.push(new mollieRequestEntities.ShippingLineItem(productLineItem.shippingLineItem));
         }
     });
 
     shipments.toArray().forEach(function (shipment) {
         shipment.getShippingLineItems().toArray().forEach(function (shippingLineItem) {
-            lines.push(new ShippingLineItem(shippingLineItem));
+            lines.push(new mollieRequestEntities.ShippingLineItem(shippingLineItem));
         });
     });
 
     priceAdjustments.toArray().forEach(function (priceAdjustment) {
-        lines.push(new DiscountLineItem(priceAdjustment));
+        lines.push(new mollieRequestEntities.DiscountLineItem(priceAdjustment));
     });
 
     return lines;

@@ -14,7 +14,7 @@ const createOrder = proxyquire(`${base}/int_mollie/cartridge/scripts/services/mo
     },
     '*/cartridge/scripts/utils/date': stubs.dateMock,
     '*/cartridge/scripts/mollieConfig': stubs.configMock,
-    '*/cartridge/scripts/services/mollie/mollieRequestEntities': require(`${base}/int_mollie/cartridge/scripts/services/mollie/mollieRequestEntities`)
+    '*/cartridge/scripts/services/mollie/mollieRequestEntities': stubs.mollieRequestEntitiesMock
 });
 
 describe('mollie/createOrder', () => {
@@ -59,9 +59,9 @@ describe('mollie/createOrder', () => {
                         }
                     }
                 },
-                priceAdjustments: { toArray: () => { return []; } },
-                productLineItems: { toArray: () => { return []; } },
-                shipments: { toArray: () => { return []; } }
+                priceAdjustments: { toArray: () => [] },
+                productLineItems: { toArray: () => [] },
+                shipments: { toArray: () => [] }
             };
             stubs.dw.URLUtilsMock.https.returns(this.returnUrl);
         });

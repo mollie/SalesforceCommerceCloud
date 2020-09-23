@@ -1,4 +1,3 @@
-var URLUtils = require('dw/web/URLUtils');
 var Transaction = require('dw/system/Transaction');
 var MollieService = require('*/cartridge/scripts/services/mollieService');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
@@ -214,38 +213,19 @@ function cancelOrderLineItem(order, lines) {
 
 /**
  *
- * @param {Array} paymentMethods - list of payment methods
  * @param {dw.order.Basket} currentBasket - the target Basket object
  * @param {string} countryCode - the associated Site countryCode
- * @returns {Array} - List of applicable payment methods
+ * @returns {Object} - result of the get methods REST call
  * @throws {MollieServiceException}
  */
-function getApplicablePaymentMethods(paymentMethods, currentBasket, countryCode) {
+function getMethods(currentBasket, countryCode) {
     try {
-        var methodResult = MollieService.getMethods({
+        return MollieService.getMethods({
             amount: currentBasket.adjustedMerchandizeTotalGrossPrice.value.toFixed(2),
             currency: currentBasket.adjustedMerchandizeTotalGrossPrice.currencyCode,
             resource: config.getDefaultEnabledTransactionAPI().value === config.getTransactionAPI().PAYMENT ? 'payments' : 'orders',
             billingCountry: currentBasket.billingAddress ? currentBasket.billingAddress.countryCode.value : countryCode
         });
-
-        var methods = [];
-        paymentMethods.toArray().forEach(function (method) {
-            var molliePaymentMethod = methodResult.methods.filter(function (mollieMethod) {
-                return mollieMethod.id === method.custom.molliePaymentMethodId;
-            })[0];
-
-            if (molliePaymentMethod || !method.custom.molliePaymentMethodId) {
-                methods.push({
-                    ID: method.ID,
-                    name: method.name,
-                    image: (method.image) ? method.image.URL.toString() :
-                        (molliePaymentMethod && molliePaymentMethod.imageURL) || URLUtils.staticURL('./images/mollieMethodImage.png'),
-                    issuers: molliePaymentMethod && molliePaymentMethod.issuers
-                });
-            }
-        });
-        return methods;
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
         throw MollieServiceException.from(e);
@@ -256,7 +236,7 @@ function getApplicablePaymentMethods(paymentMethods, currentBasket, countryCode)
  *
  * @param {dw.order.Order} order - order object
  * @param {objeect} lines - object containing lines
- * @returns {Object}  - result of the create order refund REST call
+ * @returns {Object} - result of the create order refund REST call
  * @throws {MollieServiceException}
  */
 function createOrderRefund(order, lines) {
@@ -352,7 +332,7 @@ module.exports = {
     createOrder: createOrder,
     cancelOrder: cancelOrder,
     cancelOrderLineItem: cancelOrderLineItem,
-    getApplicablePaymentMethods: getApplicablePaymentMethods,
+    getMethods: getMethods,
     createPaymentRefund: createPaymentRefund,
     createOrderRefund: createOrderRefund,
     createShipment: createShipment,

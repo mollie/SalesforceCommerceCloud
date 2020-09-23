@@ -249,7 +249,7 @@ const paymentServiceMock = {
     createOrder: sandbox.stub(),
     cancelOrder: sandbox.stub(),
     cancelOrderLineItem: sandbox.stub(),
-    getApplicablePaymentMethods: sandbox.stub(),
+    getMethods: sandbox.stub(),
     createOrderRefund: sandbox.stub(),
     createPaymentRefund: sandbox.stub(),
     createShipment: sandbox.stub(),
@@ -258,6 +258,15 @@ const paymentServiceMock = {
 
 const paymentHelperMock = {
     processPaymentResult: sandbox.stub()
+};
+
+const mollieRequestEntitiesMock = {
+    Currency: sandbox.stub(),
+    Address: sandbox.stub(),
+    ProductLineItem: sandbox.stub(),
+    ShippingLineItem: sandbox.stub(),
+    DiscountLineItem: sandbox.stub(),
+    Lines: sandbox.stub()
 };
 
 /**
@@ -276,6 +285,7 @@ const initMocks = function () {
     Object.keys(orderHelperMock).map(i => orderHelperMock[i].reset());
     Object.keys(checkoutHelpersMock).map(i => checkoutHelpersMock[i].reset());
     Object.keys(renderTemplateHelperMock).map(i => renderTemplateHelperMock[i].reset());
+    Object.keys(mollieRequestEntitiesMock).map(i => mollieRequestEntitiesMock[i].reset());
     Object.keys(dw.ISMLMock).map(i => dw.ISMLMock[i].reset());
     Object.keys(dw.HookMgrMock).map(i => dw.HookMgrMock[i].reset());
     Object.keys(dw.CurrencyMock).map(i => dw.CurrencyMock[i].reset());
@@ -324,6 +334,7 @@ module.exports = {
     checkoutHelpersMock: checkoutHelpersMock,
     serviceExceptionMock: serviceExceptionMock,
     renderTemplateHelperMock: renderTemplateHelperMock,
+    mollieRequestEntitiesMock: mollieRequestEntitiesMock,
     MollieMock: MollieMock,
     mollieMockInstance: mollieMockInstance,
     mollieServiceMock: mollieServiceMock,

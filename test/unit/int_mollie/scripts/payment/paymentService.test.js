@@ -14,6 +14,8 @@ const paymentService = proxyquire(`${base}/int_mollie/cartridge/scripts/payment/
     '*/cartridge/scripts/payment/paymentService': stubs.paymentServiceMock
 });
 
+const DEFAULT_ATTRIBUTE_VALUE = 'default';
+
 const TRANSACTION_API = {
     PAYMENT: 'payment',
     ORDER: 'order'
@@ -220,9 +222,29 @@ describe('payment/paymentService', () => {
             expect(result).to.eql(cancelOrderLineItemResult);
         });
     });
-    context('#getApplicablePaymentMethods', () => {
-        it('Should get the applicable payment methods', () => {
-            // TODO
+    context('#getMethods', () => {
+        it('Should call getMethods', () => {
+            const basket = new stubs.dw.BasketMock();
+            basket.adjustedMerchandizeTotalGrossPrice = {
+                value: faker.random.number({ precision: 0.01 }),
+                currencyCode: faker.lorem.word()
+            };
+            const countryCode = faker.address.countryCode();
+            const methodResult = {
+                mehods: [
+                    {
+                        id: faker.random.uuid()
+                    }
+                ]
+            };
+            stubs.mollieServiceMock.getMethods.returns(methodResult);
+            stubs.configMock.getDefaultAttributeValue.returns(DEFAULT_ATTRIBUTE_VALUE);
+            stubs.configMock.getDefaultEnabledTransactionAPI.returns({ value: TRANSACTION_API.PAYMENT });
+
+            var result = paymentService.getMethods(basket, countryCode);
+
+            expect(stubs.mollieServiceMock.getMethods).have.to.been.calledOnce();
+            expect(result).to.eql(methodResult);
         });
     });
     context('#createOrderRefund', () => {

@@ -2,8 +2,9 @@
 
 var base = require('*/cartridge/scripts/utils/superModule')(module);
 
-var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var PaymentMgr = require('dw/order/PaymentMgr');
+var URLUtils = require('dw/web/URLUtils');
+var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var collections = require('*/cartridge/scripts/util/collections');
 
 /**
@@ -39,7 +40,26 @@ function getSelectedPaymentInstruments(selectedPaymentInstruments) {
  *      current cart
  */
 function applicablePaymentMethods(paymentMethods, currentBasket, countryCode) {
-    return paymentService.getApplicablePaymentMethods(paymentMethods, currentBasket, countryCode);
+    var mollieMethods = paymentService.getMethods(currentBasket, countryCode);
+    var methods = [];
+
+    paymentMethods.toArray().forEach(function (method) {
+        var molliePaymentMethod = mollieMethods.methods.filter(function (mollieMethod) {
+            return mollieMethod.id === method.custom.molliePaymentMethodId;
+        })[0];
+
+        if (molliePaymentMethod || !method.custom.molliePaymentMethodId) {
+            methods.push({
+                ID: method.ID,
+                name: method.name,
+                image: (method.image) ? method.image.URL.toString() :
+                    (molliePaymentMethod && molliePaymentMethod.imageURL) || URLUtils.staticURL('./images/mollieMethodImage.png'),
+                issuers: molliePaymentMethod && molliePaymentMethod.issuers
+            });
+        }
+    });
+
+    return methods;
 }
 
 /**

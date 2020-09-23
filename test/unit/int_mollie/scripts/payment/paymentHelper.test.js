@@ -98,7 +98,7 @@ describe('payment/paymentHelper', () => {
         it('should process the payment result from Mollie with status OPEN for Mollie order', () => {
             var paymentResult = {
                 status: STATUSMOCK.OPEN,
-                isCancelable: () => { return true; }
+                isCancelable: () => true
             };
 
             stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
@@ -115,7 +115,7 @@ describe('payment/paymentHelper', () => {
         it('should process the payment result from Mollie with status OPEN for Mollie payment', () => {
             var paymentResult = {
                 status: STATUSMOCK.OPEN,
-                isCancelable: () => { return true; }
+                isCancelable: () => true
             };
 
             stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
@@ -133,7 +133,7 @@ describe('payment/paymentHelper', () => {
         it('should process the payment result from Mollie with status CREATED for Mollie payment', () => {
             var paymentResult = {
                 status: STATUSMOCK.CREATED,
-                isCancelable: () => { return false; }
+                isCancelable: () => false
             };
 
             stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
@@ -190,7 +190,7 @@ describe('payment/paymentHelper', () => {
         it('should call checkMollieRefundStatus', () => {
             var paymentResult = {
                 status: STATUSMOCK.CREATED,
-                isCancelable: () => { return true; }
+                isCancelable: () => true
             };
 
             stubs.configMock.getTransactionStatus.returns(STATUSMOCK);

@@ -12,7 +12,7 @@ const createPayment = proxyquire(`${base}/int_mollie/cartridge/scripts/services/
     '*/cartridge/scripts/services/mollie/mollieResponseEntities': {
         Payment: paymentStub
     },
-    '*/cartridge/scripts/services/mollie/mollieRequestEntities': require(`${base}/int_mollie/cartridge/scripts/services/mollie/mollieRequestEntities`)
+    '*/cartridge/scripts/services/mollie/mollieRequestEntities': stubs.mollieRequestEntitiesMock
 });
 
 describe('mollie/createPayment', () => {

@@ -11,7 +11,7 @@ const createPaymentRefund = proxyquire(`${base}/int_mollie/cartridge/scripts/ser
     '*/cartridge/scripts/services/mollie/mollieResponseEntities': {
         Refund: refundStub
     },
-    '*/cartridge/scripts/services/mollie/mollieRequestEntities': require(`${base}/int_mollie/cartridge/scripts/services/mollie/mollieRequestEntities`)
+    '*/cartridge/scripts/services/mollie/mollieRequestEntities': stubs.mollieRequestEntitiesMock
 });
 
 describe('mollie/createPaymentRefund', () => {
