@@ -6,7 +6,7 @@
             Ship order
         </div>
         <div class="card-body">
-            <form method="post" class="m-0" action="CSCOrderPaymentShipment-Shipment" id="orderPaymentShipment-shipment"
+            <form method="post" class="m-0" action="CSCOrderShipment-Shipment" id="orderPaymentShipment-shipment"
                 name="orderPaymentShipment-shipment">
                 <fieldset>
                     <input type="hidden" value="${pdict.orderId}" name="orderId" id="orderId" />
@@ -29,7 +29,7 @@
                     <div class="card-body">
                         <p>Shippable: <isprint value="${line.shippableQuantity}" /></p>
                         <p>Shipped: <isprint value="${line.quantityShipped}" /></p>
-                        <form method="post" class="m-0" action="CSCOrderPaymentShipment-Shipment"
+                        <form method="post" class="m-0" action="CSCOrderShipment-Shipment"
                             id="orderPaymentShipment-shipment" name="orderPaymentShipment-shipment">
                             <fieldset>
                                 <input class="form-control" type="number" min="1" max="${line.shippableQuantity}"

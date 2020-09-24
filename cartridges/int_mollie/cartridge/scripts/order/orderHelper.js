@@ -106,12 +106,10 @@ function failOrCancelOrder(order, message) {
  * @returns {void}
  */
 function setOrderPaymentStatus(order, paymentStatus) {
-    var logMessage = 'PAYMENT :: UpdatePaymentStatus :: Updated payment status for order ' + order.orderNo + ' to ' + paymentStatus;
     var currentPaymentStatus = order.getPaymentStatus().getValue();
 
     if (currentPaymentStatus !== paymentStatus) {
         order.setPaymentStatus(paymentStatus);
-        addItemToOrderHistory(order, logMessage, true);
     }
 }
 
@@ -123,12 +121,10 @@ function setOrderPaymentStatus(order, paymentStatus) {
  * @returns {void}
  */
 function setOrderShippingStatus(order, shippingStatus) {
-    var logMessage = 'PAYMENT :: UpdateShippingStatus :: Updated shipping status for order ' + order.orderNo + ' to ' + shippingStatus;
     var currentShippingStatus = order.getShippingStatus().getValue();
 
     if (currentShippingStatus !== shippingStatus) {
         order.setShippingStatus(shippingStatus);
-        addItemToOrderHistory(order, logMessage, true);
     }
 }
 
@@ -374,14 +370,15 @@ function isMollieOrder(order) {
  */
 function checkMollieRefundStatus(order, paymentResult) {
     var orderHelper = require('*/cartridge/scripts/order/orderHelper');
-    if (paymentResult.amountRefunded.value) {
+    var amountRefunded = paymentResult.amountRefunded.value;
+    if (amountRefunded && Number(amountRefunded) > 0) {
         var REFUND_STATUS = config.getRefundStatus();
-        if (paymentResult.amountRefunded.value === paymentResult.amount.value
+        if (amountRefunded === paymentResult.amount.value
             && orderHelper.getRefundStatus(order).value !== REFUND_STATUS.REFUNDED) {
             Transaction.wrap(function () {
                 orderHelper.setRefundStatus(order, REFUND_STATUS.REFUNDED);
             });
-        } else if (paymentResult.amountRefunded.value !== paymentResult.amount.value
+        } else if (amountRefunded !== paymentResult.amount.value
             && orderHelper.getRefundStatus(order).value !== REFUND_STATUS.PARTREFUNDED) {
             Transaction.wrap(function () {
                 orderHelper.setRefundStatus(order, REFUND_STATUS.PARTREFUNDED);

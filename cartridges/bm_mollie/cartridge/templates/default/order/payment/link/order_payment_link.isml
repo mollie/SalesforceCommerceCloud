@@ -6,7 +6,7 @@
             Order: <isprint value="${order.id}">
         </div>
         <div class="card-body">
-            <form method="post" class="m-0" action="CSCOrderPaymentShipment-Shipment" id="orderPaymentShipment-shipment"
+            <form method="post" class="m-0" action="CSCOrderShipment-Shipment" id="orderPaymentShipment-shipment"
                 name="orderPaymentShipment-shipment">
                 <fieldset>
                     <input type="hidden" value="${pdict.orderId}" name="orderId" id="orderId" />

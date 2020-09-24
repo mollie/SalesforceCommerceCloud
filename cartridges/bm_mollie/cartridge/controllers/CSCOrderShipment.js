@@ -18,12 +18,12 @@ exports.Start = function () {
     var order = OrderMgr.getOrder(orderNo);
     if (isShipmentAllowed(order) && orderHelper.isMollieOrder(order)) {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
-        renderTemplate('order/payment/shipment/order_payment_shipment.isml', {
+        renderTemplate('order/payment/shipment/order_shipment.isml', {
             orderId: order.orderNo,
             order: result.order
         });
     } else {
-        renderTemplate('order/payment/shipment/order_payment_shipment_not_available.isml');
+        renderTemplate('order/payment/shipment/order_shipment_not_available.isml');
     }
 };
 
@@ -55,7 +55,7 @@ exports.Shipment = function () {
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/shipment/order_payment_shipment_confirmation.isml', viewParams);
+    renderTemplate('order/payment/shipment/order_shipment_confirmation.isml', viewParams);
 };
 
 exports.Start.public = true;

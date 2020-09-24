@@ -17,12 +17,17 @@ var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 function processPaymentResult(order, paymentResult) {
     var paymentService = require('*/cartridge/scripts/payment/paymentService');
 
-    var STATUS = config.getTransactionStatus();
-    var isMollieOrder = orderHelper.isMollieOrder(order);
-
     var orderId = order.orderNo;
     var orderToken = order.orderToken;
     var url = URLUtils.https('Order-Confirm', 'ID', orderId, 'token', orderToken).toString();
+
+    orderHelper.checkMollieRefundStatus(order, paymentResult);
+
+    var isMollieOrder = orderHelper.isMollieOrder(order);
+    var mollieOrderStatus = isMollieOrder ? orderHelper.getOrderStatus(order) : orderHelper.getPaymentStatus(order);
+    if (mollieOrderStatus === paymentResult.status) return { url: url };
+
+    var STATUS = config.getTransactionStatus();
     var historyItem;
 
     // PROCESS STATUS
@@ -86,8 +91,6 @@ function processPaymentResult(order, paymentResult) {
         default:
             historyItem = 'PAYMENT :: Unknown Mollie status update :: ' + paymentResult.status;
     }
-
-    orderHelper.checkMollieRefundStatus(order, paymentResult);
 
     Transaction.wrap(function () {
         if (isMollieOrder) {

@@ -34,13 +34,13 @@
         </parameters>
         <icon>check_address.png</icon>
     </menuaction>
-    <menuaction id="order_payment_shipment" menupath="order" type="CSC" site="true" position="1">
-        <name xml:lang="x-default">Shipment payment</name>
-        <short_description xml:lang="x-default">Shipment payment</short_description>
-        <description xml:lang="x-default">Shipment payment</description>
-        <exec pipeline="CSCOrderPaymentShipment" node="Start"/>
+    <menuaction id="order_shipment" menupath="order" type="CSC" site="true" position="1">
+        <name xml:lang="x-default">Ship order</name>
+        <short_description xml:lang="x-default">Ship order</short_description>
+        <description xml:lang="x-default">Ship order</description>
+        <exec pipeline="CSCOrderShipment" node="Start"/>
         <sub-pipelines>
-            <pipeline name="CSCOrderPaymentShipment" />
+            <pipeline name="CSCOrderShipment" />
         </sub-pipelines>
         <parameters>
             <parameter name="order_no" value="/order_no"/>

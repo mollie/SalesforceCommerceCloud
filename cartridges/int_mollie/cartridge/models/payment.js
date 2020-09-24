@@ -3,7 +3,6 @@
 var base = require('*/cartridge/scripts/utils/superModule')(module);
 
 var PaymentMgr = require('dw/order/PaymentMgr');
-var URLUtils = require('dw/web/URLUtils');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var collections = require('*/cartridge/scripts/util/collections');
 

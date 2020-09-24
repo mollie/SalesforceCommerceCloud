@@ -2,7 +2,7 @@
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const { stubs } = testHelpers;
 
-const controller = proxyquire(`${base}/bm_mollie/cartridge/controllers/CSCOrderPaymentShipment`, {
+const controller = proxyquire(`${base}/bm_mollie/cartridge/controllers/CSCOrderShipment`, {
     'dw/order/Order': stubs.dw.OrderMock,
     'dw/order/OrderMgr': stubs.dw.OrderMgrMock,
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
@@ -51,7 +51,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
             controller.Start();
 
             expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly(sinon.match('order_payment_shipment.isml'), {
+                .and.to.have.been.calledWithExactly(sinon.match('order_shipment.isml'), {
                     orderId: order.orderNo,
                     order: getOrderResponse.order
                 });
@@ -66,7 +66,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
             controller.Start();
 
             expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly(sinon.match('order_payment_shipment_not_available.isml'));
+                .and.to.have.been.calledWithExactly(sinon.match('order_shipment_not_available.isml'));
         });
         it('throws when rendering template fails', () => {
             order.status = {
@@ -83,7 +83,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
 
             expect(() => controller.Start()).to.throw('BOOM');
             expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly(sinon.match('order_payment_shipment.isml'), {
+                .and.to.have.been.calledWithExactly(sinon.match('order_shipment.isml'), {
                     orderId: order.orderNo,
                     order: getOrderResponse.order
                 });
@@ -94,7 +94,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
             controller.Start();
 
             expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
-                .and.to.have.been.calledWith(sinon.match('order_payment_shipment_not_available.isml'));
+                .and.to.have.been.calledWith(sinon.match('order_shipment_not_available.isml'));
         });
         it('renders shipment not available template when order is not shippable', () => {
             order.status = {
@@ -104,7 +104,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
             controller.Start();
 
             expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
-                .and.to.have.been.calledWith(sinon.match('order_payment_shipment_not_available.isml'));
+                .and.to.have.been.calledWith(sinon.match('order_shipment_not_available.isml'));
         });
     });
 
@@ -146,7 +146,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
                     quantity: quantity
                 }]);
             expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly(sinon.match('order_payment_shipment_confirmation.isml'), {
+                .and.to.have.been.calledWithExactly(sinon.match('order_shipment_confirmation.isml'), {
                     success: true,
                     orderId: orderNo
                 });
@@ -162,7 +162,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
                     quantity: quantity
                 }]);
             expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly(sinon.match('order_payment_shipment_confirmation.isml'), {
+                .and.to.have.been.calledWithExactly(sinon.match('order_shipment_confirmation.isml'), {
                     success: false,
                     errorMessage: 'BOOM',
                     orderId: orderNo
