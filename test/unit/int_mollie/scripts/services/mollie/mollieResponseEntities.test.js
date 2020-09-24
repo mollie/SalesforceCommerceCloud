@@ -5,6 +5,19 @@ const mollieResponseEntities = proxyquire(`${base}/int_mollie/cartridge/scripts/
     '*/cartridge/scripts/mollieConfig': stubs.configMock
 });
 
+const TRANSACTION_STATUS = {
+    OPEN: 'open',
+    CREATED: 'created',
+    PENDING: 'pending',
+    AUTHORIZED: 'authorized',
+    PAID: 'paid',
+    SHIPPING: 'shipping',
+    COMPLETED: 'completed',
+    EXPIRED: 'expired',
+    CANCELED: 'canceled',
+    FAILED: 'failed'
+};
+
 const {
     Amount,
     Link,
@@ -17,7 +30,8 @@ const {
     Method,
     Refund,
     Shipment,
-    Customer
+    Customer,
+    ApplePayResponse
 } = mollieResponseEntities;
 
 describe('mollie/mollieResponseEntities', () => {
@@ -239,6 +253,23 @@ describe('mollie/mollieResponseEntities', () => {
         it('has an amountRemaining', () => {
             expect(this.default.amountRemaining).to.eql(new Amount(this.response.amountRemaining));
         });
+        it('has an isCancelable method', () => {
+            expect(new Payment({ ...this.response, isCancelable: true })
+                .isCancelable()).to.eql(true);
+
+            expect(new Payment({ ...this.response, isCancelable: false })
+                .isCancelable()).to.eql(false);
+        });
+        it('has isShippable method', () => {
+            expect(this.default.isShippable()).to.eql(false);
+        });
+        it('has an isRefundable method', () => {
+            expect(new Payment({ ...this.response, amountRemaining: { value: '5.00' } })
+                .isRefundable()).to.eql(true);
+
+            expect(new Payment({ ...this.response, amountRemaining: { value: '0.00' } })
+                .isRefundable()).to.eql(false);
+        });
         it('has an expiresAt', () => {
             expect(this.default.expiresAt).to.eql(this.response.expiresAt);
         });
@@ -332,11 +363,12 @@ describe('mollie/mollieResponseEntities', () => {
         it('has an metadata', () => {
             expect(this.default.metadata).to.eql(this.response.metadata);
         });
-        it('has an isCancelable', () => {
-            expect(this.default.isCancelable).to.eql(this.response.isCancelable);
-        });
-        it('has an quantity', () => {
-            expect(this.default.quantity).to.eql(this.response.quantity);
+        it('has an isCancelable method', () => {
+            expect(new Line({ ...this.response, isCancelable: true })
+                .isCancelable()).to.eql(true);
+
+            expect(new Line({ ...this.response, isCancelable: false })
+                .isCancelable()).to.eql(false);
         });
         it('has an vatRate', () => {
             expect(this.default.vatRate).to.eql(this.response.vatRate);
@@ -382,6 +414,126 @@ describe('mollie/mollieResponseEntities', () => {
         });
         it('initializes without input', () => {
             expect(new Line()).to.be.an.instanceOf(Line);
+        });
+    });
+
+    describe('Order', () => {
+        after(function () { stubs.reset(); });
+        before(() => {
+            stubs.configMock.getTransactionStatus.returns(TRANSACTION_STATUS);
+            this.response = {
+                resource: faker.lorem.word(),
+                id: faker.lorem.word(),
+                profileId: faker.lorem.word(),
+                method: faker.lorem.word(),
+                amount: {
+                    value: faker.random.number(),
+                    currency: faker.lorem.word()
+                },
+                status: faker.lorem.word(),
+                isCancelable: faker.random.boolean(),
+                metadata: {},
+                createdAt: faker.lorem.word(),
+                expiresAt: faker.lorem.word(),
+                mode: faker.lorem.word(),
+                locale: faker.lorem.word(),
+                billingAddress: {},
+                shopperCountryMustMatchBillingCountry: faker.lorem.word(),
+                consumerDateOfBirth: faker.lorem.word(),
+                orderNumber: faker.lorem.word(),
+                amountRefunded: {
+                    value: faker.random.number(),
+                    currency: faker.lorem.word()
+                },
+                amountRemaining: {
+                    value: faker.random.number(),
+                    currency: faker.lorem.word()
+                },
+                shippingAddress: {},
+                redirectUrl: faker.internet.url(),
+                lines: [],
+                _links: this.links,
+                _embedded: {
+                    payments: []
+                }
+            };
+            this.default = new Order(this.response);
+        });
+
+        it('has a resource', () => {
+            expect(this.default.resource).to.eql(this.response.resource);
+        });
+        it('has an id', () => {
+            expect(this.default.id).to.eql(this.response.id);
+        });
+        it('has an profileId', () => {
+            expect(this.default.profileId).to.eql(this.response.profileId);
+        });
+        it('has an method', () => {
+            expect(this.default.method).to.eql(this.response.method);
+        });
+        it('has isCancelable method', () => {
+            expect(new Order({ ...this.response, isCancelable: true })
+                .isCancelable()).to.eql(true);
+
+            expect(new Order({ ...this.response, isCancelable: false })
+                .isCancelable()).to.eql(false);
+        });
+        it('has isShippable method', () => {
+            expect(new Order({ ...this.response, status: TRANSACTION_STATUS.PAID })
+                .isShippable()).to.eql(true);
+
+            expect(new Order({ ...this.response, status: TRANSACTION_STATUS.FAILED })
+                .isShippable()).to.eql(false);
+        });
+        it('has an isRefundable method', () => {
+            expect(new Order({ ...this.response, amountRefunded: { value: '25.00' }, amount: { value: '50.00' }, status: TRANSACTION_STATUS.PAID })
+                .isRefundable()).to.eql(true);
+
+            expect(new Order({ ...this.response, amountRefunded: { value: '25.00' }, amount: { value: '50.00' }, status: TRANSACTION_STATUS.FAILED })
+                .isRefundable()).to.eql(false);
+
+            expect(new Order({ ...this.response, amountRefunded: { value: '50.00' }, amount: { value: '50.00' }, status: TRANSACTION_STATUS.PAID })
+                .isRefundable()).to.eql(false);
+        });
+        it('has an metadata', () => {
+            expect(this.default.metadata).to.eql(this.response.metadata);
+        });
+        it('has an createdAt', () => {
+            expect(this.default.createdAt).to.eql(this.response.createdAt);
+        });
+        it('has an expiresAt', () => {
+            expect(this.default.expiresAt).to.eql(this.response.expiresAt);
+        });
+        it('has an mode', () => {
+            expect(this.default.mode).to.eql(this.response.mode);
+        });
+        it('has an locale', () => {
+            expect(this.default.locale).to.eql(this.response.locale);
+        });
+        it('has an billingAddress', () => {
+            expect(this.default.billingAddress).to.eql(new Address(this.response.billingAddress));
+        });
+        it('has an shopperCountryMustMatchBillingCountry', () => {
+            expect(this.default.shopperCountryMustMatchBillingCountry).to.eql(this.response.shopperCountryMustMatchBillingCountry);
+        });
+        it('has an consumerDateOfBirth', () => {
+            expect(this.default.consumerDateOfBirth).to.eql(this.response.consumerDateOfBirth);
+        });
+        it('has an amountRefunded', () => {
+            expect(this.default.amountRefunded).to.eql(new Amount(this.response.amountRefunded));
+        });
+        it('has an shippingAddress', () => {
+            expect(this.default.shippingAddress).to.eql(new Address(this.response.shippingAddress));
+        });
+        it('has an lines', () => {
+            expect(this.default.lines).to.eql([]);
+        });
+        it('has an payments', () => {
+            expect(this.default.payments).to.eql([]);
+        });
+        it('initializes without input', () => {
+            expect(new Order()).to.be.an.instanceOf(Order);
         });
     });
 
@@ -576,6 +728,46 @@ describe('mollie/mollieResponseEntities', () => {
         });
         it('initializes without input', () => {
             expect(new Customer()).to.be.an.instanceOf(Customer);
+        });
+    });
+    describe('ApplePayResponse', () => {
+        after(function () { stubs.reset(); });
+        before(() => {
+            this.response = {
+                epochTimestamp: faker.random.number(),
+                merchantSessionIdentifier: faker.lorem.word(),
+                nonce: faker.lorem.word(),
+                merchantIdentifier: faker.lorem.word(),
+                domainName: faker.internet.url(),
+                displayName: faker.lorem.word(),
+                signature: faker.lorem.word()
+            };
+            this.default = new ApplePayResponse(this.response);
+        });
+
+        it('has a epochTimestamp', () => {
+            expect(this.default.epochTimestamp).to.eql(this.response.epochTimestamp);
+        });
+        it('has an merchantSessionIdentifier', () => {
+            expect(this.default.merchantSessionIdentifier).to.eql(this.response.merchantSessionIdentifier);
+        });
+        it('has an nonce', () => {
+            expect(this.default.nonce).to.eql(this.response.nonce);
+        });
+        it('has an merchantIdentifier', () => {
+            expect(this.default.merchantIdentifier).to.eql(this.response.merchantIdentifier);
+        });
+        it('has an domainName', () => {
+            expect(this.default.domainName).to.eql(this.response.domainName);
+        });
+        it('has an displayName', () => {
+            expect(this.default.displayName).to.eql(this.response.displayName);
+        });
+        it('has an signature', () => {
+            expect(this.default.signature).to.eql(this.response.signature);
+        });
+        it('initializes without input', () => {
+            expect(new ApplePayResponse()).to.be.an.instanceOf(ApplePayResponse);
         });
     });
 });

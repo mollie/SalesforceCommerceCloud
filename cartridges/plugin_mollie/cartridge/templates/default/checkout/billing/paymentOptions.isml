@@ -1,5 +1,5 @@
 <div class="js-payment-options payment-options-container" data-method-url="${URLUtils.https('Checkout-UpdatePaymentMethods')}">
-    <div class="form-nav billing-nav payment-information" data-payment-method-id="CREDIT_CARD"
+    <div class="form-nav billing-nav payment-information" data-payment-method-id="MOLLIE_CREDIT_CARD"
         data-is-new-payment="${pdict.customer.registeredUser && pdict.customer.customerPaymentInstruments.length ? false : true}">
         <ul class="nav nav-tabs nav-fill payment-options" role="tablist">
             <isinclude template="checkout/billing/paymentOptions/paymentOptionsTabs" />

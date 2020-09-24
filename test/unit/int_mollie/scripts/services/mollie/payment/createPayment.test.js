@@ -12,7 +12,7 @@ const createPayment = proxyquire(`${base}/int_mollie/cartridge/scripts/services/
     '*/cartridge/scripts/services/mollie/mollieResponseEntities': {
         Payment: paymentStub
     },
-    '*/cartridge/scripts/services/mollie/mollieRequestEntities': require(`${base}/int_mollie/cartridge/scripts/services/mollie/mollieRequestEntities`)
+    '*/cartridge/scripts/services/mollie/mollieRequestEntities': stubs.mollieRequestEntitiesMock
 });
 
 describe('mollie/createPayment', () => {
@@ -35,8 +35,8 @@ describe('mollie/createPayment', () => {
                 currency: 'EUR'
             };
             this.currencyStub = new stubs.dw.CurrencyMock();
-            this.currencyStub.getCurrencyCode.returns(this.amount.currency);
-            this.currencyStub.getValue.returns(this.amount.value);
+            this.currencyStub.currencyCode = this.amount.currency;
+            this.currencyStub.value = this.amount.value;
             this.params = {
                 totalGrossPrice: this.currencyStub,
                 methodId: faker.lorem.word(),

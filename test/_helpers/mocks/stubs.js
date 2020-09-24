@@ -131,7 +131,8 @@ const mollieServiceMock = {
     createShipment: sandbox.stub(),
     getMethod: sandbox.stub(),
     getMethods: sandbox.stub(),
-    createCustomer: sandbox.stub()
+    createCustomer: sandbox.stub(),
+    requestPaymentSession: sandbox.stub()
 };
 
 const dw = {
@@ -186,7 +187,8 @@ const configMock = {
     getLogCategory: sandbox.stub(),
     getTransactionStatus: sandbox.stub(),
     getTransactionAPI: sandbox.stub(),
-    getRefundStatus: sandbox.stub()
+    getRefundStatus: sandbox.stub(),
+    getDefaultAttributeValue: sandbox.stub()
 };
 
 const orderHelperMock = {
@@ -194,6 +196,7 @@ const orderHelperMock = {
     checkMollieRefundStatus: sandbox.stub(),
     getIssuerData: sandbox.stub(),
     setRefundStatus: sandbox.stub(),
+    getRefundStatus: sandbox.stub(),
     addItemToOrderHistory: sandbox.stub(),
     failOrder: sandbox.stub(),
     cancelOrder: sandbox.stub(),
@@ -246,11 +249,24 @@ const paymentServiceMock = {
     createOrder: sandbox.stub(),
     cancelOrder: sandbox.stub(),
     cancelOrderLineItem: sandbox.stub(),
-    getApplicablePaymentMethods: sandbox.stub(),
+    getMethods: sandbox.stub(),
     createOrderRefund: sandbox.stub(),
     createPaymentRefund: sandbox.stub(),
     createShipment: sandbox.stub(),
     createCustomer: sandbox.stub()
+};
+
+const paymentHelperMock = {
+    processPaymentResult: sandbox.stub()
+};
+
+const mollieRequestEntitiesMock = {
+    Currency: sandbox.stub(),
+    Address: sandbox.stub(),
+    ProductLineItem: sandbox.stub(),
+    ShippingLineItem: sandbox.stub(),
+    DiscountLineItem: sandbox.stub(),
+    Lines: sandbox.stub()
 };
 
 /**
@@ -265,9 +281,11 @@ const initMocks = function () {
     Object.keys(configMock).map(i => configMock[i].reset());
     Object.keys(dateMock).map(i => dateMock[i].reset());
     Object.keys(paymentServiceMock).map(i => paymentServiceMock[i].reset());
+    Object.keys(paymentHelperMock).map(i => paymentHelperMock[i].reset());
     Object.keys(orderHelperMock).map(i => orderHelperMock[i].reset());
     Object.keys(checkoutHelpersMock).map(i => checkoutHelpersMock[i].reset());
     Object.keys(renderTemplateHelperMock).map(i => renderTemplateHelperMock[i].reset());
+    Object.keys(mollieRequestEntitiesMock).map(i => mollieRequestEntitiesMock[i].reset());
     Object.keys(dw.ISMLMock).map(i => dw.ISMLMock[i].reset());
     Object.keys(dw.HookMgrMock).map(i => dw.HookMgrMock[i].reset());
     Object.keys(dw.CurrencyMock).map(i => dw.CurrencyMock[i].reset());
@@ -311,10 +329,12 @@ module.exports = {
     configMock: configMock,
     dateMock: dateMock,
     paymentServiceMock: paymentServiceMock,
+    paymentHelperMock: paymentHelperMock,
     orderHelperMock: orderHelperMock,
     checkoutHelpersMock: checkoutHelpersMock,
     serviceExceptionMock: serviceExceptionMock,
     renderTemplateHelperMock: renderTemplateHelperMock,
+    mollieRequestEntitiesMock: mollieRequestEntitiesMock,
     MollieMock: MollieMock,
     mollieMockInstance: mollieMockInstance,
     mollieServiceMock: mollieServiceMock,

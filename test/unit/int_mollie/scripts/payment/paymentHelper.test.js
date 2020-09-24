@@ -98,7 +98,7 @@ describe('payment/paymentHelper', () => {
         it('should process the payment result from Mollie with status OPEN for Mollie order', () => {
             var paymentResult = {
                 status: STATUSMOCK.OPEN,
-                isCancelable: () => { return true; }
+                isCancelable: () => true
             };
 
             stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
@@ -115,7 +115,7 @@ describe('payment/paymentHelper', () => {
         it('should process the payment result from Mollie with status OPEN for Mollie payment', () => {
             var paymentResult = {
                 status: STATUSMOCK.OPEN,
-                isCancelable: () => { return true; }
+                isCancelable: () => true
             };
 
             stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
@@ -133,7 +133,7 @@ describe('payment/paymentHelper', () => {
         it('should process the payment result from Mollie with status CREATED for Mollie payment', () => {
             var paymentResult = {
                 status: STATUSMOCK.CREATED,
-                isCancelable: () => { return false; }
+                isCancelable: () => false
             };
 
             stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
@@ -186,6 +186,19 @@ describe('payment/paymentHelper', () => {
 
             expect(stubs.dw.TransactionMock.wrap).have.to.been.calledTwice();
             expect(stubs.orderHelperMock.failOrCancelOrder).have.to.been.calledOnce();
+        });
+        it('should call checkMollieRefundStatus', () => {
+            var paymentResult = {
+                status: STATUSMOCK.CREATED,
+                isCancelable: () => true
+            };
+
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.dw.URLUtilsMock.https.returns('Order-Confirm');
+
+            paymentHelper.processPaymentResult(this.order, paymentResult);
+
+            expect(stubs.orderHelperMock.checkMollieRefundStatus).have.to.been.calledOnce();
         });
     });
 });

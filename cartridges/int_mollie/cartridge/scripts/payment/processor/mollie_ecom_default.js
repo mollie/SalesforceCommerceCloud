@@ -70,8 +70,9 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
         var issuerData = orderHelper.getIssuerData(order);
         var issuerId = issuerData && JSON.parse(issuerData).id;
-        var enabledTransactionAPI = paymentMethod.custom.mollieEnabledTransactionAPI.value || config.getDefaultEnabledTransactionAPI().value;
 
+        var paymentMethodEnabledTransactionAPI = paymentMethod.custom.mollieEnabledTransactionAPI.value;
+        var enabledTransactionAPI = paymentMethodEnabledTransactionAPI === config.getDefaultAttributeValue() ? config.getDefaultEnabledTransactionAPI().value : paymentMethodEnabledTransactionAPI;
         if (enabledTransactionAPI === config.getTransactionAPI().PAYMENT) {
             var createPaymentResult = paymentService.createPayment(order, paymentMethod, { issuer: issuerId });
             redirectUrl = createPaymentResult.payment.links.checkout.href;

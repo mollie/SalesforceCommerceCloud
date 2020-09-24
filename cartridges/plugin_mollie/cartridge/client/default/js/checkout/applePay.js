@@ -2,7 +2,7 @@
 
 'use strict';
 
-const applePayButton = '.js-apple-pay-button';
+// const applePayButton = '.js-apple-pay-button';
 const applePayContent = '.js-apple-pay-content';
 
 /**
@@ -14,18 +14,11 @@ function checkApplePaySupport() {
     }
 }
 
-/**
- * On click Apple Pay button
- */
+/*
 function onClickApplePay() {
     $(document).on('click', applePayButton, function () {
-        var request = {
-            countryCode: 'NL',
-            currencyCode: 'EUR',
-            supportedNetworks: ['amex', 'maestro', 'masterCard', 'visa', 'vPay'],
-            merchantCapabilities: ['supports3DS'],
-            total: { label: 'Mollie shop', amount: '35.00' }
-        };
+
+        var request = {};
         var session = new ApplePaySession(9, request);
 
         var url = $(this).attr('data-continue-url');
@@ -47,13 +40,14 @@ function onClickApplePay() {
         session.begin();
     });
 }
+*/
 
 /**
  * Initialize Apple Pay functions
  */
 function init() {
     checkApplePaySupport();
-    onClickApplePay();
+    // onClickApplePay();
 }
 
 module.exports = {

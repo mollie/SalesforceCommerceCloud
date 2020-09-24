@@ -13,22 +13,23 @@ var Transaction = require('dw/system/Transaction');
  * @returns {void}
  */
 function getPaymentDescription(order, paymentMethod) {
-    var description = paymentMethod.description.markup;
-    var stringMapping = {
-        '{orderNumber}': order.orderNo,
-        '{storeName}': config.getSiteName(),
-        '{cart.id}': 'CART ID',
-        '{order.reference}': order.customerOrderReference,
-        '{customer.firstname}': order.customer.profile.firstName,
-        '{customer.lastName}': order.customer.profile.lastName,
-        '{customer.company}': order.customer.profile.companyName,
-        '{storename}': config.getSiteName()
-    };
+    var description = paymentMethod.description && paymentMethod.description.markup;
+    if (description) {
+        var stringMapping = {
+            '{orderNumber}': order.orderNo,
+            '{storeName}': config.getSiteName(),
+            '{order.reference}': order.customerOrderReference,
+            '{customer.firstname}': order.customer.profile.firstName,
+            '{customer.lastName}': order.customer.profile.lastName,
+            '{customer.company}': order.customer.profile.companyName
+        };
 
-    Object.keys(stringMapping).forEach(function (key) {
-        var value = stringMapping[key];
-        description = value ? description.replace(key, value) : description.replace(key, '');
-    });
+        Object.keys(stringMapping).forEach(function (key) {
+            var value = stringMapping[key];
+            description = value ? description.replace(key, value) : description.replace(key, '');
+        });
+    }
+
     return description;
 }
 
@@ -361,7 +362,8 @@ function getRefundStatus(order) {
  * @returns {boolean} is mollie order?
  */
 function isMollieOrder(order) {
-    return getUsedTransactionAPI(order) === config.getTransactionAPI().ORDER;
+    var orderHelper = require('*/cartridge/scripts/order/orderHelper');
+    return orderHelper.getUsedTransactionAPI(order) === config.getTransactionAPI().ORDER;
 }
 
 /**
@@ -371,16 +373,18 @@ function isMollieOrder(order) {
  * @param {Object} paymentResult paymentResult from getOrder or getPayment call
  */
 function checkMollieRefundStatus(order, paymentResult) {
+    var orderHelper = require('*/cartridge/scripts/order/orderHelper');
     if (paymentResult.amountRefunded.value) {
         var REFUND_STATUS = config.getRefundStatus();
         if (paymentResult.amountRefunded.value === paymentResult.amount.value
-            && getRefundStatus(order).value !== REFUND_STATUS.REFUNDED) {
+            && orderHelper.getRefundStatus(order).value !== REFUND_STATUS.REFUNDED) {
             Transaction.wrap(function () {
-                setRefundStatus(order, REFUND_STATUS.REFUNDED);
+                orderHelper.setRefundStatus(order, REFUND_STATUS.REFUNDED);
             });
-        } else if (getRefundStatus(order).value !== REFUND_STATUS.PARTREFUNDED) {
+        } else if (paymentResult.amountRefunded.value !== paymentResult.amount.value
+            && orderHelper.getRefundStatus(order).value !== REFUND_STATUS.PARTREFUNDED) {
             Transaction.wrap(function () {
-                setRefundStatus(order, REFUND_STATUS.PARTREFUNDED);
+                orderHelper.setRefundStatus(order, REFUND_STATUS.PARTREFUNDED);
             });
         }
     }

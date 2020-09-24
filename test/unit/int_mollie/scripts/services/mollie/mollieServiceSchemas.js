@@ -31,12 +31,12 @@ const lines = {
 
 exports.createPayment = {
     required: ['amount', 'description'],
-    properties: Object.assign({}, amount)
+    properties: Object.assign({})
 };
 
 exports.createOrder = {
     required: ['amount', 'orderNumber', 'lines'],
-    properties: Object.assign({}, amount, lines)
+    properties: Object.assign({})
 };
 
 exports.createCustomer = {
@@ -53,6 +53,11 @@ exports.createOrderRefund = {
 exports.createPaymentRefund = {
     required: ['amount'],
     properties: Object.assign({}, amount)
+};
+
+exports.requestPaymentSession = {
+    required: ['validationUrl'],
+    properties: Object.assign({})
 };
 
 exports.getOrder = empty;

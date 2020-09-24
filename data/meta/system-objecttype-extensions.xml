@@ -13,10 +13,14 @@
             <attribute-definition attribute-id="mollieOrderExpiryDays">
                 <display-name xml:lang="x-default">Order expiry days</display-name>
                 <description xml:lang="x-default">expiry days for orders created with the Orders API</description>
-                <type>enum-of-int</type>
-                <mandatory-flag>false</mandatory-flag>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <value-definitions>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">DEFAULT</display>
+                        <value>default</value>
+                    </value-definition>
                     <value-definition>
                         <value>1</value>
                     </value-definition>
@@ -323,9 +327,13 @@
                 <display-name xml:lang="x-default">Method</display-name>
                 <description xml:lang="x-default">Read more about the differences between the Payment and Orders API: https://docs.mollie.com/orders/why-use-orders</description>
                 <type>enum-of-string</type>
-                <mandatory-flag>false</mandatory-flag>
+                <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <value-definitions>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">DEFAULT</display>
+                        <value>default</value>
+                    </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">PAYMENTS API</display>
                         <value>payment</value>
@@ -338,12 +346,9 @@
             </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
-            <attribute-group group-id="MollieDeveloperSettings">
-                <display-name xml:lang="x-default">Mollie developer settings</display-name>
+            <attribute-group group-id="Mollie">
+                <display-name xml:lang="x-default">Mollie</display-name>
                 <attribute attribute-id="molliePaymentMethodId"/>
-            </attribute-group>
-            <attribute-group group-id="MollieMerchantSettings">
-                <display-name xml:lang="x-default">Mollie merchant settings</display-name>
                 <attribute attribute-id="mollieOrderExpiryDays"/>
                 <attribute attribute-id="mollieEnabledTransactionAPI"/>
             </attribute-group>
@@ -873,7 +878,7 @@
             </attribute-definition>
             <attribute-definition attribute-id="mollieLogCategory">
                 <display-name xml:lang="x-default">Log category</display-name>
-                <description xml:lang="x-default">Log category used by SFCC</description>
+                <description xml:lang="x-default">Log category used by SFCC. The log category can be selected under: "Administration -> Operations -> Custom Log Settings".</description>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>

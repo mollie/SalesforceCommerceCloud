@@ -1,3 +1,5 @@
+const { expect } = require('chai');
+
 const { stubs } = testHelpers;
 
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
@@ -7,13 +9,50 @@ const orderHelper = proxyquire(`${base}/int_mollie/cartridge/scripts/order/order
     'dw/order/Order': stubs.dw.OrderMock,
     'dw/system/Transaction': stubs.dw.TransactionMock,
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
-    '*/cartridge/scripts/mollieConfig': stubs.configMock
+    '*/cartridge/scripts/mollieConfig': stubs.configMock,
+    '*/cartridge/scripts/order/orderHelper': stubs.orderHelperMock
 });
+
+const REFUND_STATUS = {
+    NOTREFUNDED: 'REFUND_STATUS_NOTREFUNDED',
+    PARTREFUNDED: 'REFUND_STATUS_PARTREFUNDED',
+    REFUNDED: 'REFUND_STATUS_REFUNDED'
+};
 
 describe('order/orderHelper', () => {
     before(function () { stubs.init(); });
     afterEach(function () { stubs.reset(); });
     after(function () { stubs.restore(); });
+
+    context('#getPaymentDescription', () => {
+        beforeEach(() => {
+            this.siteName = faker.lorem.word();
+            stubs.configMock.getSiteName.returns(this.siteName);
+            this.order = new stubs.dw.OrderMock();
+            this.order = Object.assign(this.order, {
+                orderNo: faker.random.uuid(),
+                customerOrderReference: faker.lorem.word(),
+                customer: {
+                    profile: {
+                        firstName: faker.lorem.word(),
+                        lastName: faker.lorem.word(),
+                        companyName: faker.lorem.word()
+                    }
+                }
+            });
+            this.paymentMethod = new stubs.dw.PaymentMethodMock();
+            this.paymentMethod.description = {
+                markup: '{orderNumber}, {storeName}, {order.reference}, {customer.firstname}, {customer.lastName}, {customer.company}'
+            };
+        });
+
+        it('Creates payment description for order', () => {
+            var description = orderHelper.getPaymentDescription(this.order, this.paymentMethod);
+            var markup = `${this.order.orderNo}, ${this.siteName}, ${this.order.customerOrderReference}, ${this.order.customer.profile.firstName}, ${this.order.customer.profile.lastName}, ${this.order.customer.profile.companyName}`;
+
+            expect(description).to.eql(markup);
+        });
+    });
 
     context('#addItemToOrderHistory', () => {
         beforeEach(() => {
@@ -160,6 +199,37 @@ describe('order/orderHelper', () => {
         });
     });
 
+    context('#setOrderShippingStatus', () => {
+        beforeEach(() => {
+            this.order = new stubs.dw.OrderMock();
+            this.shippedStatus = stubs.dw.OrderMock.SHIPPING_STATUS_SHIPPED;
+            this.notShippedStatus = stubs.dw.OrderMock.SHIPPING_STATUS_NOTSHIPPED;
+        });
+
+        it('sets an order shippingStatus when current status is differen from desired one', () => {
+            this.order.getShippingStatus.returns({
+                getValue: () => this.notShippedStatus
+            });
+
+            expect(orderHelper.setOrderShippingStatus(this.order, this.shippedStatus)).to.be.undefined();
+
+            expect(this.order.setShippingStatus).to.have.been.calledOnce()
+                .and.to.have.been.calledWithExactly(this.paidStatus);
+            expect(this.order.trackOrderChange).to.have.been.calledOnce();
+        });
+
+        it('does not an order shippingStatus when current status is same as desired one', () => {
+            this.order.getShippingStatus.returns({
+                getValue: () => this.shippedStatus
+            });
+
+            expect(orderHelper.setOrderShippingStatus(this.order, this.shippedStatus)).to.be.undefined();
+
+            expect(this.order.setShippingStatus).not.to.have.been.called();
+            expect(this.order.trackOrderChange).not.to.have.been.called();
+        });
+    });
+
     context('#getMolliePaymentInstruments', () => {
         beforeEach(() => {
             this.order = new stubs.dw.OrderMock();
@@ -214,7 +284,7 @@ describe('order/orderHelper', () => {
         });
     });
 
-    context('#setCustomPropertyOnTransaction', () => {
+    context('#setTransactionCustomProperty', () => {
         beforeEach(() => {
             this.order = new stubs.dw.OrderMock();
             this.paidStatus = stubs.dw.OrderMock.PAYMENT_STATUS_PAID;
@@ -243,9 +313,13 @@ describe('order/orderHelper', () => {
             orderHelper.setPaymentStatus(this.order, 'paymentMethodID', 'paymentStatus');
             expect(this.paymentTransaction.custom.molliePaymentStatus).to.eql('paymentStatus');
         });
+        it('setIssuerData', () => {
+            orderHelper.setIssuerData(this.order, 'paymentMethodID', 'issuerData');
+            expect(this.paymentTransaction.custom.mollieIssuerData).to.eql('issuerData');
+        });
     });
 
-    context('#getCustomPropertyOnTransaction', () => {
+    context('#getTransactionCustomProperty', () => {
         beforeEach(() => {
             this.order = new stubs.dw.OrderMock();
             this.paidStatus = stubs.dw.OrderMock.PAYMENT_STATUS_PAID;
@@ -255,7 +329,8 @@ describe('order/orderHelper', () => {
             this.paymentTransaction = new stubs.dw.PaymentTransactionMock();
             this.paymentTransaction.custom = {
                 molliePaymentStatus: 'paymentStatus',
-                molliePaymentId: 'paymentId'
+                molliePaymentId: 'paymentId',
+                mollieIssuerData: 'issuerData'
             };
             this.paymentInstrument = new stubs.dw.PaymentInstrumentMock();
             this.paymentInstrument.getPaymentMethod.returns('paymentMethodID');
@@ -274,13 +349,16 @@ describe('order/orderHelper', () => {
         it('getPaymentStatus', () => {
             expect(orderHelper.getPaymentStatus(this.order, 'paymentMethodID')).to.eql('paymentStatus');
         });
+        it('getIssuerData', () => {
+            expect(orderHelper.getIssuerData(this.order, 'paymentMethodID')).to.eql('issuerData');
+        });
         it('returns null if no paymentInstrument is found', () => {
             this.order.getPaymentInstruments.returns({ toArray: () => [] });
             expect(orderHelper.getPaymentId(this.order, 'paymentMethodID')).to.be.null();
         });
     });
 
-    context('#setCustomPropertyOnOrder', () => {
+    context('#setOrderCustomProperty', () => {
         beforeEach(() => {
             this.order = new stubs.dw.OrderMock();
         });
@@ -296,15 +374,20 @@ describe('order/orderHelper', () => {
             orderHelper.setUsedTransactionAPI(this.order, 'transactionAPI');
             expect(this.order.custom.mollieUsedTransactionAPI).to.eql('transactionAPI');
         });
+        it('setUsedTransactionAPI', () => {
+            orderHelper.setRefundStatus(this.order, 'refundStatus');
+            expect(this.order.custom.mollieRefundStatus).to.eql('refundStatus');
+        });
     });
 
-    context('#getCustomPropertyOnOrder', () => {
+    context('#getOrderCustomProperty', () => {
         beforeEach(() => {
             this.order = new stubs.dw.OrderMock();
             this.order.custom = {
                 mollieOrderId: 'orderId',
                 mollieOrderStatus: 'orderStatus',
-                mollieUsedTransactionAPI: 'usedTransactionAPI'
+                mollieUsedTransactionAPI: 'usedTransactionAPI',
+                mollieRefundStatus: 'refundStatus'
             };
         });
         it('getOrderId', () => {
@@ -315,6 +398,56 @@ describe('order/orderHelper', () => {
         });
         it('getUsedTransactionAPI', () => {
             expect(orderHelper.getUsedTransactionAPI(this.order)).to.eql('usedTransactionAPI');
+        });
+        it('getRefundStatus', () => {
+            expect(orderHelper.getRefundStatus(this.order)).to.eql('refundStatus');
+        });
+    });
+
+    context('#checkMollieRefundStatus', () => {
+        beforeEach(() => {
+            stubs.configMock.getRefundStatus.returns(REFUND_STATUS);
+            this.order = new stubs.dw.OrderMock();
+            this.paymentResult = {
+                amount: {
+                    value: faker.random.number()
+                },
+                amountRefunded: {}
+            };
+        });
+        it('Should not call setRefundStatus when amountRefunded.value is null', () => {
+            orderHelper.checkMollieRefundStatus(this.order, this.paymentResult);
+
+            expect(stubs.orderHelperMock.getRefundStatus).to.not.have.been.called();
+            expect(stubs.orderHelperMock.setRefundStatus).to.not.have.been.called();
+        });
+        it('Should call setRefundStatus when order amount equals refunded amount', () => {
+            this.paymentResult.amountRefunded.value = this.paymentResult.amount.value;
+            stubs.orderHelperMock.getRefundStatus.returns({ value: REFUND_STATUS.PARTREFUNDED });
+
+            orderHelper.checkMollieRefundStatus(this.order, this.paymentResult);
+
+            expect(stubs.orderHelperMock.getRefundStatus).to.have.been.called();
+            expect(stubs.orderHelperMock.setRefundStatus).to.have.been.called()
+                .and.to.have.been.called.calledWithExactly(this.order, REFUND_STATUS.REFUNDED);
+        });
+        it('Should call setRefundStatus when order is not refunded', () => {
+            this.paymentResult.amountRefunded.value = faker.random.number();
+            stubs.orderHelperMock.getRefundStatus.returns({ value: REFUND_STATUS.NOTREFUNDED });
+
+            orderHelper.checkMollieRefundStatus(this.order, this.paymentResult);
+
+            expect(stubs.orderHelperMock.getRefundStatus).to.have.been.called();
+            expect(stubs.orderHelperMock.setRefundStatus).to.have.been.called()
+                .and.to.have.been.called.calledWithExactly(this.order, REFUND_STATUS.PARTREFUNDED);
+        });
+        it('Should not call setRefundStatus when order refund status already is the same as Mollie refund status', () => {
+            this.paymentResult.amountRefunded.value = this.paymentResult.amount.value;
+            stubs.orderHelperMock.getRefundStatus.returns({ value: REFUND_STATUS.REFUNDED });
+
+            orderHelper.checkMollieRefundStatus(this.order, this.paymentResult);
+
+            expect(stubs.orderHelperMock.setRefundStatus).to.not.have.been.called();
         });
     });
 });

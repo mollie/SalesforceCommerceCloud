@@ -5,7 +5,7 @@
         <!--- payment method is credit card --->
         <input type="hidden" class="form-control"
             name="${pdict.forms.billingForm.paymentMethod.htmlName}"
-            value="CREDIT_CARD"
+            value="MOLLIE_CREDIT_CARD"
         >
 
         <isset name="isReturningCustomer" value="${pdict.customer.registeredUser && pdict.mollie.customerId}" scope="page" />

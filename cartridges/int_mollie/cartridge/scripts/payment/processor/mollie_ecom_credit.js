@@ -1,8 +1,5 @@
 'use strict';
 
-var collections = require('*/cartridge/scripts/util/collections');
-
-var PaymentInstrument = require('dw/order/PaymentInstrument');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var OrderMgr = require('dw/order/OrderMgr');
 var Resource = require('dw/web/Resource');
@@ -11,6 +8,7 @@ var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var config = require('*/cartridge/scripts/mollieConfig');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
+var collections = require('*/cartridge/scripts/util/collections');
 
 /**
  * Creates a token. This should be replaced by utilizing a tokenization provider
@@ -32,6 +30,7 @@ function Handle(basket, paymentInformation) {
     var cardErrors = {};
     var serverErrors = [];
     var cardType = paymentInformation.cardType.value;
+    var pm = paymentInformation.paymentMethod;
 
     Transaction.wrap(function () {
         var paymentInstruments = currentBasket.getPaymentInstruments();
@@ -43,9 +42,7 @@ function Handle(basket, paymentInformation) {
             }
         });
 
-        var paymentInstrument = currentBasket.createPaymentInstrument(
-            PaymentInstrument.METHOD_CREDIT_CARD, currentBasket.totalGrossPrice
-        );
+        var paymentInstrument = currentBasket.createPaymentInstrument(pm, currentBasket.totalGrossPrice);
 
         paymentInstrument.setCreditCardType(cardType);
         paymentInstrument.setCreditCardHolder(currentBasket.billingAddress.fullName);
@@ -102,7 +99,8 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
             paymentInfo.customerId = profile.custom.mollieCustomerId;
         }
 
-        var enabledTransactionAPI = paymentMethod.custom.mollieEnabledTransactionAPI.value || config.getDefaultEnabledTransactionAPI().value;
+        var paymentMethodEnabledTransactionAPI = paymentMethod.custom.mollieEnabledTransactionAPI.value;
+        var enabledTransactionAPI = paymentMethodEnabledTransactionAPI === config.getDefaultAttributeValue() ? config.getDefaultEnabledTransactionAPI().value : paymentMethodEnabledTransactionAPI;
         if (enabledTransactionAPI === config.getTransactionAPI().PAYMENT) {
             var createPaymentResult = paymentService.createPayment(order, paymentMethod, paymentInfo);
             redirectUrl = createPaymentResult.payment.links.checkout.href;

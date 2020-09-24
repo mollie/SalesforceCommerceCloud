@@ -19,6 +19,9 @@ function payloadBuilder(params) {
         method: params.methodId
     };
 
+    if (params.cardToken) {
+        payload.cardToken = params.cardToken;
+    }
     if (params.issuer) {
         payload.issuer = params.issuer;
     }

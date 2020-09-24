@@ -46,7 +46,7 @@ describe('payment/processor/mollie_ecom_credit_form_processor', () => {
 
     context('#processForm', () => {
         it('processes an alias form', () => {
-            this.req.session.privacyCache.get = () => { return true; };
+            this.req.session.privacyCache.get = () => true;
 
             var result = mollieEcomCreditFormProcessor.processForm(this.req, this.paymentForm, this.viewFormData);
 
@@ -60,7 +60,7 @@ describe('payment/processor/mollie_ecom_credit_form_processor', () => {
         });
 
         it('processes a credit card form', () => {
-            this.req.session.privacyCache.get = () => { return false; };
+            this.req.session.privacyCache.get = () => false;
 
             var result = mollieEcomCreditFormProcessor.processForm(this.req, this.paymentForm, this.viewFormData);
 
@@ -74,7 +74,7 @@ describe('payment/processor/mollie_ecom_credit_form_processor', () => {
         });
 
         it('processes a credit card form but returns validation errors', () => {
-            this.req.session.privacyCache.get = () => { return false; };
+            this.req.session.privacyCache.get = () => false;
             this.paymentForm.creditCardFields.cardToken.value = null;
 
             var result = mollieEcomCreditFormProcessor.processForm(this.req, this.paymentForm, this.viewFormData);

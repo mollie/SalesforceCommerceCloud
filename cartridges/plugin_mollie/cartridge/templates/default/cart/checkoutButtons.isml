@@ -9,7 +9,7 @@
         ${Resource.msg('button.checkout', 'cart', null)}
     </a>
     <div class="js-apple-pay-button js-apple-pay-content apple-pay-button-with-text apple-pay-button-white-with-text mt-3 d-none"
-        data-continue-url="${URLUtils.https('MolliePayment-Paypal')}">
+        data-continue-url="${URLUtils.https('MolliePayment-ApplePay')}">
         <span class="text">Buy with</span>
         <span class="logo"></span>
     </div>

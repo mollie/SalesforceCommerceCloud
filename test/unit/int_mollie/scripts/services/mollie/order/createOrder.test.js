@@ -14,7 +14,7 @@ const createOrder = proxyquire(`${base}/int_mollie/cartridge/scripts/services/mo
     },
     '*/cartridge/scripts/utils/date': stubs.dateMock,
     '*/cartridge/scripts/mollieConfig': stubs.configMock,
-    '*/cartridge/scripts/services/mollie/mollieRequestEntities': require(`${base}/int_mollie/cartridge/scripts/services/mollie/mollieRequestEntities`)
+    '*/cartridge/scripts/services/mollie/mollieRequestEntities': stubs.mollieRequestEntitiesMock
 });
 
 describe('mollie/createOrder', () => {
@@ -37,10 +37,10 @@ describe('mollie/createOrder', () => {
                 currency: 'EUR'
             };
             this.currencyStub = new stubs.dw.CurrencyMock();
-            this.currencyStub.getCurrencyCode.returns(this.amount.currency);
-            this.currencyStub.getValue.returns(this.amount.value);
+            this.currencyStub.currencyCode = this.amount.currency;
+            this.currencyStub.value = this.amount.value;
             this.orderAddressMock = new stubs.dw.OrderAddressMock();
-            this.orderAddressMock.getCountryCode.returns({ value: faker.lorem.word });
+            this.orderAddressMock.countryCode = { value: faker.lorem.word };
             this.params = {
                 totalGrossPrice: this.currencyStub,
                 orderId: faker.random.uuid(),
@@ -51,13 +51,17 @@ describe('mollie/createOrder', () => {
                 customerId: faker.random.uuid(),
                 paymentMethod: {
                     custom: {
-                        mollieOrderExpiryDays: faker.random.number(),
-                        molliePaymentMethodId: faker.lorem.word()
+                        mollieOrderExpiryDays: {
+                            value: faker.random.number()
+                        },
+                        molliePaymentMethodId: {
+                            value: faker.lorem.word()
+                        }
                     }
                 },
-                priceAdjustments: { toArray: () => { return []; } },
-                productLineItems: { toArray: () => { return []; } },
-                shipments: { toArray: () => { return []; } }
+                priceAdjustments: { toArray: () => [] },
+                productLineItems: { toArray: () => [] },
+                shipments: { toArray: () => [] }
             };
             stubs.dw.URLUtilsMock.https.returns(this.returnUrl);
         });

@@ -1,5 +1,5 @@
 var Logger = require('*/cartridge/scripts/utils/logger');
-var mollieEntities = require('*/cartridge/scripts/services/mollie/mollieRequestEntities');
+var mollieResponseEntities = require('*/cartridge/scripts/services/mollie/mollieResponseEntities');
 
 /**
  *
@@ -24,12 +24,12 @@ function responseMapper(result) {
     Logger.debug('MOLLIE :: RequestPaymentSession: ' + JSON.stringify(result));
     if (!result || typeof result === 'string') {
         return {
-            payment: new mollieEntities.ApplePayResponse(),
+            applePayResponse: new mollieResponseEntities.ApplePayResponse(),
             raw: result || null
         };
     }
     return {
-        payment: new mollieEntities.ApplePayResponse(result),
+        applePayResponse: new mollieResponseEntities.ApplePayResponse(result),
         raw: JSON.stringify(result)
     };
 }

@@ -6,8 +6,8 @@
  */
 function Currency(money) {
     return {
-        currency: money.getCurrencyCode(),
-        value: money.getValue().toFixed(2)
+        currency: money.currencyCode,
+        value: money.value.toFixed(2)
     };
 }
 
@@ -20,15 +20,15 @@ function Currency(money) {
  */
 function Address(address, email) {
     return {
-        organizationName: address.getCompanyName(),
-        streetAndNumber: address.getAddress1(),
-        streetAdditional: address.getAddress2(),
-        city: address.getCity(),
-        postalCode: address.getPostalCode(),
-        country: address.getCountryCode().value,
-        title: address.getTitle(),
-        givenName: address.getFirstName(),
-        familyName: address.getLastName(),
+        organizationName: address.companyName,
+        streetAndNumber: address.address1,
+        streetAdditional: address.address2,
+        city: address.city,
+        postalCode: address.postalCode,
+        country: address.countryCode.value,
+        title: address.title,
+        givenName: address.firstName,
+        familyName: address.lastName,
         email: email
     };
 }
@@ -41,14 +41,14 @@ function Address(address, email) {
  */
 function ProductLineItem(productLineItem) {
     var lineItem = {
-        sku: productLineItem.getProductID(),
-        name: productLineItem.getProductName(),
-        quantity: productLineItem.getQuantityValue(),
-        vatRate: (productLineItem.getTaxRate() * 100).toFixed(2),
-        vatAmount: new Currency(productLineItem.getAdjustedTax()),
-        unitPrice: new Currency(productLineItem.getGrossPrice().divide(productLineItem.getQuantityValue())),
-        totalAmount: new Currency(productLineItem.getAdjustedGrossPrice()),
-        discountAmount: new Currency(productLineItem.getGrossPrice().subtract(productLineItem.getAdjustedGrossPrice()))
+        sku: productLineItem.productID,
+        name: productLineItem.productName,
+        quantity: productLineItem.quantityValue,
+        vatRate: (productLineItem.taxRate * 100).toFixed(2),
+        vatAmount: new Currency(productLineItem.adjustedTax),
+        unitPrice: new Currency(productLineItem.grossPrice.divide(productLineItem.quantityValue)),
+        totalAmount: new Currency(productLineItem.adjustedGrossPrice),
+        discountAmount: new Currency(productLineItem.grossPrice.subtract(productLineItem.adjustedGrossPrice))
     };
 
     var productCategory = productLineItem.product.custom.mollieProductCategory;
@@ -69,12 +69,12 @@ function ShippingLineItem(shippingLineItem) {
     return {
         name: shippingLineItem.lineItemText,
         quantity: 1,
-        vatRate: (shippingLineItem.getTaxRate() * 100).toFixed(2),
-        vatAmount: new Currency(shippingLineItem.getAdjustedTax()),
-        unitPrice: new Currency(shippingLineItem.getGrossPrice()),
-        totalAmount: new Currency(shippingLineItem.getAdjustedGrossPrice()),
+        vatRate: (shippingLineItem.taxRate * 100).toFixed(2),
+        vatAmount: new Currency(shippingLineItem.adjustedTax),
+        unitPrice: new Currency(shippingLineItem.grossPrice),
+        totalAmount: new Currency(shippingLineItem.adjustedGrossPrice),
         type: 'shipping_fee',
-        discountAmount: new Currency(shippingLineItem.getGrossPrice().subtract(shippingLineItem.getAdjustedGrossPrice()))
+        discountAmount: new Currency(shippingLineItem.grossPrice.subtract(shippingLineItem.adjustedGrossPrice))
     };
 }
 
@@ -85,12 +85,12 @@ function ShippingLineItem(shippingLineItem) {
  * @returns {Object} Request DiscountLineItem object
  */
 function DiscountLineItem(priceAdjustment) {
-    var discount = new Currency(priceAdjustment.getGrossPrice());
+    var discount = new Currency(priceAdjustment.grossPrice);
     return {
         name: priceAdjustment.lineItemText,
         quantity: 1,
-        vatRate: (priceAdjustment.getTaxRate() * 100).toFixed(2),
-        vatAmount: new Currency(priceAdjustment.getTax()),
+        vatRate: (priceAdjustment.taxRate * 100).toFixed(2),
+        vatAmount: new Currency(priceAdjustment.tax),
         unitPrice: discount,
         totalAmount: discount,
         type: 'discount'
@@ -106,23 +106,24 @@ function DiscountLineItem(priceAdjustment) {
  * @returns {Object} Request Lines object
  */
 function Lines(productLineItems, shipments, priceAdjustments) {
+    var mollieRequestEntities = require('*/cartridge/scripts/services/mollie/mollieRequestEntities');
     var lines = [];
 
     productLineItems.toArray().forEach(function (productLineItem) {
-        lines.push(new ProductLineItem(productLineItem));
+        lines.push(new mollieRequestEntities.ProductLineItem(productLineItem));
         if (productLineItem.shippingLineItem) {
-            lines.push(new ShippingLineItem(productLineItem.shippingLineItem));
+            lines.push(new mollieRequestEntities.ShippingLineItem(productLineItem.shippingLineItem));
         }
     });
 
     shipments.toArray().forEach(function (shipment) {
         shipment.getShippingLineItems().toArray().forEach(function (shippingLineItem) {
-            lines.push(new ShippingLineItem(shippingLineItem));
+            lines.push(new mollieRequestEntities.ShippingLineItem(shippingLineItem));
         });
     });
 
     priceAdjustments.toArray().forEach(function (priceAdjustment) {
-        lines.push(new DiscountLineItem(priceAdjustment));
+        lines.push(new mollieRequestEntities.DiscountLineItem(priceAdjustment));
     });
 
     return lines;
