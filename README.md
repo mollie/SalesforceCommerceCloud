@@ -43,7 +43,7 @@ Add the following cartridges to the business manager site:
 - `mollieBearerTestToken`: string
 - `mollieBearerToken`: string
 - `mollieProfileId`: string
-- `mollieDefaultOrderExpiryDays`: number
+- `mollieDefaultOrderExpiryDays`: enum-of-strings
 - `mollieDefaultEnabledTransactionAPI`: enum of strings
 - `mollieEnableSingleClickPayments`: boolean
 - `mollieComponentsEnabled`: boolean
@@ -54,7 +54,7 @@ Add the following cartridges to the business manager site:
 
 ### PaymentMethod
 - `molliePaymentMethodId`: string - external mollie payment method id
-- `mollieOrderExpiryDays`: number - expiry days of order
+- `mollieOrderExpiryDays`: enum of int - expiry days of order
 - `mollieEnabledTransactionAPI`: enum of strings - the enabled transaction API
 
 ### PaymentTransaction
@@ -72,7 +72,7 @@ Add the following cartridges to the business manager site:
 - `mollieCustomerId`: string - the id of the Mollie customer (used for single click payments)
 
 ### Product
-- `mollieProductCategory`: enum of strings - category used for voucher metho
+- `mollieProductCategory`: enum of strings - category used for voucher method
 
 # NPM scripts
 Use the provided NPM scripts to compile and upload changes to your Sandbox.

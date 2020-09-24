@@ -40,21 +40,23 @@ function getSelectedPaymentInstruments(selectedPaymentInstruments) {
  *      current cart
  */
 function applicablePaymentMethods(paymentMethods, currentBasket, countryCode) {
-    var mollieMethods = paymentService.getMethods(currentBasket, countryCode);
+    var getMethodResponse = paymentService.getMethods(currentBasket, countryCode);
+    var mollieMethods = {};
+    getMethodResponse.methods.forEach(function (mollieMethod) {
+        mollieMethods[mollieMethod.id] = mollieMethod;
+    });
+
     var methods = [];
-
     paymentMethods.toArray().forEach(function (method) {
-        var molliePaymentMethod = mollieMethods.methods.filter(function (mollieMethod) {
-            return mollieMethod.id === method.custom.molliePaymentMethodId;
-        })[0];
-
-        if (molliePaymentMethod || !method.custom.molliePaymentMethodId) {
+        var mollieMethodId = method.custom.molliePaymentMethodId;
+        var mollieMethod = mollieMethods[mollieMethodId];
+        if (mollieMethod || !mollieMethodId) {
             methods.push({
                 ID: method.ID,
                 name: method.name,
-                image: (method.image) ? method.image.URL.toString() :
-                    (molliePaymentMethod && molliePaymentMethod.imageURL) || URLUtils.staticURL('./images/mollieMethodImage.png'),
-                issuers: molliePaymentMethod && molliePaymentMethod.issuers
+                image: method.image ? method.image.URL.toString() :
+                    mollieMethod && mollieMethod.imageURL,
+                issuers: mollieMethod && mollieMethod.issuers
             });
         }
     });
