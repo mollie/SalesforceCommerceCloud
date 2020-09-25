@@ -6,6 +6,8 @@
 var mollie;
 const $mollieComponentsContainer = $('.js-mollie-components-container');
 
+const cardtoken = '#cardToken';
+
 var cardHolderComponent;
 const cardHolder = '#card-holder';
 const cardHolderError = '#card-holder-error';
@@ -93,7 +95,7 @@ function initEventListeners() {
  */
 async function setCardToken() {
     const { token, error } = await mollie.createToken();
-    $('#cardToken').val(token);
+    $(cardtoken).val(token);
     if (error) {
         throw new Error(error.message);
     }
@@ -104,7 +106,7 @@ async function setCardToken() {
  * Initialize mollie components when needed
  */
 function init() {
-    if ($('.js-mollie-components-container').length) {
+    if ($($mollieComponentsContainer).length) {
         createMollieComponents();
         mountMollieComponents();
         initEventListeners();

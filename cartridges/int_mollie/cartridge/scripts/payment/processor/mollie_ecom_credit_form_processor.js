@@ -13,8 +13,7 @@ function processForm(req, paymentForm, viewFormData) {
     var viewData = viewFormData;
     var cardType = PaymentMgr.getPaymentMethod(paymentForm.paymentMethod.value);
 
-    var isReturningCustomer = req.session.privacyCache.get('isReturningCustomer');
-    if (!isReturningCustomer && !paymentForm.creditCardFields.cardToken.value) {
+    if (!paymentForm.isReturningCustomer.checked && !paymentForm.creditCardFields.cardToken.value) {
         return {
             fieldErrors: [],
             serverErrors: [Resource.msg('error.invalid.card', 'mollie', null)],
@@ -36,7 +35,8 @@ function processForm(req, paymentForm, viewFormData) {
         cardToken: {
             value: paymentForm.creditCardFields.cardToken.value,
             htmlName: paymentForm.creditCardFields.cardToken.htmlName
-        }
+        },
+        ybe: true
     };
 
     viewData.saveCard = paymentForm.creditCardFields.saveCard.checked;

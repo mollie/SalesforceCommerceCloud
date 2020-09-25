@@ -162,9 +162,6 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
 });
 
 server.append('SubmitPayment', function (req, res, next) {
-    var isReturningCustomer = (req.form.isReturningCustomer === 'true');
-    req.session.privacyCache.set('isReturningCustomer', isReturningCustomer);
-
     this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
         var viewData = res.getViewData();
         if (viewData.order) {

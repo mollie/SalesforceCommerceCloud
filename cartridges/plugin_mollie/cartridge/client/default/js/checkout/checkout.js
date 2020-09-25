@@ -174,7 +174,7 @@ var mollieComponents = require('./components');
                     // Submit the Billing Address Form
                     //
 
-                    var handlePayment = function (token) {
+                    var handlePayment = function () {
                         formHelpers.clearPreviousErrors('.payment-form');
 
                         var billingAddressForm = $('#dwfrm_billing .billing-address-block :input').serialize();
@@ -245,8 +245,6 @@ var mollieComponents = require('./components');
                                 }
                             }
                         }
-
-                        paymentForm += '&isReturningCustomer=' + !token;
 
                         // disable the next:Place Order button here
                         $('body').trigger('checkout:disableButton', '.next-step-button button');
@@ -319,7 +317,7 @@ var mollieComponents = require('./components');
                         $('.js-mollie-component-tab').hasClass('active') &&
                         !$('.js-card-info').hasClass('checkout-hidden')) {
                         mollieComponents.setCardToken().then(token => {
-                            handlePayment(token);
+                            handlePayment();
                         }).catch(error => {
                             defer.reject({
                                 errorMessage: error

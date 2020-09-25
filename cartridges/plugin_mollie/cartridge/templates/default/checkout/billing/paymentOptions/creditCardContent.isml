@@ -2,13 +2,18 @@
 <div class="tab-pane active credit-card-content" id="credit-card-content" role="tabpanel">
     <fieldset class="payment-form-fields">
 
+        <isset name="isReturningCustomer" value="${pdict.customer.registeredUser && pdict.mollie.customerId}" scope="page" />
+
+        <input type="hidden" class="form-control js-returning-customer"
+            name="${pdict.forms.billingForm.isReturningCustomer.htmlName}"
+            value="${!!isReturningCustomer}"
+        >
+
         <!--- payment method is credit card --->
         <input type="hidden" class="form-control"
             name="${pdict.forms.billingForm.paymentMethod.htmlName}"
             value="MOLLIE_CREDIT_CARD"
         >
-
-        <isset name="isReturningCustomer" value="${pdict.customer.registeredUser && pdict.mollie.customerId}" scope="page" />
 
         <!--- register/authenticated user --->
         <isif condition="${pdict.customer.registeredUser}">

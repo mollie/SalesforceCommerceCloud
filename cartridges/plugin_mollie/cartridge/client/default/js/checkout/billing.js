@@ -4,6 +4,8 @@ var components = require('./components');
 var applePay = require('./applePay');
 var billing = require('base/checkout/billing');
 
+const RETURNING_CUSTOMER = '.js-returning-customer';
+
 /**
  * Updates the payment information in checkout, based on the supplied order model
  * @param {Object} data - data returned from controller
@@ -12,6 +14,26 @@ function updatePaymentInformation(data) {
     if (data.order.paymentSummaryTemplate) {
         $('.js-payment-details').html(data.order.paymentSummaryTemplate);
     }
+}
+
+/**
+ * On click 'Add payment'
+ */
+function addNewPaymentInstrument() {
+    billing.addNewPaymentInstrument();
+    $('.btn.add-payment').on('click', function (e) {
+        $(RETURNING_CUSTOMER).val(false);
+    });
+}
+
+/**
+ * On click 'Back to saved payment'
+ */
+function cancelNewPayment() {
+    billing.cancelNewPayment();
+    $('.cancel-new-payment').on('click', function (e) {
+        $(RETURNING_CUSTOMER).val(true);
+    });
 }
 
 /**
@@ -25,8 +47,8 @@ function updatePaymentOptions(data) {
             components.unmountMollieComponents();
         }
         $('.js-payment-options').replaceWith(data.paymentOptionsTemplate);
-        billing.addNewPaymentInstrument();
-        billing.cancelNewPayment();
+        addNewPaymentInstrument();
+        cancelNewPayment();
         billing.paymentTabs();
         billing.handleCreditCardNumber();
         applePay.checkApplePaySupport();
@@ -64,11 +86,15 @@ function onBillingCountryChange() {
  */
 function init() {
     onBillingCountryChange();
+    addNewPaymentInstrument();
+    cancelNewPayment();
 }
 
 module.exports = {
     init: init,
     updatePaymentOptions: updatePaymentOptions,
+    addNewPaymentInstrument: addNewPaymentInstrument,
+    cancelNewPayment: cancelNewPayment,
     methods: {
         updatePaymentInformation: updatePaymentInformation
     }
