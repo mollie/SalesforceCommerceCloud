@@ -184,6 +184,7 @@ describe('order/orderHelper', () => {
 
             expect(this.order.setPaymentStatus).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(this.paidStatus);
+            expect(this.order.trackOrderChange).to.have.been.calledOnce();
         });
 
         it('does not an order paymentStatus when current status is same as desired one', () => {
@@ -214,6 +215,7 @@ describe('order/orderHelper', () => {
 
             expect(this.order.setShippingStatus).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(this.paidStatus);
+            expect(this.order.trackOrderChange).to.have.been.calledOnce();
         });
 
         it('does not an order shippingStatus when current status is same as desired one', () => {

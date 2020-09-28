@@ -103,13 +103,16 @@ function failOrCancelOrder(order, message) {
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {number} paymentStatus - Payment Status
+ * @param {string} logMessage - log message
  * @returns {void}
  */
-function setOrderPaymentStatus(order, paymentStatus) {
+function setOrderPaymentStatus(order, paymentStatus, logMessage) {
+    var logMessage = logMessage || 'PAYMENT :: UpdatePaymentStatus :: Updated payment status for order ' + order.orderNo + ' to ' + paymentStatus;
     var currentPaymentStatus = order.getPaymentStatus().getValue();
 
     if (currentPaymentStatus !== paymentStatus) {
         order.setPaymentStatus(paymentStatus);
+        addItemToOrderHistory(order, logMessage, true);
     }
 }
 
@@ -118,13 +121,16 @@ function setOrderPaymentStatus(order, paymentStatus) {
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {number} shippingStatus - Shipping Status
+ * @param {string} logMessage - log message
  * @returns {void}
  */
-function setOrderShippingStatus(order, shippingStatus) {
+function setOrderShippingStatus(order, shippingStatus, logMessage) {
+    var logMessage = logMessage || 'PAYMENT :: UpdateShippingStatus :: Updated shipping status for order ' + order.orderNo + ' to ' + shippingStatus;
     var currentShippingStatus = order.getShippingStatus().getValue();
 
     if (currentShippingStatus !== shippingStatus) {
         order.setShippingStatus(shippingStatus);
+        addItemToOrderHistory(order, logMessage, true);
     }
 }
 

@@ -28,35 +28,34 @@ function processPaymentResult(order, paymentResult) {
     if (mollieOrderStatus === paymentResult.status) return { url: url };
 
     var STATUS = config.getTransactionStatus();
-    var historyItem;
 
     // PROCESS STATUS
     switch (paymentResult.status) {
         case STATUS.COMPLETED:
-            historyItem = 'PAYMENT :: Order shipped, status :: ' + paymentResult.status;
             COHelpers.placeOrder(order);
             Transaction.wrap(function () {
-                orderHelper.setOrderShippingStatus(order, Order.SHIPPING_STATUS_SHIPPED);
+                orderHelper.setOrderShippingStatus(order, Order.SHIPPING_STATUS_SHIPPED,
+                    'PAYMENT :: Order shipped, Mollie status :: ' + paymentResult.status);
             });
             break;
 
         case STATUS.PAID:
-            historyItem = 'PAYMENT :: Order paid, status :: ' + paymentResult.status;
             COHelpers.placeOrder(order);
             Transaction.wrap(function () {
-                orderHelper.setOrderPaymentStatus(order, Order.PAYMENT_STATUS_PAID);
+                orderHelper.setOrderPaymentStatus(order, Order.PAYMENT_STATUS_PAID,
+                    'PAYMENT :: Order paid, Mollie status :: ' + paymentResult.status);
             });
             break;
 
         case STATUS.PENDING:
         case STATUS.AUTHORIZED:
-            historyItem = 'PAYMENT :: Order pending, status :: ' + paymentResult.status;
+            orderHelper.addItemToOrderHistory(order,
+                'PAYMENT :: Order pending, Mollie status :: ' + paymentResult.status);
             COHelpers.placeOrder(order);
             break;
 
         case STATUS.OPEN:
         case STATUS.CREATED:
-            var cancelHistoryItem = 'PAYMENT :: Canceling payment and returning to checkout because of bad status, status :: ' + paymentResult.status;
             url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
             if (paymentResult.isCancelable()) {
                 if (isMollieOrder) {
@@ -67,29 +66,31 @@ function processPaymentResult(order, paymentResult) {
                 }
             }
             Transaction.wrap(function () {
-                orderHelper.failOrCancelOrder(order, cancelHistoryItem);
+                orderHelper.failOrCancelOrder(order,
+                    'PAYMENT :: Canceling payment and returning to checkout because of bad status, Mollie status :: ' + paymentResult.status);
             });
             break;
 
         case STATUS.EXPIRED:
         case STATUS.CANCELED:
         case STATUS.FAILED:
-            var failHistoryItem = 'PAYMENT :: Canceling order, status :: ' + paymentResult.status;
-            session.privacy.mollieError = Resource.msg('mollie.payment.error.' + paymentResult.status, 'mollie', null);
             url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
             Transaction.wrap(function () {
-                orderHelper.failOrCancelOrder(order, failHistoryItem);
+                orderHelper.failOrCancelOrder(order,
+                    'PAYMENT :: Canceling order, Mollie status :: ' + paymentResult.status);
             });
             break;
 
         case STATUS.SHIPPING:
             Transaction.wrap(function () {
-                orderHelper.setOrderShippingStatus(order, Order.SHIPPING_STATUS_PARTSHIPPED);
+                orderHelper.setOrderShippingStatus(order, Order.SHIPPING_STATUS_PARTSHIPPED,
+                    'Order partially shipped, Mollie status :: ' + paymentResult.status);
             });
             break;
 
         default:
-            historyItem = 'PAYMENT :: Unknown Mollie status update :: ' + paymentResult.status;
+            orderHelper.addItemToOrderHistory(order, unknownHistoryItem,
+                'PAYMENT :: Unknown Mollie status update :: ' + paymentResult.status);
     }
 
     Transaction.wrap(function () {
@@ -99,9 +100,6 @@ function processPaymentResult(order, paymentResult) {
         } else {
             orderHelper.setPaymentId(order, null, paymentResult.id);
             orderHelper.setPaymentStatus(order, null, paymentResult.status);
-        }
-        if (historyItem) {
-            orderHelper.addItemToOrderHistory(order, historyItem, true);
         }
     });
 
