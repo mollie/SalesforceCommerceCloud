@@ -53,7 +53,6 @@ describe('payment/paymentHelper', () => {
             expect(stubs.checkoutHelpersMock.placeOrder).have.to.been.calledOnce().and.to.have.been.called.with(this.order);
             expect(stubs.dw.TransactionMock.wrap).have.to.been.calledTwice();
             expect(stubs.orderHelperMock.setOrderShippingStatus).have.to.been.calledOnce();
-            expect(stubs.orderHelperMock.addItemToOrderHistory).have.to.been.calledOnce();
         });
         it('should process the payment result from Mollie with status PAID', () => {
             var paymentResult = {
@@ -67,7 +66,6 @@ describe('payment/paymentHelper', () => {
 
             expect(stubs.dw.TransactionMock.wrap).have.to.been.calledTwice();
             expect(stubs.orderHelperMock.setOrderPaymentStatus).have.to.been.calledOnce();
-            expect(stubs.orderHelperMock.addItemToOrderHistory).have.to.been.calledOnce();
         });
         it('should process the payment result from Mollie with status PENDING', () => {
             var paymentResult = {

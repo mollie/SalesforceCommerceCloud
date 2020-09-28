@@ -105,8 +105,7 @@
   ],
   "packageName": "int_mollie_sfra",
   "paths": {
-    "base": "../storefront-reference-architecture/cartridges/app_storefront_base/",
-    "mollie": "../link_mollie/cartridges/int_mollie_sfra/"
+    "base": "../storefront-reference-architecture/cartridges/app_storefront_base/"
   },
   "cartridges": []
 }

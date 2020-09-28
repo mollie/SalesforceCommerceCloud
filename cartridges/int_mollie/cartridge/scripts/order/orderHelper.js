@@ -103,11 +103,11 @@ function failOrCancelOrder(order, message) {
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {number} paymentStatus - Payment Status
- * @param {string} logMessage - log message
+ * @param {string} customLogMessage - log message
  * @returns {void}
  */
-function setOrderPaymentStatus(order, paymentStatus, logMessage) {
-    var logMessage = logMessage || 'PAYMENT :: UpdatePaymentStatus :: Updated payment status for order ' + order.orderNo + ' to ' + paymentStatus;
+function setOrderPaymentStatus(order, paymentStatus, customLogMessage) {
+    var logMessage = customLogMessage || 'PAYMENT :: UpdatePaymentStatus :: Updated payment status for order ' + order.orderNo + ' to ' + paymentStatus;
     var currentPaymentStatus = order.getPaymentStatus().getValue();
 
     if (currentPaymentStatus !== paymentStatus) {
@@ -121,11 +121,11 @@ function setOrderPaymentStatus(order, paymentStatus, logMessage) {
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {number} shippingStatus - Shipping Status
- * @param {string} logMessage - log message
+ * @param {string} customLogMessage - log message
  * @returns {void}
  */
-function setOrderShippingStatus(order, shippingStatus, logMessage) {
-    var logMessage = logMessage || 'PAYMENT :: UpdateShippingStatus :: Updated shipping status for order ' + order.orderNo + ' to ' + shippingStatus;
+function setOrderShippingStatus(order, shippingStatus, customLogMessage) {
+    var logMessage = customLogMessage || 'PAYMENT :: UpdateShippingStatus :: Updated shipping status for order ' + order.orderNo + ' to ' + shippingStatus;
     var currentShippingStatus = order.getShippingStatus().getValue();
 
     if (currentShippingStatus !== shippingStatus) {

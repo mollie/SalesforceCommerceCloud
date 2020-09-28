@@ -1,7 +1,6 @@
 var Transaction = require('dw/system/Transaction');
 var Order = require('dw/order/Order');
 var URLUtils = require('dw/web/URLUtils');
-var Resource = require('dw/web/Resource');
 
 var config = require('*/cartridge/scripts/mollieConfig');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
@@ -89,8 +88,7 @@ function processPaymentResult(order, paymentResult) {
             break;
 
         default:
-            orderHelper.addItemToOrderHistory(order, unknownHistoryItem,
-                'PAYMENT :: Unknown Mollie status update :: ' + paymentResult.status);
+            orderHelper.addItemToOrderHistory(order, 'PAYMENT :: Unknown Mollie status update :: ' + paymentResult.status);
     }
 
     Transaction.wrap(function () {
