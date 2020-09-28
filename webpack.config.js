@@ -51,7 +51,7 @@ module.exports = [{
     name: 'scss',
     entry: scssFiles,
     output: {
-        path: path.resolve('./cartridges/plugin_mollie/cartridge/static'),
+        path: path.resolve('./cartridges/int_mollie_sfra/cartridge/static'),
         filename: '[name].css'
     },
     module: {

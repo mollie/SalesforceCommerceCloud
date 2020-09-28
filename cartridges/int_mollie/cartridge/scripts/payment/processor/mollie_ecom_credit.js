@@ -85,11 +85,11 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
         var isReturningCustomer = billingForm.isReturningCustomer.checked;
         var paymentInfo = {};
 
-        if (creditCardFields.cardToken.value && !isReturningCustomer) {
+        if (creditCardFields.cardToken.value && !isReturningCustomer && config.getComponentsEnabled()) {
             paymentInfo.cardToken = creditCardFields.cardToken.value;
         }
 
-        if (creditCardFields.saveCard.checked || isReturningCustomer) {
+        if ((creditCardFields.saveCard.checked || isReturningCustomer) && config.getEnableSingleClickPayments()) {
             var profile = order.customer.profile;
             var mollieCustomerId = profile.custom.mollieCustomerId;
             if (!mollieCustomerId) {

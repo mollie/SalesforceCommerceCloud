@@ -6,6 +6,6 @@
                 alt="${paymentOption.name}"
                 title="${paymentOption.name}"
         />
-        <div>${paymentOption.name}</div>
+        <div class="nav-link__name">${paymentOption.name}</div>
     </a>
 </li>

@@ -5,7 +5,8 @@ const { stubs } = testHelpers;
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const mollieEcomCreditFormProcessor = proxyquire(`${base}/int_mollie/cartridge/scripts/payment/processor/mollie_ecom_credit_form_processor`, {
     'dw/web/Resource': stubs.dw.ResourceMock,
-    'dw/order/PaymentMgr': stubs.dw.PaymentMgrMock
+    'dw/order/PaymentMgr': stubs.dw.PaymentMgrMock,
+    '*/cartridge/scripts/mollieConfig': stubs.configMock
 });
 
 describe('payment/processor/mollie_ecom_credit_form_processor', () => {

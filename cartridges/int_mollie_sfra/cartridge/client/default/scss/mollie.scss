@@ -18,6 +18,29 @@
         .nav-tabs .nav-item {
             flex: unset;
 
+            .nav-link {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                margin: 0.5rem 1rem;
+                padding: 0.75rem;
+                border: 1px solid lightgray;
+                border-radius: 0.50rem;
+                min-height: 110px;
+
+                &__name {
+                    margin-top: 0.5rem;
+                    color: black;
+                    font-weight: bold;
+                    font-size: 0.90rem;
+                }
+
+                &.active {
+                    border-color: #0070d2;
+                }
+            }
+
             @include media-breakpoint-up(lg) {
                 width: calc(100% / 4);
             }
