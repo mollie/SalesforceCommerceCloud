@@ -8,7 +8,7 @@ This is the integration cartridge for Mollie
 1. Clone this repository.
 2. Install npm dependancies `npm install`.
 3. Upload the `cartridges` folder to the WebDav location for cartridges for your Sandbox through CyberDuck or any other WebDAV client.
-4. Add the plugin_mollie and int_mollie cartridges to your cartridge path.
+4. Add the mollie_sfra_chamges, int_mollie_sfra and int_mollie cartridges to your cartridge path.
 
 
 # Cartridges
@@ -18,9 +18,13 @@ This is the integration cartridge for Mollie
 Contains all the business logic pertaining order and payment management through
 the Mollie API.
 
-## plugin_mollie
+## int_mollie_sfra
 
 Contains Payment and Checkout controllers.
+
+## int_mollie_sfra
+
+Contains SFRA overwritten templates / controllers.
 
 # Configuration
 
@@ -28,8 +32,9 @@ Contains Payment and Checkout controllers.
 
 Add the following cartridges to the storefront site you want to use the payment on:
 
+- mollie_sfra_changes
+- int_mollie_sfra
 - int_mollie
-- plugin_mollie
 
 Add the following cartridges to the business manager site:
 

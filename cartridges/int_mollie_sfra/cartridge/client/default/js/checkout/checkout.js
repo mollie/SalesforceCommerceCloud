@@ -2,13 +2,13 @@
 
 var addressHelpers = require('base/checkout/address');
 var shippingHelpersBase = require('base/checkout/shipping');
-var shippingHelpers = require('../checkout/shipping');
+var shippingHelpers = require('mollie/checkout/shipping');
 var billingHelpersBase = require('base/checkout/billing');
-var billingHelpers = require('../checkout/billing');
+var billingHelpers = require('mollie/checkout/billing');
 var summaryHelpers = require('base/checkout/summary');
 var formHelpers = require('base/checkout/formErrors');
 var scrollAnimate = require('base/components/scrollAnimate');
-var mollieComponents = require('./components');
+var mollieComponents = require('mollie/checkout/components');
 
 /**
  * Create the jQuery Checkout Plugin.

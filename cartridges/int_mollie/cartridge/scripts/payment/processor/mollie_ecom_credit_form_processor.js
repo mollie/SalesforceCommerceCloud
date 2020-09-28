@@ -35,8 +35,7 @@ function processForm(req, paymentForm, viewFormData) {
         cardToken: {
             value: paymentForm.creditCardFields.cardToken.value,
             htmlName: paymentForm.creditCardFields.cardToken.htmlName
-        },
-        ybe: true
+        }
     };
 
     viewData.saveCard = paymentForm.creditCardFields.saveCard.checked;

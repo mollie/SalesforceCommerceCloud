@@ -32,7 +32,7 @@
     "lint:js": "sgmf-scripts --lint js",
     "lint:fix": "eslint --fix --ext .js,.jsx .",
     "upload": "sgmf-scripts --upload",
-    "uploadCartridge": "sgmf-scripts --uploadCartridge plugin_mollie",
+    "uploadCartridge": "sgmf-scripts --uploadCartridge int_mollie_sfra",
     "uploadDw": "sgmf-scripts",
     "watch": "sgmf-scripts --watch",
     "watch:compile": "sgmf-scripts --watch --onlycompile",
@@ -101,9 +101,10 @@
   "pre-commit": [
     "precommit"
   ],
-  "packageName": "plugin_mollie",
+  "packageName": "int_mollie_sfra",
   "paths": {
-    "base": "../storefront-reference-architecture/cartridges/app_storefront_base/"
+    "base": "../storefront-reference-architecture/cartridges/app_storefront_base/",
+    "mollie": "../link_mollie/cartridges/int_mollie_sfra/"
   },
   "cartridges": []
 }

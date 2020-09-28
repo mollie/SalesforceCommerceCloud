@@ -4,7 +4,7 @@ var components = require('./components');
 var applePay = require('./applePay');
 var billing = require('base/checkout/billing');
 
-const RETURNING_CUSTOMER = '.js-returning-customer';
+const returningCustomer = '.js-returning-customer';
 
 /**
  * Updates the payment information in checkout, based on the supplied order model
@@ -22,7 +22,7 @@ function updatePaymentInformation(data) {
 function addNewPaymentInstrument() {
     billing.addNewPaymentInstrument();
     $('.btn.add-payment').on('click', function (e) {
-        $(RETURNING_CUSTOMER).val(false);
+        $(returningCustomer).val(false);
     });
 }
 
@@ -32,7 +32,7 @@ function addNewPaymentInstrument() {
 function cancelNewPayment() {
     billing.cancelNewPayment();
     $('.cancel-new-payment').on('click', function (e) {
-        $(RETURNING_CUSTOMER).val(true);
+        $(returningCustomer).val(true);
     });
 }
 
