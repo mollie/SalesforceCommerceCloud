@@ -16,7 +16,7 @@
         >
 
         <!--- register/authenticated user --->
-        <isif condition="${pdict.customer.registeredUser}">
+        <isif condition="${pdict.mollie.mollieComponents.enable && pdict.customer.registeredUser}">
             <div class="user-payment-instruments container ${isReturningCustomer ? '' : 'checkout-hidden'}">
                 <!--- Add new credit card button --->
                 <div class="row">

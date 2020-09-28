@@ -1,8 +1,3 @@
-<isscript>
-    var assets = require('*/cartridge/scripts/assets.js');
-    assets.addCss('/css/mollie.css');
-</isscript>
-
 <div class="js-mollie-components-container mollie-components-container" data-components-profile-id="${pdict.mollie.mollieComponents.profileId}"
     data-components-test-mode="${pdict.mollie.mollieComponents.enableTestMode}"
     data-components-locale="${request.locale}">
