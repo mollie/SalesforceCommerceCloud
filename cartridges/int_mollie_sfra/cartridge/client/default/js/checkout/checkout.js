@@ -316,7 +316,7 @@ var mollieComponents = require('mollie/checkout/components');
                     if ($('.js-mollie-components-container').length &&
                         $('.js-mollie-component-tab').hasClass('active') &&
                         !$('.js-card-info').hasClass('checkout-hidden')) {
-                        mollieComponents.setCardToken().then(token => {
+                        mollieComponents.setCardToken().then(() => {
                             handlePayment();
                         }).catch(error => {
                             defer.reject({

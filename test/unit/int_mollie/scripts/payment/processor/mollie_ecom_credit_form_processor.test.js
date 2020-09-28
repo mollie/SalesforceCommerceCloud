@@ -40,6 +40,9 @@ describe('payment/processor/mollie_ecom_credit_form_processor', () => {
             cardType: {
                 htmlName: faker.lorem.word()
             }
+        },
+        isReturningCustomer: {
+            checked: false
         }
     };
     this.viewFormData = {};

@@ -6,6 +6,7 @@ var OrderMgr = require('dw/order/OrderMgr');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var URLUtils = require('dw/web/URLUtils');
 var MollieService = require('*/cartridge/scripts/services/mollieService');
+var Resource = require('dw/web/Resource');
 
 /**
  * Handling of a payment hook.
@@ -57,7 +58,7 @@ server.post('Hook', server.middleware.https, function (req, res, next) {
             paymentService.processPaymentUpdate(order, statusUpdateId);
             res.json({ success: true });
         } else {
-            res.json({ success: false });
+            res.json({ success: false, error: Resource.msg('error.missing.params', null, 'mollie') });
         }
     } catch (e) {
         res.json({ success: false, error: e.message });

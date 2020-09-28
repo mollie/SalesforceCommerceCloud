@@ -80,7 +80,7 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
 
-        var billingForm = session.forms.billing
+        var billingForm = session.forms.billing;
         var creditCardFields = billingForm.creditCardFields;
         var isReturningCustomer = billingForm.isReturningCustomer.checked;
         var paymentInfo = {};

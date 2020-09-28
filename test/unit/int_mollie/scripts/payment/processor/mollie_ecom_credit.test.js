@@ -123,6 +123,9 @@ describe('payment/processor/mollie_ecom_credit', () => {
                             saveCard: {
                                 checked: false
                             }
+                        },
+                        isReturningCustomer: {
+                            checked: false
                         }
                     }
                 }

@@ -21,7 +21,7 @@ function updatePaymentInformation(data) {
  */
 function addNewPaymentInstrument() {
     billing.addNewPaymentInstrument();
-    $('.btn.add-payment').on('click', function (e) {
+    $('.btn.add-payment').on('click', function () {
         $(returningCustomer).val(false);
     });
 }
@@ -31,7 +31,7 @@ function addNewPaymentInstrument() {
  */
 function cancelNewPayment() {
     billing.cancelNewPayment();
-    $('.cancel-new-payment').on('click', function (e) {
+    $('.cancel-new-payment').on('click', function () {
         $(returningCustomer).val(true);
     });
 }
