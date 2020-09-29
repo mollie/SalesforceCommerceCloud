@@ -34,7 +34,7 @@ function processPaymentResult(order, paymentResult) {
             COHelpers.placeOrder(order);
             Transaction.wrap(function () {
                 orderHelper.setOrderShippingStatus(order, Order.SHIPPING_STATUS_SHIPPED,
-                    'PAYMENT :: Order shipped, Mollie status :: ' + paymentResult.status);
+                    { customLogMessage: 'PAYMENT :: Order shipped, Mollie status :: ' + paymentResult.status });
             });
             break;
 
@@ -42,7 +42,7 @@ function processPaymentResult(order, paymentResult) {
             COHelpers.placeOrder(order);
             Transaction.wrap(function () {
                 orderHelper.setOrderPaymentStatus(order, Order.PAYMENT_STATUS_PAID,
-                    'PAYMENT :: Order paid, Mollie status :: ' + paymentResult.status);
+                    { customLogMessage: 'PAYMENT :: Order paid, Mollie status :: ' + paymentResult.status });
             });
             break;
 
@@ -83,7 +83,7 @@ function processPaymentResult(order, paymentResult) {
         case STATUS.SHIPPING:
             Transaction.wrap(function () {
                 orderHelper.setOrderShippingStatus(order, Order.SHIPPING_STATUS_PARTSHIPPED,
-                    'Order partially shipped, Mollie status :: ' + paymentResult.status);
+                    { customLogMessage: 'Order partially shipped, Mollie status :: ' + paymentResult.status });
             });
             break;
 
