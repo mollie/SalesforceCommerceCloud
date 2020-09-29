@@ -80,14 +80,16 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
 
-        var creditCardFields = session.forms.billing.creditCardFields;
+        var billingForm = session.forms.billing;
+        var creditCardFields = billingForm.creditCardFields;
+        var isReturningCustomer = billingForm.isReturningCustomer.checked;
         var paymentInfo = {};
 
-        if (creditCardFields.cardToken.value) {
+        if (creditCardFields.cardToken.value && !isReturningCustomer && config.getComponentsEnabled()) {
             paymentInfo.cardToken = creditCardFields.cardToken.value;
         }
 
-        if (creditCardFields.saveCard.checked) {
+        if ((creditCardFields.saveCard.checked || isReturningCustomer) && config.getEnableSingleClickPayments()) {
             var profile = order.customer.profile;
             var mollieCustomerId = profile.custom.mollieCustomerId;
             if (!mollieCustomerId) {

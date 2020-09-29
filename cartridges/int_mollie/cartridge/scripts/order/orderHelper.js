@@ -103,10 +103,11 @@ function failOrCancelOrder(order, message) {
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {number} paymentStatus - Payment Status
+ * @param {Object} options - options
  * @returns {void}
  */
-function setOrderPaymentStatus(order, paymentStatus) {
-    var logMessage = 'PAYMENT :: UpdatePaymentStatus :: Updated payment status for order ' + order.orderNo + ' to ' + paymentStatus;
+function setOrderPaymentStatus(order, paymentStatus, options) {
+    var logMessage = (options && options.customLogMessage) || 'PAYMENT :: UpdatePaymentStatus :: Updated payment status for order ' + order.orderNo + ' to ' + paymentStatus;
     var currentPaymentStatus = order.getPaymentStatus().getValue();
 
     if (currentPaymentStatus !== paymentStatus) {
@@ -120,10 +121,11 @@ function setOrderPaymentStatus(order, paymentStatus) {
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {number} shippingStatus - Shipping Status
+ * @param {Object} options - options
  * @returns {void}
  */
-function setOrderShippingStatus(order, shippingStatus) {
-    var logMessage = 'PAYMENT :: UpdateShippingStatus :: Updated shipping status for order ' + order.orderNo + ' to ' + shippingStatus;
+function setOrderShippingStatus(order, shippingStatus, options) {
+    var logMessage = (options && options.customLogMessage) || 'PAYMENT :: UpdateShippingStatus :: Updated shipping status for order ' + order.orderNo + ' to ' + shippingStatus;
     var currentShippingStatus = order.getShippingStatus().getValue();
 
     if (currentShippingStatus !== shippingStatus) {
@@ -374,14 +376,15 @@ function isMollieOrder(order) {
  */
 function checkMollieRefundStatus(order, paymentResult) {
     var orderHelper = require('*/cartridge/scripts/order/orderHelper');
-    if (paymentResult.amountRefunded.value) {
+    var amountRefunded = paymentResult.amountRefunded.value;
+    if (amountRefunded && Number(amountRefunded) > 0) {
         var REFUND_STATUS = config.getRefundStatus();
-        if (paymentResult.amountRefunded.value === paymentResult.amount.value
+        if (amountRefunded === paymentResult.amount.value
             && orderHelper.getRefundStatus(order).value !== REFUND_STATUS.REFUNDED) {
             Transaction.wrap(function () {
                 orderHelper.setRefundStatus(order, REFUND_STATUS.REFUNDED);
             });
-        } else if (paymentResult.amountRefunded.value !== paymentResult.amount.value
+        } else if (amountRefunded !== paymentResult.amount.value
             && orderHelper.getRefundStatus(order).value !== REFUND_STATUS.PARTREFUNDED) {
             Transaction.wrap(function () {
                 orderHelper.setRefundStatus(order, REFUND_STATUS.PARTREFUNDED);

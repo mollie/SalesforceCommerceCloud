@@ -6,11 +6,11 @@
             <access-control resource-path="BUSINESSMGR/CustomMenu/Sites/RefArch/order_payment_cancel" permission="ACCESS" />
             <access-control resource-path="BUSINESSMGR/CustomMenu/Sites/RefArch/order_payment_link" permission="ACCESS" />
             <access-control resource-path="BUSINESSMGR/CustomMenu/Sites/RefArch/order_payment_refund" permission="ACCESS" />
-            <access-control resource-path="BUSINESSMGR/CustomMenu/Sites/RefArch/order_payment_shipment" permission="ACCESS" />
+            <access-control resource-path="BUSINESSMGR/CustomMenu/Sites/RefArch/order_shipment" permission="ACCESS" />
             <access-control resource-path="BUSINESSMGR/CustomMenu/Sites/RefArchGlobal/order_payment_cancel" permission="ACCESS" />
             <access-control resource-path="BUSINESSMGR/CustomMenu/Sites/RefArchGlobal/order_payment_link" permission="ACCESS" />
             <access-control resource-path="BUSINESSMGR/CustomMenu/Sites/RefArchGlobal/order_payment_refund" permission="ACCESS" />
-            <access-control resource-path="BUSINESSMGR/CustomMenu/Sites/RefArchGlobal/order_payment_shipment" permission="ACCESS" />
+            <access-control resource-path="BUSINESSMGR/CustomMenu/Sites/RefArchGlobal/order_shipment" permission="ACCESS" />
         </access-controls>
     </access-role>
 </access-roles>

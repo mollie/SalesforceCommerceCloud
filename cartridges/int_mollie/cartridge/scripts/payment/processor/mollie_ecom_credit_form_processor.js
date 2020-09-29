@@ -1,6 +1,7 @@
 'use strict';
 var Resource = require('dw/web/Resource');
 var PaymentMgr = require('dw/order/PaymentMgr');
+var config = require('*/cartridge/scripts/mollieConfig');
 
 /**
  * Verifies the required information for billing form is provided.
@@ -13,8 +14,7 @@ function processForm(req, paymentForm, viewFormData) {
     var viewData = viewFormData;
     var cardType = PaymentMgr.getPaymentMethod(paymentForm.paymentMethod.value);
 
-    var isReturningCustomer = req.session.privacyCache.get('isReturningCustomer');
-    if (!isReturningCustomer && !paymentForm.creditCardFields.cardToken.value) {
+    if (config.getComponentsEnabled() && !paymentForm.creditCardFields.cardToken.value && !paymentForm.isReturningCustomer.checked) {
         return {
             fieldErrors: [],
             serverErrors: [Resource.msg('error.invalid.card', 'mollie', null)],

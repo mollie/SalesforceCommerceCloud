@@ -22,6 +22,7 @@
   "scripts": {
     "test:coverage": "nyc npm run test",
     "test:help": "nyc --help",
+    "test:integration": "sgmf-scripts --test test/integration/**/*.js",
     "test": "sgmf-scripts --test test/unit/**/*.js",
     "cover": "sgmf-scripts --cover",
     "compile:scss": "sgmf-scripts --compile css",
@@ -32,7 +33,7 @@
     "lint:js": "sgmf-scripts --lint js",
     "lint:fix": "eslint --fix --ext .js,.jsx .",
     "upload": "sgmf-scripts --upload",
-    "uploadCartridge": "sgmf-scripts --uploadCartridge plugin_mollie",
+    "uploadCartridge": "sgmf-scripts --uploadCartridge int_mollie_sfra",
     "uploadDw": "sgmf-scripts",
     "watch": "sgmf-scripts --watch",
     "watch:compile": "sgmf-scripts --watch --onlycompile",
@@ -92,6 +93,7 @@
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "module-alias": "^2.2.0",
+    "request-promise": "^4.2.6",
     "url": "^0.11.0"
   },
   "browserslist": [
@@ -101,7 +103,7 @@
   "pre-commit": [
     "precommit"
   ],
-  "packageName": "plugin_mollie",
+  "packageName": "int_mollie_sfra",
   "paths": {
     "base": "../storefront-reference-architecture/cartridges/app_storefront_base/"
   },

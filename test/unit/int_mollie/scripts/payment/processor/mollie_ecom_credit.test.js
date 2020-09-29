@@ -111,6 +111,8 @@ describe('payment/processor/mollie_ecom_credit', () => {
             stubs.dw.PaymentMgrMock.getPaymentMethod.returns(this.paymentMethod);
             stubs.configMock.getTransactionAPI.returns(TRANSACTION_API);
             stubs.configMock.getRefundStatus.returns(REFUND_STATUS);
+            stubs.configMock.getComponentsEnabled.returns(true);
+            stubs.configMock.getEnableSingleClickPayments.returns(true);
 
             this.cardToken = faker.lorem.word();
             global.session = {
@@ -123,6 +125,9 @@ describe('payment/processor/mollie_ecom_credit', () => {
                             saveCard: {
                                 checked: false
                             }
+                        },
+                        isReturningCustomer: {
+                            checked: false
                         }
                     }
                 }
