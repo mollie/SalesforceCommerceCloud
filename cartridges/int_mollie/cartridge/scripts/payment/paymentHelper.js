@@ -35,6 +35,7 @@ function processPaymentResult(order, paymentResult) {
             Transaction.wrap(function () {
                 orderHelper.setOrderShippingStatus(order, Order.SHIPPING_STATUS_SHIPPED,
                     { customLogMessage: 'PAYMENT :: Order shipped, Mollie status :: ' + paymentResult.status });
+                order.setStatus(Order.ORDER_STATUS_COMPLETED);
             });
             break;
 
