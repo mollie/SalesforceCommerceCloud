@@ -1,6 +1,7 @@
 var HookMgr = require('dw/system/HookMgr');
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
+var Transaction = require('dw/system/Transaction');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
@@ -11,7 +12,22 @@ var renderTemplate = require('*/cartridge/scripts/helpers/renderTemplateHelper')
 var isLinkAllowed = function (order) {
     if (!order) return false;
     var orderStatus = order.status.value;
-    return orderStatus === Order.ORDER_STATUS_CREATED;
+    return orderStatus === Order.ORDER_STATUS_CREATED
+        || orderStatus === Order.ORDER_STATUS_CANCELLED
+        || orderStatus === Order.ORDER_STATUS_FAILED;
+};
+
+var undoFailOrCancelOrder = function (order) {
+    if (!order) return false;
+    var orderStatus = order.status.value;
+    var result;
+    if (orderStatus === Order.ORDER_STATUS_CANCELLED || orderStatus === Order.ORDER_STATUS_FAILED) {
+        Transaction.wrap(function () {
+            result = orderHelper.undoFailOrCancelOrder(order, 'PAYMENT :: Reopening order because of requesting link');
+        });
+    }
+
+    return { error: result && result.isError() };
 };
 
 var sendPaymentLink = function (order, email, paymentLink) {
@@ -32,7 +48,7 @@ exports.Start = function () {
     var orderNo = request.httpParameterMap.get('order_no').stringValue;
     var order = OrderMgr.getOrder(orderNo);
     var paymentLink;
-    if (!isLinkAllowed(order)) {
+    if (!isLinkAllowed(order) || undoFailOrCancelOrder(order).error) {
         renderTemplate('order/payment/link/order_payment_link_not_available.isml');
         return;
     } else if (orderHelper.isMollieOrder(order)) {

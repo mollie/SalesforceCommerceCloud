@@ -24,7 +24,7 @@ describe('order/orderHelper', () => {
     afterEach(function () { stubs.reset(); });
     after(function () { stubs.restore(); });
 
-    context('#getPaymentDescription', () => {
+    context('#getMappedPaymentDescription', () => {
         beforeEach(() => {
             this.siteName = faker.lorem.word();
             stubs.configMock.getSiteName.returns(this.siteName);
@@ -47,7 +47,7 @@ describe('order/orderHelper', () => {
         });
 
         it('Creates payment description for order', () => {
-            var description = orderHelper.getPaymentDescription(this.order, this.paymentMethod);
+            var description = orderHelper.getMappedPaymentDescription(this.order, this.paymentMethod);
             var markup = `${this.order.orderNo}, ${this.siteName}, ${this.order.customerOrderReference}, ${this.order.customer.profile.firstName}, ${this.order.customer.profile.lastName}, ${this.order.customer.profile.companyName}`;
 
             expect(description).to.eql(markup);
@@ -83,7 +83,7 @@ describe('order/orderHelper', () => {
         });
 
         it('fails an order and logs orderHistory', () => {
-            expect(orderHelper.failOrder(this.order, this.errorMessage)).to.be.undefined();
+            orderHelper.failOrder(this.order, this.errorMessage);
             expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(this.order, true);
             expect(this.order.trackOrderChange).to.have.been.calledOnce()
@@ -95,7 +95,7 @@ describe('order/orderHelper', () => {
         it('logs to orderHistory when failing an order fails', () => {
             stubs.dw.statusMock.isError.returns(true);
             stubs.dw.statusMock.getMessage.returns('BOOM');
-            expect(orderHelper.failOrder(this.order, this.errorMessage)).to.be.undefined();
+            orderHelper.failOrder(this.order, this.errorMessage);
             expect(this.order.trackOrderChange).to.have.been.calledTwice()
                 .and.to.have.been.calledWith(sinon.match('BOOM'));
             expect(stubs.loggerMock.debug).to.have.been.calledTwice();
@@ -109,7 +109,7 @@ describe('order/orderHelper', () => {
         });
 
         it('fails an order and logs orderHistory', () => {
-            expect(orderHelper.cancelOrder(this.order, this.errorMessage)).to.be.undefined();
+            orderHelper.cancelOrder(this.order, this.errorMessage);
             expect(stubs.dw.OrderMgrMock.cancelOrder).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(this.order);
             expect(this.order.trackOrderChange).to.have.been.calledOnce()
@@ -121,7 +121,7 @@ describe('order/orderHelper', () => {
         it('logs to orderHistory when failing an order fails', () => {
             stubs.dw.statusMock.isError.returns(true);
             stubs.dw.statusMock.getMessage.returns('BOOM');
-            expect(orderHelper.cancelOrder(this.order, this.errorMessage)).to.be.undefined();
+            orderHelper.cancelOrder(this.order, this.errorMessage);
             expect(this.order.trackOrderChange).to.have.been.calledTwice()
                 .and.to.have.been.calledWith(sinon.match('BOOM'));
             expect(stubs.loggerMock.debug).to.have.been.calledTwice();
@@ -138,7 +138,7 @@ describe('order/orderHelper', () => {
             this.order.getStatus.returns({
                 value: stubs.dw.OrderMock.ORDER_STATUS_CREATED
             });
-            expect(orderHelper.failOrCancelOrder(this.order, this.errorMessage)).to.be.undefined();
+            orderHelper.failOrCancelOrder(this.order, this.errorMessage);
             expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(this.order, true);
             expect(this.order.trackOrderChange).to.have.been.calledOnce()
@@ -148,8 +148,10 @@ describe('order/orderHelper', () => {
         });
 
         it('cancels an order and logs orderHistory', () => {
-            this.order.getStatus.returns(stubs.dw.OrderMock.ORDER_STATUS_NEW);
-            expect(orderHelper.failOrCancelOrder(this.order, this.errorMessage)).to.be.undefined();
+            this.order.getStatus.returns({
+                value: stubs.dw.OrderMock.ORDER_STATUS_NEW
+            });
+            orderHelper.failOrCancelOrder(this.order, this.errorMessage);
             expect(stubs.dw.OrderMgrMock.cancelOrder).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(this.order);
             expect(this.order.trackOrderChange).to.have.been.calledOnce()
@@ -160,8 +162,10 @@ describe('order/orderHelper', () => {
 
 
         it('logs to orderHistory an order does not have the correct status', () => {
-            this.order.getStatus.returns(stubs.dw.OrderMock.ORDER_STATUS_CREATED);
-            expect(orderHelper.failOrCancelOrder(this.order, this.errorMessage)).to.be.undefined();
+            this.order.getStatus.returns({
+                value: stubs.dw.OrderMock.ORDER_STATUS_CREATED
+            });
+            orderHelper.failOrCancelOrder(this.order, this.errorMessage);
             expect(this.order.trackOrderChange).to.have.been.calledOnce()
                 .and.to.have.been.calledWith(this.errorMessage);
             expect(stubs.loggerMock.debug).to.have.been.calledOnce();
@@ -313,6 +317,10 @@ describe('order/orderHelper', () => {
             orderHelper.setPaymentStatus(this.order, 'paymentMethodID', 'paymentStatus');
             expect(this.paymentTransaction.custom.molliePaymentStatus).to.eql('paymentStatus');
         });
+        it('setPaymentDescription', () => {
+            orderHelper.setPaymentDescription(this.order, 'paymentMethodID', 'paymentDescription');
+            expect(this.paymentTransaction.custom.molliePaymentDescription).to.eql('paymentDescription');
+        });
         it('setIssuerData', () => {
             orderHelper.setIssuerData(this.order, 'paymentMethodID', 'issuerData');
             expect(this.paymentTransaction.custom.mollieIssuerData).to.eql('issuerData');
@@ -330,6 +338,7 @@ describe('order/orderHelper', () => {
             this.paymentTransaction.custom = {
                 molliePaymentStatus: 'paymentStatus',
                 molliePaymentId: 'paymentId',
+                molliePaymentDescription: 'paymentDescription',
                 mollieIssuerData: 'issuerData'
             };
             this.paymentInstrument = new stubs.dw.PaymentInstrumentMock();
@@ -348,6 +357,9 @@ describe('order/orderHelper', () => {
         });
         it('getPaymentStatus', () => {
             expect(orderHelper.getPaymentStatus(this.order, 'paymentMethodID')).to.eql('paymentStatus');
+        });
+        it('getPaymentDescription', () => {
+            expect(orderHelper.getPaymentDescription(this.order, 'paymentMethodID')).to.eql('paymentDescription');
         });
         it('getIssuerData', () => {
             expect(orderHelper.getIssuerData(this.order, 'paymentMethodID')).to.eql('issuerData');
@@ -374,9 +386,13 @@ describe('order/orderHelper', () => {
             orderHelper.setUsedTransactionAPI(this.order, 'transactionAPI');
             expect(this.order.custom.mollieUsedTransactionAPI).to.eql('transactionAPI');
         });
-        it('setUsedTransactionAPI', () => {
+        it('setRefundStatus', () => {
             orderHelper.setRefundStatus(this.order, 'refundStatus');
             expect(this.order.custom.mollieRefundStatus).to.eql('refundStatus');
+        });
+        it('setOrderIsAuthorized', () => {
+            orderHelper.setOrderIsAuthorized(this.order, true);
+            expect(this.order.custom.mollieOrderIsAuthorized).to.eql(true);
         });
     });
 
@@ -387,7 +403,8 @@ describe('order/orderHelper', () => {
                 mollieOrderId: 'orderId',
                 mollieOrderStatus: 'orderStatus',
                 mollieUsedTransactionAPI: 'usedTransactionAPI',
-                mollieRefundStatus: 'refundStatus'
+                mollieRefundStatus: 'refundStatus',
+                mollieOrderIsAuthorized: 'orderIsAuthorized'
             };
         });
         it('getOrderId', () => {
@@ -399,8 +416,8 @@ describe('order/orderHelper', () => {
         it('getUsedTransactionAPI', () => {
             expect(orderHelper.getUsedTransactionAPI(this.order)).to.eql('usedTransactionAPI');
         });
-        it('getRefundStatus', () => {
-            expect(orderHelper.getRefundStatus(this.order)).to.eql('refundStatus');
+        it('getOrderIsAuthorized', () => {
+            expect(orderHelper.getOrderIsAuthorized(this.order)).to.eql('orderIsAuthorized');
         });
     });
 

@@ -12,7 +12,7 @@ var Transaction = require('dw/system/Transaction');
  * @param {dw.order.PaymentMethod} paymentMethod - Order paymentMethod
  * @returns {void}
  */
-function getPaymentDescription(order, paymentMethod) {
+function getMappedPaymentDescription(order, paymentMethod) {
     var description = paymentMethod.description && paymentMethod.description.markup;
     if (description) {
         var stringMapping = {
@@ -62,6 +62,7 @@ function failOrder(order, message) {
     if (failOrderStatus.isError()) {
         addItemToOrderHistory(order, 'PAYMENT :: Failed failing the order. User basket not restored: ' + JSON.stringify(failOrderStatus.getMessage()), true);
     }
+    return failOrderStatus;
 }
 
 /**
@@ -74,10 +75,11 @@ function failOrder(order, message) {
 function cancelOrder(order, message) {
     addItemToOrderHistory(order, message, true);
 
-    var failOrderStatus = OrderMgr.cancelOrder(order);
-    if (failOrderStatus.isError()) {
-        addItemToOrderHistory(order, 'PAYMENT :: Failed canceling the order. User basket not restored: ' + JSON.stringify(failOrderStatus.getMessage()), true);
+    var cancelOrderStatus = OrderMgr.cancelOrder(order);
+    if (cancelOrderStatus.isError()) {
+        addItemToOrderHistory(order, 'PAYMENT :: Failed canceling the order. User basket not restored: ' + JSON.stringify(cancelOrderStatus.getMessage()), true);
     }
+    return cancelOrderStatus;
 }
 
 /**
@@ -89,13 +91,71 @@ function cancelOrder(order, message) {
  */
 function failOrCancelOrder(order, message) {
     var orderStatus = order.getStatus().value;
+    var failOrCancelOrderStatus;
+
     if (orderStatus === Order.ORDER_STATUS_CREATED) {
-        failOrder(order, message);
+        failOrCancelOrderStatus = failOrder(order, message);
     } else if (orderStatus === Order.ORDER_STATUS_OPEN || orderStatus === Order.ORDER_STATUS_NEW) {
-        cancelOrder(order, message);
+        failOrCancelOrderStatus = cancelOrder(order, message);
     } else {
         addItemToOrderHistory(order, 'PAYMENT :: Cannot fail or cancel the order. Order has not the correct status: ' + order.getStatus());
     }
+    return failOrCancelOrderStatus;
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - Order object
+ * @param {string} message - Error Message
+ * @returns {void}
+ */
+function undoFailOrder(order, message) {
+    addItemToOrderHistory(order, message, true);
+
+    var undoFailOrderStatus = OrderMgr.undoFailOrder(order);
+    if (undoFailOrderStatus.isError()) {
+        addItemToOrderHistory(order, 'PAYMENT :: Failed undoing fail order. Order not reopened: ' + JSON.stringify(undoFailOrderStatus.getMessage()), true);
+    }
+    return undoFailOrderStatus;
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - Order object
+ * @param {string} message - Error Message
+ * @returns {void}
+ */
+function undoCancelOrder(order, message) {
+    addItemToOrderHistory(order, message, true);
+
+    var undoCancelOrderStatus = OrderMgr.undoCancelOrder(order);
+    if (undoCancelOrderStatus.isError()) {
+        addItemToOrderHistory(order, 'PAYMENT :: Failed canceling the order. User basket not restored: ' + JSON.stringify(undoCancelOrderStatus.getMessage()), true);
+    }
+    return undoCancelOrderStatus;
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - Order object
+ * @param {string} message - Error Message
+ * @returns {Object} status
+ */
+function undoFailOrCancelOrder(order, message) {
+    var orderStatus = order.getStatus().value;
+    var undoFailOrCancelOrderStatus;
+
+    if (orderStatus === Order.ORDER_STATUS_FAILED) {
+        undoFailOrCancelOrderStatus = undoFailOrder(order, message);
+    } else if (orderStatus === Order.ORDER_STATUS_CANCELLED) {
+        undoFailOrCancelOrderStatus = undoCancelOrder(order, message);
+    } else {
+        addItemToOrderHistory(order, 'PAYMENT :: Cannot undo fail or cancel order. Order has not the correct status: ' + order.getStatus());
+    }
+    return undoFailOrCancelOrderStatus;
 }
 
 /**
@@ -255,6 +315,29 @@ function getPaymentStatus(order, paymentMethodId) {
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {string} paymentMethodId - payment method id
+ * @param {string} paymentDescription - payment description
+ * @returns {void}
+ */
+function setPaymentDescription(order, paymentMethodId, paymentDescription) {
+    setTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentDescription', value: paymentDescription });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} paymentMethodId - payment description
+ * @returns {string} - Mollie payment description
+ */
+function getPaymentDescription(order, paymentMethodId) {
+    return getTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentDescription' });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} paymentMethodId - payment method id
  * @returns {string} - Mollie issuer data
  */
 function getIssuerData(order, paymentMethodId) {
@@ -360,6 +443,27 @@ function getRefundStatus(order) {
 /**
  *
  *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} authorized - Mollie authorized
+ * @returns {void}
+ */
+function setOrderIsAuthorized(order, authorized) {
+    setOrderCustomProperty(order, { key: 'mollieOrderIsAuthorized', value: authorized });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @returns {boolean} - Mollie authorized
+ */
+function getOrderIsAuthorized(order) {
+    return getOrderCustomProperty(order, { key: 'mollieOrderIsAuthorized' });
+}
+
+/**
+ *
+ *
  * @param {dw.order.Order} order - Order object
  * @returns {boolean} is mollie order?
  */
@@ -394,11 +498,14 @@ function checkMollieRefundStatus(order, paymentResult) {
 }
 
 module.exports = {
-    getPaymentDescription: getPaymentDescription,
+    getMappedPaymentDescription: getMappedPaymentDescription,
     addItemToOrderHistory: addItemToOrderHistory,
     failOrder: failOrder,
     cancelOrder: cancelOrder,
     failOrCancelOrder: failOrCancelOrder,
+    undoFailOrder: undoFailOrder,
+    undoCancelOrder: undoCancelOrder,
+    undoFailOrCancelOrder: undoFailOrCancelOrder,
     isMollieOrder: isMollieOrder,
     setOrderPaymentStatus: setOrderPaymentStatus,
     setOrderShippingStatus: setOrderShippingStatus,
@@ -413,6 +520,8 @@ module.exports = {
     setIssuerData: setIssuerData,
     setPaymentStatus: setPaymentStatus,
     getPaymentStatus: getPaymentStatus,
+    setPaymentDescription: setPaymentDescription,
+    getPaymentDescription: getPaymentDescription,
     setOrderId: setOrderId,
     getOrderId: getOrderId,
     setOrderStatus: setOrderStatus,
@@ -421,5 +530,7 @@ module.exports = {
     getUsedTransactionAPI: getUsedTransactionAPI,
     setRefundStatus: setRefundStatus,
     getRefundStatus: getRefundStatus,
+    setOrderIsAuthorized: setOrderIsAuthorized,
+    getOrderIsAuthorized: getOrderIsAuthorized,
     checkMollieRefundStatus: checkMollieRefundStatus
 };

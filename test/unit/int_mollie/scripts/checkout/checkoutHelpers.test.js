@@ -329,7 +329,9 @@ describe('checkout/checkoutHelpers', () => {
             var lastOrderNumber = faker.random.number();
             var order = new stubs.dw.OrderMock();
 
-            order.getStatus.returns(stubs.dw.OrderMock.ORDER_STATUS_OPEN);
+            order.getStatus.returns({
+                value: stubs.dw.OrderMock.ORDER_STATUS_OPEN
+            });
             stubs.dw.BasketMgrMock.getCurrentBasket.returns({ getProductLineItems: () => [1, 2, 3] });
             stubs.dw.OrderMgrMock.getOrder.returns(order);
 

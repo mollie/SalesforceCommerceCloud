@@ -65,6 +65,7 @@ Add the following cartridges to the business manager site:
 ### PaymentTransaction
 - `molliePaymentId`: string - the id of the Mollie payment
 - `molliePaymentStatus`: string - the payment status recieved from Mollie
+- `molliePaymentDescription`: text - Generated payment description
 - `mollieIssuerData`: text - selected issuer data
 
 ### Order
@@ -72,6 +73,7 @@ Add the following cartridges to the business manager site:
 - `mollieOrderStatus`: string - the payment status recieved from Mollie
 - `mollieUsedTransactionAPI`: string - api used for creating payment (payment / order)
 - `mollieRefundStatus`: enum of strings - the status of the refund
+- `mollieOrderIsAuthorized`: boolean - the order is authorized
 
 ### Profile
 - `mollieCustomerId`: string - the id of the Mollie customer (used for single click payments)

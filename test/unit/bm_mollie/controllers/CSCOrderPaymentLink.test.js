@@ -5,6 +5,7 @@ const { stubs } = testHelpers;
 const controller = proxyquire(`${base}/bm_mollie/cartridge/controllers/CSCOrderPaymentLink`, {
     'dw/order/Order': stubs.dw.OrderMock,
     'dw/order/OrderMgr': stubs.dw.OrderMgrMock,
+    'dw/system/Transaction': stubs.dw.TransactionMock,
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
     '*/cartridge/scripts/order/orderHelper': stubs.orderHelperMock,
     '*/cartridge/scripts/payment/paymentService': stubs.paymentServiceMock,
@@ -31,7 +32,6 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
                     email: faker.internet.email()
                 }
             };
-            stubs.dw.OrderMgrMock.getOrder.returns(order);
             global.request = {
                 httpParameterMap: {
                     get: (value) => {
@@ -44,6 +44,8 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
                     }
                 }
             };
+            stubs.dw.OrderMgrMock.getOrder.returns(order);
+            stubs.orderHelperMock.undoFailOrCancelOrder.returns({ isError: () => false });
         });
         it('renders a template for Mollie order with viewParams', () => {
             order.status = {
@@ -151,7 +153,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
         });
         it('renders link not available template when link is not available', () => {
             order.status = {
-                value: stubs.dw.OrderMock.ORDER_STATUS_CANCELLED
+                value: stubs.dw.OrderMock.ORDER_STATUS_OPEN
             };
 
             controller.Start();
