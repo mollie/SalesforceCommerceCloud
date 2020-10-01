@@ -192,7 +192,7 @@ const configMock = {
 };
 
 const orderHelperMock = {
-    getPaymentDescription: sandbox.stub(),
+    getMappedPaymentDescription: sandbox.stub(),
     checkMollieRefundStatus: sandbox.stub(),
     getIssuerData: sandbox.stub(),
     setRefundStatus: sandbox.stub(),
@@ -201,6 +201,9 @@ const orderHelperMock = {
     failOrder: sandbox.stub(),
     cancelOrder: sandbox.stub(),
     failOrCancelOrder: sandbox.stub(),
+    undoFailOrder: sandbox.stub(),
+    undoCancelOrder: sandbox.stub(),
+    undoFailOrCancelOrder: sandbox.stub(),
     isMollieOrder: sandbox.stub(),
     setOrderPaymentStatus: sandbox.stub(),
     setOrderShippingStatus: sandbox.stub(),
@@ -213,12 +216,16 @@ const orderHelperMock = {
     getPaymentId: sandbox.stub(),
     setPaymentStatus: sandbox.stub(),
     getPaymentStatus: sandbox.stub(),
+    setPaymentDescription: sandbox.stub(),
+    getPaymentDescription: sandbox.stub(),
     setOrderId: sandbox.stub(),
     getOrderId: sandbox.stub(),
     setOrderStatus: sandbox.stub(),
     getOrderStatus: sandbox.stub(),
     setUsedTransactionAPI: sandbox.stub(),
-    getUsedTransactionAPI: sandbox.stub()
+    getUsedTransactionAPI: sandbox.stub(),
+    setOrderIsAuthorized: sandbox.stub(),
+    getOrderIsAuthorized: sandbox.stub()
 };
 
 const checkoutHelpersMock = {

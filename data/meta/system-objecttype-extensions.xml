@@ -372,6 +372,14 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
+            <attribute-definition attribute-id="molliePaymentDescription">
+                <display-name xml:lang="x-default">Mollie payment description</display-name>
+                <description xml:lang="x-default">The Mollie payment description.</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
             <attribute-definition attribute-id="mollieIssuerData">
                 <display-name xml:lang="x-default">Mollie issuer data</display-name>
                 <type>text</type>
@@ -385,6 +393,7 @@
                 <display-name xml:lang="x-default">Mollie</display-name>
                 <attribute attribute-id="molliePaymentId"/>
                 <attribute attribute-id="molliePaymentStatus"/>
+                <attribute attribute-id="molliePaymentDescription"/>
                 <attribute attribute-id="mollieIssuerData"/>
             </attribute-group>
         </group-definitions>
@@ -436,6 +445,13 @@
                 </value-definitions>
             </attribute-definition>
         </custom-attribute-definitions>
+        <attribute-definition attribute-id="mollieOrderIsAuthorized">
+                <display-name xml:lang="x-default">Order is authorized</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Mollie">
                 <display-name xml:lang="x-default">Mollie</display-name>
@@ -443,6 +459,7 @@
                 <attribute attribute-id="mollieOrderStatus"/>
                 <attribute attribute-id="mollieUsedTransactionAPI" />
                 <attribute attribute-id="mollieRefundStatus" />
+                <attribute attribute-id="mollieOrderIsAuthorized" />
             </attribute-group>
         </group-definitions>
     </type-extension>

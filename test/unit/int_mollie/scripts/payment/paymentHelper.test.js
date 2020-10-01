@@ -77,7 +77,6 @@ describe('payment/paymentHelper', () => {
 
             paymentHelper.processPaymentResult(this.order, paymentResult);
 
-            expect(stubs.checkoutHelpersMock.placeOrder).have.to.been.calledOnce();
             expect(stubs.orderHelperMock.addItemToOrderHistory).have.to.been.calledOnce();
         });
         it('should process the payment result from Mollie with status ', () => {
@@ -90,7 +89,8 @@ describe('payment/paymentHelper', () => {
 
             paymentHelper.processPaymentResult(this.order, paymentResult);
 
-            expect(stubs.checkoutHelpersMock.placeOrder).have.to.been.calledOnce();
+            expect(stubs.orderHelperMock.setOrderIsAuthorized).have.to.been.calledOnce()
+                .and.to.have.been.calledWithExactly(this.order, true);
             expect(stubs.orderHelperMock.addItemToOrderHistory).have.to.been.calledOnce();
         });
         it('should process the payment result from Mollie with status OPEN for Mollie order', () => {

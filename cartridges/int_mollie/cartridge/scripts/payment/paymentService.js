@@ -51,6 +51,7 @@ function getOrder(orderId) {
  */
 function createPayment(order, paymentMethod, paymentData) {
     try {
+        var paymentDescription = orderHelper.getMappedPaymentDescription(order, paymentMethod) || Resource.msgf('order.details.description', 'mollie', null, order.orderNo);
         var paymentResult = MollieService.createPayment({
             orderId: order.orderNo,
             totalGrossPrice: order.getTotalGrossPrice(),
@@ -58,7 +59,7 @@ function createPayment(order, paymentMethod, paymentData) {
             cardToken: paymentData && paymentData.cardToken,
             issuer: paymentData && paymentData.issuer,
             customerId: paymentData && paymentData.customerId,
-            description: orderHelper.getPaymentDescription(order, paymentMethod) || Resource.msgf('order.details.description', 'mollie', null, order.orderNo)
+            description: paymentDescription
         });
 
         Transaction.wrap(function () {
@@ -66,6 +67,7 @@ function createPayment(order, paymentMethod, paymentData) {
             orderHelper.addItemToOrderHistory(order, historyItem, true);
             orderHelper.setUsedTransactionAPI(order, config.getTransactionAPI().PAYMENT);
             orderHelper.setPaymentId(order, paymentMethod.getID(), paymentResult.payment.id);
+            orderHelper.setPaymentDescription(order, paymentMethod.getID(), paymentDescription);
         });
 
         return paymentResult;

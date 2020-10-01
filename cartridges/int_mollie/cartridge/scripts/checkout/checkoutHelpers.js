@@ -80,7 +80,8 @@ COHelpers.restoreOpenOrder = function (lastOrderNumber) {
     if (!currentBasket || currentBasket.getProductLineItems().length === 0) {
         if (lastOrderNumber) {
             var order = OrderMgr.getOrder(lastOrderNumber);
-            if (order && order.getStatus().value === Order.ORDER_STATUS_CREATED) {
+            if (order && order.getStatus().value === Order.ORDER_STATUS_CREATED
+                && !orderHelper.getOrderIsAuthorized(order)) {
                 Transaction.wrap(function () {
                     OrderMgr.failOrder(order);
                 });

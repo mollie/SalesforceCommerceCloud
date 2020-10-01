@@ -27,6 +27,12 @@ function processPaymentResult(order, paymentResult) {
     if (mollieOrderStatus === paymentResult.status) return { url: url };
 
     var STATUS = config.getTransactionStatus();
+    
+    if (orderHelper.getOrderIsAuthorized(order)) {
+        Transaction.wrap(function () {
+            orderHelper.setOrderIsAuthorized(order, false);
+        });
+    }
 
     // PROCESS STATUS
     switch (paymentResult.status) {
@@ -35,6 +41,7 @@ function processPaymentResult(order, paymentResult) {
             Transaction.wrap(function () {
                 orderHelper.setOrderShippingStatus(order, Order.SHIPPING_STATUS_SHIPPED,
                     { customLogMessage: 'PAYMENT :: Order shipped, Mollie status :: ' + paymentResult.status });
+                order.setStatus(Order.ORDER_STATUS_COMPLETED);
             });
             break;
 
@@ -47,10 +54,18 @@ function processPaymentResult(order, paymentResult) {
             break;
 
         case STATUS.PENDING:
+            Transaction.wrap(function () {
+                orderHelper.addItemToOrderHistory(order,
+                    'PAYMENT :: Order pending, Mollie status :: ' + paymentResult.status);
+            });
+            break;
+
         case STATUS.AUTHORIZED:
-            orderHelper.addItemToOrderHistory(order,
-                'PAYMENT :: Order pending, Mollie status :: ' + paymentResult.status);
-            COHelpers.placeOrder(order);
+            Transaction.wrap(function () {
+                orderHelper.setOrderIsAuthorized(order, true);
+                orderHelper.addItemToOrderHistory(order,
+                    'PAYMENT :: Order authorized, Mollie status :: ' + paymentResult.status);
+            });
             break;
 
         case STATUS.OPEN:
@@ -88,7 +103,9 @@ function processPaymentResult(order, paymentResult) {
             break;
 
         default:
-            orderHelper.addItemToOrderHistory(order, 'PAYMENT :: Unknown Mollie status update :: ' + paymentResult.status);
+            Transaction.wrap(function () {
+                orderHelper.addItemToOrderHistory(order, 'PAYMENT :: Unknown Mollie status update :: ' + paymentResult.status);
+            });
     }
 
     Transaction.wrap(function () {
