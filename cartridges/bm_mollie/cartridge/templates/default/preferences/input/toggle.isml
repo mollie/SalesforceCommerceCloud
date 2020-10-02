@@ -1,0 +1,3 @@
+<input class="checkbox" type="checkbox" data-toggle="toggle" value="true" name="${preference.ID}" 
+    ${preference.selectedValue ? 'checked' : ''}/>
+<input type="hidden" name="${preference.ID}"/>

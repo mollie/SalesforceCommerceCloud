@@ -12,7 +12,8 @@ var preferences = {
     mollieDefaultOrderExpiryDays: faker.random.number(),
     mollieEnableSingleClickPayments: faker.random.boolean(),
     mollieComponentsEnabled: faker.random.boolean(),
-    mollieLogCategory: faker.lorem.word()
+    mollieLogCategory: faker.lorem.word(),
+    mollieCustomPageFieldSettings: faker.lorem.word()
 };
 
 const getConfig = prefs => {
@@ -65,6 +66,9 @@ describe('Config', () => {
     it('gets mollieLogCategory', () => {
         expect(getConfig(preferences).getLogCategory()).to.eql(preferences.mollieLogCategory);
     });
+    it('gets customPageFieldSettings', () => {
+        expect(getConfig(preferences).getCustomPageFieldSettings()).to.eql(preferences.mollieCustomPageFieldSettings);
+    });
     it('gets transactionstatus', () => {
         const transactionStatus = getConfig(preferences).getTransactionStatus();
         expect(transactionStatus).to.be.an('object');
@@ -73,7 +77,6 @@ describe('Config', () => {
         const transactionAPI = getConfig(preferences).getTransactionAPI();
         expect(transactionAPI).to.be.an('object');
     });
-
     it('throw when sitepreference is missing', () => {
         expect(() => getConfig({})).to.throw();
         expect(stubs.serviceExceptionMock).to.have.been.calledOnce()

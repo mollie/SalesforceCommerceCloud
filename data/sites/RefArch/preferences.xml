@@ -12,6 +12,32 @@
             <preference preference-id="mollieEnableSingleClickPayments">true</preference>
             <preference preference-id="mollieComponentsEnabled">true</preference>
             <preference preference-id="mollieLogCategory">mollie</preference>
+            <preference preference-id="mollieCustomPageFieldSettings">{
+        "mollieBearerTestToken": {
+            "description": "You can find your API key in your <a href='https://www.mollie.com/dashboard/org_9306261/developers/api-keys'>Mollie Profile</a>, it starts with test or live."
+        },
+        "mollieBearerToken": {},
+        "mollieProfileId": {
+            "description": "You can find your Profile ID in your <a href='https://www.mollie.com/dashboard/org_9306261/developers/api-keys'>Mollie Profile</a>"
+        },
+        "mollieDefaultEnabledTransactionAPI": {
+            "description": "Click <a href='https://docs.mollie.com/orders/why-use-orders'>here</a> to read more about the differences between the Payment and Orders API"
+        },
+        "mollieDefaultOrderExpiryDays": {
+            "description": "Default expiry days for orders created with the Orders API"
+        },
+        "mollieEnableSingleClickPayments": {
+            "description": "Read more about <a href='https://help.mollie.com/hc/en-us/articles/115000671249-What-are-single-click-payments-and-how-does-it-work-'>Single Click Payments</a> and how it improves your conversion. "
+        },
+        "mollieComponentsEnabled": {
+            "description": "Read more about <a href='https://www.mollie.com/en/news/post/better-checkout-flows-with-mollie-components'>Mollie Components</a> and how it improves your conversion."
+        },
+        "mollieLogCategory": {
+            "description": "Log category used by SFCC. The log category can be selected under: Administration -> Operations -> Custom Log Settings."
+        },
+        "mollieApplePayVerificationString": {}
+    }
+            </preference>
         </development>
         <staging />
         <production />

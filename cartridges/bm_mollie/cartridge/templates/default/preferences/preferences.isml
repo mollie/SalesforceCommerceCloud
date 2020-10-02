@@ -1,0 +1,46 @@
+<div class="card js-bm-preferences">
+    <div class="card-header">
+        Mollie settings
+    </div>
+    <div class="card-body">
+        <div class="alert alert-success js-bm-preferences-alert-success d-none"></div>
+        <div class="alert alert-danger js-bm-preferences-alert-error d-none"></div>
+        <div class="jumbotron row">
+            <div class="col-4">
+                Developed by Forward
+                <a href="https://forward.eu/">More info about Forward</a>
+            </div>
+            <div class="col-4">
+                <a href="https://www.mollie.com/nl/contact">More info about Mollie</a>
+            </div>
+            <div class="col-4">
+                <a href="https://www.salesforce.com">More info about Salesforce</a>
+            </div>
+        </div>
+        <form class="js-bm-preferences-form">
+            <fieldset>
+                <isloop items="${pdict.preferences}" var="preference" status="loopstatus">
+                    <div class="row form-group ${preference.mandotory ? 'required' : ''}">
+                        <label class="col-md-2 control-label">${preference.displayName || preference.ID}</label>
+                        <div class="col-md-4">
+                            <isif condition="${preference.inputType === 'checkbox'}">
+                                <isinclude template="preferences/input/toggle" />
+                            <iselseif condition="${preference.inputType === 'select'}" />
+                                <isinclude template="preferences/input/select" />
+                            <iselse/>
+                                <isinclude template="preferences/input/input" />
+                            </isif>
+                            <span class="field-description mt-2">
+                                <isprint value="${preference.description}" encoding="off" /></span>
+                        </div>
+                    </div>
+                    <isif condition="${preference.ID === 'mollieProfileId'}">
+                        <isinclude template="preferences/testApiKey" />
+                    </isif>
+                </isloop>
+                <button type="button" class="btn btn-primary js-bm-preferences-submit mt-2"
+                    data-method-url="${URLUtils.url('MollieSettings-SavePreferences')}">Save</button>
+            </fieldset>
+        </form>
+    </div>
+</div>

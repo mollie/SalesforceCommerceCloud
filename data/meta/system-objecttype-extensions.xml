@@ -570,7 +570,7 @@
             </attribute-definition>
             <attribute-definition attribute-id="mollieDefaultOrderExpiryDays">
                 <display-name xml:lang="x-default">Default order expiry days</display-name>
-                <description xml:lang="x-default">Default expiry days for orders created with the ORDERS API</description>
+                <description xml:lang="x-default">Default expiry days for orders created with the Orders API</description>
                 <type>enum-of-int</type>
                 <mandatory-flag>true</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -908,6 +908,14 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
+            <attribute-definition attribute-id="mollieCustomPageFieldSettings">
+                <display-name xml:lang="x-default">Custom settings page field settings</display-name>
+                <description xml:lang="x-default">Settings for fields on tthe Mollie custom settings page</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Mollie Config">
@@ -921,7 +929,10 @@
                 <attribute attribute-id="mollieEnableSingleClickPayments"/>
                 <attribute attribute-id="mollieComponentsEnabled"/>
                 <attribute attribute-id="mollieLogCategory"/>
-                <attribute attribute-id="mollieApplePayVerificationString"/>
+            </attribute-group>
+            <attribute-group group-id="Mollie Settings Config">
+                <display-name xml:lang="x-default">Configuration for Mollie custom settings page</display-name>
+                <attribute attribute-id="mollieCustomPageSettings"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

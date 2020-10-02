@@ -59,6 +59,7 @@ function Config() {
     this.enableSingleClickPayments = getPreferenceOrThrow(sitePreferences, 'mollieEnableSingleClickPayments');
     this.componentsEnabled = getPreferenceOrThrow(sitePreferences, 'mollieComponentsEnabled');
     this.logCategory = getPreferenceOrThrow(sitePreferences, 'mollieLogCategory');
+    this.customPageFieldSettings = getPreferenceOrThrow(sitePreferences, 'mollieCustomPageFieldSettings');
 
     /**
      * Get SiteId
@@ -83,7 +84,7 @@ function Config() {
     /**
      * Get Enabled mode
      * @function
-     * @name Config#getBearerToken
+     * @name Config#getEnabledMode
      * @return {string} enabledMode
      */
     this.getEnabledMode = function () {
@@ -98,6 +99,26 @@ function Config() {
      */
     this.getBearerToken = function () {
         return this.enabledMode.value === 'TEST' ? this.bearerTestToken : this.bearerToken;
+    };
+
+    /**
+     * Get API key
+     * @function
+     * @name Config#getBearerTokenLive
+     * @return {string} bearerToken
+     */
+    this.getBearerTokenLive = function () {
+        return this.bearerToken;
+    };
+
+    /**
+     * Get API key
+     * @function
+     * @name Config#getBearerTokenTest
+     * @return {string} bearerToken
+     */
+    this.getBearerTokenTest = function () {
+        return this.bearerTestToken;
     };
 
     /**
@@ -158,6 +179,16 @@ function Config() {
      */
     this.getLogCategory = function () {
         return this.logCategory;
+    };
+
+    /**
+    * Get LogCategory
+    * @function
+    * @name Config#getLogCategory
+    * @return {string} logCategory
+    */
+    this.getCustomPageFieldSettings = function () {
+        return this.customPageFieldSettings;
     };
 
     /**

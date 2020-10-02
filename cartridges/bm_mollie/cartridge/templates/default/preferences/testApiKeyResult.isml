@@ -1,0 +1,20 @@
+<isset name="testResult" value="${pdict.testApiKeysResult.testResult}" scope="page" />
+<isset name="liveResult" value="${pdict.testApiKeysResult.liveResult}" scope="page" />
+<div class="api-test-result">
+   <span>Test API-Key: ${testResult.methods ? 'Success!' : 'Fail!'}</span>
+   <isif condition="${testResult.methods}">
+      <span>
+         <strong>Enabled Methods:</strong>
+         <isloop items="${testResult.methods}" var="method" status="loopstatus">
+            ${method.description},
+         </isloop>
+      </span>
+   </isif>
+   <span class="mt-2">Live API-Key: ${liveResult.methods ? 'Success!' : 'Fail!'}</span>
+   <isif condition="${liveResult.methods}">
+      <strong>Enabled Methods: </strong>
+      <isloop items="${liveResult.methods}" var="method" status="loopstatus">
+         ${method.description},
+      </isloop>
+   </isif>
+</div>

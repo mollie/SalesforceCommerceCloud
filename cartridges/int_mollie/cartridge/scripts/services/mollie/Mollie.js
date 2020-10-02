@@ -31,7 +31,7 @@ function Mollie(configuration) {
         svc.setRequestMethod(this.method);
         svc.addHeader('Accept', 'application/json; charset=utf-8');
         svc.addHeader('content-type', 'application/json');
-        svc.addHeader('Authorization', 'Bearer ' + config.getBearerToken());
+        svc.addHeader('Authorization', 'Bearer ' + (parameters.bearerToken || config.getBearerToken()));
         return svc;
     };
 

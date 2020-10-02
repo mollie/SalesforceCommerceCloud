@@ -9,9 +9,10 @@ describe('scripts/helpers/renderTemplateHelper', () => {
     afterEach(() => stubs.reset());
     after(() => stubs.restore());
 
-    var renderTemplateHelper = proxyquire(`${base}/bm_mollie/cartridge/scripts/helpers/renderTemplateHelper`, {
+    var renderTemplateHelper = proxyquire(`${base}/bm_mollie/cartridge/scripts/renderTemplateHelper`, {
         'dw/template/ISML': stubs.dw.ISMLMock,
-        '*/cartridge/scripts/utils/logger': stubs.loggerMock
+        '*/cartridge/scripts/utils/logger': stubs.loggerMock,
+        '*/cartridge/scripts/utils/superModule': stubs.superModule
     });
 
     it('should render the template with the given viewParams', function () {

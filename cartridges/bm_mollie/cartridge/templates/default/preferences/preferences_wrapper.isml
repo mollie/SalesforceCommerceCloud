@@ -1,0 +1,3 @@
+<isdecorate template="bm_pref.isml">
+    <isinclude template="preferences/preferences" sf-toolkit="on" />
+</isdecorate>
