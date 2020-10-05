@@ -223,7 +223,7 @@ function cancelOrderLineItem(order, lines) {
  */
 function getMethods(currentBasket, countryCode) {
     try {
-        return MollieService.getMethods({
+        return MollieService.getMethodsWithParams({
             amount: currentBasket.adjustedMerchandizeTotalGrossPrice.value.toFixed(2),
             currency: currentBasket.adjustedMerchandizeTotalGrossPrice.currencyCode,
             resource: config.getDefaultEnabledTransactionAPI().value === config.getTransactionAPI().PAYMENT ? 'payments' : 'orders',
@@ -326,6 +326,40 @@ function requestPaymentSession(validationURL) {
     }
 }
 
+/**
+ *
+ * @returns {Object}  - result of getMethod calls
+ * @throws {MollieServiceException}
+ */
+function testApiKeys(testApiKey, liveApiKey) {
+    var liveResult;
+    var testResult;
+    try {
+        liveResult = MollieService.getMethods({
+            bearerToken: liveApiKey
+        });
+    } catch (e) {
+        liveResult = {
+            error: true
+        };
+    }
+
+    try {
+        testResult = MollieService.getMethods({
+            bearerToken: testApiKey
+        });
+    } catch (e) {
+        testResult = {
+            error: true
+        };
+    }
+
+    return {
+        liveResult: liveResult,
+        testResult: testResult
+    };
+}
+
 module.exports = {
     getPayment: getPayment,
     createPayment: createPayment,
@@ -340,5 +374,6 @@ module.exports = {
     createOrderRefund: createOrderRefund,
     createShipment: createShipment,
     createCustomer: createCustomer,
-    requestPaymentSession: requestPaymentSession
+    requestPaymentSession: requestPaymentSession,
+    testApiKeys: testApiKeys
 };

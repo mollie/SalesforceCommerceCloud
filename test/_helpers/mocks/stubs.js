@@ -131,6 +131,7 @@ const mollieServiceMock = {
     createShipment: sandbox.stub(),
     getMethod: sandbox.stub(),
     getMethods: sandbox.stub(),
+    getMethodsWithParams: sandbox.stub(),
     createCustomer: sandbox.stub(),
     requestPaymentSession: sandbox.stub()
 };

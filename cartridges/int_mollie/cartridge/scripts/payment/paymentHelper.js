@@ -27,7 +27,7 @@ function processPaymentResult(order, paymentResult) {
     if (mollieOrderStatus === paymentResult.status) return { url: url };
 
     var STATUS = config.getTransactionStatus();
-    
+
     if (orderHelper.getOrderIsAuthorized(order)) {
         Transaction.wrap(function () {
             orderHelper.setOrderIsAuthorized(order, false);

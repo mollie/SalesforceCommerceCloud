@@ -2,9 +2,11 @@
 <!-- =============================================================== -->
 <!-- ==  CSC EXTENSIONS     		                              == -->
 <!-- =============================================================== -->
-<extensions xmlns="http://www.demandware.com/xml/bmmodules/2007-12-11" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.demandware.com/xml/bmmodules/2007-12-11 bmext.xsd">
+<extensions xmlns="http://www.demandware.com/xml/bmmodules/2007-12-11"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.demandware.com/xml/bmmodules/2007-12-11 bmext.xsd">
+
     <menuitem id="order_payment" site="true" type="CSC">
-        <name xml:lang="x-default" >CSC Order</name>
+        <name xml:lang="x-default">CSC Order</name>
         <short_description xml:lang="x-default">Customer Service Center Order</short_description>
         <description xml:lang="x-default">Customer Service Center Order</description>
     </menuitem>
@@ -60,4 +62,19 @@
         </parameters>
         <icon>check_address.png</icon>
     </menuaction>
+
+    <menuaction id="credit_card_prefs" menupath="site-prefs" position="2" site="true">
+        <name xml:lang="x-default">Mollie settings</name>
+        <short_description xml:lang="x-default">Mollie settings</short_description>
+        <description xml:lang="x-default">Mollie settings</description>
+        <exec pipeline="MollieSettings" node="Start"/>
+        <sub-pipelines>
+            <pipeline name="MollieSettings" />
+        </sub-pipelines>
+        <parameters>
+            <parameter name="pref_group" value="Mollie Config"/>
+        </parameters>
+        <icon>mollie.svg</icon>
+    </menuaction>
+
 </extensions>

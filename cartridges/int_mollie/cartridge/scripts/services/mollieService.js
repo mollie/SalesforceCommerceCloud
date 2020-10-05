@@ -105,7 +105,16 @@ exports.getMethod = function (parameters) {
 };
 
 exports.getMethods = function (parameters) {
-    var mollie = new Mollie(methodConstants.GET_METHODS);
+    var constant = methodConstants.GET_METHODS;
+    var mollie = new Mollie(constant);
+    mollie.addPayloadBuilder(getMethods.payloadBuilder);
+    mollie.addResponseMapper(getMethods.responseMapper);
+    return mollie.execute(parameters);
+};
+
+exports.getMethodsWithParams = function (parameters) {
+    var constant = methodConstants.GET_METHODS_WITH_PARAMS;
+    var mollie = new Mollie(constant);
     mollie.addPayloadBuilder(getMethods.payloadBuilder);
     mollie.addResponseMapper(getMethods.responseMapper);
     return mollie.execute(parameters);

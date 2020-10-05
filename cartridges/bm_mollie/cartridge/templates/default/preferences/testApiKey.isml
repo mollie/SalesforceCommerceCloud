@@ -1,0 +1,9 @@
+<div class="row mb-4">
+    <div class="col-md-2">
+        <button type="button" class="btn btn-primary js-bm-preferences-test-api"
+            data-method-url="${URLUtils.url('MollieSettings-TestApiKeyey')}">Test ApiKey</button>
+    </div>
+    <div class="col-md-4">
+        <div class="js-bm-preferences-test-api-result"></div>
+    </div>
+</div>

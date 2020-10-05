@@ -238,13 +238,13 @@ describe('payment/paymentService', () => {
                     }
                 ]
             };
-            stubs.mollieServiceMock.getMethods.returns(methodResult);
+            stubs.mollieServiceMock.getMethodsWithParams.returns(methodResult);
             stubs.configMock.getDefaultAttributeValue.returns(DEFAULT_ATTRIBUTE_VALUE);
             stubs.configMock.getDefaultEnabledTransactionAPI.returns({ value: TRANSACTION_API.PAYMENT });
 
             var result = paymentService.getMethods(basket, countryCode);
 
-            expect(stubs.mollieServiceMock.getMethods).have.to.been.calledOnce();
+            expect(stubs.mollieServiceMock.getMethodsWithParams).have.to.been.calledOnce();
             expect(result).to.eql(methodResult);
         });
     });
