@@ -3,7 +3,7 @@ var Order = require('dw/order/Order');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
-var renderTemplate = require('*/cartridge/scripts/helpers/renderTemplateHelper').renderTemplate;
+var renderTemplate = require('*/cartridge/scripts/renderTemplateHelper').renderTemplate;
 
 var isRefundAllowed = function (order) {
     if (!order) return false;

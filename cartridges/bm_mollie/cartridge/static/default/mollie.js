@@ -44,7 +44,7 @@ function onClickSubmit() {
                 }
             },
             error: function () {
-                showError('<strong>Successfully saved!</strong>');
+                showError('<strong>Error!</strong>');
             }
         });
     });
@@ -76,7 +76,7 @@ function onClickTestApiKeys() {
                 $(BM_PREF_TEST_API_RESULT).html(data.resultTemplate);
             },
             error: function () {
-                showError();
+                showError('<strong>Error!</strong>');
             }
         });
     });

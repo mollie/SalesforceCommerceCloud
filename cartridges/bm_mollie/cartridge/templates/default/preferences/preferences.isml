@@ -5,16 +5,29 @@
     <div class="card-body">
         <div class="alert alert-success js-bm-preferences-alert-success d-none"></div>
         <div class="alert alert-danger js-bm-preferences-alert-error d-none"></div>
-        <div class="jumbotron row">
-            <div class="col-4">
-                Developed by Forward
-                <a href="https://forward.eu/">More info about Forward</a>
-            </div>
-            <div class="col-4">
-                <a href="https://www.mollie.com/nl/contact">More info about Mollie</a>
-            </div>
-            <div class="col-4">
-                <a href="https://www.salesforce.com">More info about Salesforce</a>
+        <a href="javascript:history.back()" class="d-block mb-3">Back to Business Manager</a>
+        <div class="jumbotron">
+            <p>Developed by Forward</p>
+            <div class="row">
+                <div class="col-6 col-md-3">
+                    <img src="${URLUtils.staticURL('icons/info.svg')}" alt="Info" />
+                    <a href="https://forward.eu/" target="_blank">More info about Forward</a>
+                </div>
+                <div class="col-6 col-md-2">
+                    <img src="${URLUtils.staticURL('icons/contact.svg')}" alt="Info" />
+                    <a href="https://forward.eu/contact/" target="_blank">Contact Forward</a>
+                </div>
+                <div class="col-6 col-md-2">
+                    <img src="${URLUtils.staticURL('icons/contact.svg')}" alt="Info" />
+                    <a href="https://www.mollie.com/en/contact" target="_blank">Contact Mollie</a>
+                </div>
+                <div class="col-6 col-md-2">
+                    <img src="${URLUtils.staticURL('icons/info.svg')}" alt="Info" />
+                    <a href="https://help.mollie.com/hc/en-us" target="_blank">More info on Mollie</a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <img class="mollie-logo" src="${URLUtils.staticURL('mollie.svg')}" alt="Mollie" />
+                </div>
             </div>
         </div>
         <form class="js-bm-preferences-form">
@@ -38,6 +51,7 @@
                         <isinclude template="preferences/testApiKey" />
                     </isif>
                 </isloop>
+                <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
                 <button type="button" class="btn btn-primary js-bm-preferences-submit mt-2"
                     data-method-url="${URLUtils.url('MollieSettings-SavePreferences')}">Save</button>
             </fieldset>

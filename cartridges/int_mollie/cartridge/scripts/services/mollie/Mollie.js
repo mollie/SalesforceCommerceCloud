@@ -56,11 +56,6 @@ function Mollie(configuration) {
                 .replace('{amount}', parameters.amount);
         }
 
-        if (parameters.resource) {
-            this.path = this.path
-                .replace('{resource}', parameters.resource);
-        }
-
         if (parameters.billingCountry) {
             this.path = this.path
                 .replace('{billingCountry}', parameters.billingCountry);

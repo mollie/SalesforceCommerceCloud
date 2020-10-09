@@ -59,7 +59,8 @@ function createPayment(order, paymentMethod, paymentData) {
             cardToken: paymentData && paymentData.cardToken,
             issuer: paymentData && paymentData.issuer,
             customerId: paymentData && paymentData.customerId,
-            description: paymentDescription
+            description: paymentDescription,
+            locale: paymentData && paymentData.locale
         });
 
         Transaction.wrap(function () {
@@ -226,7 +227,6 @@ function getMethods(currentBasket, countryCode) {
         return MollieService.getMethodsWithParams({
             amount: currentBasket.adjustedMerchandizeTotalGrossPrice.value.toFixed(2),
             currency: currentBasket.adjustedMerchandizeTotalGrossPrice.currencyCode,
-            resource: config.getDefaultEnabledTransactionAPI().value === config.getTransactionAPI().PAYMENT ? 'payments' : 'orders',
             billingCountry: currentBasket.billingAddress ? currentBasket.billingAddress.countryCode.value : countryCode
         });
     } catch (e) {
@@ -327,7 +327,8 @@ function requestPaymentSession(validationURL) {
 }
 
 /**
- *
+ * @param {string} testApiKey - testApiKey
+ * @param {string} liveApiKey - liveApiKey
  * @returns {Object}  - result of getMethod calls
  * @throws {MollieServiceException}
  */

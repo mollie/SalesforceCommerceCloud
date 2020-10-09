@@ -7,7 +7,7 @@ var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var PaymentMgr = require('dw/order/PaymentMgr');
-var renderTemplate = require('*/cartridge/scripts/helpers/renderTemplateHelper').renderTemplate;
+var renderTemplate = require('*/cartridge/scripts/renderTemplateHelper').renderTemplate;
 
 var isLinkAllowed = function (order) {
     if (!order) return false;
@@ -64,7 +64,7 @@ exports.Start = function () {
                 paymentLink = getPaymentResult.payment.links.checkout.href;
             } else {
                 var paymentMethod = PaymentMgr.getPaymentMethod(paymentMethodId);
-                var createPaymentresult = paymentService.createPayment(order, paymentMethod);
+                var createPaymentresult = paymentService.createPayment(order, paymentMethod, { locale: getPaymentResult.payment.locale });
                 paymentLink = createPaymentresult.payment.links.checkout.href;
             }
         }
