@@ -71,6 +71,7 @@ function Payment(molliePayment) {
     this.description = payment.description;
     this.method = payment.method;
     this.metadata = payment.metadata;
+    this.locale = payment.locale;
     this.status = payment.status;
     this.amountRefunded = payment.amountRefunded;
     this.amountRemaining = payment.amountRemaining;

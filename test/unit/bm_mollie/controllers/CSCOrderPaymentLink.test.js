@@ -9,7 +9,7 @@ const controller = proxyquire(`${base}/bm_mollie/cartridge/controllers/CSCOrderP
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
     '*/cartridge/scripts/order/orderHelper': stubs.orderHelperMock,
     '*/cartridge/scripts/payment/paymentService': stubs.paymentServiceMock,
-    '*/cartridge/scripts/helpers/renderTemplateHelper': stubs.renderTemplateHelperMock,
+    '*/cartridge/scripts/renderTemplateHelper': stubs.renderTemplateHelperMock,
     'dw/system/HookMgr': stubs.dw.HookMgrMock,
     '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
     'dw/order/PaymentMgr': stubs.dw.PaymentMgrMock

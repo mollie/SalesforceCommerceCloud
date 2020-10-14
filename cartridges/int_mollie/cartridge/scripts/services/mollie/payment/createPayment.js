@@ -15,7 +15,7 @@ function payloadBuilder(params) {
         description: params.description,
         redirectUrl: URLUtils.https('MolliePayment-Redirect', 'orderId', params.orderId).toString(),
         webhookUrl: URLUtils.https('MolliePayment-Hook', 'orderId', params.orderId).toString(),
-        locale: request.getLocale(),
+        locale: params.locale || request.getLocale(),
         method: params.methodId
     };
 

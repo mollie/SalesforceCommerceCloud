@@ -6,7 +6,7 @@ module.exports = {
     },
     GET_METHODS_WITH_PARAMS: {
         method: 'GET',
-        path: '/v2/methods?include=issuers&includeWallets=applepay&orderLineCategories=eco,meal,gift&amount[value]={amount}&amount[currency]={currency}&resource={resource}&billingCountry={billingCountry}',
+        path: '/v2/methods?include=issuers&includeWallets=applepay&orderLineCategories=eco,meal,gift&amount[value]={amount}&amount[currency]={currency}&resource=orders&billingCountry={billingCountry}',
         serviceName: 'Mollie.GetMethods'
     },
     GET_METHOD: {

@@ -199,6 +199,7 @@ describe('mollie/mollieResponseEntities', () => {
                 },
                 description: faker.lorem.word(),
                 method: faker.lorem.word(),
+                locale: faker.lorem.word(),
                 metadata: {},
                 status: faker.lorem.word(),
                 amountRefunded: {
@@ -243,6 +244,9 @@ describe('mollie/mollieResponseEntities', () => {
         });
         it('has an metadata', () => {
             expect(this.default.metadata).to.eql(this.response.metadata);
+        });
+        it('has an locale', () => {
+            expect(this.default.locale).to.eql(this.response.locale);
         });
         it('has an status', () => {
             expect(this.default.status).to.eql(this.response.status);

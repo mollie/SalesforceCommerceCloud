@@ -6,7 +6,7 @@
     value="">
 
 <!--- Hidden input for credit card number --->
-<input type="hidden" class="cardNumber" id="cardNumber"
+<input type="text" class="cardNumber" id="cardNumber"
     name="${creditFields.cardNumber.htmlName}"
     value=""
     <isprint value=${creditFields.cardNumber.attributes} encoding="off"/>
