@@ -51,6 +51,7 @@
                         <isinclude template="preferences/testApiKey" />
                     </isif>
                 </isloop>
+                <a href="${URLUtils.url('PaymentMethod-Start')}" class="d-block mb-2 mt-2">Configure Mollie Payment Methods</a>
                 <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
                 <button type="button" class="btn btn-primary js-bm-preferences-submit mt-2"
                     data-method-url="${URLUtils.url('MollieSettings-SavePreferences')}">Save</button>

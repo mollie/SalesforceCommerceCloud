@@ -32,12 +32,10 @@ describe('order/orderHelper', () => {
             this.order = Object.assign(this.order, {
                 orderNo: faker.random.uuid(),
                 customerOrderReference: faker.lorem.word(),
-                customer: {
-                    profile: {
-                        firstName: faker.lorem.word(),
-                        lastName: faker.lorem.word(),
-                        companyName: faker.lorem.word()
-                    }
+                billingAddress: {
+                    firstName: faker.lorem.word(),
+                    lastName: faker.lorem.word(),
+                    companyName: faker.lorem.word()
                 }
             });
             this.paymentMethod = new stubs.dw.PaymentMethodMock();
@@ -48,7 +46,7 @@ describe('order/orderHelper', () => {
 
         it('Creates payment description for order', () => {
             var description = orderHelper.getMappedPaymentDescription(this.order, this.paymentMethod);
-            var markup = `${this.order.orderNo}, ${this.siteName}, ${this.order.customerOrderReference}, ${this.order.customer.profile.firstName}, ${this.order.customer.profile.lastName}, ${this.order.customer.profile.companyName}`;
+            var markup = `${this.order.orderNo}, ${this.siteName}, ${this.order.customerOrderReference}, ${this.order.billingAddress.firstName}, ${this.order.billingAddress.lastName}, ${this.order.billingAddress.companyName}`;
 
             expect(description).to.eql(markup);
         });

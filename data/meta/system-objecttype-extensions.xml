@@ -878,7 +878,7 @@
                 </value-definitions>
             </attribute-definition>
             <attribute-definition attribute-id="mollieEnableSingleClickPayments">
-                <display-name xml:lang="x-default">Use Single Click Payments for CreditCards</display-name>
+                <display-name xml:lang="x-default">Use Single Click Payments for Credit Cards</display-name>
                 <description xml:lang="x-default">Read more about Single Click Payments and how it improves your conversion. https://help.mollie.com/hc/en-us/articles/115000671249-What-are-single-click-payments-and-how-does-it-work-</description>
                 <type>boolean</type>
                 <mandatory-flag>true</mandatory-flag>
@@ -886,7 +886,7 @@
                 <default-value>true</default-value>
             </attribute-definition>
             <attribute-definition attribute-id="mollieComponentsEnabled">
-                <display-name xml:lang="x-default">Use Mollie Components for CreditCards</display-name>
+                <display-name xml:lang="x-default">Use Mollie Components for Credit Cards</display-name>
                 <description xml:lang="x-default">Read more about Mollie Components and how it improves your conversion. https://www.mollie.com/en/news/post/better-checkout-flows-with-mollie-components</description>
                 <type>boolean</type>
                 <mandatory-flag>true</mandatory-flag>

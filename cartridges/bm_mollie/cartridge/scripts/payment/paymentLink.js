@@ -1,5 +1,7 @@
 'use strict';
 
+var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
+
 /**
  * Send payment link mail
  * @param {dw.order.Order} order - Order object
@@ -8,6 +10,7 @@
  */
 function sendPaymentLink(order, email, paymentLink) { // eslint-disable-line no-unused-vars
     // TODO implement own email logic
+    throw new MollieServiceException('sendPaymentLink not yet implemented');
 }
 
 exports.sendPaymentLink = sendPaymentLink;

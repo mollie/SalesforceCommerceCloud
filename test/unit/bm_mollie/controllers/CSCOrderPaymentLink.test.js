@@ -92,6 +92,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
             stubs.orderHelperMock.isMollieOrder.returns(false);
             const paymentInstrument = new stubs.dw.PaymentInstrumentMock();
             stubs.orderHelperMock.getMolliePaymentInstruments.returns([paymentInstrument]);
+            stubs.orderHelperMock.getPaymentId.returns(getPaymentResponse.payment.id);
             stubs.paymentServiceMock.getPayment.returns(getPaymentResponse);
 
             controller.Start();
@@ -202,6 +203,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
             expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_confirmation.isml'), {
                     success: true,
+                    paymentLink: paymentLink,
                     orderId: orderNo
                 });
         });
@@ -214,8 +216,9 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
             expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_confirmation.isml'), {
                     success: false,
-                    errorMessage: sinon.match('not supported'),
-                    orderId: orderNo
+                    errorMessage: sinon.match.string,
+                    orderId: orderNo,
+                    paymentLink: paymentLink
                 });
         });
     });
