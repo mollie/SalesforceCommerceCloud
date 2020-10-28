@@ -19,9 +19,9 @@ function getMappedPaymentDescription(order, paymentMethod) {
             '{orderNumber}': order.orderNo,
             '{storeName}': config.getSiteName(),
             '{order.reference}': order.customerOrderReference,
-            '{customer.firstname}': order.customer.profile.firstName,
-            '{customer.lastName}': order.customer.profile.lastName,
-            '{customer.company}': order.customer.profile.companyName
+            '{customer.firstname}': order.billingAddress.firstName,
+            '{customer.lastName}': order.billingAddress.lastName,
+            '{customer.company}': order.billingAddress.companyName
         };
 
         Object.keys(stringMapping).forEach(function (key) {

@@ -59,12 +59,17 @@ exports.Start = function () {
         var lastMollieInstrument = mollieInstruments.pop();
         if (lastMollieInstrument) {
             var paymentMethodId = lastMollieInstrument.getPaymentMethod();
-            var getPaymentResult = paymentService.getPayment(orderHelper.getPaymentId(order, paymentMethodId));
-            if (getPaymentResult.payment.links.checkout.href) {
+            var molliePaymentId = orderHelper.getPaymentId(order, paymentMethodId);
+            var getPaymentResult;
+            if (molliePaymentId) {
+                getPaymentResult = paymentService.getPayment(molliePaymentId);
+            }
+            if (getPaymentResult && getPaymentResult.payment.links.checkout.href) {
                 paymentLink = getPaymentResult.payment.links.checkout.href;
             } else {
                 var paymentMethod = PaymentMgr.getPaymentMethod(paymentMethodId);
-                var createPaymentresult = paymentService.createPayment(order, paymentMethod, { locale: getPaymentResult.payment.locale });
+                var locale = getPaymentResult ? getPaymentResult.payment.locale : order.customerLocaleID;
+                var createPaymentresult = paymentService.createPayment(order, paymentMethod, { locale: locale });
                 paymentLink = createPaymentresult.payment.links.checkout.href;
             }
         }
@@ -73,7 +78,7 @@ exports.Start = function () {
         renderTemplate('order/payment/link/order_payment_link_send.isml', {
             paymentLink: paymentLink,
             orderId: orderNo,
-            email: order.customer.profile.email
+            email: order.customer.profile ? order.customer.profile.email : order.customerEmail
         });
     } else {
         renderTemplate('order/payment/link/order_payment_link_not_available.isml');
@@ -87,7 +92,8 @@ exports.SendMail = function () {
     var order = OrderMgr.getOrder(orderId);
     var viewParams = {
         success: true,
-        orderId: orderId
+        orderId: orderId,
+        paymentLink: paymentLink
     };
 
     try {
@@ -99,7 +105,7 @@ exports.SendMail = function () {
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/shipment/order_payment_link_confirmation.isml', viewParams);
+    renderTemplate('order/payment/link/order_payment_link_confirmation.isml', viewParams);
 };
 
 exports.Start.public = true;
