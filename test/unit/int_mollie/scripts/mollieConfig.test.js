@@ -12,15 +12,17 @@ var preferences = {
     mollieDefaultOrderExpiryDays: faker.random.number(),
     mollieEnableSingleClickPayments: faker.random.boolean(),
     mollieComponentsEnabled: faker.random.boolean(),
-    mollieLogCategory: faker.lorem.word(),
-    mollieCustomPageFieldSettings: faker.lorem.word()
+    mollieLogCategory: faker.lorem.word()
 };
+
+var fieldSettings = { Test: faker.random.number() };
 
 const getConfig = prefs => {
     stubs.dw.Site.getCurrent().getPreferences().getCustom.returns(prefs);
     const config = proxyquire(`${base}/int_mollie/cartridge/scripts/mollieConfig`, {
         'dw/system/Site': stubs.dw.Site,
-        '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock
+        '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
+        '*/cartridge/scripts/customPageFieldSettings': fieldSettings
     });
 
     return config;
@@ -67,7 +69,7 @@ describe('Config', () => {
         expect(getConfig(preferences).getLogCategory()).to.eql(preferences.mollieLogCategory);
     });
     it('gets customPageFieldSettings', () => {
-        expect(getConfig(preferences).getCustomPageFieldSettings()).to.eql(preferences.mollieCustomPageFieldSettings);
+        expect(getConfig(preferences).getCustomPageFieldSettings()).to.eql(fieldSettings);
     });
     it('gets transactionstatus', () => {
         const transactionStatus = getConfig(preferences).getTransactionStatus();
@@ -92,7 +94,8 @@ describe('Config', () => {
         try {
             proxyquire(`${base}/int_mollie/cartridge/scripts/mollieConfig`, {
                 'dw/system/Site': Site,
-                '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock
+                '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
+                '*/cartridge/scripts/customPageFieldSettings': fieldSettings
             });
             throw new Error('Test Failed');
         } catch (e) {
@@ -101,4 +104,3 @@ describe('Config', () => {
         }
     });
 });
-

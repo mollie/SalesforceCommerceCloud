@@ -71,8 +71,11 @@ function Mollie(configuration) {
         this.configureService(svc, parameters);
         var request = new MollieRequest(this.payloadBuilder(parameters));
         var requestBody = request.toString();
-        Logger.debug(this.serviceName + ' :: RequestBody: ' + requestBody);
         return requestBody;
+    };
+
+    this.filterLogMessage = function (msg) {
+        return msg;
     };
 
     this.parseResponse = function (svc, client) {
@@ -91,7 +94,8 @@ function Mollie(configuration) {
     this.execute = function (parameters) {
         var service = ServiceRegistry.createService(this.serviceName, {
             createRequest: this.createRequest.bind(this),
-            parseResponse: this.parseResponse.bind(this)
+            parseResponse: this.parseResponse.bind(this),
+            filterLogMessage: this.filterLogMessage.bind(this)
         });
         Logger.debug(this.serviceName + ' :: Service: ' + JSON.stringify(service));
 

@@ -5,7 +5,6 @@ var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var OrderMgr = require('dw/order/OrderMgr');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var URLUtils = require('dw/web/URLUtils');
-var MollieService = require('*/cartridge/scripts/services/mollieService');
 var Resource = require('dw/web/Resource');
 
 /**
@@ -62,34 +61,6 @@ server.post('Hook', server.middleware.https, function (req, res, next) {
         }
     } catch (e) {
         res.json({ success: false, error: e.message });
-    }
-
-    return next();
-});
-
-/**
- * Handling of pay with Apple Pay
- *
- * @param {Object} req - The request
- * @param {Object} res - The response
- * @param {Object} next - The next object
- * @return {Object} returns the next object
- */
-server.post('ApplePay', server.middleware.https, function (req, res, next) {
-    try {
-        var validationURL = req.body.validationURL;
-        var result = MollieService.requestPaymentSession({
-            validationURL: validationURL
-        });
-
-        res.json({
-            success: true,
-            paymentSession: result
-        });
-    } catch (e) {
-        var error = e;
-        if (error.name === 'PaymentProviderException') throw error;
-        throw MollieServiceException.from(error);
     }
 
     return next();

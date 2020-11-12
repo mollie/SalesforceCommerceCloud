@@ -53,7 +53,6 @@ Add the following cartridges to the business manager site:
 - `mollieEnableSingleClickPayments`: boolean
 - `mollieComponentsEnabled`: boolean
 - `mollieLogCategory`: string
-- `mollieApplePayVerificationString`: string
 
 ## Custom Properties
 

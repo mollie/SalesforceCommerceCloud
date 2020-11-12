@@ -1,7 +1,6 @@
 'use strict';
 
 var components = require('./components');
-var applePay = require('./applePay');
 var billing = require('base/checkout/billing');
 
 const returningCustomer = '.js-returning-customer';
@@ -51,7 +50,6 @@ function updatePaymentOptions(data) {
         cancelNewPayment();
         billing.paymentTabs();
         billing.handleCreditCardNumber();
-        applePay.checkApplePaySupport();
         if ($($mollieComponentsContainer).length) {
             components.mountMollieComponents();
             components.initEventListeners();
@@ -93,8 +91,6 @@ function init() {
 module.exports = {
     init: init,
     updatePaymentOptions: updatePaymentOptions,
-    addNewPaymentInstrument: addNewPaymentInstrument,
-    cancelNewPayment: cancelNewPayment,
     methods: {
         updatePaymentInformation: updatePaymentInformation
     }

@@ -30,8 +30,7 @@ const {
     Method,
     Refund,
     Shipment,
-    Customer,
-    ApplePayResponse
+    Customer
 } = mollieResponseEntities;
 
 describe('mollie/mollieResponseEntities', () => {
@@ -732,46 +731,6 @@ describe('mollie/mollieResponseEntities', () => {
         });
         it('initializes without input', () => {
             expect(new Customer()).to.be.an.instanceOf(Customer);
-        });
-    });
-    describe('ApplePayResponse', () => {
-        after(function () { stubs.reset(); });
-        before(() => {
-            this.response = {
-                epochTimestamp: faker.random.number(),
-                merchantSessionIdentifier: faker.lorem.word(),
-                nonce: faker.lorem.word(),
-                merchantIdentifier: faker.lorem.word(),
-                domainName: faker.internet.url(),
-                displayName: faker.lorem.word(),
-                signature: faker.lorem.word()
-            };
-            this.default = new ApplePayResponse(this.response);
-        });
-
-        it('has a epochTimestamp', () => {
-            expect(this.default.epochTimestamp).to.eql(this.response.epochTimestamp);
-        });
-        it('has an merchantSessionIdentifier', () => {
-            expect(this.default.merchantSessionIdentifier).to.eql(this.response.merchantSessionIdentifier);
-        });
-        it('has an nonce', () => {
-            expect(this.default.nonce).to.eql(this.response.nonce);
-        });
-        it('has an merchantIdentifier', () => {
-            expect(this.default.merchantIdentifier).to.eql(this.response.merchantIdentifier);
-        });
-        it('has an domainName', () => {
-            expect(this.default.domainName).to.eql(this.response.domainName);
-        });
-        it('has an displayName', () => {
-            expect(this.default.displayName).to.eql(this.response.displayName);
-        });
-        it('has an signature', () => {
-            expect(this.default.signature).to.eql(this.response.signature);
-        });
-        it('initializes without input', () => {
-            expect(new ApplePayResponse()).to.be.an.instanceOf(ApplePayResponse);
         });
     });
 });

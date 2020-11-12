@@ -31,7 +31,7 @@ var valueTypeCodeMapping = {
  * @throws {MollieServiceException}
  */
 function getMappedPreferences(preferences, molliePreferences) {
-    var fieldSettings = JSON.parse(config.getCustomPageFieldSettings());
+    var fieldSettings = config.getCustomPageFieldSettings();
     return collections.map(molliePreferences, function (preference) {
         return {
             ID: preference.ID,

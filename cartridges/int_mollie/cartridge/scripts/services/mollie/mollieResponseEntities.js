@@ -260,22 +260,6 @@ function Customer(mollieCustomer) {
     this.createdDatetime = customer.createdDatetime;
 }
 
-/**
- *
- * @class
- * @param {Object} mollieApplePayResponse - Mollie Apple Pay response object
- */
-function ApplePayResponse(mollieApplePayResponse) {
-    var applePayResponse = mollieApplePayResponse || {};
-    this.epochTimestamp = applePayResponse.epochTimestamp;
-    this.merchantSessionIdentifier = applePayResponse.merchantSessionIdentifier;
-    this.nonce = applePayResponse.nonce;
-    this.merchantIdentifier = applePayResponse.merchantIdentifier;
-    this.domainName = applePayResponse.domainName;
-    this.displayName = applePayResponse.displayName;
-    this.signature = applePayResponse.signature;
-}
-
 module.exports = {
     Amount: Amount,
     Link: Link,
@@ -288,6 +272,5 @@ module.exports = {
     Shipment: Shipment,
     Line: Line,
     Issuer: Issuer,
-    Customer: Customer,
-    ApplePayResponse: ApplePayResponse
+    Customer: Customer
 };

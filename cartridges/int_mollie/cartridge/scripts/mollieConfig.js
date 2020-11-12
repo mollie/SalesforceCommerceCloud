@@ -1,5 +1,6 @@
 var Site = require('dw/system/Site');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
+var customPageFieldSettings = require('*/cartridge/scripts/customPageFieldSettings');
 
 var DEFAULT_ATTRIBUTE_VALUE = 'default';
 
@@ -59,7 +60,7 @@ function Config() {
     this.enableSingleClickPayments = getPreferenceOrThrow(sitePreferences, 'mollieEnableSingleClickPayments');
     this.componentsEnabled = getPreferenceOrThrow(sitePreferences, 'mollieComponentsEnabled');
     this.logCategory = getPreferenceOrThrow(sitePreferences, 'mollieLogCategory');
-    this.customPageFieldSettings = getPreferenceOrThrow(sitePreferences, 'mollieCustomPageFieldSettings');
+    this.customPageFieldSettings = customPageFieldSettings;
 
     /**
      * Get SiteId
