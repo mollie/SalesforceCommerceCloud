@@ -24,9 +24,6 @@ var methodConstants = require('*/cartridge/scripts/services/mollie/method/method
 var createCustomer = require('*/cartridge/scripts/services/mollie/customer/createCustomer');
 var customerConstants = require('*/cartridge/scripts/services/mollie/customer/customerConstants');
 
-var requestPaymentSession = require('*/cartridge/scripts/services/mollie/applePay/requestPaymentSession');
-var applePayConstants = require('*/cartridge/scripts/services/mollie/applePay/applePayConstants');
-
 exports.createPayment = function (parameters) {
     var mollie = new Mollie(paymentConstants.CREATE_PAYMENT);
     mollie.addPayloadBuilder(createPayment.payloadBuilder);
@@ -124,12 +121,5 @@ exports.createCustomer = function (parameters) {
     var mollie = new Mollie(customerConstants.CREATE_CUSTOMER);
     mollie.addPayloadBuilder(createCustomer.payloadBuilder);
     mollie.addResponseMapper(createCustomer.responseMapper);
-    return mollie.execute(parameters);
-};
-
-exports.requestPaymentSession = function (parameters) {
-    var mollie = new Mollie(applePayConstants.REQUEST_PAYMENT_SESSION);
-    mollie.addPayloadBuilder(requestPaymentSession.payloadBuilder);
-    mollie.addResponseMapper(requestPaymentSession.responseMapper);
     return mollie.execute(parameters);
 };

@@ -63,7 +63,7 @@
         <icon>check_address.png</icon>
     </menuaction>
 
-    <menuaction id="credit_card_prefs" menupath="site-prefs" position="2" site="true">
+    <menuaction id="mollie_settings" menupath="site-prefs" position="2" site="true">
         <name xml:lang="x-default">Mollie settings</name>
         <short_description xml:lang="x-default">Mollie settings</short_description>
         <description xml:lang="x-default">Mollie settings</description>

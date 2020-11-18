@@ -15,7 +15,6 @@ dw_demo.json
 cartridges/dw.json
 tmp/
 global.css
-*.zip
 cartridges/**/static/**/js
 cartridges/**/static/**/fonts
 cartridges/**/static/**/css

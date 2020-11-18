@@ -23,7 +23,7 @@ var bootstrapPackages = {
 };
 
 module.exports = [{
-    mode: 'none',
+    mode: 'production',
     name: 'js',
     entry: jsFiles,
     output: {

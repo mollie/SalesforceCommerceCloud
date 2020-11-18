@@ -94,20 +94,6 @@ function processPaymentUpdate(order, statusUpdateId) {
             var getOrderResult = paymentService.getOrder(orderHelper.getOrderId(order));
             url = paymentHelper.processPaymentResult(order, getOrderResult.order).url;
         } else if (!statusUpdateId || orderHelper.getPaymentId(order) === statusUpdateId) {
-            // Instead of searching for payment to update, get last one
-            /*
-            var paymentInstruments = order.getPaymentInstruments().toArray().filter(function (instrument) {
-                var paymentMethodId = instrument.getPaymentMethod();
-                return orderHelper.getPaymentId(order, paymentMethodId) === statusUpdateId;
-            });
-
-            var paymentInstrument = paymentInstruments.pop();
-            if (paymentInstrument) {
-                var paymentMethodId = paymentInstrument.getPaymentMethod();
-                var result = getPayment(orderHelper.getPaymentId(order));
-                paymentHelper.processPaymentResult(order, result.payment, paymentMethodId);
-            }
-            */
             var getPaymentResult = paymentService.getPayment(orderHelper.getPaymentId(order));
             url = paymentHelper.processPaymentResult(order, getPaymentResult.payment).url;
         }
@@ -310,23 +296,6 @@ function createCustomer(profile) {
 }
 
 /**
- *
- * @param {string} validationURL - validation URL returned from Apple Pay
- * @returns {Object}  - result of the request payment session REST call
- * @throws {MollieServiceException}
- */
-function requestPaymentSession(validationURL) {
-    try {
-        return MollieService.requestPaymentSession({
-            validationURL: validationURL
-        });
-    } catch (e) {
-        if (e.name === 'PaymentProviderException') throw e;
-        throw MollieServiceException.from(e);
-    }
-}
-
-/**
  * @param {string} testApiKey - testApiKey
  * @param {string} liveApiKey - liveApiKey
  * @returns {Object}  - result of getMethod calls
@@ -375,6 +344,5 @@ module.exports = {
     createOrderRefund: createOrderRefund,
     createShipment: createShipment,
     createCustomer: createCustomer,
-    requestPaymentSession: requestPaymentSession,
     testApiKeys: testApiKeys
 };

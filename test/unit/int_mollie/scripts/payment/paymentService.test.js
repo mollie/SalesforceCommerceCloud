@@ -313,20 +313,4 @@ describe('payment/paymentService', () => {
             expect(result).to.eql(createCustomerResult);
         });
     });
-    context('#requestPaymentSession', () => {
-        it('Should call requestPaymentSession', () => {
-            const validationURL = faker.internet.url();
-            const requestPaymentSessionResult = {
-                paymentSession: {
-                    id: faker.random.uuid()
-                }
-            };
-            stubs.mollieServiceMock.requestPaymentSession.returns(requestPaymentSessionResult);
-
-            var result = paymentService.requestPaymentSession(validationURL);
-
-            expect(stubs.mollieServiceMock.requestPaymentSession).have.to.been.calledOnce();
-            expect(result).to.eql(requestPaymentSessionResult);
-        });
-    });
 });
