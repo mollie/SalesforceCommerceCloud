@@ -19,7 +19,7 @@ function getMappedPaymentDescription(order, paymentMethod) {
             '{orderNumber}': order.orderNo,
             '{storeName}': config.getSiteName(),
             '{order.reference}': order.customerOrderReference,
-            '{customer.firstname}': order.billingAddress.firstName,
+            '{customer.firstName}': order.billingAddress.firstName,
             '{customer.lastName}': order.billingAddress.lastName,
             '{customer.company}': order.billingAddress.companyName
         };
