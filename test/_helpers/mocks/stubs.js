@@ -268,6 +268,10 @@ const paymentHelperMock = {
     processPaymentResult: sandbox.stub()
 };
 
+const mollieConfigHelperMock = {
+    getPreference: sandbox.stub()
+}
+
 const mollieRequestEntitiesMock = {
     Currency: sandbox.stub(),
     Address: sandbox.stub(),
@@ -290,6 +294,7 @@ const initMocks = function () {
     Object.keys(dateMock).map(i => dateMock[i].reset());
     Object.keys(paymentServiceMock).map(i => paymentServiceMock[i].reset());
     Object.keys(paymentHelperMock).map(i => paymentHelperMock[i].reset());
+    Object.keys(mollieConfigHelperMock).map(i => mollieConfigHelperMock[i].reset());
     Object.keys(orderHelperMock).map(i => orderHelperMock[i].reset());
     Object.keys(checkoutHelpersMock).map(i => checkoutHelpersMock[i].reset());
     Object.keys(renderTemplateHelperMock).map(i => renderTemplateHelperMock[i].reset());
@@ -338,6 +343,7 @@ module.exports = {
     dateMock: dateMock,
     paymentServiceMock: paymentServiceMock,
     paymentHelperMock: paymentHelperMock,
+    mollieConfigHelperMock: mollieConfigHelperMock,
     orderHelperMock: orderHelperMock,
     checkoutHelpersMock: checkoutHelpersMock,
     serviceExceptionMock: serviceExceptionMock,

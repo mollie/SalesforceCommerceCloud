@@ -88,7 +88,7 @@ server.post('SavePreferences',
             collections.forEach(paramNames, function (paramName) {
                 var param = request.httpParameterMap.get(paramName);
                 var paramValue = param.empty ? false : param.booleanValue || param.dateValue || param.doubleValue || param.intValue || param.value;
-                if (paramName !== 'csrf_token' && paramValue !== (preferences.custom[paramName].value || preferences.custom[paramName])) {
+                if (paramName !== 'csrf_token' && (!preferences.custom[paramName] || (paramValue !== (preferences.custom[paramName].value || preferences.custom[paramName])))) {
                     Transaction.wrap(function () {
                         preferences.custom[paramName] = paramValue;
                     });
@@ -100,6 +100,7 @@ server.post('SavePreferences',
             });
         } catch (e) {
             res.json({
+                errorMsg: e.message,
                 error: true
             });
         }
