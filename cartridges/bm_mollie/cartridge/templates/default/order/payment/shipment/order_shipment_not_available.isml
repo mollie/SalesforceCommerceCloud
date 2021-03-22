@@ -1,0 +1,5 @@
+<isdecorate template="pt_csc.isml">
+	<div class="slds-text-heading--medium">Order shipment</div>
+    <div>Shipment not available for this order.</div>
+    <hr />
+</isdecorate>

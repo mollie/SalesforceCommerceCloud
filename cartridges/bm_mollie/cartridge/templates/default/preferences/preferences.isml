@@ -1,0 +1,61 @@
+<div class="card js-bm-preferences">
+    <div class="card-header">
+        Mollie settings
+    </div>
+    <div class="card-body">
+        <div class="alert alert-success js-bm-preferences-alert-success d-none"></div>
+        <div class="alert alert-danger js-bm-preferences-alert-error d-none"></div>
+        <a href="javascript:history.back()" class="d-block mb-3">Back to Business Manager</a>
+        <div class="jumbotron">
+            <p>Developed by Forward</p>
+            <div class="row">
+                <div class="col-6 col-md-3">
+                    <img src="${URLUtils.staticURL('icons/info.svg')}" alt="Info" />
+                    <a href="https://forward.eu/" target="_blank">More info about Forward</a>
+                </div>
+                <div class="col-6 col-md-2">
+                    <img src="${URLUtils.staticURL('icons/contact.svg')}" alt="Info" />
+                    <a href="https://forward.eu/contact/" target="_blank">Contact Forward</a>
+                </div>
+                <div class="col-6 col-md-2">
+                    <img src="${URLUtils.staticURL('icons/contact.svg')}" alt="Info" />
+                    <a href="https://www.mollie.com/en/contact" target="_blank">Contact Mollie</a>
+                </div>
+                <div class="col-6 col-md-2">
+                    <img src="${URLUtils.staticURL('icons/info.svg')}" alt="Info" />
+                    <a href="https://help.mollie.com/hc/en-us" target="_blank">More info on Mollie</a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <img class="mollie-logo" src="${URLUtils.staticURL('mollie.svg')}" alt="Mollie" />
+                </div>
+            </div>
+        </div>
+        <form class="js-bm-preferences-form">
+            <fieldset>
+                <isloop items="${pdict.preferences}" var="preference" status="loopstatus">
+                    <div class="row form-group ${preference.mandotory ? 'required' : ''}">
+                        <label class="col-md-2 control-label">${preference.displayName || preference.ID}</label>
+                        <div class="col-md-4">
+                            <isif condition="${preference.inputType === 'checkbox'}">
+                                <isinclude template="preferences/input/toggle" />
+                            <iselseif condition="${preference.inputType === 'select'}" />
+                                <isinclude template="preferences/input/select" />
+                            <iselse/>
+                                <isinclude template="preferences/input/input" />
+                            </isif>
+                            <span class="field-description mt-2">
+                                <isprint value="${preference.description}" encoding="off" /></span>
+                        </div>
+                    </div>
+                    <isif condition="${preference.ID === 'mollieProfileId'}">
+                        <isinclude template="preferences/testApiKey" />
+                    </isif>
+                </isloop>
+                <a href="${URLUtils.url('PaymentMethod-Start')}" class="d-block mb-2 mt-2">Configure Mollie Payment Methods</a>
+                <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
+                <button type="button" class="btn btn-primary js-bm-preferences-submit mt-2"
+                    data-method-url="${URLUtils.url('MollieSettings-SavePreferences')}">Save</button>
+            </fieldset>
+        </form>
+    </div>
+</div>

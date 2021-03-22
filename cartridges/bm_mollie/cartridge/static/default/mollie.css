@@ -1,0 +1,25 @@
+.form-group.required .control-label:after {
+    content: "*";
+    color: red;
+}
+
+.api-test-result {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid lightgray;
+    padding: 10px;
+    font-size: 0.75rem
+}
+
+.field-description {
+    display: block;
+    color: gray;
+}
+
+.mollie-logo {
+    height: 45px;
+}
+
+.bootstrap-select {
+    border: 1px solid #ced4da !important;
+}

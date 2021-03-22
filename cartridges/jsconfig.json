@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "noLib": true,
+        "target": "es5",
+        "module": "commonJS",
+        "baseUrl": "./",
+        "paths": {
+            "*": [
+                "./*",
+                "../../storefront-reference-architecture/cartridges/*",
+                "../../dw-api-types/*"
+            ]
+        }
+    },
+    "typeAcquisition": {
+        "enable": true,
+        "include": [
+            "jquery"
+        ]
+    },
+    "include": [
+        "../../dw-api-types/**/*.d.ts",
+        "./*/cartridge/scripts/**/*.js",
+        "./*/cartridge/controllers/**/*.js",
+        "./*/cartridge/models/**/*.js",
+        "../../storefront-reference-architecture/cartridges/modules/**/*.js"
+    ]
+}

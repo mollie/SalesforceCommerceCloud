@@ -1,0 +1,13 @@
+<iscomment>
+Workaround: added 'hiddenCreditCardContent' template to avoid SFRA js errors.
+When billing.js becomes extendable on function level, then this workaround will be obsolete
+</iscomment>
+
+<isloop items="${pdict.order.billing.payment.applicablePaymentMethods}" var="paymentOption">
+    <isif condition="${paymentOption.ID === 'MOLLIE_CREDIT_CARD'}">
+        <isinclude template="checkout/billing/paymentOptions/creditCardContent" />
+    <iselse/>
+        <isinclude template="checkout/billing/paymentOptions/hiddenCreditCardContent" />
+        <isinclude template="checkout/billing/paymentOptions/redirectContent" />
+    </isif>
+</isloop>
