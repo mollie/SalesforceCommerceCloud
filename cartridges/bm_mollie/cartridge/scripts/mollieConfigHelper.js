@@ -1,10 +1,14 @@
 'use strict';
 
+/**
+ * Returns preference
+ * @param {array} preferences - array of preferences
+ * @param {string} preferenceName - preference name
+ * @returns {?} preference
+ */
 function getPreference(preferences, preferenceName) {
-    var pref = preferences[preferenceName];
-    if (typeof pref === 'boolean') return pref;
-    return pref;
-};
+    return preferences[preferenceName];
+}
 
 module.exports = {
     getPreference: getPreference

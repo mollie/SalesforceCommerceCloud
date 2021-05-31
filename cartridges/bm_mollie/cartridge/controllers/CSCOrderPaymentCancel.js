@@ -1,25 +1,43 @@
+'use strict';
+
+var server = require('server');
+
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
-var renderTemplate = require('*/cartridge/scripts/renderTemplateHelper').renderTemplate;
+var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
 
-var isCancelAllowed = function (order) {
+/**
+ * Checks if order is cancelable
+ * @param {dw.order.Order} order - order
+ * @returns {boolean} - is cancel allowed?
+ */
+function isCancelAllowed(order) {
     if (!order) return false;
     var orderStatus = order.status.value;
     return (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
         orderStatus !== Order.ORDER_STATUS_FAILED);
-};
+}
 
-exports.Start = function () {
+/**
+ * CSCOrderPaymentCancel-Start : Renders the payment cancel page
+ * @name Mollie/CSCOrderPaymentCancel-Start
+ * @function
+ * @memberof CSCOrderPaymentCancel
+ * @param {middleware} - csrfProtection.generateToken
+ * @param {renders} - html
+ * @param {serverfunction} - get
+ */
+server.get('Start', csrfProtection.generateToken, function (req, res, next) {
     var orderNo = request.httpParameterMap.get('order_no').stringValue;
     var order = OrderMgr.getOrder(orderNo);
     if (!isCancelAllowed(order)) {
-        renderTemplate('order/payment/cancel/order_payment_cancel_not_available.isml');
+        res.render('order/payment/cancel/order_payment_cancel_not_available.isml');
     } else if (orderHelper.isMollieOrder(order)) {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
-        renderTemplate('order/payment/cancel/order_payment_cancel_order.isml', {
+        res.render('order/payment/cancel/order_payment_cancel_order.isml', {
             orderId: order.orderNo,
             order: result.order
         });
@@ -31,17 +49,27 @@ exports.Start = function () {
             return paymentService.getPayment(paymentId).payment;
         });
         if (payments.length) {
-            renderTemplate('order/payment/cancel/order_payment_cancel_payment.isml', {
+            res.render('order/payment/cancel/order_payment_cancel_payment.isml', {
                 orderId: order.orderNo,
                 payments: payments
             });
         } else {
-            renderTemplate('order/payment/cancel/order_payment_cancel_not_available.isml');
+            res.render('order/payment/cancel/order_payment_cancel_not_available.isml');
         }
     }
-};
+    return next();
+});
 
-exports.CancelPayment = function () {
+/**
+ * CSCOrderPaymentCancel-CancelPayment : Handles cancel payment request
+ * @name Mollie/CSCOrderPaymentCancel-CancelPayment
+ * @function
+ * @memberof CSCOrderPaymentCancel
+ * @param {middleware} - csrfProtection.validateRequest
+ * @param {renders} - html
+ * @param {serverfunction} - post
+ */
+server.post('CancelPayment', csrfProtection.validateRequest, function (req, res, next) {
     var paymentId = request.httpParameterMap.get('paymentId').stringValue;
     var orderId = request.httpParameterMap.get('orderId').stringValue;
     var viewParams = {
@@ -58,10 +86,20 @@ exports.CancelPayment = function () {
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/cancel/order_payment_cancel_confirmation.isml', viewParams);
-};
+    res.render('order/payment/cancel/order_payment_cancel_confirmation.isml', viewParams);
+    return next();
+});
 
-exports.CancelOrderLine = function () {
+/**
+ * CSCOrderPaymentCancel-CancelOrderLine : Handles cancel order line request
+ * @name Mollie/CSCOrderPaymentCancel-CancelOrderLine
+ * @function
+ * @memberof CSCOrderPaymentCancel
+ * @param {middleware} - csrfProtection.validateRequest
+ * @param {renders} - html
+ * @param {serverfunction} - post
+ */
+server.post('CancelOrderLine', csrfProtection.validateRequest, function (req, res, next) {
     var orderId = request.httpParameterMap.get('orderId').stringValue;
     var lineId = request.httpParameterMap.get('lineId').stringValue;
     var quantity = request.httpParameterMap.get('quantity').stringValue;
@@ -83,10 +121,20 @@ exports.CancelOrderLine = function () {
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/cancel/order_payment_cancel_confirmation.isml', viewParams);
-};
+    res.render('order/payment/cancel/order_payment_cancel_confirmation.isml', viewParams);
+    return next();
+});
 
-exports.CancelOrder = function () {
+/**
+ * CSCOrderPaymentCancel-CancelOrder : Handles cancel order request
+ * @name Mollie/CSCOrderPaymentCancel-CancelOrder
+ * @function
+ * @memberof CSCOrderPaymentCancel
+ * @param {middleware} - csrfProtection.validateRequest
+ * @param {renders} - html
+ * @param {serverfunction} - post
+ */
+server.post('CancelOrder', csrfProtection.validateRequest, function (req, res, next) {
     var orderId = request.httpParameterMap.get('orderId').stringValue;
     var order = OrderMgr.getOrder(orderId);
     var viewParams = {
@@ -103,10 +151,8 @@ exports.CancelOrder = function () {
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/cancel/order_payment_cancel_confirmation.isml', viewParams);
-};
+    res.render('order/payment/cancel/order_payment_cancel_confirmation.isml', viewParams);
+    return next();
+});
 
-exports.Start.public = true;
-exports.CancelPayment.public = true;
-exports.CancelOrderLine.public = true;
-exports.CancelOrder.public = true;
+module.exports = server.exports();

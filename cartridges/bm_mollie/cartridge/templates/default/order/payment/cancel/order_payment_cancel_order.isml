@@ -1,23 +1,24 @@
 <isdecorate template="pt_csc.isml">
     <isset name="order" value="${pdict.order}" scope="page" />
-    <div class="slds-text-heading--medium mb-3">Order: <isprint value="${order.id}" /></div>
+    <div class="slds-text-heading--medium mb-3">${Resource.msg('label.order', 'bm', null)} <isprint value="${order.id}" /></div>
     <div class="card">
         <div class="card-header">
-            Cancel order
+            ${Resource.msg('label.cancel.order', 'bm', null)}
         </div>
         <div class="card-body">
             <form method="post" class="m-0" action="CSCOrderPaymentCancel-CancelOrder" id="orderPaymentCancel-canceldOrder"
                 name="orderPaymentCancel-cancelOrder">
                 <fieldset>
                     <input type="hidden" value="${pdict.orderId}" name="orderId" id="orderId" />
-                    <button type="submit" class="btn btn-primary" ${!order.isCancelable() ? 'disabled' : ''}>Cancel</button>
+                    <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
+                    <button type="submit" class="btn btn-primary" ${!order.isCancelable() ? 'disabled' : ''}>${Resource.msg('label.cancel', 'bm', null)}</button>
                 </fieldset>
             </form>
         </div>
     </div>
     <div class="card">
         <div class="card-header">
-            Cancel lines
+            ${Resource.msg('label.cancel.lines', 'bm', null)}
         </div>
         <div class="card-body">
             <isloop items="${order.lines}" var="line">
@@ -26,8 +27,8 @@
                         <isprint value="${line.sku}" /> - <isprint value="${line.name}" />
                     </div>
                     <div class="card-body">
-                        <p>Cancelable: <isprint value="${line.cancelableQuantity}" /></p>
-                        <p>Canceled: <isprint value="${line.quantityCanceled}" /></p>
+                        <p>${Resource.msg('label.cancel.cancelable', 'bm', null)} <isprint value="${line.cancelableQuantity}" /></p>
+                        <p>${Resource.msg('label.cancel.canceled', 'bm', null)} <isprint value="${line.quantityCanceled}" /></p>
                         <form method="post" class="m-0" action="CSCOrderPaymentCancel-CancelOrderLine"
                             id="orderPaymentCancel-cancelOrderLine" name="orderPaymentCancel-cancelOrderLine">
                             <fieldset>
@@ -35,7 +36,8 @@
                                     value="${line.cancelableQuantity}" name="quantity" id="quantity" />
                                 <input type="hidden" value="${line.id}" name="lineId" id="id" />
                                 <input type="hidden" value="${pdict.orderId}" name="orderId" id="id" />
-                                <button type="submit" class="btn btn-primary" ${line.cancelableQuantity === 0 ? 'disabled' : ''}>Cancel</button>
+                                <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
+                                <button type="submit" class="btn btn-primary" ${line.cancelableQuantity === 0 ? 'disabled' : ''}>${Resource.msg('label.cancel', 'bm', null)}</button>
                             </fieldset>
                         </form>
                     </div>

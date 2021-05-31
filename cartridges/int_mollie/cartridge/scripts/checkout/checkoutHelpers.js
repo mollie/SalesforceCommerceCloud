@@ -53,15 +53,14 @@ COHelpers.handlePayments = function (order, orderNumber) {
         return authorizationResult;
     } catch (e) {
         Logger.debug('PAYMENT :: ERROR :: ' + e.message);
-        Transaction.wrap(function () { OrderMgr.failOrder(order); });
+        Transaction.wrap(function () { OrderMgr.failOrder(order, true); });
         if (e.name === 'MollieServiceException') return { continueUrl: URLUtils.url('Checkout-Begin').toString() };
         return { error: true };
     }
 };
 
 /**
- *
- *
+ * Checks if order exists
  * @param {orderNumber} orderNumber - Order Id
  * @returns {boolean} Order exists?
  */
@@ -83,7 +82,7 @@ COHelpers.restoreOpenOrder = function (lastOrderNumber) {
             if (order && order.getStatus().value === Order.ORDER_STATUS_CREATED
                 && !orderHelper.getOrderIsAuthorized(order)) {
                 Transaction.wrap(function () {
-                    OrderMgr.failOrder(order);
+                    OrderMgr.failOrder(order, true);
                 });
             }
         }
@@ -120,7 +119,7 @@ COHelpers.placeOrder = function placeOrder(order) {
             Transaction.commit();
         }
     } catch (e) {
-        OrderMgr.failOrder(order);
+        OrderMgr.failOrder(order, true);
         var errorMessage = 'PAYMENT :: Failed placing the order :: ' + JSON.stringify(e.message);
         orderHelper.addItemToOrderHistory(order, errorMessage, true);
         Transaction.commit();

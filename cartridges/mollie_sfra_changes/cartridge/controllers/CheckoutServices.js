@@ -5,6 +5,16 @@ server.extend(CheckoutServices);
 
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 
+/**
+ * CheckoutServices-PlaceOrder : The CheckoutServices-PlaceOrder endpoint places the order
+ * @name Mollie/CheckoutServices-PlaceOrder
+ * @function
+ * @memberof CheckoutServices
+ * @param {middleware} - server.middleware.https
+ * @param {category} - sensitive
+ * @param {returns} - json
+ * @param {serverfunction} - post
+ */
 server.replace('PlaceOrder', server.middleware.https, function (req, res, next) {
     var BasketMgr = require('dw/order/BasketMgr');
     var Resource = require('dw/web/Resource');
@@ -129,6 +139,20 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
 
     // Handles payment authorization
     var handlePaymentResult = COHelpers.handlePayments(order, order.orderNo);
+
+    // Comment block to support SFRA < 6.0.0
+    // Handle custom processing post authorization
+    var options = {
+        req: req,
+        res: res
+    };
+    var postAuthCustomizations = hooksHelper('app.post.auth', 'postAuthorization', handlePaymentResult, order, options, require('*/cartridge/scripts/hooks/postAuthorizationHandling').postAuthorization);
+    if (postAuthCustomizations && Object.prototype.hasOwnProperty.call(postAuthCustomizations, 'error')) {
+        res.json(postAuthCustomizations);
+        return next();
+    }
+    // End block
+
     if (handlePaymentResult.error) {
         res.json({
             error: true,

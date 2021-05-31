@@ -30,14 +30,14 @@
                 margin: 0.5rem 1rem;
                 padding: 0.75rem;
                 border: 1px solid lightgray;
-                border-radius: 0.50rem;
-                min-height: 110px;
+                border-radius: 0.5rem;
+                min-height: 7rem;
 
                 &__name {
                     margin-top: 0.5rem;
                     color: black;
                     font-weight: bold;
-                    font-size: 0.90rem;
+                    font-size: 0.9rem;
                 }
 
                 &.active {

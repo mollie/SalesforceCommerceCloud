@@ -1,29 +1,29 @@
 <div class="card js-bm-preferences">
     <div class="card-header">
-        Mollie settings
+        ${Resource.msg('label.preferences.heading', 'bm', null)}
     </div>
     <div class="card-body">
         <div class="alert alert-success js-bm-preferences-alert-success d-none"></div>
         <div class="alert alert-danger js-bm-preferences-alert-error d-none"></div>
-        <a href="javascript:history.back()" class="d-block mb-3">Back to Business Manager</a>
+        <a href="javascript:history.back()" class="d-block mb-3">${Resource.msg('label.preference.back', 'bm', null)}</a>
         <div class="jumbotron">
-            <p>Developed by Forward</p>
+            <p>${Resource.msg('label.preferences.developed', 'bm', null)}</p>
             <div class="row">
                 <div class="col-6 col-md-3">
                     <img src="${URLUtils.staticURL('icons/info.svg')}" alt="Info" />
-                    <a href="https://forward.eu/" target="_blank">More info about Forward</a>
+                    <a href="https://forward.eu/" target="_blank">${Resource.msg('label.preferences.info', 'bm', null)}</a>
                 </div>
                 <div class="col-6 col-md-2">
                     <img src="${URLUtils.staticURL('icons/contact.svg')}" alt="Info" />
-                    <a href="https://forward.eu/contact/" target="_blank">Contact Forward</a>
+                    <a href="https://forward.eu/contact/" target="_blank">${Resource.msg('label.preferences.contact.forward', 'bm', null)}</a>
                 </div>
                 <div class="col-6 col-md-2">
                     <img src="${URLUtils.staticURL('icons/contact.svg')}" alt="Info" />
-                    <a href="https://www.mollie.com/en/contact" target="_blank">Contact Mollie</a>
+                    <a href="https://www.mollie.com/en/contact" target="_blank">${Resource.msg('label.preferences.mollie', 'bm', null)}</a>
                 </div>
                 <div class="col-6 col-md-2">
                     <img src="${URLUtils.staticURL('icons/info.svg')}" alt="Info" />
-                    <a href="https://help.mollie.com/hc/en-us" target="_blank">More info on Mollie</a>
+                    <a href="https://help.mollie.com/hc/en-us" target="_blank">${Resource.msg('label.preferences.info.mollie', 'bm', null)}</a>
                 </div>
                 <div class="col-6 col-md-3">
                     <img class="mollie-logo" src="${URLUtils.staticURL('mollie.svg')}" alt="Mollie" />
@@ -51,10 +51,10 @@
                         <isinclude template="preferences/testApiKey" />
                     </isif>
                 </isloop>
-                <a href="${URLUtils.url('PaymentMethod-Start')}" class="d-block mb-2 mt-2">Configure Mollie Payment Methods</a>
+                <a href="${URLUtils.url('PaymentMethod-Start')}" class="d-block mb-2 mt-2">${Resource.msg('label.preferences.configure.methods', 'bm', null)}</a>
                 <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
                 <button type="button" class="btn btn-primary js-bm-preferences-submit mt-2"
-                    data-method-url="${URLUtils.url('MollieSettings-SavePreferences')}">Save</button>
+                    data-method-url="${URLUtils.url('MollieSettings-SavePreferences')}">${Resource.msg('label.preferences.save', 'bm', null)}</button>
             </fieldset>
         </form>
     </div>
