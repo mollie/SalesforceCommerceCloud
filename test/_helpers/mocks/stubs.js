@@ -22,6 +22,52 @@ const StringUtils = require('./dw/util/StringUtils');
 const Calendar = require('./dw/util/Calendar');
 const ISML = require('./dw/template/ISML');
 
+const ServerMock = function () {
+    this.routes = [];
+    this.get = function () {
+        const args = Array.prototype.slice.call(arguments);
+        const name = args[0];
+        const callback = args.pop();
+        const middleware = args.slice(1);
+        return this.routes.push({
+            name: name,
+            middleware: middleware,
+            callback: callback
+        });
+    };
+    this.post = function () {
+        const args = Array.prototype.slice.call(arguments);
+        const name = args[0];
+        const callback = args.pop();
+        const middleware = args.slice(1);
+        return this.routes.push({
+            name: name,
+            middleware: middleware,
+            callback: callback
+        });
+    };
+    this.exports = () => {
+        const exports = {};
+        this.routes.forEach(i => { exports[i.name] = i.callback; });
+        return exports;
+    };
+    this.middleware = {
+        https: 'httpsMiddleware'
+    };
+    this.getMiddleware = function (routeName) {
+        const route = this.routes.find(r => r.name === routeName);
+        if (!route) return [];
+        return route.middleware;
+    };
+    this.next = sandbox.stub();
+    this.res = {
+        redirect: sandbox.stub(),
+        json: sandbox.stub(),
+        setViewData: sandbox.stub(),
+        render: sandbox.stub()
+    };
+};
+
 class ResourceMock extends Resource {
     constructor() {
         super();
@@ -270,7 +316,7 @@ const paymentHelperMock = {
 
 const mollieConfigHelperMock = {
     getPreference: sandbox.stub()
-}
+};
 
 const mollieRequestEntitiesMock = {
     Currency: sandbox.stub(),
@@ -279,6 +325,12 @@ const mollieRequestEntitiesMock = {
     ShippingLineItem: sandbox.stub(),
     DiscountLineItem: sandbox.stub(),
     Lines: sandbox.stub()
+};
+
+const csrfProtectionMock = {
+    generateToken: sandbox.stub(),
+    validateRequest: sandbox.stub(),
+    validateAjaxRequest: sandbox.stub()
 };
 
 /**
@@ -299,6 +351,7 @@ const initMocks = function () {
     Object.keys(checkoutHelpersMock).map(i => checkoutHelpersMock[i].reset());
     Object.keys(renderTemplateHelperMock).map(i => renderTemplateHelperMock[i].reset());
     Object.keys(mollieRequestEntitiesMock).map(i => mollieRequestEntitiesMock[i].reset());
+    Object.keys(csrfProtectionMock).map(i => csrfProtectionMock[i].reset());
     Object.keys(dw.ISMLMock).map(i => dw.ISMLMock[i].reset());
     Object.keys(dw.HookMgrMock).map(i => dw.HookMgrMock[i].reset());
     Object.keys(dw.CurrencyMock).map(i => dw.CurrencyMock[i].reset());
@@ -349,6 +402,7 @@ module.exports = {
     serviceExceptionMock: serviceExceptionMock,
     renderTemplateHelperMock: renderTemplateHelperMock,
     mollieRequestEntitiesMock: mollieRequestEntitiesMock,
+    csrfProtectionMock: csrfProtectionMock,
     MollieMock: MollieMock,
     mollieMockInstance: mollieMockInstance,
     mollieServiceMock: mollieServiceMock,
@@ -365,5 +419,6 @@ module.exports = {
         sandbox.restore();
         initMocks();
     },
-    restore: function () { sandbox.restore(); }
+    restore: function () { sandbox.restore(); },
+    serverMock: new ServerMock()
 };

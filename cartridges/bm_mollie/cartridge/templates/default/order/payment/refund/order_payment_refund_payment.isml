@@ -1,13 +1,13 @@
 <isdecorate template="pt_csc.isml">
-    <div class="slds-text-heading--medium mb-3">Payments</div>
+    <div class="slds-text-heading--medium mb-3">${Resource.msg('label.refund.payments', 'bm', null)}</div>
     <isloop items="${pdict.payments}" var="payment">
         <div class="card">
             <div class="card-header">
-                Payment: <isprint value="${payment.id}" />
+                ${Resource.msg('label.refund.payment', 'bm', null)} <isprint value="${payment.id}" />
             </div>
             <div class="card-body">
-                <p>Refundable: <isprint value="${payment.amountRemaining.value}" /> <isprint value="${payment.amountRemaining.currency}" /></p>
-                <p>Refunded: <isprint value="${payment.amountRefunded.value}" /> <isprint value="${payment.amountRefunded.currency}" /></p>
+                <p>${Resource.msg('label.refund.refundable', 'bm', null)} <isprint value="${payment.amountRemaining.value}" /> <isprint value="${payment.amountRemaining.currency}" /></p>
+                <p>${Resource.msg('label.refund.refunded', 'bm', null)} <isprint value="${payment.amountRefunded.value}" /> <isprint value="${payment.amountRefunded.currency}" /></p>
                 <form method="post" class="m-0" action="CSCOrderPaymentRefund-RefundPayment" id="orderPaymentRefund-refundPayment"
                     name="orderPaymentRefund-refundPayment">
                     <fieldset>
@@ -16,7 +16,8 @@
                         <input type="hidden" value="${payment.id}" name="paymentId" id="paymentId" />
                         <input type="hidden" value="${pdict.orderId}" name="orderId" id="id" />
                         <input type="hidden" value="${payment.amountRefunded.currency}" name="currency" id="currency" />
-                        <button type="submit" class="btn btn-primary" ${!payment.isRefundable() ? 'disabled': ''}>Refund</button>
+                        <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
+                        <button type="submit" class="btn btn-primary" ${!payment.isRefundable() ? 'disabled': ''}>${Resource.msg('label.refund', 'bm', null)}</button>
                     </fieldset>
                 </form>
             </div>

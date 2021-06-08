@@ -1,18 +1,18 @@
 <isset name="testResult" value="${pdict.testApiKeysResult.testResult}" scope="page" />
 <isset name="liveResult" value="${pdict.testApiKeysResult.liveResult}" scope="page" />
 <div class="api-test-result">
-   <span>Test API-Key: ${testResult.methods ? 'Success!' : 'Fail!'}</span>
+   <span>${Resource.msg('label.preferences.test.result', 'bm', null)} ${testResult.methods ? 'Success!' : 'Fail!'}</span>
    <isif condition="${testResult.methods}">
       <span>
-         <strong>Enabled Methods:</strong>
+         <strong>${Resource.msg('label.preferences.enabled.methods', 'bm', null)}</strong>
          <isloop items="${testResult.methods}" var="method" status="loopstatus">
             ${method.description},
          </isloop>
       </span>
    </isif>
-   <span class="mt-2">Live API-Key: ${liveResult.methods ? 'Success!' : 'Fail!'}</span>
+   <span class="mt-2">${Resource.msg('label.preferences.live.result', 'bm', null)} ${liveResult.methods ? 'Success!' : 'Fail!'}</span>
    <isif condition="${liveResult.methods}">
-      <strong>Enabled Methods: </strong>
+      <strong>${Resource.msg('label.preferences.enabled.methods', 'bm', null)}</strong>
       <isloop items="${liveResult.methods}" var="method" status="loopstatus">
          ${method.description},
       </isloop>

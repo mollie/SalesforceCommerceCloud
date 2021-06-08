@@ -16,7 +16,7 @@ var preferences = {
 };
 
 const mollieConfigHelper = proxyquire(`${base}/int_mollie/cartridge/scripts/mollieConfigHelper`, {
-    '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
+    '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock
 });
 
 describe('ConfigHelper', () => {

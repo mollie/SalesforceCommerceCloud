@@ -1,16 +1,17 @@
 <isdecorate template="pt_csc.isml">
-    <div class="slds-text-heading--medium mb-3">Payments</div>
+    <div class="slds-text-heading--medium mb-3">${Resource.msg('label.cancel.payment', 'bm', null)}</div>
     <isloop items="${pdict.payments}" var="payment">
         <div class="card">
             <div class="card-header">
-                Payment: <isprint value="${payment.id}" />
+                ${Resource.msg('label.payment', 'bm', null)} <isprint value="${payment.id}" />
             </div>
             <div class="card-body">
                 <form method="post" class="m-0" action="CSCOrderPaymentCancel-CancelPayment" id="orderPaymentCancel-cancelPayment"
                     name="orderPaymentCancel-cancelPayment">
                     <fieldset>
                         <input type="hidden" value="${payment.id}" name="paymentId" id="paymentId" />
-                        <button type="submit" class="btn btn-primary" ${!payment.isCancelable() ? 'disabled': ''}>Cancel</button>
+                        <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
+                        <button type="submit" class="btn btn-primary" ${!payment.isCancelable() ? 'disabled': ''}>${Resource.msg('label.cancel', 'bm', null)}</button>
                     </fieldset>
                 </form>
             </div>

@@ -17,8 +17,14 @@ function processPaymentResult(order, paymentResult) {
     var paymentService = require('*/cartridge/scripts/payment/paymentService');
 
     var orderId = order.orderNo;
-    var orderToken = order.orderToken;
-    var url = URLUtils.https('Order-Confirm', 'ID', orderId, 'token', orderToken).toString();
+
+    // Uncomment block to support SFRA < 6.0.0
+    // var orderToken = order.orderToken;
+    // var url = URLUtils.https('Order-Confirm', 'ID', orderId, 'token', orderToken).toString();
+
+    // Comment block to support SFRA < 6.0.0
+    var url = URLUtils.https('Order-Confirm').toString();
+    // End block
 
     orderHelper.checkMollieRefundStatus(order, paymentResult);
 

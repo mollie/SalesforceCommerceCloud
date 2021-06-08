@@ -3,6 +3,7 @@ const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const { stubs } = testHelpers;
 
 const controller = proxyquire(`${base}/bm_mollie/cartridge/controllers/CSCOrderPaymentLink`, {
+    'server': stubs.serverMock,
     'dw/order/Order': stubs.dw.OrderMock,
     'dw/order/OrderMgr': stubs.dw.OrderMgrMock,
     'dw/system/Transaction': stubs.dw.TransactionMock,
@@ -12,14 +13,21 @@ const controller = proxyquire(`${base}/bm_mollie/cartridge/controllers/CSCOrderP
     '*/cartridge/scripts/renderTemplateHelper': stubs.renderTemplateHelperMock,
     'dw/system/HookMgr': stubs.dw.HookMgrMock,
     '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
-    'dw/order/PaymentMgr': stubs.dw.PaymentMgrMock
+    'dw/order/PaymentMgr': stubs.dw.PaymentMgrMock,
+    '*/cartridge/scripts/middleware/csrf': stubs.csrfProtectionMock
 });
 
 var order;
 
 describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
     before(() => stubs.init());
-    afterEach(() => stubs.reset());
+    afterEach(() => {
+        stubs.reset();
+        stubs.serverMock.next.reset();
+        stubs.serverMock.res.redirect.reset();
+        stubs.serverMock.res.json.reset();
+        stubs.serverMock.res.render.reset();
+    });
     after(() => stubs.restore());
     context('#Start', () => {
         var orderNo;
@@ -65,9 +73,9 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
             stubs.orderHelperMock.isMollieOrder.returns(true);
             stubs.paymentServiceMock.getOrder.returns(getOrderResponse);
 
-            controller.Start();
+            controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
 
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_send.isml'), {
                     paymentLink: paymentLink,
                     orderId: orderNo,
@@ -95,9 +103,9 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
             stubs.orderHelperMock.getPaymentId.returns(getPaymentResponse.payment.id);
             stubs.paymentServiceMock.getPayment.returns(getPaymentResponse);
 
-            controller.Start();
+            controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
 
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_send.isml'), {
                     paymentLink: paymentLink,
                     orderId: orderNo,
@@ -111,9 +119,9 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
             stubs.orderHelperMock.isMollieOrder.returns(false);
             stubs.orderHelperMock.getMolliePaymentInstruments.returns([]);
 
-            controller.Start();
+            controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
 
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_not_available.isml'));
         });
         it('throws when rendering template fails', () => {
@@ -133,10 +141,10 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
             };
             stubs.orderHelperMock.isMollieOrder.returns(true);
             stubs.paymentServiceMock.getOrder.returns(getOrderResponse);
-            stubs.renderTemplateHelperMock.renderTemplate.throws(new Error('BOOM'));
+            stubs.serverMock.res.render.throws(new Error('BOOM'));
 
-            expect(() => controller.Start()).to.throw('BOOM');
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(() => controller.Start({}, stubs.serverMock.res, stubs.serverMock.next)).to.throw('BOOM');
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_send.isml'), {
                     paymentLink: paymentLink,
                     orderId: orderNo,
@@ -147,9 +155,9 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
             stubs.orderHelperMock.isMollieOrder.returns(true);
             stubs.dw.OrderMgrMock.getOrder.returns(null);
 
-            controller.Start();
+            controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
 
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWith(sinon.match('order_payment_link_not_available.isml'));
         });
         it('renders link not available template when link is not available', () => {
@@ -157,9 +165,9 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
                 value: stubs.dw.OrderMock.ORDER_STATUS_OPEN
             };
 
-            controller.Start();
+            controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
 
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWith(sinon.match('order_payment_link_not_available.isml'));
         });
     });
@@ -196,11 +204,11 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
         it('executes a link and renders confirmation template with orderLink params', () => {
             stubs.dw.HookMgrMock.hasHook.returns(true);
 
-            controller.SendMail();
+            controller.SendMail({}, stubs.serverMock.res, stubs.serverMock.next);
 
             expect(stubs.dw.HookMgrMock.callHook).to.have.been.calledOnce()
                 .and.to.have.been.calledWith('mollie.send.payment.link', 'sendPaymentLink', order, email, paymentLink);
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_confirmation.isml'), {
                     success: true,
                     paymentLink: paymentLink,
@@ -210,10 +218,10 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
         it('renders an error if there is no send mail hook', () => {
             stubs.dw.HookMgrMock.hasHook.returns(false);
 
-            controller.SendMail();
+            controller.SendMail({}, stubs.serverMock.res, stubs.serverMock.next);
 
             expect(stubs.dw.HookMgrMock.callHook).to.not.have.been.called();
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_confirmation.isml'), {
                     success: false,
                     errorMessage: sinon.match.string,

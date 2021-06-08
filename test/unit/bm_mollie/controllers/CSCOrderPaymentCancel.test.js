@@ -3,19 +3,27 @@ const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const { stubs } = testHelpers;
 
 const controller = proxyquire(`${base}/bm_mollie/cartridge/controllers/CSCOrderPaymentCancel`, {
+    'server': stubs.serverMock,
     'dw/order/Order': stubs.dw.OrderMock,
     'dw/order/OrderMgr': stubs.dw.OrderMgrMock,
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
     '*/cartridge/scripts/order/orderHelper': stubs.orderHelperMock,
     '*/cartridge/scripts/payment/paymentService': stubs.paymentServiceMock,
-    '*/cartridge/scripts/renderTemplateHelper': stubs.renderTemplateHelperMock
+    '*/cartridge/scripts/renderTemplateHelper': stubs.renderTemplateHelperMock,
+    '*/cartridge/scripts/middleware/csrf': stubs.csrfProtectionMock
 });
 
 var order;
 
 describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
     before(() => stubs.init());
-    afterEach(() => stubs.reset());
+    afterEach(() => {
+        stubs.reset();
+        stubs.serverMock.next.reset();
+        stubs.serverMock.res.redirect.reset();
+        stubs.serverMock.res.json.reset();
+        stubs.serverMock.res.render.reset();
+    });
     after(() => stubs.restore());
     context('#Start', () => {
         beforeEach(() => {
@@ -48,9 +56,9 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
             stubs.orderHelperMock.isMollieOrder.returns(true);
             stubs.paymentServiceMock.getOrder.returns(getOrderResponse);
 
-            controller.Start();
+            controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
 
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_cancel_order.isml'), {
                     orderId: order.orderNo,
                     order: getOrderResponse.order
@@ -70,9 +78,9 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
             stubs.orderHelperMock.getMolliePaymentInstruments.returns([paymentInstrument]);
             stubs.paymentServiceMock.getPayment.returns(getPaymentResponse);
 
-            controller.Start();
+            controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
 
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_cancel_payment.isml'), {
                     orderId: order.orderNo,
                     payments: [getPaymentResponse.payment]
@@ -85,9 +93,9 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
             stubs.orderHelperMock.isMollieOrder.returns(false);
             stubs.orderHelperMock.getMolliePaymentInstruments.returns([]);
 
-            controller.Start();
+            controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
 
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_cancel_not_available.isml'));
         });
         it('throws when rendering template fails', () => {
@@ -101,10 +109,10 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
             };
             stubs.orderHelperMock.isMollieOrder.returns(true);
             stubs.paymentServiceMock.getOrder.returns(getOrderResponse);
-            stubs.renderTemplateHelperMock.renderTemplate.throws(new Error('BOOM'));
+            stubs.serverMock.res.render.throws(new Error('BOOM'));
 
-            expect(() => controller.Start()).to.throw('BOOM');
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(() => controller.Start({}, stubs.serverMock.res, stubs.serverMock.next)).to.throw('BOOM');
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_cancel_order.isml'), {
                     orderId: order.orderNo,
                     order: getOrderResponse.order
@@ -113,9 +121,9 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
         it('renders cancel not available template when order does not exist', () => {
             stubs.dw.OrderMgrMock.getOrder.returns(null);
 
-            controller.Start();
+            controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
 
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWith(sinon.match('cancel_not_available.isml'));
         });
         it('renders cancel not available template when order is not cancelable', () => {
@@ -123,9 +131,9 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
                 value: stubs.dw.OrderMock.ORDER_STATUS_CANCELLED
             };
 
-            controller.Start();
+            controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
 
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWith(sinon.match('order_payment_cancel_not_available.isml'));
         });
     });
@@ -155,11 +163,11 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
             };
         });
         it('executes a cancel payment and renders confirmation template with orderCancel params', () => {
-            controller.CancelPayment();
+            controller.CancelPayment({}, stubs.serverMock.res, stubs.serverMock.next);
 
             expect(stubs.paymentServiceMock.cancelPayment).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(paymentId);
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_cancel_confirmation.isml'), {
                     success: true,
                     orderId: orderNo
@@ -168,11 +176,11 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
         it('renders an error if paymentProvider fails', () => {
             stubs.paymentServiceMock.cancelPayment.throws(new Error('BOOM'));
 
-            controller.CancelPayment();
+            controller.CancelPayment({}, stubs.serverMock.res, stubs.serverMock.next);
 
             expect(stubs.paymentServiceMock.cancelPayment).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(paymentId);
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_cancel_confirmation.isml'), {
                     success: false,
                     errorMessage: 'BOOM',
@@ -212,7 +220,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
             };
         });
         it('executes a cancel payment and renders confirmation template with orderCancel params', () => {
-            controller.CancelOrderLine();
+            controller.CancelOrderLine({}, stubs.serverMock.res, stubs.serverMock.next);
 
             expect(stubs.paymentServiceMock.cancelOrderLineItem).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(order, [
@@ -221,7 +229,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
                         quantity: quantity
                     }
                 ]);
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_cancel_confirmation.isml'), {
                     success: true,
                     orderId: orderNo
@@ -230,7 +238,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
         it('renders an error if paymentProvider fails', () => {
             stubs.paymentServiceMock.cancelOrderLineItem.throws(new Error('BOOM'));
 
-            controller.CancelOrderLine();
+            controller.CancelOrderLine({}, stubs.serverMock.res, stubs.serverMock.next);
 
             expect(stubs.paymentServiceMock.cancelOrderLineItem).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(order, [
@@ -239,7 +247,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
                         quantity: quantity
                     }
                 ]);
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_cancel_confirmation.isml'), {
                     success: false,
                     errorMessage: 'BOOM',
@@ -268,11 +276,11 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
             };
         });
         it('executes a cancel payment and renders confirmation template with orderCancel params', () => {
-            controller.CancelOrder();
+            controller.CancelOrder({}, stubs.serverMock.res, stubs.serverMock.next);
 
             expect(stubs.paymentServiceMock.cancelOrder).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(order);
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_cancel_confirmation.isml'), {
                     success: true,
                     orderId: orderNo
@@ -281,11 +289,11 @@ describe('bm_mollie/controllers/CSCOrderPaymentCancel', () => {
         it('renders an error if paymentProvider fails', () => {
             stubs.paymentServiceMock.cancelOrder.throws(new Error('BOOM'));
 
-            controller.CancelOrder();
+            controller.CancelOrder({}, stubs.serverMock.res, stubs.serverMock.next);
 
             expect(stubs.paymentServiceMock.cancelOrder).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(order);
-            expect(stubs.renderTemplateHelperMock.renderTemplate).to.have.been.calledOnce()
+            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_cancel_confirmation.isml'), {
                     success: false,
                     errorMessage: 'BOOM',

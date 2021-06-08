@@ -1,5 +1,5 @@
 <isdecorate template="pt_csc.isml">
-	<div class="slds-text-heading--medium mb-3">Order create link</div>
-    <div>Link not available for this order.</div>
+    <div class="slds-text-heading--medium mb-3">${Resource.msg('label.link.heading', 'bm', null)}</div>
+    <div class="content">${Resource.msg('label.link.unavailable', 'bm', null)}</div>
     <hr />
 </isdecorate>

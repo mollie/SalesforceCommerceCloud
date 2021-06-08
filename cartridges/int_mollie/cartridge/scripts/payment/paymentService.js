@@ -54,6 +54,7 @@ function createPayment(order, paymentMethod, paymentData) {
         var paymentDescription = orderHelper.getMappedPaymentDescription(order, paymentMethod) || Resource.msgf('order.details.description', 'mollie', null, order.orderNo);
         var paymentResult = MollieService.createPayment({
             orderId: order.orderNo,
+            orderToken: order.orderToken,
             totalGrossPrice: order.getTotalGrossPrice(),
             methodId: paymentMethod.custom.molliePaymentMethodId,
             cardToken: paymentData && paymentData.cardToken,
@@ -135,6 +136,7 @@ function createOrder(order, paymentMethod, paymentData) {
     try {
         var orderResult = MollieService.createOrder({
             orderId: order.orderNo,
+            orderToken: order.orderToken,
             productLineItems: order.getProductLineItems(),
             billingAddress: order.getBillingAddress(),
             paymentMethod: paymentMethod,

@@ -75,7 +75,7 @@ function Mollie(configuration) {
     };
 
     this.filterLogMessage = function (msg) {
-        return msg;
+        return msg && msg.replace(/"[^"@]+@/g, '"*****@');
     };
 
     this.parseResponse = function (svc, client) {
@@ -105,11 +105,7 @@ function Mollie(configuration) {
             return result.object;
         }
 
-        var error = {
-            error: result.error,
-            errorMessage: result.errorMessage
-        };
-        throw new PaymentProviderException(error.error, error.errorMessage);
+        throw new PaymentProviderException(result.error, result.errorMessage);
     };
 }
 

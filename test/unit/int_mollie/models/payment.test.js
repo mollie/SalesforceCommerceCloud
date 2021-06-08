@@ -59,7 +59,7 @@ describe('models/payment', () => {
     afterEach(() => stubs.reset());
     after(() => stubs.restore());
 
-    it('hould take payment methods and convert to a plain object with the image included', () => {
+    it('Should take payment methods and convert to a plain object with the image included', () => {
         const currentBasket = new stubs.dw.BasketMock();
         currentBasket.totalGrossPrice = { value: faker.random.number() };
         const currentCustomer = new stubs.sandbox.stub();
