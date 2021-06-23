@@ -1,3 +1,3 @@
-<input class="checkbox" type="checkbox" data-toggle="toggle" value="true" name="${preference.ID}" 
-    ${preference.selectedValue ? 'checked' : ''}/>
-<input type="hidden" name="${preference.ID}"/>
+<input class="checkbox" type="checkbox" data-toggle="toggle" value="checked" name="${preference.ID}"
+    ${preference.selectedValue ? 'checked' : ''} />
+<input type="hidden" name="${preference.ID}" value="unchecked" />

@@ -1,11 +1,11 @@
 <isdecorate template="pt_csc.isml">
     <isif condition="${pdict.success}">
         <div class="alert alert-success">
-            Successfully processed.
+            ${Resource.msg('label.shipment.success', 'bm', null)}
         </div>
     <iselse/>
         <div class="alert alert-danger">
-            Process failed. <isprint value="${pdict.message}" />.
+            ${Resource.msg('label.shipment.failed', 'bm', null)} <isprint value="${pdict.message}" />
         </div>
     </isif>
 </isdecorate>

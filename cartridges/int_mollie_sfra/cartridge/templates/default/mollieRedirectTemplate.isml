@@ -1,0 +1,14 @@
+<iscomment>
+    THIS PAGE CAN BE STYLED
+</iscomment>
+<isdecorate template="common/layout/checkout">
+    <isscript>
+        var assets = require('*/cartridge/scripts/assets.js');
+        assets.addJs('/js/redirect.js');
+        assets.addCss('/css/redirect.css');
+    </isscript>
+    <form method="POST" action="${pdict.continueUrl}" class="js-mollie-redirect-form">
+        <input type="hidden" name="orderID" value="${pdict.orderId}" />
+        <input type="hidden" name="orderToken" value="${pdict.orderToken}" />
+    </form>
+</isdecorate>

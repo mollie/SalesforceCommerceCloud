@@ -1,26 +1,44 @@
+'use strict';
+
+var server = require('server');
+
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
-var renderTemplate = require('*/cartridge/scripts/renderTemplateHelper').renderTemplate;
+var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
 
-var isRefundAllowed = function (order) {
+/**
+ * Checks if refund is allowed for order
+ * @param {dw.order.Order} order - order
+ * @returns {boolean} - is refund allowed?
+ */
+function isRefundAllowed(order) {
     if (!order) return false;
     var orderStatus = order.status.value;
     return (orderStatus !== Order.ORDER_STATUS_CANCELLED &&
         orderStatus !== Order.ORDER_STATUS_FAILED &&
         orderStatus !== Order.ORDER_STATUS_CREATED);
-};
+}
 
-exports.Start = function () {
+/**
+ * CSCOrderPaymentRefund-Start : Renders the refund options
+ * @name Mollie/CSCOrderPaymentRefund-Start
+ * @function
+ * @memberof CSCOrderPaymentRefund
+ * @param {middleware} - csrfProtection.generateToken
+ * @param {renders} - html
+ * @param {serverfunction} - get
+ */
+server.get('Start', csrfProtection.generateToken, function (req, res, next) {
     var orderNo = request.httpParameterMap.get('order_no').stringValue;
     var order = OrderMgr.getOrder(orderNo);
     if (!isRefundAllowed(order)) {
-        renderTemplate('order/payment/refund/order_payment_refund_not_available.isml');
+        res.render('order/payment/refund/order_payment_refund_not_available.isml');
     } else if (orderHelper.isMollieOrder(order)) {
         var result = paymentService.getOrder(orderHelper.getOrderId(order));
-        renderTemplate('order/payment/refund/order_payment_refund_order.isml', {
+        res.render('order/payment/refund/order_payment_refund_order.isml', {
             orderId: order.orderNo,
             order: result.order
         });
@@ -33,18 +51,28 @@ exports.Start = function () {
             return paymentService.getPayment(paymentId).payment;
         });
         if (payments.length) {
-            renderTemplate('order/payment/refund/order_payment_refund_payment.isml', {
+            res.render('order/payment/refund/order_payment_refund_payment.isml', {
                 orderId: order.orderNo,
                 payments: payments
             });
             paymentService.processPaymentUpdate(order);
         } else {
-            renderTemplate('order/payment/cancel/order_payment_refund_not_available.isml');
+            res.render('order/payment/cancel/order_payment_refund_not_available.isml');
         }
     }
-};
+    return next();
+});
 
-exports.RefundPayment = function () {
+/**
+ * CSCOrderPaymentRefund-RefundPayment : Handle refund payment request
+ * @name Mollie/CSCOrderPaymentRefund-RefundPayment
+ * @function
+ * @memberof CSCOrderPaymentRefund
+ * @param {middleware} - csrfProtection.validateRequest
+ * @param {renders} - html
+ * @param {serverfunction} - post
+ */
+server.post('RefundPayment', csrfProtection.validateRequest, function (req, res, next) {
     var orderId = request.httpParameterMap.get('orderId').stringValue;
     var paymentId = request.httpParameterMap.get('paymentId').stringValue;
     var amount = request.httpParameterMap.get('amount').stringValue;
@@ -66,10 +94,20 @@ exports.RefundPayment = function () {
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/refund/order_payment_refund_confirmation.isml', viewParams);
-};
+    res.render('order/payment/refund/order_payment_refund_confirmation.isml', viewParams);
+    return next();
+});
 
-exports.RefundOrder = function () {
+/**
+ * CSCOrderPaymentRefund-RefundOrder : Handle refund order request
+ * @name Mollie/CSCOrderPaymentRefund-RefundOrder
+ * @function
+ * @memberof CSCOrderPaymentRefund
+ * @param {middleware} - csrfProtection.validateRequest
+ * @param {renders} - html
+ * @param {serverfunction} - post
+ */
+server.post('RefundOrder', csrfProtection.validateRequest, function (req, res, next) {
     var orderId = request.httpParameterMap.get('orderId').stringValue;
     var lineId = request.httpParameterMap.get('lineId').stringValue;
     var quantity = request.httpParameterMap.get('quantity').stringValue;
@@ -95,9 +133,8 @@ exports.RefundOrder = function () {
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/refund/order_payment_refund_confirmation.isml', viewParams);
-};
+    res.render('order/payment/refund/order_payment_refund_confirmation.isml', viewParams);
+    return next();
+});
 
-exports.Start.public = true;
-exports.RefundPayment.public = true;
-exports.RefundOrder.public = true;
+module.exports = server.exports();

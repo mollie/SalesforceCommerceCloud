@@ -18,7 +18,13 @@ function processPaymentResult(order, paymentResult) {
 
     var orderId = order.orderNo;
     var orderToken = order.orderToken;
-    var url = URLUtils.https('Order-Confirm', 'ID', orderId, 'token', orderToken).toString();
+
+    // Uncomment block to support SFRA < 6.0.0
+    // var url = URLUtils.https('Order-Confirm', 'ID', orderId, 'token', orderToken).toString();
+
+    // Comment block to support SFRA < 6.0.0
+    var url = URLUtils.https('MolliePayment-RedirectSuccess', 'orderId', orderId, 'orderToken', orderToken).toString();
+    // End block
 
     orderHelper.checkMollieRefundStatus(order, paymentResult);
 

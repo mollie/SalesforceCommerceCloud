@@ -1,6 +1,7 @@
 var Site = require('dw/system/Site');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var customPageFieldSettings = require('*/cartridge/scripts/customPageFieldSettings');
+var mollieConfigHelper = require('*/cartridge/scripts/mollieConfigHelper');
 
 var DEFAULT_ATTRIBUTE_VALUE = 'default';
 
@@ -28,6 +29,11 @@ var REFUND_STATUS = {
     REFUNDED: 'REFUND_STATUS_REFUNDED'
 };
 
+var ENABLED_MODE = {
+    TEST: 'TEST',
+    LIVE: 'LIVE'
+};
+
 // Mollie Configuration
 /**
  *
@@ -35,12 +41,6 @@ var REFUND_STATUS = {
  */
 function Config() {
     var sitePreferences;
-    var getPreferenceOrThrow = function (preferences, preferenceName) {
-        var pref = preferences[preferenceName];
-        if (typeof pref === 'boolean') return pref;
-        if (!pref) throw new MollieServiceException('You must configure sitePreference by name ' + preferenceName + '.');
-        return pref;
-    };
 
     try {
         sitePreferences = Site.getCurrent().getPreferences().getCustom();
@@ -51,15 +51,15 @@ function Config() {
     }
 
     // #region GENERAL CONFIG
-    this.enabledMode = getPreferenceOrThrow(sitePreferences, 'mollieEnabledMode');
-    this.bearerTestToken = getPreferenceOrThrow(sitePreferences, 'mollieBearerTestToken');
-    this.bearerToken = getPreferenceOrThrow(sitePreferences, 'mollieBearerToken');
-    this.profileId = getPreferenceOrThrow(sitePreferences, 'mollieProfileId');
-    this.defaultEnabledTransActionAPI = getPreferenceOrThrow(sitePreferences, 'mollieDefaultEnabledTransactionAPI');
-    this.defaultOrderExpiryDays = getPreferenceOrThrow(sitePreferences, 'mollieDefaultOrderExpiryDays');
-    this.enableSingleClickPayments = getPreferenceOrThrow(sitePreferences, 'mollieEnableSingleClickPayments');
-    this.componentsEnabled = getPreferenceOrThrow(sitePreferences, 'mollieComponentsEnabled');
-    this.logCategory = getPreferenceOrThrow(sitePreferences, 'mollieLogCategory');
+    this.enabledMode = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnabledMode', true);
+    this.bearerTestToken = mollieConfigHelper.getPreference(sitePreferences, 'mollieBearerTestToken', this.enabledMode === ENABLED_MODE.LIVE);
+    this.bearerToken = mollieConfigHelper.getPreference(sitePreferences, 'mollieBearerToken', this.enabledMode === ENABLED_MODE.LIVE);
+    this.profileId = mollieConfigHelper.getPreference(sitePreferences, 'mollieProfileId', true);
+    this.defaultEnabledTransActionAPI = mollieConfigHelper.getPreference(sitePreferences, 'mollieDefaultEnabledTransactionAPI', true);
+    this.defaultOrderExpiryDays = mollieConfigHelper.getPreference(sitePreferences, 'mollieDefaultOrderExpiryDays', true);
+    this.enableSingleClickPayments = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnableSingleClickPayments', true);
+    this.componentsEnabled = mollieConfigHelper.getPreference(sitePreferences, 'mollieComponentsEnabled', true);
+    this.logCategory = mollieConfigHelper.getPreference(sitePreferences, 'mollieLogCategory', false);
     this.customPageFieldSettings = customPageFieldSettings;
 
     /**

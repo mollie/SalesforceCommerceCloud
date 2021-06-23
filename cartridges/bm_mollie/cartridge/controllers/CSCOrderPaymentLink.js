@@ -1,23 +1,37 @@
+'use strict';
+
+var server = require('server');
+
 var HookMgr = require('dw/system/HookMgr');
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
 var Transaction = require('dw/system/Transaction');
+var PaymentMgr = require('dw/order/PaymentMgr');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
-var PaymentMgr = require('dw/order/PaymentMgr');
-var renderTemplate = require('*/cartridge/scripts/renderTemplateHelper').renderTemplate;
+var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
 
-var isLinkAllowed = function (order) {
+/**
+ * Checks if send payment link is allowed
+ * @param {dw.order.Order} order - order
+ * @returns {boolean} - link is allowed?
+ */
+function isLinkAllowed(order) {
     if (!order) return false;
     var orderStatus = order.status.value;
     return orderStatus === Order.ORDER_STATUS_CREATED
         || orderStatus === Order.ORDER_STATUS_CANCELLED
         || orderStatus === Order.ORDER_STATUS_FAILED;
-};
+}
 
-var undoFailOrCancelOrder = function (order) {
+/**
+ * Undo fail or cancel order
+ * @param {dw.order.Order} order - order
+ * @returns {Object} - JSON
+ */
+function undoFailOrCancelOrder(order) {
     if (!order) return false;
     var orderStatus = order.status.value;
     var result;
@@ -28,9 +42,16 @@ var undoFailOrCancelOrder = function (order) {
     }
 
     return { error: result && result.isError() };
-};
+}
 
-var sendPaymentLink = function (order, email, paymentLink) {
+/**
+ * Send payment link
+ * @param {dw.order.Order} order - order
+ * @param {string} email - email
+ * @param {string} paymentLink - order
+ * @return {MollieServiceException} - exception
+ */
+function sendPaymentLink(order, email, paymentLink) {
     var hookName = 'mollie.send.payment.link';
 
     if (!HookMgr.hasHook(hookName)) throw new MollieServiceException('Hook ' + hookName + ' not supported.');
@@ -42,15 +63,24 @@ var sendPaymentLink = function (order, email, paymentLink) {
         email,
         paymentLink
     );
-};
+}
 
-exports.Start = function () {
+/**
+ * CSCOrderPaymentLink-Start : Renders the payment link page
+ * @name Mollie/CSCOrderPaymentLink-Start
+ * @function
+ * @memberof CSCOrderPaymentLink
+ * @param {middleware} - csrfProtection.generateToken
+ * @param {renders} - html
+ * @param {serverfunction} - get
+ */
+server.get('Start', csrfProtection.generateToken, function (req, res, next) {
     var orderNo = request.httpParameterMap.get('order_no').stringValue;
     var order = OrderMgr.getOrder(orderNo);
     var paymentLink;
     if (!isLinkAllowed(order) || undoFailOrCancelOrder(order).error) {
-        renderTemplate('order/payment/link/order_payment_link_not_available.isml');
-        return;
+        res.render('order/payment/link/order_payment_link_not_available.isml');
+        return next();
     } else if (orderHelper.isMollieOrder(order)) {
         var getOrderResult = paymentService.getOrder(orderHelper.getOrderId(order));
         paymentLink = getOrderResult.order.links.checkout.href;
@@ -75,17 +105,27 @@ exports.Start = function () {
         }
     }
     if (paymentLink) {
-        renderTemplate('order/payment/link/order_payment_link_send.isml', {
+        res.render('order/payment/link/order_payment_link_send.isml', {
             paymentLink: paymentLink,
             orderId: orderNo,
             email: order.customer.profile ? order.customer.profile.email : order.customerEmail
         });
     } else {
-        renderTemplate('order/payment/link/order_payment_link_not_available.isml');
+        res.render('order/payment/link/order_payment_link_not_available.isml');
     }
-};
+    return next();
+});
 
-exports.SendMail = function () {
+/**
+ * CSCOrderPaymentLink-SendMail : Sends email to customer
+ * @name Mollie/CSCOrderPaymentLink-SendMail
+ * @function
+ * @memberof CSCOrderPaymentLink
+ * @param {middleware} - csrfProtection.validateRequest
+ * @param {renders} - html
+ * @param {serverfunction} - post
+ */
+server.post('SendMail', csrfProtection.validateRequest, function (req, res, next) {
     var paymentLink = request.httpParameterMap.get('paymentLink').stringValue;
     var orderId = request.httpParameterMap.get('orderId').stringValue;
     var email = request.httpParameterMap.get('email').stringValue;
@@ -105,8 +145,8 @@ exports.SendMail = function () {
         viewParams.errorMessage = e.message;
     }
 
-    renderTemplate('order/payment/link/order_payment_link_confirmation.isml', viewParams);
-};
+    res.render('order/payment/link/order_payment_link_confirmation.isml', viewParams);
+    return next();
+});
 
-exports.Start.public = true;
-exports.SendMail.public = true;
+module.exports = server.exports();

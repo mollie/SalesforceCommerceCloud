@@ -13,8 +13,8 @@ function payloadBuilder(params) {
     var payload = {
         amount: new mollieRequestEntities.Currency(params.totalGrossPrice),
         description: params.description,
-        redirectUrl: URLUtils.https('MolliePayment-Redirect', 'orderId', params.orderId).toString(),
-        webhookUrl: URLUtils.https('MolliePayment-Hook', 'orderId', params.orderId).toString(),
+        redirectUrl: URLUtils.https('MolliePayment-Redirect', 'orderId', params.orderId, 'orderToken', params.orderToken).toString(),
+        webhookUrl: URLUtils.https('MolliePayment-Hook', 'orderId', params.orderId, 'orderToken', params.orderToken).toString(),
         locale: params.locale || request.getLocale(),
         method: params.methodId
     };

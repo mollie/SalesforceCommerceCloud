@@ -40,7 +40,7 @@ describe('order/orderHelper', () => {
             });
             this.paymentMethod = new stubs.dw.PaymentMethodMock();
             this.paymentMethod.description = {
-                markup: '{orderNumber}, {storeName}, {order.reference}, {customer.firstname}, {customer.lastName}, {customer.company}'
+                markup: '{orderNumber}, {storeName}, {order.reference}, {customer.firstName}, {customer.lastName}, {customer.company}'
             };
         });
 

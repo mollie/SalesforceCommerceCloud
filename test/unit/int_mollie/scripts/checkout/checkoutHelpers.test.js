@@ -137,7 +137,7 @@ describe('checkout/checkoutHelpers', () => {
             expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({ continueUrl: continueUrl });
             expect(stubs.dw.HookMgrMock.callHook).not.to.have.been.called();
             expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly(order);
+                .and.to.have.been.calledWithExactly(order, true);
             expect(paymentTransaction.setTransactionID).not.to.have.been.called();
             expect(stubs.serviceExceptionMock).to.have.been.calledOnce();
             expect(stubs.dw.URLUtilsMock.url).to.have.been.calledOnce()
@@ -170,7 +170,7 @@ describe('checkout/checkoutHelpers', () => {
 
             expect(stubs.dw.HookMgrMock.callHook).not.to.have.been.called();
             expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly(order);
+                .and.to.have.been.calledWithExactly(order, true);
             expect(paymentTransaction.setTransactionID).not.to.have.been.called();
             expect(stubs.serviceExceptionMock).to.have.been.calledOnce();
             expect(stubs.dw.URLUtilsMock.url).to.have.been.calledOnce()
@@ -238,7 +238,7 @@ describe('checkout/checkoutHelpers', () => {
                     paymentInstrument,
                     paymentProcessor);
             expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly(order);
+                .and.to.have.been.calledWithExactly(order, true);
             expect(paymentTransaction.setTransactionID).not.to.have.been.called();
             expect(stubs.dw.URLUtilsMock.url).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly('Checkout-Begin');
@@ -253,7 +253,7 @@ describe('checkout/checkoutHelpers', () => {
             expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({ error: true });
             expect(stubs.dw.HookMgrMock.callHook).not.to.have.been.called();
             expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly(order);
+                .and.to.have.been.calledWithExactly(order, true);
         });
     });
 
@@ -295,7 +295,7 @@ describe('checkout/checkoutHelpers', () => {
             checkoutHelpers.restoreOpenOrder(lastOrderNumber);
 
             expect(stubs.dw.OrderMgrMock.failOrder).to.be.calledOnce()
-                .and.to.be.calledWithExactly(order);
+                .and.to.be.calledWithExactly(order, true);
             expect(stubs.dw.TransactionMock.wrap).to.be.calledOnce();
         });
 
@@ -371,7 +371,7 @@ describe('checkout/checkoutHelpers', () => {
             expect(order.setExportStatus).not.to.have.been.called();
 
             expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.calledOnce()
-                .and.to.have.been.calledWith(order);
+                .and.to.have.been.calledWith(order, true);
             expect(stubs.serviceExceptionMock).to.have.been.calledOnce()
                 .and.to.have.been.calledWith(sinon.match('BOOM'));
             expect(stubs.dw.TransactionMock.begin).to.have.been.calledOnce();
