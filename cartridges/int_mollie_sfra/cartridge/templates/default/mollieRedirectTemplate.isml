@@ -5,6 +5,7 @@
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
         assets.addJs('/js/redirect.js');
+        assets.addCss('/css/redirect.css');
     </isscript>
     <form method="POST" action="${pdict.continueUrl}" class="js-mollie-redirect-form">
         <input type="hidden" name="orderID" value="${pdict.orderId}" />

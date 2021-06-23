@@ -4,7 +4,7 @@
             <span class="input-group-text">&#128273;</span>
         </div>
     </isif>
-    <input class="form-control js-bm-preferences-password-field" type="${preference.inputType}" name="${preference.ID}"
+    <input class="form-control ${preference.inputType === 'password' ? 'js-bm-preferences-password-field' : ''}" type="${preference.inputType}" name="${preference.ID}"
         value="${preference.selectedValue || preference.defaultValue || ''}" ${preference.mandotory ? 'required' : ''} />
     <isif condition="${preference.inputType === 'password'}">
         <div class="input-group-append">

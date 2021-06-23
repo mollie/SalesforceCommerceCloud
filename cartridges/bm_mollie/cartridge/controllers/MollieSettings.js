@@ -107,12 +107,25 @@ server.post('SavePreferences',
             var paramNames = request.httpParameterMap.parameterNames;
 
             collections.forEach(paramNames, function (paramName) {
-                var param = request.httpParameterMap.get(paramName);
-                var paramValue = param.empty ? false : param.booleanValue || param.dateValue || param.doubleValue || param.intValue || param.value;
-                if (paramName !== 'csrf_token' && (!preferences.custom[paramName] || (paramValue !== (preferences.custom[paramName].value || preferences.custom[paramName])))) {
-                    Transaction.wrap(function () {
-                        preferences.custom[paramName] = paramValue;
-                    });
+                if (paramName !== 'csrf_token') {
+                    var param = request.httpParameterMap.get(paramName);
+                    var preference = preferences.custom[paramName];
+                    var paramValue = param.booleanValue || param.dateValue || param.doubleValue || param.intValue || param.value;
+                    if (preference && paramValue !== preference.value) {
+                        Transaction.wrap(function () {
+                            switch (paramValue) {
+                                case 'checked':
+                                    preferences.custom[paramName] = true;
+                                    break;
+                                case 'unchecked':
+                                    preferences.custom[paramName] = false;
+                                    break;
+                                default:
+                                    preferences.custom[paramName] = paramValue;
+                                    break;
+                            }
+                        });
+                    }
                 }
             });
 
