@@ -24,7 +24,7 @@ describe('ConfigHelper', () => {
     after(() => stubs.restore());
 
     it('throw when sitepreference is missing', () => {
-        expect(() => mollieConfigHelper.getPreference(preferences, 'UnkownPreference')).to.throw();
+        expect(() => mollieConfigHelper.getPreference(preferences, 'UnkownPreference', true)).to.throw();
         expect(stubs.serviceExceptionMock).to.have.been.calledOnce()
             .and.to.have.been.calledWith(sinon.match('You must configure sitePreference by name'));
     });

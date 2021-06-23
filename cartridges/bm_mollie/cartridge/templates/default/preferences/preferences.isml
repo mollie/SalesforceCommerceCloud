@@ -5,7 +5,7 @@
     <div class="card-body">
         <div class="alert alert-success js-bm-preferences-alert-success d-none"></div>
         <div class="alert alert-danger js-bm-preferences-alert-error d-none"></div>
-        <a href="javascript:history.back()" class="d-block mb-3">${Resource.msg('label.preference.back', 'bm', null)}</a>
+        <a href="javascript:history.back()" class="d-block mb-3">${Resource.msg('label.preferences.back', 'bm', null)}</a>
         <div class="jumbotron">
             <p>${Resource.msg('label.preferences.developed', 'bm', null)}</p>
             <div class="row">

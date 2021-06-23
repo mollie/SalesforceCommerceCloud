@@ -29,6 +29,11 @@ var REFUND_STATUS = {
     REFUNDED: 'REFUND_STATUS_REFUNDED'
 };
 
+var ENABLED_MODE = {
+    TEST: 'TEST',
+    LIVE: 'LIVE'
+};
+
 // Mollie Configuration
 /**
  *
@@ -46,15 +51,15 @@ function Config() {
     }
 
     // #region GENERAL CONFIG
-    this.enabledMode = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnabledMode');
-    this.bearerTestToken = mollieConfigHelper.getPreference(sitePreferences, 'mollieBearerTestToken');
-    this.bearerToken = mollieConfigHelper.getPreference(sitePreferences, 'mollieBearerToken');
-    this.profileId = mollieConfigHelper.getPreference(sitePreferences, 'mollieProfileId');
-    this.defaultEnabledTransActionAPI = mollieConfigHelper.getPreference(sitePreferences, 'mollieDefaultEnabledTransactionAPI');
-    this.defaultOrderExpiryDays = mollieConfigHelper.getPreference(sitePreferences, 'mollieDefaultOrderExpiryDays');
-    this.enableSingleClickPayments = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnableSingleClickPayments');
-    this.componentsEnabled = mollieConfigHelper.getPreference(sitePreferences, 'mollieComponentsEnabled');
-    this.logCategory = mollieConfigHelper.getPreference(sitePreferences, 'mollieLogCategory');
+    this.enabledMode = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnabledMode', true);
+    this.bearerTestToken = mollieConfigHelper.getPreference(sitePreferences, 'mollieBearerTestToken', this.enabledMode === ENABLED_MODE.LIVE);
+    this.bearerToken = mollieConfigHelper.getPreference(sitePreferences, 'mollieBearerToken', this.enabledMode === ENABLED_MODE.LIVE);
+    this.profileId = mollieConfigHelper.getPreference(sitePreferences, 'mollieProfileId', true);
+    this.defaultEnabledTransActionAPI = mollieConfigHelper.getPreference(sitePreferences, 'mollieDefaultEnabledTransactionAPI', true);
+    this.defaultOrderExpiryDays = mollieConfigHelper.getPreference(sitePreferences, 'mollieDefaultOrderExpiryDays', true);
+    this.enableSingleClickPayments = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnableSingleClickPayments', true);
+    this.componentsEnabled = mollieConfigHelper.getPreference(sitePreferences, 'mollieComponentsEnabled', true);
+    this.logCategory = mollieConfigHelper.getPreference(sitePreferences, 'mollieLogCategory', false);
     this.customPageFieldSettings = customPageFieldSettings;
 
     /**

@@ -8,7 +8,30 @@ var URLUtils = require('dw/web/URLUtils');
 var Resource = require('dw/web/Resource');
 
 /**
- * MolliePayment-Redirect :  Handling of a payment hook. Redirects to order confirmation or order failure page.
+ * MolliePayment-RedirectSuccess : Handling of a successful payment. Redirects to order confirmation.
+ * @name Mollie/MolliePayment-RedirectSuccess
+ * @function
+ * @memberof MolliePayment
+ * @param {serverfunction} - get
+ */
+server.get('RedirectSuccess', function (req, res, next) {
+    var orderId = req.querystring.orderId;
+    var orderToken = req.querystring.orderToken;
+
+    if (orderId && orderToken) {
+        res.render('mollieRedirectTemplate', {
+            continueUrl: URLUtils.url('Order-Confirm'),
+            orderId: orderId,
+            orderToken: orderToken
+        });
+    } else {
+        res.redirect(URLUtils.home().toString());
+    }
+    return next();
+});
+
+/**
+ * MolliePayment-Redirect : Handling of a payment hook.
  * @name Mollie/MolliePayment-Redirect
  * @function
  * @memberof MolliePayment
@@ -23,26 +46,11 @@ server.get('Redirect', server.middleware.https, function (req, res, next) {
             var order = orderId && OrderMgr.getOrder(orderId, orderToken);
             if (order) {
                 var url = paymentService.processPaymentUpdate(order);
-                if (url) {
-                    // Comment block to support SFRA < 6.0.0
-                    res.render('mollieRedirectTemplate', {
-                        continueUrl: url,
-                        orderId: orderId,
-                        orderToken: orderToken
-                    });
-                    // End block
-
-                    // Uncomment to support SFRA < 6.0.0
-                    // res.redirect(url);
-                } else {
-                    res.redirect(URLUtils.home().toString());
-                }
-            } else {
-                res.redirect(URLUtils.home().toString());
+                res.redirect(url);
+                return next();
             }
-        } else {
-            res.redirect(URLUtils.home().toString());
         }
+        res.redirect(URLUtils.home().toString());
     } catch (e) {
         var error = e;
         if (error.name === 'PaymentProviderException') throw error;

@@ -47,7 +47,7 @@ module.exports = [{
     },
     plugins: [new webpack.ProvidePlugin(bootstrapPackages)]
 }, {
-    mode: 'none',
+    mode: 'production',
     name: 'scss',
     entry: scssFiles,
     output: {
