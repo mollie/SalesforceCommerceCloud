@@ -54,9 +54,15 @@
             }
         }
     }
+}
 
-    .summary-details .redirect-type {
+.summary-details {
+    .redirect-type {
         display: flex;
         flex-direction: column;
+    }
+
+    .label {
+        font-weight: 500;
     }
 }

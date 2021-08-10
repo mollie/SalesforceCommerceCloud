@@ -14,8 +14,6 @@ var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
  * @return {string} url
  */
 function processPaymentResult(order, paymentResult) {
-    var paymentService = require('*/cartridge/scripts/payment/paymentService');
-
     var orderId = order.orderNo;
     var orderToken = order.orderToken;
 
@@ -76,18 +74,9 @@ function processPaymentResult(order, paymentResult) {
 
         case STATUS.OPEN:
         case STATUS.CREATED:
-            url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
-            if (paymentResult.isCancelable()) {
-                if (isMollieOrder) {
-                    paymentService.cancelOrder(order);
-                } else {
-                    var paymentId = orderHelper.getPaymentId(order);
-                    paymentService.cancelPayment(paymentId);
-                }
-            }
             Transaction.wrap(function () {
-                orderHelper.failOrCancelOrder(order,
-                    'PAYMENT :: Canceling payment and returning to checkout because of bad status, Mollie status :: ' + paymentResult.status);
+                orderHelper.addItemToOrderHistory(order,
+                    'PAYMENT :: Order open, Mollie status :: ' + paymentResult.status);
             });
             break;
 
@@ -115,6 +104,10 @@ function processPaymentResult(order, paymentResult) {
     }
 
     Transaction.wrap(function () {
+        if (paymentResult.payments && paymentResult.payments[0]) {
+            orderHelper.setPaymentDetails(order, null, paymentResult.payments[0].details);
+        }
+
         if (isMollieOrder) {
             orderHelper.setOrderId(order, paymentResult.id);
             orderHelper.setOrderStatus(order, paymentResult.status);

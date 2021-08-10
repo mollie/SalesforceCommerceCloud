@@ -240,8 +240,8 @@ const configMock = {
 
 const orderHelperMock = {
     getMappedPaymentDescription: sandbox.stub(),
+    getOrderLineCategories: sandbox.stub(),
     checkMollieRefundStatus: sandbox.stub(),
-    getIssuerData: sandbox.stub(),
     setRefundStatus: sandbox.stub(),
     getRefundStatus: sandbox.stub(),
     addItemToOrderHistory: sandbox.stub(),
@@ -261,6 +261,10 @@ const orderHelperMock = {
     getOrderCustomProperty: sandbox.stub(),
     setPaymentId: sandbox.stub(),
     getPaymentId: sandbox.stub(),
+    getIssuerData: sandbox.stub(),
+    setIssuerData: sandbox.stub(),
+    setPaymentDetails: sandbox.stub(),
+    getPaymentDetails: sandbox.stub(),
     setPaymentStatus: sandbox.stub(),
     getPaymentStatus: sandbox.stub(),
     setPaymentDescription: sandbox.stub(),

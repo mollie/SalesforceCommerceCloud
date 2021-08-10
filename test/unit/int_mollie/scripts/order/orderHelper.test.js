@@ -323,6 +323,11 @@ describe('order/orderHelper', () => {
             orderHelper.setIssuerData(this.order, 'paymentMethodID', 'issuerData');
             expect(this.paymentTransaction.custom.mollieIssuerData).to.eql('issuerData');
         });
+        it('setPaymentDetails', () => {
+            var paymentDetails = { detail: 'detailData' };
+            orderHelper.setPaymentDetails(this.order, 'paymentMethodID', paymentDetails);
+            expect(this.paymentTransaction.custom.molliePaymentDetails).to.eql(JSON.stringify(paymentDetails));
+        });
     });
 
     context('#getTransactionCustomProperty', () => {
@@ -337,7 +342,8 @@ describe('order/orderHelper', () => {
                 molliePaymentStatus: 'paymentStatus',
                 molliePaymentId: 'paymentId',
                 molliePaymentDescription: 'paymentDescription',
-                mollieIssuerData: 'issuerData'
+                mollieIssuerData: 'issuerData',
+                molliePaymentDetails: '{"bankAccount":"bankAccount"}'
             };
             this.paymentInstrument = new stubs.dw.PaymentInstrumentMock();
             this.paymentInstrument.getPaymentMethod.returns('paymentMethodID');
@@ -361,6 +367,9 @@ describe('order/orderHelper', () => {
         });
         it('getIssuerData', () => {
             expect(orderHelper.getIssuerData(this.order, 'paymentMethodID')).to.eql('issuerData');
+        });
+        it('getPaymentDetails', () => {
+            expect(orderHelper.getPaymentDetails(this.order, 'paymentMethodID')).to.eql({ bankAccount: 'bankAccount' });
         });
         it('returns null if no paymentInstrument is found', () => {
             this.order.getPaymentInstruments.returns({ toArray: () => [] });

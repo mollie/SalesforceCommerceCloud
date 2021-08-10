@@ -60,12 +60,14 @@ Add the following cartridges to the business manager site:
 - `molliePaymentMethodId`: string - external mollie payment method id
 - `mollieOrderExpiryDays`: enum of int - expiry days of order
 - `mollieEnabledTransactionAPI`: enum of strings - the enabled transaction API
+- `mollieProductCategory`: enum of strings - category used for voucher method
 
 ### PaymentTransaction
 - `molliePaymentId`: string - the id of the Mollie payment
 - `molliePaymentStatus`: string - the payment status recieved from Mollie
 - `molliePaymentDescription`: text - Generated payment description
 - `mollieIssuerData`: text - selected issuer data
+- `molliePaymentDetails`: text - mollie payment details
 
 ### Order
 - `mollieOrderId`: string - the id of the Mollie order

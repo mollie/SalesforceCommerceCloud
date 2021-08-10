@@ -10,6 +10,7 @@ var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var config = require('*/cartridge/scripts/mollieConfig');
 var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
+var paymentService = require('*/cartridge/scripts/payment/paymentService');
 
 // Require and extend
 var COHelpers = require('*/cartridge/scripts/utils/superModule')(module);
@@ -172,6 +173,36 @@ COHelpers.getPaymentSummaryTemplate = function (orderModel) {
     return renderTemplateHelper.getRenderedHtml({
         order: orderModel
     }, 'checkout/billing/paymentOptions/paymentOptionsSummary');
+};
+
+/**
+ * Sets the Mollie payment methods based on the SFCC applicable payment methods
+ * @param {dw.order.Basket} currentBasket - the target Basket object
+ * @param {Object} orderModel - The current customer's order history
+ * @param {string} countryCode - customer country code
+ * @returns {Object} Mollie payment methods
+ */
+COHelpers.getMolliePaymentMethods = function (currentBasket, orderModel, countryCode) {
+    var paymentMethods = orderModel.billing.payment.applicablePaymentMethods;
+    var getMethodResponse = paymentService.getMethods(currentBasket, countryCode);
+    var mollieMethods = {};
+
+    getMethodResponse.methods.forEach(function (mollieMethod) {
+        mollieMethods[mollieMethod.id] = mollieMethod;
+    });
+
+    return paymentMethods.filter(function (method) {
+        return mollieMethods[method.molliePaymentMethodId] || !method.molliePaymentMethodId;
+    }).map(function (method) {
+        var mappedMethod = method;
+        var mollieMethod = mollieMethods[method.molliePaymentMethodId];
+        mappedMethod.issuers = mollieMethod && mollieMethod.issuers;
+
+        if (mollieMethod.imageURL) {
+            mappedMethod.image = mollieMethod.imageURL;
+        }
+        return mappedMethod;
+    });
 };
 
 module.exports = COHelpers;

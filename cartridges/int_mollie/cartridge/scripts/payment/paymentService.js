@@ -15,7 +15,8 @@ var paymentHelper = require('*/cartridge/scripts/payment/paymentHelper');
 function getPayment(paymentId) {
     try {
         return MollieService.getPayment({
-            paymentId: paymentId
+            paymentId: paymentId,
+            embed: 'payments.details'
         });
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
@@ -32,7 +33,8 @@ function getPayment(paymentId) {
 function getOrder(orderId) {
     try {
         return MollieService.getOrder({
-            orderId: orderId
+            orderId: orderId,
+            embed: 'payments.details'
         });
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
@@ -70,6 +72,7 @@ function createPayment(order, paymentMethod, paymentData) {
             orderHelper.setUsedTransactionAPI(order, config.getTransactionAPI().PAYMENT);
             orderHelper.setPaymentId(order, paymentMethod.getID(), paymentResult.payment.id);
             orderHelper.setPaymentDescription(order, paymentMethod.getID(), paymentDescription);
+            orderHelper.setPaymentDetails(order, paymentMethod.getID(), paymentResult.payment.details);
         });
 
         return paymentResult;
@@ -146,7 +149,9 @@ function createOrder(order, paymentMethod, paymentData) {
             priceAdjustments: order.getPriceAdjustments(),
             cardToken: paymentData && paymentData.cardToken,
             issuer: paymentData && paymentData.issuer,
-            customerId: paymentData && paymentData.customerId
+            customerId: paymentData && paymentData.customerId,
+            orderLineCategory: paymentMethod.custom.mollieProductCategory,
+            embed: 'payments.details'
         });
 
         Transaction.wrap(function () {
@@ -154,6 +159,10 @@ function createOrder(order, paymentMethod, paymentData) {
             orderHelper.addItemToOrderHistory(order, historyItem, true);
             orderHelper.setUsedTransactionAPI(order, config.getTransactionAPI().ORDER);
             orderHelper.setOrderId(order, orderResult.order.id);
+
+            if (orderResult.order.payments && orderResult.order.payments[0]) {
+                orderHelper.setPaymentDetails(order, paymentMethod.getID(), orderResult.order.payments[0].details);
+            }
         });
 
         return orderResult;
@@ -215,7 +224,8 @@ function getMethods(currentBasket, countryCode) {
         return MollieService.getMethodsWithParams({
             amount: currentBasket.adjustedMerchandizeTotalGrossPrice.value.toFixed(2),
             currency: currentBasket.adjustedMerchandizeTotalGrossPrice.currencyCode,
-            billingCountry: currentBasket.billingAddress ? currentBasket.billingAddress.countryCode.value : countryCode
+            billingCountry: currentBasket.billingAddress ? currentBasket.billingAddress.countryCode.value : countryCode,
+            orderLineCategories: orderHelper.getOrderLineCategories(currentBasket)
         });
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;

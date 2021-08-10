@@ -16,7 +16,8 @@ const checkoutHelpers = proxyquire(`${base}/int_mollie/cartridge/scripts/checkou
     '*/cartridge/scripts/order/orderHelper': stubs.orderHelperMock,
     '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
-    '*/cartridge/scripts/utils/superModule': stubs.superModule
+    '*/cartridge/scripts/utils/superModule': stubs.superModule,
+    '*/cartridge/scripts/payment/paymentService': stubs.paymentServiceMock
 });
 
 const makeCollection = array => ({
