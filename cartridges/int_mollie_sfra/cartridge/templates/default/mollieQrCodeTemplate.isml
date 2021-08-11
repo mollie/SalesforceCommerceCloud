@@ -1,0 +1,22 @@
+<div class="modal fade" id="mollieQrCodeModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+     aria-labelledby="mollieQrCodeLabel" aria-hidden="true"
+     data-mollie-watch-url="${URLUtils.https('MolliePayment-WatchQRCode', 'orderId', pdict.orderId, 'orderToken', pdict.orderToken)}"
+     data-mollie-cancel-url="${URLUtils.https('Checkout-Begin', 'stage', 'payment')}"
+>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mollieQrCodeLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="${pdict.qrCodeSrc}" height="${pdict.qrCodeHeight}" width="${pdict.qrCodeWidth}" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

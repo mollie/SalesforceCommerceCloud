@@ -83,7 +83,8 @@ COHelpers.restoreOpenOrder = function (lastOrderNumber) {
             if (order && order.getStatus().value === Order.ORDER_STATUS_CREATED
                 && !orderHelper.getOrderIsAuthorized(order)) {
                 Transaction.wrap(function () {
-                    OrderMgr.failOrder(order, true);
+                    var message = 'PAYMENT :: Order failed because the basket cannot be restored for the customer otherwise.';
+                    orderHelper.failOrder(order, message);
                 });
             }
         }
@@ -138,6 +139,7 @@ COHelpers.getMollieViewData = function (profile) {
     return {
         customerId: profile && profile.custom.mollieCustomerId,
         enableSingleClickPayments: config.getEnableSingleClickPayments(),
+        enableQrCode: config.getEnableQrCode(),
         mollieComponents: {
             enabled: config.getComponentsEnabled(),
             profileId: config.getProfileId(),

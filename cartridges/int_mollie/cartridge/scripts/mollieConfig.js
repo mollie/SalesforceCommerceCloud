@@ -58,6 +58,7 @@ function Config() {
     this.defaultEnabledTransActionAPI = mollieConfigHelper.getPreference(sitePreferences, 'mollieDefaultEnabledTransactionAPI', true);
     this.defaultOrderExpiryDays = mollieConfigHelper.getPreference(sitePreferences, 'mollieDefaultOrderExpiryDays', true);
     this.enableSingleClickPayments = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnableSingleClickPayments', true);
+    this.enableQrCode = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnableQrCode', false);
     this.componentsEnabled = mollieConfigHelper.getPreference(sitePreferences, 'mollieComponentsEnabled', true);
     this.logCategory = mollieConfigHelper.getPreference(sitePreferences, 'mollieLogCategory', false);
     this.customPageFieldSettings = customPageFieldSettings;
@@ -160,6 +161,16 @@ function Config() {
     */
     this.getEnableSingleClickPayments = function () {
         return this.enableSingleClickPayments;
+    };
+
+    /**
+     * Get QR codes enabled
+     * @function
+     * @name Config#getQrCodeEnabled
+     * @return {Object} enableSingleClickPayments
+     */
+    this.getEnableQrCode = function () {
+        return this.enableQrCode;
     };
 
     /**

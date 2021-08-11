@@ -381,8 +381,17 @@ var mollieComponents = require('./components');
                                     defer.reject(data);
                                 }
                             } else {
-                                var continueUrl = data.continueUrl;
-                                window.location.href = continueUrl;
+                                const continueUrl = data.continueUrl;
+                                if (continueUrl && continueUrl.indexOf('xhr=true') >= 0) {
+                                    $.spinner().start();
+                                    $.get(continueUrl, function (qrCodeHtml) {
+                                        $('body').append(qrCodeHtml);
+                                        $('#mollieQrCodeModal').modal('show');
+                                        $.spinner().stop();
+                                    });
+                                } else {
+                                    window.location.href = continueUrl;
+                                }
                                 defer.resolve(data);
                             }
                         },
@@ -577,7 +586,7 @@ var mollieComponents = require('./components');
 
 var exports = {
     initialize: function () {
-        $('#checkout-main').checkout();
+        window.checkout = $('#checkout-main').checkout();
     },
 
     updateCheckoutView: function () {

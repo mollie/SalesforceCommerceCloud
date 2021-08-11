@@ -4,6 +4,7 @@ var Resource = require('dw/web/Resource');
 var Transaction = require('dw/system/Transaction');
 var OrderMgr = require('dw/order/OrderMgr');
 var PaymentMgr = require('dw/order/PaymentMgr');
+var URLUtils = require('dw/web/URLUtils');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var collections = require('*/cartridge/scripts/util/collections');
@@ -75,14 +76,21 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
         var enabledTransactionAPI = paymentMethodEnabledTransactionAPI === config.getDefaultAttributeValue() ? config.getDefaultEnabledTransactionAPI().value : paymentMethodEnabledTransactionAPI;
         if (enabledTransactionAPI === config.getTransactionAPI().PAYMENT) {
             var createPaymentResult = paymentService.createPayment(order, paymentMethod, { issuer: issuerId });
-            redirectUrl = createPaymentResult.payment.links.checkout.href;
+            var qrCodeObject = createPaymentResult.payment.details && createPaymentResult.payment.details.qrCode;
+            if (qrCodeObject && config.getEnableQrCode()) {
+                var qrCodeSrc = qrCodeObject.src;
+                var qrCodeWidth = qrCodeObject.width;
+                var qrCodeHeight = qrCodeObject.height;
+                redirectUrl = URLUtils.https('MolliePayment-RenderQRCode', 'xhr', true, 'orderId', order.getOrderNo(), 'orderToken', order.getOrderToken(), 'src', qrCodeSrc, 'w', qrCodeWidth, 'h', qrCodeHeight).toString();
+            } else {
+                redirectUrl = createPaymentResult.payment.links.checkout.href;
+            }
         } else {
             var createOrderResult = paymentService.createOrder(order, paymentMethod, { issuer: issuerId });
             redirectUrl = createOrderResult.order.links.checkout.href;
         }
     } catch (e) {
         Logger.error(e.javaMessage + '\n\r' + e.stack);
-
         error = true;
         serverErrors.push(
             Resource.msg('error.technical', 'checkout', null)

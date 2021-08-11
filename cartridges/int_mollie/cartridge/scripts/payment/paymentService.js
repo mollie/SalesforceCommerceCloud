@@ -63,7 +63,8 @@ function createPayment(order, paymentMethod, paymentData) {
             issuer: paymentData && paymentData.issuer,
             customerId: paymentData && paymentData.customerId,
             description: paymentDescription,
-            locale: paymentData && paymentData.locale
+            locale: paymentData && paymentData.locale,
+            enableQrCode: config.getEnableQrCode()
         });
 
         Transaction.wrap(function () {
