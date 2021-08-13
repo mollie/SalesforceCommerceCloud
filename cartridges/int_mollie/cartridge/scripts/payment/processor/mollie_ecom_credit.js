@@ -71,13 +71,6 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
     var redirectUrl;
     try {
         var order = OrderMgr.getOrder(orderNumber);
-
-        Transaction.wrap(function () {
-            paymentInstrument.getPaymentTransaction().setTransactionID(orderNumber);
-            paymentInstrument.getPaymentTransaction().setPaymentProcessor(paymentProcessor);
-            orderHelper.setRefundStatus(order, config.getRefundStatus().NOTREFUNDED);
-        });
-
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
 
         var billingForm = session.forms.billing;
@@ -110,6 +103,13 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
             var createOrderResult = paymentService.createOrder(order, paymentMethod, paymentInfo);
             redirectUrl = createOrderResult.order.links.checkout.href;
         }
+
+        Transaction.wrap(function () {
+            paymentInstrument.getPaymentTransaction().setTransactionID(orderNumber);
+            paymentInstrument.getPaymentTransaction().setPaymentProcessor(paymentProcessor);
+            orderHelper.setRefundStatus(order, config.getRefundStatus().NOTREFUNDED);
+            orderHelper.setPaymentLink(order, null, redirectUrl);
+        });
     } catch (e) {
         Logger.error(e.javaMessage + '\n\r' + e.stack);
 

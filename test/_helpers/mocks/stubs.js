@@ -235,7 +235,8 @@ const configMock = {
     getTransactionStatus: sandbox.stub(),
     getTransactionAPI: sandbox.stub(),
     getRefundStatus: sandbox.stub(),
-    getDefaultAttributeValue: sandbox.stub()
+    getDefaultAttributeValue: sandbox.stub(),
+    getEnableQrCode: sandbox.stub()
 };
 
 const orderHelperMock = {
@@ -269,6 +270,8 @@ const orderHelperMock = {
     getPaymentStatus: sandbox.stub(),
     setPaymentDescription: sandbox.stub(),
     getPaymentDescription: sandbox.stub(),
+    setPaymentLink: sandbox.stub(),
+    getPaymentLink: sandbox.stub(),
     setOrderId: sandbox.stub(),
     getOrderId: sandbox.stub(),
     setOrderStatus: sandbox.stub(),

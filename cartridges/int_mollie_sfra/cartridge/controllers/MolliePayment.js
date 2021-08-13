@@ -1,11 +1,14 @@
 'use strict';
 
 var server = require('server');
-var paymentService = require('*/cartridge/scripts/payment/paymentService');
+
 var OrderMgr = require('dw/order/OrderMgr');
-var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
+var Order = require('dw/order/Order');
 var URLUtils = require('dw/web/URLUtils');
 var Resource = require('dw/web/Resource');
+var paymentService = require('*/cartridge/scripts/payment/paymentService');
+var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
+var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 
 /**
  * MolliePayment-RedirectSuccess : Handling of a successful payment. Redirects to order confirmation.
@@ -42,11 +45,23 @@ server.get('Redirect', server.middleware.https, function (req, res, next) {
     try {
         var orderId = req.querystring.orderId;
         var orderToken = req.querystring.orderToken;
+        var isCheckoutDevice = req.session.privacyCache.get('isCheckoutDevice');
         if (orderId && orderToken) {
             var order = orderId && OrderMgr.getOrder(orderId, orderToken);
             if (order) {
-                var url = paymentService.processPaymentUpdate(order);
-                res.redirect(url);
+                var paymentDetails = orderHelper.getPaymentDetails(order);
+                // QR code was used for payment
+                if (paymentDetails && paymentDetails.qrCode && !isCheckoutDevice) {
+                    var paymentStatus = order.getPaymentStatus().getValue();
+                    res.render('mollieQrCodeRedirect', {
+                        paid: paymentStatus === Order.PAYMENT_STATUS_PAID,
+                        orderId: orderId
+                    });
+                } else {
+                    req.session.privacyCache.set('isCheckoutDevice', false);
+                    var url = paymentService.processPaymentUpdate(order);
+                    res.redirect(url);
+                }
                 return next();
             }
         }
@@ -69,12 +84,16 @@ server.get('Redirect', server.middleware.https, function (req, res, next) {
  * @param {serverfunction} - get
  */
 server.get('RenderQRCode', server.middleware.https, function (req, res, next) {
-    var qrCodeSrc = req.querystring.src;
-    var qrCodeWidth = req.querystring.w;
-    var qrCodeHeight = req.querystring.h;
-
     var orderId = req.querystring.orderId;
     var orderToken = req.querystring.orderToken;
+    var order = OrderMgr.getOrder(orderId, orderToken);
+    var paymentLink = orderHelper.getPaymentLink(order);
+    var paymentDetails = orderHelper.getPaymentDetails(order);
+    var qrCodeObject = paymentDetails && paymentDetails.qrCode;
+
+    var qrCodeSrc = qrCodeObject && qrCodeObject.src;
+    var qrCodeWidth = qrCodeObject && qrCodeObject.width;
+    var qrCodeHeight = qrCodeObject && qrCodeObject.height;
 
     if (qrCodeSrc && qrCodeHeight && qrCodeWidth) {
         res.render('mollieQrCodeTemplate', {
@@ -82,30 +101,8 @@ server.get('RenderQRCode', server.middleware.https, function (req, res, next) {
             qrCodeHeight: qrCodeHeight,
             qrCodeWidth: qrCodeWidth,
             orderId: orderId,
-            orderToken: orderToken
-        });
-    } else {
-        res.redirect(URLUtils.home().toString());
-    }
-
-
-    return next();
-});
-
-/**
- * MolliePayment-RedirectQRCode : Render the QR code passing the correct parameters.
- * @name Mollie/MolliePayment-Redirect
- * @function
- * @memberof MolliePayment
- * @param {middleware} - server.middleware.https
- * @param {serverfunction} - get
- */
-server.get('RedirectQRCodeSuccess', server.middleware.https, function (req, res, next) {
-    var orderId = req.querystring.orderId;
-
-    if (orderId) {
-        res.render('mollieQrCodeRedirect', {
-            orderId: orderId
+            orderToken: orderToken,
+            paymentLink: paymentLink
         });
     } else {
         res.redirect(URLUtils.home().toString());
@@ -123,25 +120,28 @@ server.get('RedirectQRCodeSuccess', server.middleware.https, function (req, res,
  * @param {serverfunction} - get
  */
 server.get('WatchQRCode', server.middleware.https, function (req, res, next) {
-    var Order = require('dw/order/Order');
+    var paymentHelper = require('*/cartridge/scripts/payment/paymentHelper');
 
-    var orderId = req.session.privacyCache.get('orderId');
-    var order = orderId && OrderMgr.getOrder(orderId);
-    var orderToken = order.getOrderToken();
-
-    // TODO: Check if MolliePaymentStatus is populated before hook. React accordingly on that status
-
-    if (order.getPaymentStatus().getValue() === Order.PAYMENT_STATUS_PAID) {
-        res.json({
-            paidStatus: true,
-            continueUrl: URLUtils.https('MolliePayment-Redirect', 'orderId', orderId, 'orderToken', orderToken).toString()
-        });
-    } else {
-        res.json({
-            paidStatus: false
-        });
+    try {
+        var orderId = req.querystring.orderId;
+        var orderToken = req.querystring.orderToken;
+        if (orderId && orderToken) {
+            var order = orderId && OrderMgr.getOrder(orderId, orderToken);
+            if (order) {
+                var result = paymentHelper.processQR(order);
+                res.json(result);
+                return next();
+            }
+            res.setStatusCode(404);
+            res.json({ error: Resource.msg('error.order.not.found', null, 'mollie') });
+        } else {
+            res.setStatusCode(400);
+            res.json({ error: Resource.msg('error.missing.params', null, 'mollie') });
+        }
+    } catch (e) {
+        res.setStatusCode(500);
+        res.json({ error: e.message });
     }
-
     return next();
 });
 

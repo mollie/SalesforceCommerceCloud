@@ -72,6 +72,7 @@ describe('payment/paymentService', () => {
                 }
             };
             stubs.mollieServiceMock.createPayment.returns(createPaymentResult);
+            stubs.configMock.getEnableQrCode.returns(true);
 
             var result = paymentService.createPayment(order, paymentMethod, {});
 

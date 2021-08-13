@@ -413,6 +413,29 @@ function getPaymentDetails(order, paymentMethodId) {
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} paymentMethodId - payment method id
+ * @returns {string} - Mollie issuer data
+ */
+function getPaymentLink(order, paymentMethodId) {
+    return getTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentLink' });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} paymentMethodId - payment method id
+ * @param {string} paymentLink - Mollie payment link
+ * @returns {void}
+ */
+function setPaymentLink(order, paymentMethodId, paymentLink) {
+    setTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentLink', value: paymentLink });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {string} orderId - Mollie order id
  * @returns {void}
  */
@@ -578,6 +601,8 @@ module.exports = {
     getPaymentStatus: getPaymentStatus,
     setPaymentDescription: setPaymentDescription,
     getPaymentDescription: getPaymentDescription,
+    getPaymentLink: getPaymentLink,
+    setPaymentLink: setPaymentLink,
     setOrderId: setOrderId,
     getOrderId: getOrderId,
     setOrderStatus: setOrderStatus,

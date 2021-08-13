@@ -10,6 +10,8 @@ var summaryHelpers = require('base/checkout/summary');
 var formHelpers = require('base/checkout/formErrors');
 var scrollAnimate = require('base/components/scrollAnimate');
 var mollieComponents = require('./components');
+var MobileDetect = require('mobile-detect');
+window.md = new MobileDetect(window.navigator.userAgent);
 
 /**
  * Create the jQuery Checkout Plugin.
@@ -381,16 +383,18 @@ var mollieComponents = require('./components');
                                     defer.reject(data);
                                 }
                             } else {
-                                const continueUrl = data.continueUrl;
-                                if (continueUrl && continueUrl.indexOf('xhr=true') >= 0) {
+                                const redirectUrl = data.redirectUrl;
+                                const renderQRCodeUrl = data.renderQRCodeUrl;
+                                const isMobile = window.md.tablet() || window.md.mobile();
+                                if (renderQRCodeUrl && renderQRCodeUrl.indexOf('xhr=true') >= 0 && !isMobile) {
                                     $.spinner().start();
-                                    $.get(continueUrl, function (qrCodeHtml) {
+                                    $.get(renderQRCodeUrl, function (qrCodeHtml) {
                                         $('body').append(qrCodeHtml);
                                         $('#mollieQrCodeModal').modal('show');
                                         $.spinner().stop();
                                     });
                                 } else {
-                                    window.location.href = continueUrl;
+                                    window.location.href = redirectUrl;
                                 }
                                 defer.resolve(data);
                             }

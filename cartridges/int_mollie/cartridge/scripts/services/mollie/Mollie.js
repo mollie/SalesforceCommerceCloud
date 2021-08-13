@@ -83,9 +83,9 @@ function Mollie(configuration) {
             this.path = this.path + 'orderLineCategories=' + parameters.orderLineCategories;
         }
 
-        if (parameters.enableQrCode) {
+        if (parameters.includeQrCode) {
             this.path = this.addSeperator(this.path);
-            this.path = this.path + '?include=details.qrCode';
+            this.path = this.path + 'include=details.qrCode';
         }
     };
 

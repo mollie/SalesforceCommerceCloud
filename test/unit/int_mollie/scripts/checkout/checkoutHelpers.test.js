@@ -295,8 +295,8 @@ describe('checkout/checkoutHelpers', () => {
 
             checkoutHelpers.restoreOpenOrder(lastOrderNumber);
 
-            expect(stubs.dw.OrderMgrMock.failOrder).to.be.calledOnce()
-                .and.to.be.calledWithExactly(order, true);
+            expect(stubs.orderHelperMock.failOrder).to.be.calledOnce()
+                .and.to.be.calledWith(order, sinon.match('Order failed'));
             expect(stubs.dw.TransactionMock.wrap).to.be.calledOnce();
         });
 

@@ -1,21 +1,24 @@
 <div class="modal fade" id="mollieQrCodeModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
-     aria-labelledby="mollieQrCodeLabel" aria-hidden="true"
-     data-mollie-watch-url="${URLUtils.https('MolliePayment-WatchQRCode', 'orderId', pdict.orderId, 'orderToken', pdict.orderToken)}"
-     data-mollie-cancel-url="${URLUtils.https('Checkout-Begin', 'stage', 'payment')}"
+    aria-labelledby="mollieQrCodeLabel" aria-hidden="true"
+    data-mollie-watch-url="${URLUtils.https('MolliePayment-WatchQRCode', 'orderId', pdict.orderId, 'orderToken', pdict.orderToken)}"
+    data-mollie-cancel-url="${URLUtils.https('Checkout-Begin', 'stage', 'payment')}"
 >
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-qr">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="mollieQrCodeLabel">Modal title</h5>
+                <h5 class="modal-title" id="mollieQrCodeLabel">${Resource.msg('title.modal.qr', 'mollie', null)}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <img src="${pdict.qrCodeSrc}" height="${pdict.qrCodeHeight}" width="${pdict.qrCodeWidth}" />
+                <p>${Resource.msg('label.modal.qr', 'mollie', null)}</p>
+                <img src="${pdict.qrCodeSrc}" alt="" height="${pdict.qrCodeHeight}" width="${pdict.qrCodeWidth}" />
+                <p>${Resource.msg('label.modal.divider', 'mollie', null)}</p>
+                <a href="${pdict.paymentLink}" class="btn btn-primary">${Resource.msg('label.modal.redirect', 'mollie', null)}</a>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">${Resource.msg('label.modal.cancel', 'mollie', null)}</button>
             </div>
         </div>
     </div>

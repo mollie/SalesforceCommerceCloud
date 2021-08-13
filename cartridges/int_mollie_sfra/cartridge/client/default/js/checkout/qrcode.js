@@ -18,7 +18,6 @@ module.exports = {
             var mollieWatchUrl = $(e.currentTarget).data('mollie-watch-url');
             watchInterval = setInterval(function () {
                 $.get(mollieWatchUrl, function (data) {
-                    // TODO: react correctly on returned payment status from hook
                     if (data.continueUrl) {
                         clearInterval(watchInterval);
                         $.spinner().start();

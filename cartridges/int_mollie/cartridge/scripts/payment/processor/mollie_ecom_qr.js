@@ -1,9 +1,11 @@
+
 'use strict';
 
 var Resource = require('dw/web/Resource');
 var Transaction = require('dw/system/Transaction');
 var OrderMgr = require('dw/order/OrderMgr');
 var PaymentMgr = require('dw/order/PaymentMgr');
+var URLUtils = require('dw/web/URLUtils');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var collections = require('*/cartridge/scripts/util/collections');
@@ -58,29 +60,25 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
     var fieldErrors = {};
     var error = false;
     var redirectUrl;
+    var renderQRCodeUrl;
     try {
         var order = OrderMgr.getOrder(orderNumber);
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
         var issuerData = orderHelper.getIssuerData(order);
         var issuerId = issuerData && JSON.parse(issuerData).id;
 
-        var paymentMethodEnabledTransactionAPI = paymentMethod.custom.mollieEnabledTransactionAPI.value;
-        var enabledTransactionAPI = paymentMethodEnabledTransactionAPI === config.getDefaultAttributeValue() ? config.getDefaultEnabledTransactionAPI().value : paymentMethodEnabledTransactionAPI;
-        if (enabledTransactionAPI === config.getTransactionAPI().PAYMENT) {
-            var createPaymentResult = paymentService.createPayment(order, paymentMethod, { issuer: issuerId });
-            redirectUrl = createPaymentResult.payment.links.checkout.href;
-        } else {
-            var createOrderResult = paymentService.createOrder(order, paymentMethod, { issuer: issuerId });
-            redirectUrl = createOrderResult.order.links.checkout.href;
+        var createPaymentResult = paymentService.createPayment(order, paymentMethod, { issuer: issuerId, isQrPaymentMethod: true });
+        redirectUrl = createPaymentResult.payment.links.checkout.href;
+        if (config.getEnableQrCode()) {
+            renderQRCodeUrl = URLUtils.https('MolliePayment-RenderQRCode', 'xhr', true, 'orderId', order.getOrderNo(), 'orderToken', order.getOrderToken()).toString();
         }
 
         Transaction.wrap(function () {
+            orderHelper.setPaymentLink(order, null, redirectUrl);
             paymentInstrument.getPaymentTransaction().setTransactionID(orderNumber);
             paymentInstrument.getPaymentTransaction().setPaymentProcessor(paymentProcessor);
             orderHelper.setRefundStatus(order, config.getRefundStatus().NOTREFUNDED);
-            orderHelper.setPaymentLink(order, null, redirectUrl);
         });
-
     } catch (e) {
         Logger.error(e.javaMessage + '\n\r' + e.stack);
         error = true;
@@ -91,6 +89,7 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
     return {
         redirectUrl: redirectUrl,
+        renderQRCodeUrl: renderQRCodeUrl,
         fieldErrors: fieldErrors,
         serverErrors: serverErrors,
         error: error

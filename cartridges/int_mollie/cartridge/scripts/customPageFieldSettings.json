@@ -18,6 +18,9 @@
     "mollieComponentsEnabled": {
         "description": "Read more about <a href='https://www.mollie.com/en/news/post/better-checkout-flows-with-mollie-components'>Mollie Components</a> and how it improves your conversion."
     },
+    "mollieEnableQrCode": {
+        "description": "Read more about <a href='https://docs.mollie.com/payments/qr-codes'>QR Codes</a>."
+    },
     "mollieLogCategory": {
         "description": "Log category used by SFCC. The log category can be selected under: Administration -> Operations -> Custom Log Settings."
     }

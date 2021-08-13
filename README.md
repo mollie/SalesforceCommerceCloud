@@ -52,6 +52,7 @@ Add the following cartridges to the business manager site:
 - `mollieDefaultEnabledTransactionAPI`: enum of strings
 - `mollieEnableSingleClickPayments`: boolean
 - `mollieComponentsEnabled`: boolean
+- `mollieEnableQrCode`: boolean
 - `mollieLogCategory`: string
 
 ## Custom Properties
@@ -68,6 +69,7 @@ Add the following cartridges to the business manager site:
 - `molliePaymentDescription`: text - Generated payment description
 - `mollieIssuerData`: text - selected issuer data
 - `molliePaymentDetails`: text - mollie payment details
+- `molliePaymentLink`: string - the link that is used to complete the payment
 
 ### Order
 - `mollieOrderId`: string - the id of the Mollie order
@@ -86,7 +88,7 @@ Add the following cartridges to the business manager site:
 Use the provided NPM scripts to compile and upload changes to your Sandbox.
 
 #Testing
-You can run `npm test` to execute all unit tests in the project. Run `npm run test:coverage` to get coverage information. Coverage will be available in coverage folder under root directory.
+You can run `npm test` to execute all unit tests in the project. Run `npm run cover` to get coverage information. Coverage will be available in coverage folder under root directory.
 
 # Mollie Documentation
 

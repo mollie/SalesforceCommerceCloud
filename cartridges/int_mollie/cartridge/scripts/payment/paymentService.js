@@ -42,7 +42,6 @@ function getOrder(orderId) {
     }
 }
 
-
 /**
  *
  * @param {dw.order.Order} order - Order object
@@ -64,7 +63,7 @@ function createPayment(order, paymentMethod, paymentData) {
             customerId: paymentData && paymentData.customerId,
             description: paymentDescription,
             locale: paymentData && paymentData.locale,
-            enableQrCode: config.getEnableQrCode()
+            includeQrCode: paymentData && paymentData.isQrPaymentMethod && config.getEnableQrCode()
         });
 
         Transaction.wrap(function () {
