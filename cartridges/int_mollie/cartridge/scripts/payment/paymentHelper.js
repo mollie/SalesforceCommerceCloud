@@ -14,8 +14,6 @@ var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
  * @return {string} url
  */
 function processPaymentResult(order, paymentResult) {
-    var paymentService = require('*/cartridge/scripts/payment/paymentService');
-
     var orderId = order.orderNo;
     var orderToken = order.orderToken;
 
@@ -28,11 +26,11 @@ function processPaymentResult(order, paymentResult) {
 
     orderHelper.checkMollieRefundStatus(order, paymentResult);
 
+    var STATUS = config.getTransactionStatus();
     var isMollieOrder = orderHelper.isMollieOrder(order);
     var mollieOrderStatus = isMollieOrder ? orderHelper.getOrderStatus(order) : orderHelper.getPaymentStatus(order);
     if (mollieOrderStatus === paymentResult.status) return { url: url };
 
-    var STATUS = config.getTransactionStatus();
 
     if (orderHelper.getOrderIsAuthorized(order)) {
         Transaction.wrap(function () {
@@ -76,18 +74,9 @@ function processPaymentResult(order, paymentResult) {
 
         case STATUS.OPEN:
         case STATUS.CREATED:
-            url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
-            if (paymentResult.isCancelable()) {
-                if (isMollieOrder) {
-                    paymentService.cancelOrder(order);
-                } else {
-                    var paymentId = orderHelper.getPaymentId(order);
-                    paymentService.cancelPayment(paymentId);
-                }
-            }
             Transaction.wrap(function () {
-                orderHelper.failOrCancelOrder(order,
-                    'PAYMENT :: Canceling payment and returning to checkout because of bad status, Mollie status :: ' + paymentResult.status);
+                orderHelper.addItemToOrderHistory(order,
+                    'PAYMENT :: Order open, Mollie status :: ' + paymentResult.status);
             });
             break;
 
@@ -115,6 +104,10 @@ function processPaymentResult(order, paymentResult) {
     }
 
     Transaction.wrap(function () {
+        if (paymentResult.payments && paymentResult.payments[0]) {
+            orderHelper.setPaymentDetails(order, null, paymentResult.payments[0].details);
+        }
+
         if (isMollieOrder) {
             orderHelper.setOrderId(order, paymentResult.id);
             orderHelper.setOrderStatus(order, paymentResult.status);
@@ -129,7 +122,48 @@ function processPaymentResult(order, paymentResult) {
     };
 }
 
+/**
+ * Process the QR code
+ *
+ * @param {dw.order.Order} order order
+ * @return {string} url
+ */
+function processQR(order) {
+    var orderId = order.orderNo;
+    var orderToken = order.orderToken;
+    var mollieOrderStatus = orderHelper.getPaymentStatus(order);
+    var STATUS = config.getTransactionStatus();
+    var result;
+
+    switch (mollieOrderStatus) {
+        case STATUS.PAID:
+        case STATUS.OPEN:
+            result = {
+                paidStatus: true,
+                continueUrl: URLUtils.https('MolliePayment-Redirect', 'orderId', orderId, 'orderToken', orderToken).toString()
+            };
+            break;
+
+        case STATUS.EXPIRED:
+        case STATUS.CANCELED:
+        case STATUS.FAILED:
+            result = {
+                paidStatus: false,
+                continueUrl: URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString()
+            };
+            break;
+
+        default:
+            result = {
+                paidStatus: false
+            };
+    }
+
+    return result;
+}
+
 module.exports = {
-    processPaymentResult: processPaymentResult
+    processPaymentResult: processPaymentResult,
+    processQR: processQR
 };
 

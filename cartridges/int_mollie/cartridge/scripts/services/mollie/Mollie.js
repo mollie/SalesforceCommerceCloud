@@ -26,7 +26,8 @@ function Mollie(configuration) {
 
     this.configureService = function (svc, parameters) {
         var serviceCredentials = svc.getConfiguration().getCredential();
-        this.replaceId(parameters);
+        this.replaceParams(parameters);
+        this.appendParams(parameters);
         svc.setURL(serviceCredentials.getURL() + this.path);
         svc.setRequestMethod(this.method);
         svc.addHeader('Accept', 'application/json; charset=utf-8');
@@ -35,7 +36,7 @@ function Mollie(configuration) {
         return svc;
     };
 
-    this.replaceId = function (parameters) {
+    this.replaceParams = function (parameters) {
         if (parameters.paymentId) {
             this.path = this.path
                 .replace('{paymentId}', parameters.paymentId);
@@ -64,6 +65,27 @@ function Mollie(configuration) {
         if (parameters.currency) {
             this.path = this.path
                 .replace('{currency}', parameters.currency);
+        }
+    };
+
+    this.addSeperator = function (url) {
+        return url + (url.indexOf('?') !== -1 ? '&' : '?');
+    };
+
+    this.appendParams = function (parameters) {
+        if (parameters.embed) {
+            this.path = this.addSeperator(this.path);
+            this.path = this.path + 'embed=' + parameters.embed;
+        }
+
+        if (parameters.orderLineCategories) {
+            this.path = this.addSeperator(this.path);
+            this.path = this.path + 'orderLineCategories=' + parameters.orderLineCategories;
+        }
+
+        if (parameters.includeQrCode) {
+            this.path = this.addSeperator(this.path);
+            this.path = this.path + 'include=details.qrCode';
         }
     };
 

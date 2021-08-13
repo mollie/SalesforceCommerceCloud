@@ -12,6 +12,7 @@ var preferences = {
     mollieDefaultOrderExpiryDays: faker.random.number(),
     mollieEnableSingleClickPayments: faker.random.boolean(),
     mollieComponentsEnabled: faker.random.boolean(),
+    mollieEnableQrCode: faker.random.boolean(),
     mollieLogCategory: faker.lorem.word()
 };
 
@@ -71,6 +72,10 @@ describe('Config', () => {
     it('gets mollieComponentsEnabled', () => {
         stubs.mollieConfigHelperMock.getPreference.returns(preferences.mollieComponentsEnabled);
         expect(getConfig(preferences).getComponentsEnabled()).to.eql(preferences.mollieComponentsEnabled);
+    });
+    it('gets mollieEnableQrCode', () => {
+        stubs.mollieConfigHelperMock.getPreference.returns(preferences.mollieEnableQrCode);
+        expect(getConfig(preferences).getEnableQrCode()).to.eql(preferences.mollieEnableQrCode);
     });
     it('gets mollieProfileId', () => {
         stubs.mollieConfigHelperMock.getPreference.returns(preferences.mollieProfileId);

@@ -15,6 +15,14 @@
 		{
 			"name": "app.payment.form.processor.mollie_ecom_credit",
 			"script": "./cartridge/scripts/payment/processor/mollie_ecom_credit_form_processor"
+		},
+		{
+			"name": "app.payment.processor.mollie_ecom_qr",
+			"script": "./cartridge/scripts/payment/processor/mollie_ecom_qr"
+		},
+		{
+			"name": "app.payment.form.processor.mollie_ecom_qr",
+			"script": "./cartridge/scripts/payment/processor/mollie_ecom_qr_form_processor"
 		}
 	]
 }

@@ -235,13 +235,14 @@ const configMock = {
     getTransactionStatus: sandbox.stub(),
     getTransactionAPI: sandbox.stub(),
     getRefundStatus: sandbox.stub(),
-    getDefaultAttributeValue: sandbox.stub()
+    getDefaultAttributeValue: sandbox.stub(),
+    getEnableQrCode: sandbox.stub()
 };
 
 const orderHelperMock = {
     getMappedPaymentDescription: sandbox.stub(),
+    getOrderLineCategories: sandbox.stub(),
     checkMollieRefundStatus: sandbox.stub(),
-    getIssuerData: sandbox.stub(),
     setRefundStatus: sandbox.stub(),
     getRefundStatus: sandbox.stub(),
     addItemToOrderHistory: sandbox.stub(),
@@ -261,10 +262,16 @@ const orderHelperMock = {
     getOrderCustomProperty: sandbox.stub(),
     setPaymentId: sandbox.stub(),
     getPaymentId: sandbox.stub(),
+    getIssuerData: sandbox.stub(),
+    setIssuerData: sandbox.stub(),
+    setPaymentDetails: sandbox.stub(),
+    getPaymentDetails: sandbox.stub(),
     setPaymentStatus: sandbox.stub(),
     getPaymentStatus: sandbox.stub(),
     setPaymentDescription: sandbox.stub(),
     getPaymentDescription: sandbox.stub(),
+    setPaymentLink: sandbox.stub(),
+    getPaymentLink: sandbox.stub(),
     setOrderId: sandbox.stub(),
     getOrderId: sandbox.stub(),
     setOrderStatus: sandbox.stub(),

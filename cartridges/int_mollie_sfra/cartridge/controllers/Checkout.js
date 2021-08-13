@@ -42,9 +42,15 @@ server.prepend('Begin', function (req, res, next) {
  * @param {serverfunction} - append
  */
 server.append('Begin', function (req, res, next) {
+    var currentBasket = BasketMgr.getCurrentBasket();
     var viewData = res.getViewData();
     var profile = req.currentCustomer.raw.profile;
     viewData.mollie = COHelpers.getMollieViewData(profile);
+
+    if (viewData.order) {
+        var countryCode = Locale.getLocale(req.locale.id).country;
+        viewData.order.billing.payment.applicablePaymentMethods = COHelpers.getMolliePaymentMethods(currentBasket, viewData.order, countryCode);
+    }
 
     next();
 });
@@ -72,7 +78,10 @@ server.post('UpdatePaymentMethods', function (req, res, next) {
     });
 
     var accountModel = new AccountModel(currentCustomer);
-    var orderModel = new OrderModel(currentBasket, { countryCode: Locale.getLocale(req.locale.id).country });
+    var countryCode = Locale.getLocale(req.locale.id).country;
+    var orderModel = new OrderModel(currentBasket, { countryCode: countryCode });
+    orderModel.billing.payment.applicablePaymentMethods = COHelpers.getMolliePaymentMethods(currentBasket, orderModel, countryCode);
+
     res.json({
         paymentOptionsTemplate: COHelpers.getPaymentOptionsTemplate(currentBasket, accountModel, orderModel)
     });

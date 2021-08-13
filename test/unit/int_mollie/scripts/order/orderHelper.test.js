@@ -323,6 +323,15 @@ describe('order/orderHelper', () => {
             orderHelper.setIssuerData(this.order, 'paymentMethodID', 'issuerData');
             expect(this.paymentTransaction.custom.mollieIssuerData).to.eql('issuerData');
         });
+        it('setPaymentDetails', () => {
+            var paymentDetails = { detail: 'detailData' };
+            orderHelper.setPaymentDetails(this.order, 'paymentMethodID', paymentDetails);
+            expect(this.paymentTransaction.custom.molliePaymentDetails).to.eql(JSON.stringify(paymentDetails));
+        });
+        it('setPaymentLink', () => {
+            orderHelper.setPaymentLink(this.order, 'paymentMethodID', 'paymentLink');
+            expect(this.paymentTransaction.custom.molliePaymentLink).to.eql('paymentLink');
+        });
     });
 
     context('#getTransactionCustomProperty', () => {
@@ -337,7 +346,9 @@ describe('order/orderHelper', () => {
                 molliePaymentStatus: 'paymentStatus',
                 molliePaymentId: 'paymentId',
                 molliePaymentDescription: 'paymentDescription',
-                mollieIssuerData: 'issuerData'
+                mollieIssuerData: 'issuerData',
+                molliePaymentDetails: '{"bankAccount":"bankAccount"}',
+                molliePaymentLink: 'paymentLink'
             };
             this.paymentInstrument = new stubs.dw.PaymentInstrumentMock();
             this.paymentInstrument.getPaymentMethod.returns('paymentMethodID');
@@ -361,6 +372,12 @@ describe('order/orderHelper', () => {
         });
         it('getIssuerData', () => {
             expect(orderHelper.getIssuerData(this.order, 'paymentMethodID')).to.eql('issuerData');
+        });
+        it('getPaymentDetails', () => {
+            expect(orderHelper.getPaymentDetails(this.order, 'paymentMethodID')).to.eql({ bankAccount: 'bankAccount' });
+        });
+        it('getPaymentLink', () => {
+            expect(orderHelper.getPaymentLink(this.order, 'paymentMethodID')).to.eql('paymentLink');
         });
         it('returns null if no paymentInstrument is found', () => {
             this.order.getPaymentInstruments.returns({ toArray: () => [] });

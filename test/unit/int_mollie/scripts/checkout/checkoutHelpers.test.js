@@ -16,7 +16,8 @@ const checkoutHelpers = proxyquire(`${base}/int_mollie/cartridge/scripts/checkou
     '*/cartridge/scripts/order/orderHelper': stubs.orderHelperMock,
     '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
-    '*/cartridge/scripts/utils/superModule': stubs.superModule
+    '*/cartridge/scripts/utils/superModule': stubs.superModule,
+    '*/cartridge/scripts/payment/paymentService': stubs.paymentServiceMock
 });
 
 const makeCollection = array => ({
@@ -294,8 +295,8 @@ describe('checkout/checkoutHelpers', () => {
 
             checkoutHelpers.restoreOpenOrder(lastOrderNumber);
 
-            expect(stubs.dw.OrderMgrMock.failOrder).to.be.calledOnce()
-                .and.to.be.calledWithExactly(order, true);
+            expect(stubs.orderHelperMock.failOrder).to.be.calledOnce()
+                .and.to.be.calledWith(order, sinon.match('Order failed'));
             expect(stubs.dw.TransactionMock.wrap).to.be.calledOnce();
         });
 

@@ -136,6 +136,7 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
     }
 
     req.session.privacyCache.set('orderId', order.orderNo);
+    req.session.privacyCache.set('isCheckoutDevice', true);
 
     // Handles payment authorization
     var handlePaymentResult = COHelpers.handlePayments(order, order.orderNo);
@@ -179,7 +180,8 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
     //  time.
     res.json({
         error: false,
-        continueUrl: handlePaymentResult.redirectUrl
+        redirectUrl: handlePaymentResult.redirectUrl,
+        renderQRCodeUrl: handlePaymentResult.renderQRCodeUrl
     });
 
     return next();
