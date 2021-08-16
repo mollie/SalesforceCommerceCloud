@@ -481,5 +481,56 @@ describe('order/orderHelper', () => {
 
             expect(stubs.orderHelperMock.setRefundStatus).to.not.have.been.called();
         });
+
+        context('#getOrderLineCategories', () => {
+            beforeEach(() => {
+                this.category1 = faker.lorem.word();
+                this.category2 = faker.lorem.word();
+                const productLineItems = [
+                    {
+                        id: faker.random.uuid(),
+                        product: {
+                            custom: {
+                                mollieProductCategory: {
+                                    value: this.category1
+                                }
+                            }
+                        }
+                    },
+                    {
+                        id: faker.random.uuid(),
+                        product: {
+                            custom: {
+                                mollieProductCategory: {
+                                    value: this.category1
+                                }
+                            }
+                        }
+                    },
+                    {
+                        id: faker.random.uuid(),
+                        product: {
+                            custom: {
+                                mollieProductCategory: {
+                                    value: this.category2
+                                }
+                            }
+                        }
+                    }
+                ];
+
+                this.lineItemContainer = {
+                    productLineItems: {
+                        toArray: () => productLineItems
+                    }
+                };
+            });
+            it('Should create the correct category string', () => {
+                var categoryString = orderHelper.getOrderLineCategories(this.lineItemContainer);
+                var expectedCategoryString = this.category1 + ',' + this.category2;
+
+                expect(categoryString).to.eql(expectedCategoryString);
+            });
+        });
     });
 });

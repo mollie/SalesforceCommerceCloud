@@ -12,6 +12,7 @@ var preferences = {
     mollieDefaultOrderExpiryDays: faker.random.number(),
     mollieEnableSingleClickPayments: faker.random.boolean(),
     mollieComponentsEnabled: faker.random.boolean(),
+    mollieEnableQrCode: faker.random.boolean(),
     mollieLogCategory: faker.lorem.word()
 };
 
