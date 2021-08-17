@@ -75,6 +75,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
 
             controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
 
+            expect(stubs.orderHelperMock.setPaymentLink).to.have.been.calledOnce();
             expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_send.isml'), {
                     paymentLink: paymentLink,
@@ -105,6 +106,7 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
 
             controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
 
+            expect(stubs.orderHelperMock.setPaymentLink).to.have.been.calledOnce();
             expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_send.isml'), {
                     paymentLink: paymentLink,

@@ -80,7 +80,6 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
             orderHelper.setRefundStatus(order, config.getRefundStatus().NOTREFUNDED);
             orderHelper.setPaymentLink(order, null, redirectUrl);
         });
-
     } catch (e) {
         Logger.error(e.javaMessage + '\n\r' + e.stack);
         error = true;

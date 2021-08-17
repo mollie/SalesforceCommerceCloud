@@ -174,4 +174,66 @@ describe('payment/paymentHelper', () => {
             expect(stubs.orderHelperMock.checkMollieRefundStatus).have.to.been.calledOnce();
         });
     });
+
+    context('#processQR', () => {
+        it('should return the correct result for orders with mollieStatus OPEN', () => {
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.orderHelperMock.getPaymentStatus.returns(STATUSMOCK.OPEN);
+            stubs.dw.URLUtilsMock.https.returns('MolliePayment-Redirect');
+
+            var result = paymentHelper.processQR(this.order);
+
+            expect(result.paidStatus).to.be.true();
+            expect(result.continueUrl).to.match(/^MolliePayment-Redirect/);
+        });
+        it('should return the correct result for orders with mollieStatus PAID', () => {
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.orderHelperMock.getPaymentStatus.returns(STATUSMOCK.PAID);
+            stubs.dw.URLUtilsMock.https.returns('MolliePayment-Redirect');
+
+            var result = paymentHelper.processQR(this.order);
+
+            expect(result.paidStatus).to.be.true();
+            expect(result.continueUrl).to.match(/^MolliePayment-Redirect/);
+        });
+        it('should return the correct result for orders with mollieStatus EXPIRED', () => {
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.orderHelperMock.getPaymentStatus.returns(STATUSMOCK.EXPIRED);
+            stubs.dw.URLUtilsMock.https.returns('Checkout-Begin');
+
+            var result = paymentHelper.processQR(this.order);
+
+            expect(result.paidStatus).to.be.false();
+            expect(result.continueUrl).to.match(/^Checkout-Begin/);
+        });
+        it('should return the correct result for orders with mollieStatus CANCELED', () => {
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.orderHelperMock.getPaymentStatus.returns(STATUSMOCK.CANCELED);
+            stubs.dw.URLUtilsMock.https.returns('Checkout-Begin');
+
+            var result = paymentHelper.processQR(this.order);
+
+            expect(result.paidStatus).to.be.false();
+            expect(result.continueUrl).to.match(/^Checkout-Begin/);
+        });
+        it('should return the correct result for orders with mollieStatus FAILED', () => {
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.orderHelperMock.getPaymentStatus.returns(STATUSMOCK.FAILED);
+            stubs.dw.URLUtilsMock.https.returns('Checkout-Begin');
+
+            var result = paymentHelper.processQR(this.order);
+
+            expect(result.paidStatus).to.be.false();
+            expect(result.continueUrl).to.match(/^Checkout-Begin/);
+        });
+        it('should return the correct result for orders with mollieStatus PENDING', () => {
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.orderHelperMock.getPaymentStatus.returns(STATUSMOCK.PENDING);
+
+            var result = paymentHelper.processQR(this.order);
+
+            expect(result.paidStatus).to.be.false();
+            expect(result.continueUrl).to.be.undefined();
+        });
+    });
 });

@@ -416,4 +416,57 @@ describe('checkout/checkoutHelpers', () => {
             expect(stubs.dw.TransactionMock.commit).to.have.been.calledOnce();
         });
     });
+
+    context('#getMolliePaymentMethods', () => {
+        const molliePaymentMethodId = faker.random.uuid();
+        const molliePaymentMethodImageURL = faker.random.uuid();
+        const currentBasket = new stubs.dw.BasketMock();
+        const countryCode = faker.lorem.word();
+
+        const orderModel = {
+            billing: {
+                payment: {
+                    applicablePaymentMethods: [
+                        {
+                            ID: faker.random.word(),
+                            name: faker.random.word()
+                        },
+                        {
+                            ID: faker.random.word(),
+                            name: faker.random.word(),
+                            molliePaymentMethodId: molliePaymentMethodId
+                        },
+                        {
+                            ID: faker.random.word(),
+                            name: faker.random.word(),
+                            molliePaymentMethodId: faker.random.uuid()
+                        }
+                    ]
+                }
+            }
+        };
+
+        const issuers = [
+            {
+                id: faker.random.uuid()
+            }
+        ];
+
+        const molliePaymentMethods = [
+            {
+                id: molliePaymentMethodId,
+                issuers: issuers,
+                imageURL: molliePaymentMethodImageURL
+            }
+        ];
+
+        it('returns the mapped Mollie payment methods', () => {
+            stubs.paymentServiceMock.getMethods.returns({ methods: molliePaymentMethods });
+            var paymentMethods = checkoutHelpers.getMolliePaymentMethods(currentBasket, orderModel, countryCode);
+
+            expect(paymentMethods).to.have.length(2);
+            expect(paymentMethods[1].issuers).to.eql(issuers);
+            expect(paymentMethods[1].image).to.eql(molliePaymentMethodImageURL);
+        });
+    });
 });

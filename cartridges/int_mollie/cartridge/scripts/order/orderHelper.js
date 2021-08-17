@@ -43,9 +43,10 @@ function getMappedPaymentDescription(order, paymentMethod) {
  */
 function getOrderLineCategories(lineItemContainer) {
     var orderLineCategories = lineItemContainer.productLineItems.toArray().map(function (lineItem) {
-        return lineItem.product.custom.mollieProductCategory;
+        var category = lineItem.product.custom.mollieProductCategory;
+        return category && category.value;
     }).filter(function (value, index, self) {
-        return value && value.value && self.indexOf(value) === index;
+        return value && self.indexOf(value) === index;
     }).join(',');
 
     return orderLineCategories;
