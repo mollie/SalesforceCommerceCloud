@@ -85,6 +85,30 @@ function createPayment(order, paymentMethod, paymentData) {
 /**
  *
  * @param {dw.order.Order} order - Order object
+ * @returns {string} - Redirect url
+ * @throws {MollieServiceException}
+ */
+function processPaymentRedirect(order) {
+    try {
+        var paymentService = require('*/cartridge/scripts/payment/paymentService');
+        var url;
+        if (orderHelper.isMollieOrder(order)) {
+            var getOrderResult = paymentService.getOrder(orderHelper.getOrderId(order));
+            url = paymentHelper.processPaymentResultRedirect(order, getOrderResult.order).url;
+        } else {
+            var getPaymentResult = paymentService.getPayment(orderHelper.getPaymentId(order));
+            url = paymentHelper.processPaymentResultRedirect(order, getPaymentResult.payment).url;
+        }
+        return url;
+    } catch (e) {
+        if (e.name === 'PaymentProviderException') throw e;
+        throw MollieServiceException.from(e);
+    }
+}
+
+/**
+ *
+ * @param {dw.order.Order} order - Order object
  * @param {string} statusUpdateId - id of the order / payment to update
  * @returns {string} - Redirect url
  * @throws {MollieServiceException}
@@ -96,10 +120,10 @@ function processPaymentUpdate(order, statusUpdateId) {
         if (orderHelper.isMollieOrder(order) &&
             (!statusUpdateId || orderHelper.getOrderId(order) === statusUpdateId)) {
             var getOrderResult = paymentService.getOrder(orderHelper.getOrderId(order));
-            url = paymentHelper.processPaymentResult(order, getOrderResult.order).url;
+            url = paymentHelper.processPaymentResultHook(order, getOrderResult.order).url;
         } else if (!statusUpdateId || orderHelper.getPaymentId(order) === statusUpdateId) {
             var getPaymentResult = paymentService.getPayment(orderHelper.getPaymentId(order));
-            url = paymentHelper.processPaymentResult(order, getPaymentResult.payment).url;
+            url = paymentHelper.processPaymentResultHook(order, getPaymentResult.payment).url;
         }
         return url;
     } catch (e) {
@@ -345,6 +369,7 @@ function testApiKeys(testApiKey, liveApiKey) {
 module.exports = {
     getPayment: getPayment,
     createPayment: createPayment,
+    processPaymentRedirect: processPaymentRedirect,
     processPaymentUpdate: processPaymentUpdate,
     cancelPayment: cancelPayment,
     getOrder: getOrder,
