@@ -222,6 +222,7 @@ const loggerMock = { debug: sandbox.stub(), error: sandbox.stub() };
 const collectionsMock = { map: sandbox.stub() };
 
 const configMock = {
+    getPluginVersion: sandbox.stub(),
     getSiteId: sandbox.stub(),
     getSiteName: sandbox.stub(),
     getEnabledMode: sandbox.stub(),

@@ -1,4 +1,5 @@
 var Site = require('dw/system/Site');
+var Resource = require('dw/web/Resource');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var customPageFieldSettings = require('*/cartridge/scripts/customPageFieldSettings');
 var mollieConfigHelper = require('*/cartridge/scripts/mollieConfigHelper');
@@ -34,6 +35,13 @@ var ENABLED_MODE = {
     LIVE: 'LIVE'
 };
 
+
+var PLUGIN_VERSION = [
+    'SFCC/' + Resource.msg('global.version.number', 'version', null),
+    'MollieSFCC/' + Resource.msg('mollie.version.number', 'version', null),
+    'uap/HFyJqxekGpwVPUzr'
+];
+
 // Mollie Configuration
 /**
  *
@@ -50,6 +58,7 @@ function Config() {
         throw new MollieServiceException('SITE_PREFRENCES :: ' + e.message);
     }
 
+
     // #region GENERAL CONFIG
     this.enabledMode = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnabledMode', true);
     this.bearerTestToken = mollieConfigHelper.getPreference(sitePreferences, 'mollieBearerTestToken', this.enabledMode === ENABLED_MODE.LIVE);
@@ -62,6 +71,10 @@ function Config() {
     this.enableQrCode = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnableQrCode', false);
     this.logCategory = mollieConfigHelper.getPreference(sitePreferences, 'mollieLogCategory', false);
     this.customPageFieldSettings = customPageFieldSettings;
+
+    this.getPluginVersion = function () {
+        return PLUGIN_VERSION.join(' ');
+    };
 
     /**
      * Get SiteId
