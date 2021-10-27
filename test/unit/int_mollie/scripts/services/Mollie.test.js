@@ -7,7 +7,8 @@ const Mollie = proxyquire(`${base}/int_mollie/cartridge/scripts/services/mollie/
     '*/cartridge/scripts/exceptions/PaymentProviderException': stubs.serviceExceptionMock,
     '*/cartridge/scripts/services/mollie/mollieRequest': stubs.mollieRequest,
     '*/cartridge/scripts/services/mollieService': stubs.mollieServiceMock,
-    '*/cartridge/scripts/mollieConfig': stubs.configMock
+    '*/cartridge/scripts/mollieConfig': stubs.configMock,
+    '*/cartridge/scripts/services/mollie/mollieError': stubs.mollieError
 });
 
 describe('services/Mollie', () => {

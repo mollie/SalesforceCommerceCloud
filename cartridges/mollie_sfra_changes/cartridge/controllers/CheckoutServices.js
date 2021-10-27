@@ -157,7 +157,12 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
     if (handlePaymentResult.error) {
         res.json({
             error: true,
-            errorMessage: Resource.msg('error.technical', 'checkout', null)
+            errorStage: {
+                stage: 'payment',
+                step: 'paymentInstrument'
+            },
+            fieldErrors: handlePaymentResult.fieldErrors,
+            serverErrors: handlePaymentResult.serverErrors
         });
         return next();
     }

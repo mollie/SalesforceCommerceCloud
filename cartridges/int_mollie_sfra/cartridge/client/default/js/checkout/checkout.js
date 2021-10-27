@@ -511,6 +511,22 @@ window.md = new MobileDetect(window.navigator.userAgent);
                 promise.fail(function (data) {
                     // show errors
                     if (data) {
+                        if (data.fieldErrors.length) {
+                            data.fieldErrors.forEach(function (error) {
+                                if (Object.keys(error).length) {
+                                    formHelpers.loadFormErrors('.payment-form', error);
+                                }
+                            });
+                        }
+
+                        if (data.serverErrors.length) {
+                            data.serverErrors.forEach(function (error) {
+                                $('.error-message').show();
+                                $('.error-message-text').text(error);
+                                scrollAnimate($('.error-message'));
+                            });
+                        }
+
                         if (data.errorStage) {
                             members.gotoStage(data.errorStage.stage);
 

@@ -27,7 +27,7 @@ server.prepend('Begin', function (req, res, next) {
     if (orderId && !COHelpers.orderExists(orderId)) {
         res.redirect(URLUtils.home().toString());
     } else {
-        COHelpers.restoreOpenOrder(orderId);
+        COHelpers.restorePreviousBasket(orderId);
     }
 
     next();
