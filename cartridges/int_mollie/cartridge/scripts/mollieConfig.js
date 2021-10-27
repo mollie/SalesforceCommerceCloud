@@ -73,7 +73,8 @@ function Config() {
     this.customPageFieldSettings = customPageFieldSettings;
 
     this.getPluginVersion = function () {
-        return PLUGIN_VERSION.join(' ');
+        var version = PLUGIN_VERSION.join(' ');
+        return version;
     };
 
     /**
