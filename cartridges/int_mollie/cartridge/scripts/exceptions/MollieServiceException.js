@@ -1,5 +1,4 @@
 var convertToMollieServiceExceptionStackTrace = function (error) {
-    Error.captureStackTrace(error);
     return ('' + error.stack).replace(/^Error/, 'MollieServiceException');
 };
 

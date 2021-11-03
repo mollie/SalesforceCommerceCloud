@@ -41,7 +41,7 @@ function getMappedPreferences(preferences, molliePreferences) {
             displayName: preference.displayName,
             defaultValue: preference.defaultValue,
             description: fieldSettings[preference.ID] && fieldSettings[preference.ID].description,
-            mandotory: preference.mandatory,
+            mandatory: preference.mandatory,
             selectedValue: preferences.getCustom()[preference.ID],
             inputType: valueTypeCodeMapping[preference.valueTypeCode],
             values: collections.map(preference.values, function (value) {
@@ -111,7 +111,7 @@ server.post('SavePreferences',
                     var param = request.httpParameterMap.get(paramName);
                     var preference = preferences.custom[paramName];
                     var paramValue = param.booleanValue || param.dateValue || param.doubleValue || param.intValue || param.value;
-                    if (preference && paramValue !== preference.value) {
+                    if (preference !== null && paramValue !== preference.value) {
                         Transaction.wrap(function () {
                             switch (paramValue) {
                                 case 'checked':

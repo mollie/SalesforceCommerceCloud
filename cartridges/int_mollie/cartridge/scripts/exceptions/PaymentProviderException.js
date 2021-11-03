@@ -1,7 +1,6 @@
 var MollieServiceException = require('./MollieServiceException');
 
 var convertToPaymentProviderExceptionStackTrace = function (error) {
-    Error.captureStackTrace(error);
     return ('' + error.stack).replace(/^MollieServiceException/, 'PaymentProviderException');
 };
 

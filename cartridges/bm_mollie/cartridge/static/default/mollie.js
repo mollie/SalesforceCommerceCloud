@@ -31,10 +31,16 @@ function hidePasswordField() {
 
 function onClickSubmit() {
     $(document).on('click', BM_PREF_SUBMIT, () => {
+        // Include unchecked checkboxes in the serialized array
+        const formData = $(BM_PREF_FORM).serializeArray();
+        $(`${BM_PREF_FORM} input[type="checkbox"]:not(:checked)`).each(function () {
+            formData.push({ name: this.name, value: this.checked ? "checked" : "unchecked" });
+        });
+
         $.ajax({
             url: $(BM_PREF_SUBMIT).attr('data-method-url'),
             method: 'POST',
-            data: $(BM_PREF_FORM).serialize(),
+            data: formData,
             success: function (data) {
                 if (data.error) {
                     showError('<strong>Error!</strong>');
