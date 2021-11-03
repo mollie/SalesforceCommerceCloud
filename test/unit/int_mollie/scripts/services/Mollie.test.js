@@ -7,7 +7,8 @@ const Mollie = proxyquire(`${base}/int_mollie/cartridge/scripts/services/mollie/
     '*/cartridge/scripts/exceptions/PaymentProviderException': stubs.serviceExceptionMock,
     '*/cartridge/scripts/services/mollie/mollieRequest': stubs.mollieRequest,
     '*/cartridge/scripts/services/mollieService': stubs.mollieServiceMock,
-    '*/cartridge/scripts/mollieConfig': stubs.configMock
+    '*/cartridge/scripts/mollieConfig': stubs.configMock,
+    '*/cartridge/scripts/services/mollie/mollieError': stubs.mollieError
 });
 
 describe('services/Mollie', () => {
@@ -70,7 +71,7 @@ describe('services/Mollie', () => {
             .and.to.have.been.calledWithExactly(fakeURL + configuration.path);
         expect(service.setRequestMethod).to.have.been.calledOnce()
             .and.to.have.been.calledWithExactly(configuration.method);
-        expect(service.addHeader).to.have.been.calledThrice()
+        expect(service.addHeader).to.have.been.called(4)
             .and.to.have.been.calledWithExactly('content-type', 'application/json')
             .and.to.have.been.calledWithExactly('Accept', 'application/json; charset=utf-8')
             .and.to.have.been.calledWithExactly('Authorization', 'Bearer ' + bearer);

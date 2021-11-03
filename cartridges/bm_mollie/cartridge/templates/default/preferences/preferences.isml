@@ -33,7 +33,7 @@
         <form class="js-bm-preferences-form">
             <fieldset>
                 <isloop items="${pdict.preferences}" var="preference" status="loopstatus">
-                    <div class="row form-group ${preference.mandotory ? 'required' : ''}">
+                    <div class="row form-group ${preference.mandatory ? 'required' : ''}">
                         <label class="col-md-2 control-label">${preference.displayName || preference.ID}</label>
                         <div class="col-md-4">
                             <isif condition="${preference.inputType === 'checkbox'}">

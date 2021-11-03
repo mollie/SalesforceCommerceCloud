@@ -22,6 +22,7 @@ const getConfig = prefs => {
     stubs.dw.Site.getCurrent().getPreferences().getCustom.returns(prefs);
     const config = proxyquire(`${base}/int_mollie/cartridge/scripts/mollieConfig`, {
         'dw/system/Site': stubs.dw.Site,
+        'dw/web/Resource': stubs.dw.ResourceMock,
         '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
         '*/cartridge/scripts/customPageFieldSettings': fieldSettings,
         '*/cartridge/scripts/mollieConfigHelper': stubs.mollieConfigHelperMock
@@ -107,6 +108,7 @@ describe('Config', () => {
         try {
             proxyquire(`${base}/int_mollie/cartridge/scripts/mollieConfig`, {
                 'dw/system/Site': Site,
+                'dw/web/Resource': stubs.dw.ResourceMock,
                 '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
                 '*/cartridge/scripts/customPageFieldSettings': fieldSettings,
                 '*/cartridge/scripts/mollieConfigHelper': stubs.mollieConfigHelperMock

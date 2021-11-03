@@ -1,4 +1,4 @@
-<select class="form-control custom-select selectpicker" name="${preference.ID}" ${preference.mandotory ? 'required' : ''}>
+<select class="form-control custom-select selectpicker" name="${preference.ID}" ${preference.mandatory ? 'required' : ''}>
     <isloop items=${preference.values} var="preferenceOption">
         <option value="${preferenceOption.value}" ${preferenceOption.value === preference.selectedValue.value ? 'selected' : ''}>
             ${preferenceOption.displayValue}

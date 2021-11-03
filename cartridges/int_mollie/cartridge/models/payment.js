@@ -41,7 +41,8 @@ function applicablePaymentMethods(paymentMethods) {
             ID: method.ID,
             name: method.name,
             image: method.image && method.image.URL.toString(),
-            molliePaymentMethodId: method.custom.molliePaymentMethodId
+            molliePaymentMethodId: method.custom.molliePaymentMethodId,
+            processor: method.paymentProcessor.getID()
         };
     });
 }

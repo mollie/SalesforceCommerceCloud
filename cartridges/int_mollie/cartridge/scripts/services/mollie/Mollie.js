@@ -33,6 +33,7 @@ function Mollie(configuration) {
         svc.addHeader('Accept', 'application/json; charset=utf-8');
         svc.addHeader('content-type', 'application/json');
         svc.addHeader('Authorization', 'Bearer ' + (parameters.bearerToken || config.getBearerToken()));
+        svc.addHeader('User-Agent', config.getPluginVersion());
         return svc;
     };
 
@@ -127,7 +128,15 @@ function Mollie(configuration) {
             return result.object;
         }
 
-        throw new PaymentProviderException(result.error, result.errorMessage);
+        /**
+         *  Check more on general error handling here: https://docs.mollie.com/overview/handling-errors
+         *  Check more on Mollie Components error handling here: https://docs.mollie.com/components/handling-errors
+         */
+
+        var errorMessageObject = JSON.parse(result.errorMessage);
+        var MollieError = require('*/cartridge/scripts/services/mollie/mollieError');
+        var mollieError = new MollieError(errorMessageObject);
+        throw new PaymentProviderException(result.error, mollieError, !!mollieError.extra);
     };
 }
 
