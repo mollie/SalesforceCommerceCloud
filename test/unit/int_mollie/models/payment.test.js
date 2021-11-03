@@ -15,6 +15,11 @@ const PaymentModel = proxyquire(`${base}/int_mollie/cartridge/models/payment`, {
 describe('models/payment', () => {
     before(() => stubs.init());
     beforeEach(() => {
+        const PAYMENT_PROCESSOR = {
+            DEFAULT: "MOLLIE_ECOM_DEFAULT",
+            QR: "MOLLIE_ECOM_CREDIT",
+            CREDIT: "MOLLIE_ECOM_CREDIT"
+        };
         const molliePaymentMethodId = faker.random.uuid();
         const url = faker.internet.url();
         const paymentMethodsInner = [
@@ -26,6 +31,9 @@ describe('models/payment', () => {
                         toString: () => url
                     }
                 },
+                paymentProcessor: {
+                    getID: () => PAYMENT_PROCESSOR.DEFAULT
+                },
                 custom: {}
             },
             {
@@ -35,6 +43,9 @@ describe('models/payment', () => {
                     URL: {
                         toString: () => url
                     }
+                },
+                paymentProcessor: {
+                    getID: () => PAYMENT_PROCESSOR.QR
                 },
                 custom: {
                     molliePaymentMethodId: molliePaymentMethodId
@@ -64,8 +75,10 @@ describe('models/payment', () => {
         expect(paymentModel.applicablePaymentMethods[0].ID).to.eql(paymentMethods[0].ID);
         expect(paymentModel.applicablePaymentMethods[0].name).to.eql(paymentMethods[0].name);
         expect(paymentModel.applicablePaymentMethods[0].image).to.eql(paymentMethods[0].image.URL.toString());
+        expect(paymentModel.applicablePaymentMethods[0].processor).to.eql(paymentMethods[0].paymentProcessor.getID());
         expect(paymentModel.applicablePaymentMethods[1].ID).to.eql(paymentMethods[1].ID);
         expect(paymentModel.applicablePaymentMethods[1].name).to.eql(paymentMethods[1].name);
         expect(paymentModel.applicablePaymentMethods[1].image).to.eql(paymentMethods[1].image.URL.toString());
+        expect(paymentModel.applicablePaymentMethods[1].processor).to.eql(paymentMethods[1].paymentProcessor.getID());
     });
 });

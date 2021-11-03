@@ -4,6 +4,8 @@ var Resource = require('dw/web/Resource');
 var Transaction = require('dw/system/Transaction');
 var OrderMgr = require('dw/order/OrderMgr');
 var PaymentMgr = require('dw/order/PaymentMgr');
+var PaymentProviderException = require('*/cartridge/scripts/exceptions/PaymentProviderException');
+var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var collections = require('*/cartridge/scripts/util/collections');
@@ -58,8 +60,10 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
     var fieldErrors = {};
     var error = false;
     var redirectUrl;
+
+    var order = OrderMgr.getOrder(orderNumber);
+
     try {
-        var order = OrderMgr.getOrder(orderNumber);
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
         var issuerData = orderHelper.getIssuerData(order);
         var issuerId = issuerData && JSON.parse(issuerData).id;
@@ -81,11 +85,18 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
             orderHelper.setPaymentLink(order, null, redirectUrl);
         });
     } catch (e) {
-        Logger.error(e.javaMessage + '\n\r' + e.stack);
-        error = true;
-        serverErrors.push(
-            Resource.msg('error.technical', 'checkout', null)
-        );
+        var exception = e;
+        if (exception instanceof PaymentProviderException) {
+            error = true;
+            serverErrors.push(Resource.msg('error.technical', 'checkout', null));
+            Transaction.wrap(function () {
+                OrderMgr.failOrder(order, true);
+                orderHelper.addItemToOrderHistory(order, exception.message + ' :: ' + JSON.stringify(exception.errorDetail), true);
+                Logger.error(exception.message + ' :: ' + exception.errorDetail);
+            });
+        } else {
+            throw MollieServiceException.from(e);
+        }
     }
 
     return {

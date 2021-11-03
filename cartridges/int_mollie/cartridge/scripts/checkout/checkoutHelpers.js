@@ -2,9 +2,9 @@ var HookMgr = require('dw/system/HookMgr');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var BasketMgr = require('dw/order/BasketMgr');
 var OrderMgr = require('dw/order/OrderMgr');
-var URLUtils = require('dw/web/URLUtils');
 var Transaction = require('dw/system/Transaction');
 var Order = require('dw/order/Order');
+var Resource = require('dw/web/Resource');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
@@ -49,14 +49,17 @@ COHelpers.handlePayments = function (order, orderNumber) {
             paymentProcessor
         );
 
-        if (authorizationResult.error) throw new MollieServiceException('Authorization hook failed');
-
         return authorizationResult;
     } catch (e) {
-        Logger.debug('PAYMENT :: ERROR :: ' + e.message);
+        var exception = e;
+        Logger.debug('PAYMENT :: ERROR :: ' + exception.message);
+
         Transaction.wrap(function () { OrderMgr.failOrder(order, true); });
-        if (e.name === 'MollieServiceException') return { continueUrl: URLUtils.url('Checkout-Begin').toString() };
-        return { error: true };
+        return {
+            error: true,
+            fieldErrors: [],
+            serverErrors: [Resource.msg('error.technical', 'checkout', null)]
+        };
     }
 };
 
@@ -74,7 +77,7 @@ COHelpers.orderExists = function (orderNumber) {
  * @param {string} lastOrderNumber - orderId of last order in session
  * @returns {void}
  */
-COHelpers.restoreOpenOrder = function (lastOrderNumber) {
+COHelpers.restorePreviousBasket = function (lastOrderNumber) {
     var currentBasket = BasketMgr.getCurrentBasket();
 
     if (!currentBasket || currentBasket.getProductLineItems().length === 0) {

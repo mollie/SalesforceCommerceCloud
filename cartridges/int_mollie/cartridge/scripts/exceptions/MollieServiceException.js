@@ -1,5 +1,6 @@
-var convertToMollieServiceExceptionStackTrace = function (stackTrace) {
-    return ('' + stackTrace).replace(/^Error/, 'MollieServiceException');
+var convertToMollieServiceExceptionStackTrace = function (error) {
+    Error.captureStackTrace(error);
+    return ('' + error.stack).replace(/^Error/, 'MollieServiceException');
 };
 
 /**
@@ -9,10 +10,11 @@ var convertToMollieServiceExceptionStackTrace = function (stackTrace) {
  * @param {string|Object} [errorDetail] - Detail on an error (string or object)
  */
 function MollieServiceException(message, errorDetail) {
+    var error = new Error();
     this.message = message;
     this.errorDetail = errorDetail || null;
     this.name = 'MollieServiceException';
-    this.stack = convertToMollieServiceExceptionStackTrace(new Error().stack);
+    this.stack = convertToMollieServiceExceptionStackTrace(error);
 }
 
 MollieServiceException.prototype = Object.create(Error.prototype);
@@ -20,7 +22,7 @@ MollieServiceException.prototype = Object.create(Error.prototype);
 MollieServiceException.from = function (error) {
     var exception = new MollieServiceException(error.message, error.errorDetail);
     if (error.stack) {
-        exception.stack = convertToMollieServiceExceptionStackTrace(error.stack);
+        exception.stack = convertToMollieServiceExceptionStackTrace(error);
     }
     return exception;
 };

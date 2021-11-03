@@ -2,6 +2,7 @@ const sinon = require('sinon');
 const sandbox = sinon.createSandbox();
 
 const MollieServiceException = require('../../../cartridges/int_mollie/cartridge/scripts/exceptions/MollieServiceException');
+const PaymentProviderException = require('../../../cartridges/int_mollie/cartridge/scripts/exceptions/MollieServiceException');
 const Resource = require('./dw/web/Resource');
 const BasketMgr = require('./dw/order/BasketMgr');
 const Basket = require('./dw/order/Basket');
@@ -146,6 +147,7 @@ class CurrencyMock extends Currency {
 }
 
 const serviceExceptionMock = sandbox.spy(MollieServiceException);
+const paymentProviderExceptionMock = sandbox.spy(PaymentProviderException);
 
 const customMock = sandbox.stub();
 const SiteMock = {
@@ -397,6 +399,7 @@ const initMocks = function () {
 module.exports = {
     sandbox: sandbox,
     mollieRequest: sandbox.stub(),
+    mollieError: sandbox.stub(),
     authRequest: sandbox.stub(),
     loggerMock: loggerMock,
     collectionsMock: collectionsMock,
@@ -408,6 +411,7 @@ module.exports = {
     orderHelperMock: orderHelperMock,
     checkoutHelpersMock: checkoutHelpersMock,
     serviceExceptionMock: serviceExceptionMock,
+    paymentProviderExceptionMock: paymentProviderExceptionMock,
     renderTemplateHelperMock: renderTemplateHelperMock,
     mollieRequestEntitiesMock: mollieRequestEntitiesMock,
     csrfProtectionMock: csrfProtectionMock,
