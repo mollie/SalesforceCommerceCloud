@@ -1,0 +1,22 @@
+<isdecorate template="common/layout/page">
+    <isscript>
+        var assets = require('*/cartridge/scripts/assets.js');
+        assets.addCss('/css/checkout/checkout.css');
+        assets.addJs('/js/checkoutRegistration.js');
+    </isscript>
+
+    <isif condition="${pdict.reportingURLs && pdict.reportingURLs.length}">
+        <isinclude template="reporting/reportingUrls" />
+    </isif>
+
+    <div class="hero slant-down hero-confirmation">
+        <h1 class="page-title">${Resource.msg('title.continue.desktop.' + (pdict.paid ? 'success' : 'fail'), 'mollie', null)}</h1>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <p class="order-thank-you-msg my-4">${Resource.msgf('msg.continue.desktop.' + (pdict.paid ? 'success' : 'fail'), 'mollie', null, pdict.orderId)}</p>
+            </div>
+        </div>
+    </div>
+</isdecorate>

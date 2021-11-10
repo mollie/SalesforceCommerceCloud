@@ -1,6 +1,6 @@
 var Site = require('dw/system/Site');
+var Resource = require('dw/web/Resource');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
-var customPageFieldSettings = require('*/cartridge/scripts/customPageFieldSettings');
 var mollieConfigHelper = require('*/cartridge/scripts/mollieConfigHelper');
 
 var DEFAULT_ATTRIBUTE_VALUE = 'default';
@@ -34,6 +34,14 @@ var ENABLED_MODE = {
     LIVE: 'LIVE'
 };
 
+
+var PLUGIN_VERSION = [
+    'SFCC/' + Resource.msg('global.version.number', 'version', null),
+    'SFCCCertificationVersion/' + Resource.msg('mollie.version.certification.number', 'version', null),
+    'MollieSFCC/' + Resource.msg('mollie.version.number', 'version', null),
+    'uap/HFyJqxekGpwVPUzr'
+];
+
 // Mollie Configuration
 /**
  *
@@ -50,6 +58,7 @@ function Config() {
         throw new MollieServiceException('SITE_PREFRENCES :: ' + e.message);
     }
 
+
     // #region GENERAL CONFIG
     this.enabledMode = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnabledMode', true);
     this.bearerTestToken = mollieConfigHelper.getPreference(sitePreferences, 'mollieBearerTestToken', this.enabledMode === ENABLED_MODE.LIVE);
@@ -59,8 +68,13 @@ function Config() {
     this.defaultOrderExpiryDays = mollieConfigHelper.getPreference(sitePreferences, 'mollieDefaultOrderExpiryDays', true);
     this.enableSingleClickPayments = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnableSingleClickPayments', true);
     this.componentsEnabled = mollieConfigHelper.getPreference(sitePreferences, 'mollieComponentsEnabled', true);
+    this.enableQrCode = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnableQrCode', false);
     this.logCategory = mollieConfigHelper.getPreference(sitePreferences, 'mollieLogCategory', false);
-    this.customPageFieldSettings = customPageFieldSettings;
+
+    this.getPluginVersion = function () {
+        var version = PLUGIN_VERSION.join(' ');
+        return version;
+    };
 
     /**
      * Get SiteId
@@ -163,6 +177,16 @@ function Config() {
     };
 
     /**
+     * Get QR codes enabled
+     * @function
+     * @name Config#getEnableQrCode
+     * @return {Object} enableSingleClickPayments
+     */
+    this.getEnableQrCode = function () {
+        return this.enableQrCode;
+    };
+
+    /**
      * Get components enabled
      * @function
      * @name Config#getComponentsEnabled
@@ -180,16 +204,6 @@ function Config() {
      */
     this.getLogCategory = function () {
         return this.logCategory;
-    };
-
-    /**
-    * Get LogCategory
-    * @function
-    * @name Config#getLogCategory
-    * @return {string} logCategory
-    */
-    this.getCustomPageFieldSettings = function () {
-        return this.customPageFieldSettings;
     };
 
     /**

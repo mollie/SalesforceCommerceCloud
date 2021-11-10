@@ -2,14 +2,15 @@ var HookMgr = require('dw/system/HookMgr');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var BasketMgr = require('dw/order/BasketMgr');
 var OrderMgr = require('dw/order/OrderMgr');
-var URLUtils = require('dw/web/URLUtils');
 var Transaction = require('dw/system/Transaction');
 var Order = require('dw/order/Order');
+var Resource = require('dw/web/Resource');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var config = require('*/cartridge/scripts/mollieConfig');
 var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
+var paymentService = require('*/cartridge/scripts/payment/paymentService');
 
 // Require and extend
 var COHelpers = require('*/cartridge/scripts/utils/superModule')(module);
@@ -48,14 +49,17 @@ COHelpers.handlePayments = function (order, orderNumber) {
             paymentProcessor
         );
 
-        if (authorizationResult.error) throw new MollieServiceException('Authorization hook failed');
-
         return authorizationResult;
     } catch (e) {
-        Logger.debug('PAYMENT :: ERROR :: ' + e.message);
+        var exception = e;
+        Logger.debug('PAYMENT :: ERROR :: ' + exception.message);
+
         Transaction.wrap(function () { OrderMgr.failOrder(order, true); });
-        if (e.name === 'MollieServiceException') return { continueUrl: URLUtils.url('Checkout-Begin').toString() };
-        return { error: true };
+        return {
+            error: true,
+            fieldErrors: [],
+            serverErrors: [Resource.msg('error.technical', 'checkout', null)]
+        };
     }
 };
 
@@ -73,7 +77,7 @@ COHelpers.orderExists = function (orderNumber) {
  * @param {string} lastOrderNumber - orderId of last order in session
  * @returns {void}
  */
-COHelpers.restoreOpenOrder = function (lastOrderNumber) {
+COHelpers.restorePreviousBasket = function (lastOrderNumber) {
     var currentBasket = BasketMgr.getCurrentBasket();
 
     if (!currentBasket || currentBasket.getProductLineItems().length === 0) {
@@ -82,7 +86,8 @@ COHelpers.restoreOpenOrder = function (lastOrderNumber) {
             if (order && order.getStatus().value === Order.ORDER_STATUS_CREATED
                 && !orderHelper.getOrderIsAuthorized(order)) {
                 Transaction.wrap(function () {
-                    OrderMgr.failOrder(order, true);
+                    var message = 'PAYMENT :: Order failed because the basket cannot be restored for the customer otherwise.';
+                    orderHelper.failOrder(order, message);
                 });
             }
         }
@@ -137,6 +142,7 @@ COHelpers.getMollieViewData = function (profile) {
     return {
         customerId: profile && profile.custom.mollieCustomerId,
         enableSingleClickPayments: config.getEnableSingleClickPayments(),
+        enableQrCode: config.getEnableQrCode(),
         mollieComponents: {
             enabled: config.getComponentsEnabled(),
             profileId: config.getProfileId(),
@@ -172,6 +178,38 @@ COHelpers.getPaymentSummaryTemplate = function (orderModel) {
     return renderTemplateHelper.getRenderedHtml({
         order: orderModel
     }, 'checkout/billing/paymentOptions/paymentOptionsSummary');
+};
+
+/**
+ * Sets the Mollie payment methods based on the SFCC applicable payment methods
+ * @param {dw.order.Basket} currentBasket - the target Basket object
+ * @param {Object} orderModel - The current customer's order history
+ * @param {string} countryCode - customer country code
+ * @returns {Object} Mollie payment methods
+ */
+COHelpers.getMolliePaymentMethods = function (currentBasket, orderModel, countryCode) {
+    var paymentMethods = orderModel.billing.payment.applicablePaymentMethods;
+    var getMethodResponse = paymentService.getMethods(currentBasket, countryCode);
+    var mollieMethods = {};
+
+    getMethodResponse.methods.forEach(function (mollieMethod) {
+        mollieMethods[mollieMethod.id] = mollieMethod;
+    });
+
+    return paymentMethods.filter(function (method) {
+        return mollieMethods[method.molliePaymentMethodId] || !method.molliePaymentMethodId;
+    }).map(function (method) {
+        var mappedMethod = method;
+        if (method.molliePaymentMethodId) {
+            var mollieMethod = mollieMethods[method.molliePaymentMethodId];
+            mappedMethod.issuers = mollieMethod && mollieMethod.issuers;
+
+            if (mollieMethod.imageURL) {
+                mappedMethod.image = mollieMethod.imageURL;
+            }
+        }
+        return mappedMethod;
+    });
 };
 
 module.exports = COHelpers;

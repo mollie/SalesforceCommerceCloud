@@ -1,6 +1,43 @@
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addCss('/css/mollie.css');
+</isscript>
+
+<isset name="paymentDetails" value="${pdict.order.paymentDetails}" scope="page" />
 <div class="redirect-type">
     <span>${Resource.msgf('label.payment.summary.method', 'mollie', null, payment.paymentMethod)}</span>
     <isif condition="${payment.issuer}">
-        <span>${Resource.msgf('label.payment.summary.issuer', 'mollie', null, payment.issuer)}</span>
+        <span class="d-block">${Resource.msgf('label.payment.summary.issuer', 'mollie', null, payment.issuer)}</span>
+    </isif>
+    <isif condition="${paymentDetails}">
+        <div class="mt-2">
+            <isif condition="${paymentDetails.bankAccount}">
+                <span class="d-block">${Resource.msgf('label.payment.summary.bank.account', 'mollie', null, paymentDetails.bankAccount)}</span>
+            </isif>
+            <isif condition="${paymentDetails.bankBic}">
+                <span class="d-block">${Resource.msgf('label.payment.summary.bank.bic', 'mollie', null, paymentDetails.bankBic)}</span>
+            </isif>
+            <isif condition="${paymentDetails.bankName}">
+                <span class="d-block">${Resource.msgf('label.payment.summary.bank.name', 'mollie', null, paymentDetails.bankName)}</span>
+            </isif>
+        </div>
+        <isloop items="${paymentDetails.vouchers}" var="voucher" status="loopstatus">
+            <div class="mt-2">
+                <span class="d-block label">${Resource.msgf('label.payment.summary.voucher.number', 'mollie', null, loopstatus.count)}</span>
+                <span class="d-block">${Resource.msgf('label.payment.summary.voucher.issuer', 'mollie', null, voucher.issuer)}</span>
+                <span class="d-block">${Resource.msgf('label.payment.summary.voucher.amount', 'mollie', null, voucher.amount.value, voucher.amount.currency)}</span>
+            </div>
+        </isloop>
+        <isif condition="${paymentDetails.remainderAmount || paymentDetails.remainderMethod}">
+            <div class="mt-2">
+                <span class="d-block label">${Resource.msgf('label.payment.summary.remainder', 'mollie', null)}</span>
+                <isif condition="${paymentDetails.remainderAmount}">
+                    <span class="d-block">${Resource.msgf('label.payment.summary.remainder.amount', 'mollie', null, paymentDetails.remainderAmount.value, paymentDetails.remainderAmount.currency)}</span>
+                </isif>
+                <isif condition="${paymentDetails.remainderMethod}">
+                    <span class="d-block">${Resource.msgf('label.payment.summary.remainder.method', 'mollie', null, paymentDetails.remainderMethod)}</span>
+                </isif>
+            </div>
+        </isif>
     </isif>
 </div>

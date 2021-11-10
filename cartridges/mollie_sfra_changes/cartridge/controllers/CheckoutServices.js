@@ -136,6 +136,7 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
     }
 
     req.session.privacyCache.set('orderId', order.orderNo);
+    req.session.privacyCache.set('isCheckoutDevice', true);
 
     // Handles payment authorization
     var handlePaymentResult = COHelpers.handlePayments(order, order.orderNo);
@@ -156,7 +157,12 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
     if (handlePaymentResult.error) {
         res.json({
             error: true,
-            errorMessage: Resource.msg('error.technical', 'checkout', null)
+            errorStage: {
+                stage: 'payment',
+                step: 'paymentInstrument'
+            },
+            fieldErrors: handlePaymentResult.fieldErrors,
+            serverErrors: handlePaymentResult.serverErrors
         });
         return next();
     }
@@ -179,7 +185,8 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
     //  time.
     res.json({
         error: false,
-        continueUrl: handlePaymentResult.redirectUrl
+        redirectUrl: handlePaymentResult.redirectUrl,
+        renderQRCodeUrl: handlePaymentResult.renderQRCodeUrl
     });
 
     return next();

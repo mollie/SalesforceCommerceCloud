@@ -21,13 +21,16 @@ const mollieEcomDefault = proxyquire(`${base}/int_mollie/cartridge/scripts/payme
     'dw/web/Resource': stubs.dw.ResourceMock,
     'dw/system/Transaction': stubs.dw.TransactionMock,
     'dw/order/OrderMgr': stubs.dw.OrderMgrMock,
+    'dw/order/PaymentMgr': stubs.dw.PaymentMgrMock,
+    'dw/web/URLUtils': stubs.dw.URLUtilsMock,
+    '*/cartridge/scripts/exceptions/PaymentProviderException': stubs.paymentProviderExceptionMock,
+    '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
     '*/cartridge/scripts/payment/paymentService': stubs.paymentServiceMock,
     '*/cartridge/scripts/order/orderHelper': stubs.orderHelperMock,
     '*/cartridge/scripts/util/collections': {
         forEach: (array, cb) => array.forEach(i => cb(i))
     },
-    'dw/order/PaymentMgr': stubs.dw.PaymentMgrMock,
     '*/cartridge/scripts/mollieConfig': stubs.configMock
 });
 

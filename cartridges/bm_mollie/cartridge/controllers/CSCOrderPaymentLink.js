@@ -105,6 +105,10 @@ server.get('Start', csrfProtection.generateToken, function (req, res, next) {
         }
     }
     if (paymentLink) {
+        Transaction.wrap(function () {
+            orderHelper.setPaymentLink(order, null, paymentLink);
+        });
+
         res.render('order/payment/link/order_payment_link_send.isml', {
             paymentLink: paymentLink,
             orderId: orderNo,

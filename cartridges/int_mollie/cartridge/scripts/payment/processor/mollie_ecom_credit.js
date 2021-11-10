@@ -2,11 +2,12 @@
 
 var PaymentMgr = require('dw/order/PaymentMgr');
 var OrderMgr = require('dw/order/OrderMgr');
-var Resource = require('dw/web/Resource');
 var Transaction = require('dw/system/Transaction');
+var PaymentProviderException = require('*/cartridge/scripts/exceptions/PaymentProviderException');
+var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
-var Logger = require('*/cartridge/scripts/utils/logger');
 var config = require('*/cartridge/scripts/mollieConfig');
+var Logger = require('*/cartridge/scripts/utils/logger');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var collections = require('*/cartridge/scripts/util/collections');
 
@@ -69,15 +70,10 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
     var fieldErrors = {};
     var error = false;
     var redirectUrl;
+
+    var order = OrderMgr.getOrder(orderNumber);
+
     try {
-        var order = OrderMgr.getOrder(orderNumber);
-
-        Transaction.wrap(function () {
-            paymentInstrument.getPaymentTransaction().setTransactionID(orderNumber);
-            paymentInstrument.getPaymentTransaction().setPaymentProcessor(paymentProcessor);
-            orderHelper.setRefundStatus(order, config.getRefundStatus().NOTREFUNDED);
-        });
-
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
 
         var billingForm = session.forms.billing;
@@ -101,29 +97,62 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
             paymentInfo.customerId = profile.custom.mollieCustomerId;
         }
 
+        var createResult;
         var paymentMethodEnabledTransactionAPI = paymentMethod.custom.mollieEnabledTransactionAPI.value;
         var enabledTransactionAPI = paymentMethodEnabledTransactionAPI === config.getDefaultAttributeValue() ? config.getDefaultEnabledTransactionAPI().value : paymentMethodEnabledTransactionAPI;
         if (enabledTransactionAPI === config.getTransactionAPI().PAYMENT) {
-            var createPaymentResult = paymentService.createPayment(order, paymentMethod, paymentInfo);
-            redirectUrl = createPaymentResult.payment.links.checkout.href;
+            createResult = paymentService.createPayment(order, paymentMethod, paymentInfo);
+            redirectUrl = createResult.payment.links.checkout.href;
         } else {
-            var createOrderResult = paymentService.createOrder(order, paymentMethod, paymentInfo);
-            redirectUrl = createOrderResult.order.links.checkout.href;
+            createResult = paymentService.createOrder(order, paymentMethod, paymentInfo);
+            redirectUrl = createResult.order.links.checkout.href;
         }
-    } catch (e) {
-        Logger.error(e.javaMessage + '\n\r' + e.stack);
 
-        error = true;
-        serverErrors.push(
-            Resource.msg('error.technical', 'checkout', null)
-        );
+        // Mollie Components handle non-3DS cards
+        if (!redirectUrl) {
+            if (enabledTransactionAPI === config.getTransactionAPI().PAYMENT) {
+                redirectUrl = createResult.payment.redirectUrl;
+            } else {
+                redirectUrl = createResult.order.redirectUrl;
+            }
+        }
+
+        Transaction.wrap(function () {
+            paymentInstrument.getPaymentTransaction().setTransactionID(orderNumber);
+            paymentInstrument.getPaymentTransaction().setPaymentProcessor(paymentProcessor);
+            orderHelper.setRefundStatus(order, config.getRefundStatus().NOTREFUNDED);
+            orderHelper.setPaymentLink(order, null, redirectUrl);
+        });
+    } catch (e) {
+        var exception = e;
+        if (exception instanceof PaymentProviderException) {
+            var Resource = require('dw/web/Resource');
+
+            error = true;
+            var mollieError = exception.errorDetail;
+            serverErrors.push(
+                exception.isCardAuthError
+                    ? mollieError.extra.failureMessage
+                    : Resource.msg('error.technical', 'checkout', null)
+            );
+
+            Transaction.wrap(function () {
+                OrderMgr.failOrder(order, true);
+                orderHelper.addItemToOrderHistory(order, exception.message + ' :: ' + JSON.stringify(exception.errorDetail), true);
+                if (!exception.isCardAuthError) {
+                    Logger.error(exception.message + ' :: ' + exception.errorDetail);
+                }
+            });
+        } else {
+            throw MollieServiceException.from(e);
+        }
     }
 
     return {
+        error: error,
         redirectUrl: redirectUrl,
         fieldErrors: fieldErrors,
-        serverErrors: serverErrors,
-        error: error
+        serverErrors: serverErrors
     };
 }
 

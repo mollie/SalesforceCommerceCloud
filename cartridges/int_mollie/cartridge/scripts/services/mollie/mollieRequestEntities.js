@@ -37,9 +37,10 @@ function Address(address, email) {
  *
  * @class
  * @param {dw.order.ProductLineItem} productLineItem - sfcc productLineItem object
+ * @param {string} orderLineCategory - the default order line catrgory from the selected payment method
  * @returns {Object} Request ProductLineItem object
  */
-function ProductLineItem(productLineItem) {
+function ProductLineItem(productLineItem, orderLineCategory) {
     var lineItem = {
         sku: productLineItem.productID,
         name: productLineItem.productName,
@@ -52,8 +53,10 @@ function ProductLineItem(productLineItem) {
     };
 
     var productCategory = productLineItem.product.custom.mollieProductCategory;
-    if (productCategory) {
+    if (productCategory && productCategory.value) {
         lineItem.category = productCategory.value;
+    } else if (orderLineCategory) {
+        lineItem.category = orderLineCategory.value;
     }
 
     return lineItem;
@@ -103,14 +106,15 @@ function DiscountLineItem(priceAdjustment) {
  * @param {dw.util.Collection<dw.order.ProductLineItem>} productLineItems - the product product line items
  * @param {dw.util.Collection<dw.order.ShippingLineItem>} shipments - the product shipping line items
  * @param {dw.util.Collection<dw.order.PriceAdjustment>} priceAdjustments - the product price adjustments
+ * @param {string} orderLineCategory - the default order line catrgory from the selected payment method
  * @returns {Object} Request Lines object
  */
-function Lines(productLineItems, shipments, priceAdjustments) {
+function Lines(productLineItems, shipments, priceAdjustments, orderLineCategory) {
     var mollieRequestEntities = require('*/cartridge/scripts/services/mollie/mollieRequestEntities');
     var lines = [];
 
     productLineItems.toArray().forEach(function (productLineItem) {
-        lines.push(new mollieRequestEntities.ProductLineItem(productLineItem));
+        lines.push(new mollieRequestEntities.ProductLineItem(productLineItem, orderLineCategory));
         if (productLineItem.shippingLineItem) {
             lines.push(new mollieRequestEntities.ShippingLineItem(productLineItem.shippingLineItem));
         }

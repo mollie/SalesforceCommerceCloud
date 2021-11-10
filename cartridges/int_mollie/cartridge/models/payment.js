@@ -3,7 +3,6 @@
 var base = require('*/cartridge/scripts/utils/superModule')(module);
 
 var PaymentMgr = require('dw/order/PaymentMgr');
-var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var collections = require('*/cartridge/scripts/util/collections');
 
 /**
@@ -33,34 +32,19 @@ function getSelectedPaymentInstruments(selectedPaymentInstruments) {
  * Creates an array of objects containing applicable payment methods
  * @param {dw.util.ArrayList<dw.order.dw.order.PaymentMethod>} paymentMethods - An ArrayList of
  *      applicable payment methods that the user could use for the current basket.
- * @param {dw.order.Basket} currentBasket - the target Basket object
- * @param {string} countryCode - the associated Site countryCode
  * @returns {Array} of object that contain information about the applicable payment methods for the
  *      current cart
  */
-function applicablePaymentMethods(paymentMethods, currentBasket, countryCode) {
-    var getMethodResponse = paymentService.getMethods(currentBasket, countryCode);
-    var mollieMethods = {};
-    getMethodResponse.methods.forEach(function (mollieMethod) {
-        mollieMethods[mollieMethod.id] = mollieMethod;
+function applicablePaymentMethods(paymentMethods) {
+    return collections.map(paymentMethods, function (method) {
+        return {
+            ID: method.ID,
+            name: method.name,
+            image: method.image && method.image.URL.toString(),
+            molliePaymentMethodId: method.custom.molliePaymentMethodId,
+            processor: method.paymentProcessor.getID()
+        };
     });
-
-    var methods = [];
-    paymentMethods.toArray().forEach(function (method) {
-        var mollieMethodId = method.custom.molliePaymentMethodId;
-        var mollieMethod = mollieMethods[mollieMethodId];
-        if (mollieMethod || !mollieMethodId) {
-            methods.push({
-                ID: method.ID,
-                name: method.name,
-                image: method.image ? method.image.URL.toString() :
-                    mollieMethod && mollieMethod.imageURL,
-                issuers: mollieMethod && mollieMethod.issuers
-            });
-        }
-    });
-
-    return methods;
 }
 
 /**
@@ -68,6 +52,7 @@ function applicablePaymentMethods(paymentMethods, currentBasket, countryCode) {
  * @param {dw.order.Basket} currentBasket - the target Basket object
  * @param {dw.customer.Customer} currentCustomer - the associated Customer object
  * @param {string} countryCode - the associated Site countryCode
+ * @param {string} view - the view of the line item (basket or order)
  * @constructor
  */
 function Payment(currentBasket, currentCustomer, countryCode) {
@@ -85,7 +70,7 @@ function Payment(currentBasket, currentCustomer, countryCode) {
     // TODO: Should compare currentBasket and currentCustomer and countryCode to see
     //     if we need them or not
     this.applicablePaymentMethods =
-        paymentMethods ? applicablePaymentMethods(paymentMethods, currentBasket, countryCode) : null;
+        paymentMethods ? applicablePaymentMethods(paymentMethods, countryCode) : null;
 
     this.selectedPaymentInstruments = paymentInstruments ?
         getSelectedPaymentInstruments(paymentInstruments) : null;

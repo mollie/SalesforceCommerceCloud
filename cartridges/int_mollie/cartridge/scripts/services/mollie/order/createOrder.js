@@ -21,7 +21,7 @@ function payloadBuilder(params) {
         redirectUrl: URLUtils.https('MolliePayment-Redirect', 'orderId', params.orderId, 'orderToken', params.orderToken).toString(),
         webhookUrl: URLUtils.https('MolliePayment-Hook', 'orderId', params.orderId, 'orderToken', params.orderToken).toString(),
         method: params.paymentMethod.custom.molliePaymentMethodId,
-        lines: new mollieRequestEntities.Lines(params.productLineItems, params.shipments, params.priceAdjustments),
+        lines: new mollieRequestEntities.Lines(params.productLineItems, params.shipments, params.priceAdjustments, params.orderLineCategory),
         billingAddress: new mollieRequestEntities.Address(params.billingAddress, params.email),
         payment: {},
         expiresAt: date.format(date.addDays(date.now(), expiryDays), 'yyyy-MM-dd')

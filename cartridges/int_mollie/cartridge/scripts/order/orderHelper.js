@@ -1,9 +1,11 @@
+'use strict';
+
 var Logger = require('*/cartridge/scripts/utils/logger');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var OrderMgr = require('dw/order/OrderMgr');
 var Order = require('dw/order/Order');
-var config = require('*/cartridge/scripts/mollieConfig');
 var Transaction = require('dw/system/Transaction');
+var config = require('*/cartridge/scripts/mollieConfig');
 
 /**
  *
@@ -31,6 +33,23 @@ function getMappedPaymentDescription(order, paymentMethod) {
     }
 
     return description;
+}
+
+/**
+ *
+ *
+ * @param {dw.order.LineItemCtnr} lineItemContainer - Current users's basket/order
+ * @returns {string} orderLineCategories
+ */
+function getOrderLineCategories(lineItemContainer) {
+    var orderLineCategories = lineItemContainer.productLineItems.toArray().map(function (lineItem) {
+        var category = lineItem.product.custom.mollieProductCategory;
+        return category && category.value;
+    }).filter(function (value, index, self) {
+        return value && self.indexOf(value) === index;
+    }).join(',');
+
+    return orderLineCategories;
 }
 
 /**
@@ -360,6 +379,64 @@ function setIssuerData(order, paymentMethodId, issuerData) {
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} paymentMethodId - payment method id
+ * @param {Object} paymentDetails - payment details
+ * @returns {void}
+ */
+function setPaymentDetails(order, paymentMethodId, paymentDetails) {
+    try {
+        if (paymentDetails) {
+            setTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentDetails', value: JSON.stringify(paymentDetails) });
+        }
+    } catch (e) {
+        Logger.error('PAYMENT :: ERROR :: Error setting payment details on payment. Error: ' + e.message);
+    }
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} paymentMethodId - payment description
+ * @returns {Object} - Mollie payment details
+ */
+function getPaymentDetails(order, paymentMethodId) {
+    try {
+        var molliePaymentDetails = getTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentDetails' });
+        return JSON.parse(molliePaymentDetails);
+    } catch (e) {
+        Logger.error('PAYMENT :: ERROR :: Error parsing payment details from payment. Error: ' + e.message);
+    }
+    return {};
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} paymentMethodId - payment method id
+ * @returns {string} - Mollie issuer data
+ */
+function getPaymentLink(order, paymentMethodId) {
+    return getTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentLink' });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ * @param {string} paymentMethodId - payment method id
+ * @param {string} paymentLink - Mollie payment link
+ * @returns {void}
+ */
+function setPaymentLink(order, paymentMethodId, paymentLink) {
+    setTransactionCustomProperty(order, paymentMethodId, { key: 'molliePaymentLink', value: paymentLink });
+}
+
+/**
+ *
+ *
+ * @param {dw.order.Order} order - CommerceCloud Order object
  * @param {string} orderId - Mollie order id
  * @returns {void}
  */
@@ -480,7 +557,7 @@ function isMollieOrder(order) {
  */
 function checkMollieRefundStatus(order, paymentResult) {
     var orderHelper = require('*/cartridge/scripts/order/orderHelper');
-    var amountRefunded = paymentResult.amountRefunded.value;
+    var amountRefunded = paymentResult.amountRefunded && paymentResult.amountRefunded.value;
     if (amountRefunded && Number(amountRefunded) > 0) {
         var REFUND_STATUS = config.getRefundStatus();
         if (amountRefunded === paymentResult.amount.value
@@ -499,6 +576,7 @@ function checkMollieRefundStatus(order, paymentResult) {
 
 module.exports = {
     getMappedPaymentDescription: getMappedPaymentDescription,
+    getOrderLineCategories: getOrderLineCategories,
     addItemToOrderHistory: addItemToOrderHistory,
     failOrder: failOrder,
     cancelOrder: cancelOrder,
@@ -518,10 +596,14 @@ module.exports = {
     getPaymentId: getPaymentId,
     getIssuerData: getIssuerData,
     setIssuerData: setIssuerData,
+    setPaymentDetails: setPaymentDetails,
+    getPaymentDetails: getPaymentDetails,
     setPaymentStatus: setPaymentStatus,
     getPaymentStatus: getPaymentStatus,
     setPaymentDescription: setPaymentDescription,
     getPaymentDescription: getPaymentDescription,
+    getPaymentLink: getPaymentLink,
+    setPaymentLink: setPaymentLink,
     setOrderId: setOrderId,
     getOrderId: getOrderId,
     setOrderStatus: setOrderStatus,

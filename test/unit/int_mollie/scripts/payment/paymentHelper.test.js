@@ -79,7 +79,7 @@ describe('payment/paymentHelper', () => {
 
             expect(stubs.orderHelperMock.addItemToOrderHistory).have.to.been.calledOnce();
         });
-        it('should process the payment result from Mollie with status ', () => {
+        it('should process the payment result from Mollie with status AUTHORIZED', () => {
             var paymentResult = {
                 status: STATUSMOCK.AUTHORIZED
             };
@@ -93,9 +93,9 @@ describe('payment/paymentHelper', () => {
                 .and.to.have.been.calledWithExactly(this.order, true);
             expect(stubs.orderHelperMock.addItemToOrderHistory).have.to.been.calledOnce();
         });
-        it('should process the payment result from Mollie with status OPEN for Mollie order', () => {
+        it('should process the payment result from Mollie with status CREATED for Mollie order', () => {
             var paymentResult = {
-                status: STATUSMOCK.OPEN,
+                status: STATUSMOCK.CREATED,
                 isCancelable: () => true
             };
 
@@ -106,9 +106,6 @@ describe('payment/paymentHelper', () => {
             paymentHelper.processPaymentResult(this.order, paymentResult);
 
             expect(stubs.dw.TransactionMock.wrap).have.to.been.calledTwice();
-            expect(stubs.paymentServiceMock.cancelOrder).have.to.been.calledOnce();
-            expect(stubs.paymentServiceMock.cancelPayment).not.to.have.to.been.called();
-            expect(stubs.orderHelperMock.failOrCancelOrder).have.to.been.calledOnce();
         });
         it('should process the payment result from Mollie with status OPEN for Mollie payment', () => {
             var paymentResult = {
@@ -123,28 +120,6 @@ describe('payment/paymentHelper', () => {
             paymentHelper.processPaymentResult(this.order, paymentResult);
 
             expect(stubs.dw.TransactionMock.wrap).have.to.been.calledTwice();
-            expect(stubs.paymentServiceMock.cancelOrder).not.have.to.been.called();
-            expect(stubs.orderHelperMock.getPaymentId).to.have.been.called.calledOnce();
-            expect(stubs.paymentServiceMock.cancelPayment).to.have.to.been.calledOnce();
-            expect(stubs.orderHelperMock.failOrCancelOrder).have.to.been.calledOnce();
-        });
-        it('should process the payment result from Mollie with status CREATED for Mollie payment', () => {
-            var paymentResult = {
-                status: STATUSMOCK.CREATED,
-                isCancelable: () => false
-            };
-
-            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
-            stubs.dw.URLUtilsMock.https.returns('Order-Confirm');
-            stubs.orderHelperMock.isMollieOrder.returns(false);
-
-            paymentHelper.processPaymentResult(this.order, paymentResult);
-
-            expect(stubs.dw.TransactionMock.wrap).have.to.been.calledTwice();
-            expect(stubs.paymentServiceMock.cancelOrder).not.have.to.been.called();
-            expect(stubs.orderHelperMock.getPaymentId).not.have.to.been.called();
-            expect(stubs.paymentServiceMock.cancelPayment).not.have.to.been.called();
-            expect(stubs.orderHelperMock.failOrCancelOrder).have.to.been.calledOnce();
         });
         it('should process the payment result from Mollie with status EXPIRED', () => {
             var paymentResult = {
@@ -197,6 +172,68 @@ describe('payment/paymentHelper', () => {
             paymentHelper.processPaymentResult(this.order, paymentResult);
 
             expect(stubs.orderHelperMock.checkMollieRefundStatus).have.to.been.calledOnce();
+        });
+    });
+
+    context('#processQR', () => {
+        it('should return the correct result for orders with mollieStatus OPEN', () => {
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.orderHelperMock.getPaymentStatus.returns(STATUSMOCK.OPEN);
+            stubs.dw.URLUtilsMock.https.returns('MolliePayment-Redirect');
+
+            var result = paymentHelper.processQR(this.order);
+
+            expect(result.paidStatus).to.be.true();
+            expect(result.continueUrl).to.match(/^MolliePayment-Redirect/);
+        });
+        it('should return the correct result for orders with mollieStatus PAID', () => {
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.orderHelperMock.getPaymentStatus.returns(STATUSMOCK.PAID);
+            stubs.dw.URLUtilsMock.https.returns('MolliePayment-Redirect');
+
+            var result = paymentHelper.processQR(this.order);
+
+            expect(result.paidStatus).to.be.true();
+            expect(result.continueUrl).to.match(/^MolliePayment-Redirect/);
+        });
+        it('should return the correct result for orders with mollieStatus EXPIRED', () => {
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.orderHelperMock.getPaymentStatus.returns(STATUSMOCK.EXPIRED);
+            stubs.dw.URLUtilsMock.https.returns('Checkout-Begin');
+
+            var result = paymentHelper.processQR(this.order);
+
+            expect(result.paidStatus).to.be.false();
+            expect(result.continueUrl).to.match(/^Checkout-Begin/);
+        });
+        it('should return the correct result for orders with mollieStatus CANCELED', () => {
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.orderHelperMock.getPaymentStatus.returns(STATUSMOCK.CANCELED);
+            stubs.dw.URLUtilsMock.https.returns('Checkout-Begin');
+
+            var result = paymentHelper.processQR(this.order);
+
+            expect(result.paidStatus).to.be.false();
+            expect(result.continueUrl).to.match(/^Checkout-Begin/);
+        });
+        it('should return the correct result for orders with mollieStatus FAILED', () => {
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.orderHelperMock.getPaymentStatus.returns(STATUSMOCK.FAILED);
+            stubs.dw.URLUtilsMock.https.returns('Checkout-Begin');
+
+            var result = paymentHelper.processQR(this.order);
+
+            expect(result.paidStatus).to.be.false();
+            expect(result.continueUrl).to.match(/^Checkout-Begin/);
+        });
+        it('should return the correct result for orders with mollieStatus PENDING', () => {
+            stubs.configMock.getTransactionStatus.returns(STATUSMOCK);
+            stubs.orderHelperMock.getPaymentStatus.returns(STATUSMOCK.PENDING);
+
+            var result = paymentHelper.processQR(this.order);
+
+            expect(result.paidStatus).to.be.false();
+            expect(result.continueUrl).to.be.undefined();
         });
     });
 });

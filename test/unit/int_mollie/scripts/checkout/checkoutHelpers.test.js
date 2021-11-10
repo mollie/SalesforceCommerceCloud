@@ -11,12 +11,14 @@ const checkoutHelpers = proxyquire(`${base}/int_mollie/cartridge/scripts/checkou
     'dw/web/URLUtils': stubs.dw.URLUtilsMock,
     'dw/system/Transaction': stubs.dw.TransactionMock,
     'dw/order/Order': stubs.dw.OrderMock,
+    'dw/web/Resource': stubs.dw.ResourceMock,
     '*/cartridge/scripts/mollieConfig': stubs.configMock,
     '*/cartridge/scripts/renderTemplateHelper': stubs.renderTemplateHelperMock,
     '*/cartridge/scripts/order/orderHelper': stubs.orderHelperMock,
     '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
     '*/cartridge/scripts/utils/logger': stubs.loggerMock,
-    '*/cartridge/scripts/utils/superModule': stubs.superModule
+    '*/cartridge/scripts/utils/superModule': stubs.superModule,
+    '*/cartridge/scripts/payment/paymentService': stubs.paymentServiceMock
 });
 
 const makeCollection = array => ({
@@ -81,22 +83,24 @@ describe('checkout/checkoutHelpers', () => {
             expect(stubs.dw.OrderMgrMock.failOrder).not.to.have.been.called();
         });
 
-        it('returns redirect to checkout-begin when basketPrice is 0', () => {
+        it('returns { error: true } when basketPrice is 0', () => {
             const order = new stubs.dw.OrderMock();
-            const continueUrl = faker.internet.url();
             order.orderNo = faker.random.number();
             order.totalNetPrice = { getValue: () => 0 };
-            stubs.dw.URLUtilsMock.url.returns(continueUrl);
 
-            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({ continueUrl: continueUrl });
+            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({
+                error: true,
+                fieldErrors: [],
+                serverErrors: [
+                    ''
+                ]
+            });
             expect(stubs.dw.HookMgrMock.callHook).not.to.have.been.called();
             expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.called();
             expect(stubs.serviceExceptionMock).to.have.been.calledOnce();
-            expect(stubs.dw.URLUtilsMock.url).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly('Checkout-Begin');
         });
 
-        it('returns redirect to checkout-begin when no paymentProcessor exists', () => {
+        it('returns { error: true } when no paymentProcessor exists', () => {
             const order = new stubs.dw.OrderMock();
             const continueUrl = faker.internet.url();
             const paymentMethodID = faker.lorem.word();
@@ -113,15 +117,19 @@ describe('checkout/checkoutHelpers', () => {
             stubs.dw.PaymentMgrMock.getPaymentMethod.returns(paymentMethod);
             stubs.dw.URLUtilsMock.url.returns(continueUrl);
 
-            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({ continueUrl: continueUrl });
+            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({
+                error: true,
+                fieldErrors: [],
+                serverErrors: [
+                    ''
+                ]
+            });
             expect(stubs.dw.HookMgrMock.callHook).not.to.have.been.called();
             expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.called();
             expect(stubs.serviceExceptionMock).to.have.been.calledOnce();
-            expect(stubs.dw.URLUtilsMock.url).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly('Checkout-Begin');
         });
 
-        it('returns redirect to checkout-begin when no payment instruments exist', () => {
+        it('returns { error: true } when no payment instruments exist', () => {
             const order = new stubs.dw.OrderMock();
             const continueUrl = faker.internet.url();
             const paymentTransaction = new stubs.dw.PaymentTransactionMock();
@@ -134,17 +142,21 @@ describe('checkout/checkoutHelpers', () => {
             stubs.dw.PaymentMgrMock.getPaymentMethod.returns(paymentMethod);
             stubs.dw.URLUtilsMock.url.returns(continueUrl);
 
-            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({ continueUrl: continueUrl });
+            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({
+                error: true,
+                fieldErrors: [],
+                serverErrors: [
+                    ''
+                ]
+            });
             expect(stubs.dw.HookMgrMock.callHook).not.to.have.been.called();
             expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(order, true);
             expect(paymentTransaction.setTransactionID).not.to.have.been.called();
             expect(stubs.serviceExceptionMock).to.have.been.calledOnce();
-            expect(stubs.dw.URLUtilsMock.url).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly('Checkout-Begin');
         });
 
-        it('returns redirect to checkout-begin when paymentProcessor has no custom authorizer', () => {
+        it('returns { error: true } when paymentProcessor has no custom authorizer', () => {
             const order = new stubs.dw.OrderMock();
             const continueUrl = faker.internet.url();
             const paymentMethodID = faker.lorem.word();
@@ -166,18 +178,22 @@ describe('checkout/checkoutHelpers', () => {
             stubs.dw.HookMgrMock.hasHook.returns(false);
             stubs.dw.URLUtilsMock.url.returns(continueUrl);
 
-            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({ continueUrl: continueUrl });
+            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({
+                error: true,
+                fieldErrors: [],
+                serverErrors: [
+                    ''
+                ]
+            });
 
             expect(stubs.dw.HookMgrMock.callHook).not.to.have.been.called();
             expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(order, true);
             expect(paymentTransaction.setTransactionID).not.to.have.been.called();
             expect(stubs.serviceExceptionMock).to.have.been.calledOnce();
-            expect(stubs.dw.URLUtilsMock.url).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly('Checkout-Begin');
         });
 
-        it('returns redirect to checkout-begin and fails order when more than one Mollie payment instrument exists', () => {
+        it('returns { error: true } and fails order when more than one Mollie payment instrument exists', () => {
             const order = new stubs.dw.OrderMock();
             const continueUrl = faker.internet.url();
             const paymentMethodID = faker.lorem.word();
@@ -198,16 +214,20 @@ describe('checkout/checkoutHelpers', () => {
             stubs.dw.HookMgrMock.hasHook.returns(true);
             stubs.dw.URLUtilsMock.url.returns(continueUrl);
 
-            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({ continueUrl: continueUrl });
+            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({
+                error: true,
+                fieldErrors: [],
+                serverErrors: [
+                    ''
+                ]
+            });
 
             expect(stubs.dw.HookMgrMock.callHook).not.to.have.been.called();
             expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.called();
             expect(paymentTransaction.setTransactionID).not.to.have.been.called();
-            expect(stubs.dw.URLUtilsMock.url).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly('Checkout-Begin');
         });
 
-        it('fails an order and redirects to checkout-begin when authorization hook fails', () => {
+        it('fails an order and return { error: true } when authorization hook fails', () => {
             const order = new stubs.dw.OrderMock();
             const continueUrl = faker.internet.url();
             const paymentMethodID = faker.lorem.word();
@@ -229,7 +249,9 @@ describe('checkout/checkoutHelpers', () => {
             stubs.dw.HookMgrMock.hasHook.returns(true);
             stubs.dw.URLUtilsMock.url.returns(continueUrl);
 
-            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({ continueUrl: continueUrl });
+            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({
+                error: true
+            });
             expect(stubs.dw.HookMgrMock.callHook).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(
                     `app.payment.processor.${paymentProcessorID.toLowerCase()}`,
@@ -237,12 +259,12 @@ describe('checkout/checkoutHelpers', () => {
                     order.orderNo,
                     paymentInstrument,
                     paymentProcessor);
-            expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.calledOnce()
+            expect(stubs.dw.OrderMgrMock.failOrder).to.not.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(order, true);
             expect(paymentTransaction.setTransactionID).not.to.have.been.called();
-            expect(stubs.dw.URLUtilsMock.url).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly('Checkout-Begin');
         });
+
+        // ADD TEST TO
 
         it('fails an order and returns { error } when error is not of type MollieServiceException', () => {
             const order = new stubs.dw.OrderMock();
@@ -250,7 +272,13 @@ describe('checkout/checkoutHelpers', () => {
             order.totalNetPrice = { getValue: () => faker.random.number() };
             order.getPaymentInstruments.throws(new Error('BOOM'));
 
-            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({ error: true });
+            expect(checkoutHelpers.handlePayments(order, order.orderNo)).to.eql({
+                error: true,
+                fieldErrors: [],
+                serverErrors: [
+                    ''
+                ]
+            });
             expect(stubs.dw.HookMgrMock.callHook).not.to.have.been.called();
             expect(stubs.dw.OrderMgrMock.failOrder).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(order, true);
@@ -283,7 +311,7 @@ describe('checkout/checkoutHelpers', () => {
         });
     });
 
-    context('#restoreOpenOrder', () => {
+    context('#restorePreviousBasket', () => {
         it('fail the last order when the status is CREATED. Continue with current basket', () => {
             var lastOrderNumber = faker.random.number();
             var order = new stubs.dw.OrderMock();
@@ -292,10 +320,10 @@ describe('checkout/checkoutHelpers', () => {
             stubs.dw.BasketMgrMock.getCurrentBasket.returns({ getProductLineItems: () => [] });
             stubs.dw.OrderMgrMock.getOrder.returns(order);
 
-            checkoutHelpers.restoreOpenOrder(lastOrderNumber);
+            checkoutHelpers.restorePreviousBasket(lastOrderNumber);
 
-            expect(stubs.dw.OrderMgrMock.failOrder).to.be.calledOnce()
-                .and.to.be.calledWithExactly(order, true);
+            expect(stubs.orderHelperMock.failOrder).to.be.calledOnce()
+                .and.to.be.calledWith(order, sinon.match('Order failed'));
             expect(stubs.dw.TransactionMock.wrap).to.be.calledOnce();
         });
 
@@ -304,7 +332,7 @@ describe('checkout/checkoutHelpers', () => {
 
             stubs.dw.BasketMgrMock.getCurrentBasket.returns(null);
 
-            checkoutHelpers.restoreOpenOrder(lastOrderNumber);
+            checkoutHelpers.restorePreviousBasket(lastOrderNumber);
 
             expect(stubs.dw.OrderMgrMock.failOrder).not.to.have.been.called();
             expect(stubs.dw.TransactionMock.wrap).not.to.have.been.called();
@@ -319,7 +347,7 @@ describe('checkout/checkoutHelpers', () => {
             stubs.dw.BasketMgrMock.getCurrentBasket.returns({ getProductLineItems: () => [] });
             stubs.dw.OrderMgrMock.getOrder.returns(order);
 
-            checkoutHelpers.restoreOpenOrder(lastOrderNumber);
+            checkoutHelpers.restorePreviousBasket(lastOrderNumber);
 
             expect(stubs.dw.OrderMgrMock.failOrder).not.to.have.been.called();
             expect(stubs.dw.TransactionMock.wrap).not.to.have.been.called();
@@ -335,7 +363,7 @@ describe('checkout/checkoutHelpers', () => {
             stubs.dw.BasketMgrMock.getCurrentBasket.returns({ getProductLineItems: () => [1, 2, 3] });
             stubs.dw.OrderMgrMock.getOrder.returns(order);
 
-            checkoutHelpers.restoreOpenOrder(lastOrderNumber);
+            checkoutHelpers.restorePreviousBasket(lastOrderNumber);
 
             expect(stubs.dw.OrderMgrMock.failOrder).not.to.have.been.called();
             expect(stubs.dw.TransactionMock.wrap).not.to.have.been.called();
@@ -413,6 +441,59 @@ describe('checkout/checkoutHelpers', () => {
             expect(order.getStatus).to.have.been.calledOnce();
             expect(stubs.dw.TransactionMock.begin).to.have.been.calledOnce();
             expect(stubs.dw.TransactionMock.commit).to.have.been.calledOnce();
+        });
+    });
+
+    context('#getMolliePaymentMethods', () => {
+        const molliePaymentMethodId = faker.random.uuid();
+        const molliePaymentMethodImageURL = faker.random.uuid();
+        const currentBasket = new stubs.dw.BasketMock();
+        const countryCode = faker.lorem.word();
+
+        const orderModel = {
+            billing: {
+                payment: {
+                    applicablePaymentMethods: [
+                        {
+                            ID: faker.random.word(),
+                            name: faker.random.word()
+                        },
+                        {
+                            ID: faker.random.word(),
+                            name: faker.random.word(),
+                            molliePaymentMethodId: molliePaymentMethodId
+                        },
+                        {
+                            ID: faker.random.word(),
+                            name: faker.random.word(),
+                            molliePaymentMethodId: faker.random.uuid()
+                        }
+                    ]
+                }
+            }
+        };
+
+        const issuers = [
+            {
+                id: faker.random.uuid()
+            }
+        ];
+
+        const molliePaymentMethods = [
+            {
+                id: molliePaymentMethodId,
+                issuers: issuers,
+                imageURL: molliePaymentMethodImageURL
+            }
+        ];
+
+        it('returns the mapped Mollie payment methods', () => {
+            stubs.paymentServiceMock.getMethods.returns({ methods: molliePaymentMethods });
+            var paymentMethods = checkoutHelpers.getMolliePaymentMethods(currentBasket, orderModel, countryCode);
+
+            expect(paymentMethods).to.have.length(2);
+            expect(paymentMethods[1].issuers).to.eql(issuers);
+            expect(paymentMethods[1].image).to.eql(molliePaymentMethodImageURL);
         });
     });
 });

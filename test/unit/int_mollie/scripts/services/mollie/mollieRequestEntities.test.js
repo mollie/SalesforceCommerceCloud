@@ -302,10 +302,11 @@ describe('mollie/mollieRequestEntities', () => {
                     id: faker.random.uuid()
                 }
             ];
+
+            this.mollieProductCategory = faker.random.word();
             this.productLineItems = {
                 toArray: () => productLineItems
             };
-
             this.shipments = {
                 toArray: () => {
                     return [
@@ -322,16 +323,16 @@ describe('mollie/mollieRequestEntities', () => {
             this.priceAdjustments = {
                 toArray: () => priceAdjustments
             };
-            this.default = new Lines(this.productLineItems, this.shipments, this.priceAdjustments);
+            this.default = new Lines(this.productLineItems, this.shipments, this.priceAdjustments, this.mollieProductCategory);
         });
 
         it('it calls new ProductLineItem (productLineItems.length) times ', () => {
             var productLineItems = this.productLineItems.toArray();
             var length = productLineItems.length;
             expect(stubs.mollieRequestEntitiesMock.ProductLineItem).to.have.callCount(length);
-            expect(stubs.mollieRequestEntitiesMock.ProductLineItem.getCall(0)).calledWithExactly(productLineItems[0]);
-            expect(stubs.mollieRequestEntitiesMock.ProductLineItem.getCall(1)).calledWithExactly(productLineItems[1]);
-            expect(stubs.mollieRequestEntitiesMock.ProductLineItem.getCall(2)).calledWithExactly(productLineItems[2]);
+            expect(stubs.mollieRequestEntitiesMock.ProductLineItem.getCall(0)).calledWithExactly(productLineItems[0], this.mollieProductCategory);
+            expect(stubs.mollieRequestEntitiesMock.ProductLineItem.getCall(1)).calledWithExactly(productLineItems[1], this.mollieProductCategory);
+            expect(stubs.mollieRequestEntitiesMock.ProductLineItem.getCall(2)).calledWithExactly(productLineItems[2], this.mollieProductCategory);
         });
         it('it calls new ShippingLineItem (shippingLineItems.length) times ', () => {
             var shippingLineItems = this.shipments.toArray()[0].getShippingLineItems().toArray();

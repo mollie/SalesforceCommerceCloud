@@ -12,6 +12,7 @@ var preferences = {
     mollieDefaultOrderExpiryDays: faker.random.number(),
     mollieEnableSingleClickPayments: faker.random.boolean(),
     mollieComponentsEnabled: faker.random.boolean(),
+    mollieEnableQrCode: faker.random.boolean(),
     mollieLogCategory: faker.lorem.word()
 };
 
@@ -21,6 +22,7 @@ const getConfig = prefs => {
     stubs.dw.Site.getCurrent().getPreferences().getCustom.returns(prefs);
     const config = proxyquire(`${base}/int_mollie/cartridge/scripts/mollieConfig`, {
         'dw/system/Site': stubs.dw.Site,
+        'dw/web/Resource': stubs.dw.ResourceMock,
         '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
         '*/cartridge/scripts/customPageFieldSettings': fieldSettings,
         '*/cartridge/scripts/mollieConfigHelper': stubs.mollieConfigHelperMock
@@ -72,6 +74,10 @@ describe('Config', () => {
         stubs.mollieConfigHelperMock.getPreference.returns(preferences.mollieComponentsEnabled);
         expect(getConfig(preferences).getComponentsEnabled()).to.eql(preferences.mollieComponentsEnabled);
     });
+    it('gets mollieEnableQrCode', () => {
+        stubs.mollieConfigHelperMock.getPreference.returns(preferences.mollieEnableQrCode);
+        expect(getConfig(preferences).getEnableQrCode()).to.eql(preferences.mollieEnableQrCode);
+    });
     it('gets mollieProfileId', () => {
         stubs.mollieConfigHelperMock.getPreference.returns(preferences.mollieProfileId);
         expect(getConfig(preferences).getProfileId()).to.eql(preferences.mollieProfileId);
@@ -79,9 +85,6 @@ describe('Config', () => {
     it('gets mollieLogCategory', () => {
         stubs.mollieConfigHelperMock.getPreference.returns(preferences.mollieLogCategory);
         expect(getConfig(preferences).getLogCategory()).to.eql(preferences.mollieLogCategory);
-    });
-    it('gets customPageFieldSettings', () => {
-        expect(getConfig(preferences).getCustomPageFieldSettings()).to.eql(fieldSettings);
     });
     it('gets transactionstatus', () => {
         stubs.mollieConfigHelperMock.getPreference.returns(preferences.mollieBearerToken);
@@ -102,6 +105,7 @@ describe('Config', () => {
         try {
             proxyquire(`${base}/int_mollie/cartridge/scripts/mollieConfig`, {
                 'dw/system/Site': Site,
+                'dw/web/Resource': stubs.dw.ResourceMock,
                 '*/cartridge/scripts/exceptions/MollieServiceException': stubs.serviceExceptionMock,
                 '*/cartridge/scripts/customPageFieldSettings': fieldSettings,
                 '*/cartridge/scripts/mollieConfigHelper': stubs.mollieConfigHelperMock

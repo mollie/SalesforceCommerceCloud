@@ -5,7 +5,7 @@
         </div>
     </isif>
     <input class="form-control ${preference.inputType === 'password' ? 'js-bm-preferences-password-field' : ''}" type="${preference.inputType}" name="${preference.ID}"
-        value="${preference.selectedValue || preference.defaultValue || ''}" ${preference.mandotory ? 'required' : ''} />
+        value="${preference.selectedValue || preference.defaultValue || ''}" ${preference.mandatory ? 'required' : ''} />
     <isif condition="${preference.inputType === 'password'}">
         <div class="input-group-append">
             <button class="btn btn-outline-secondary js-bm-preferences-toggle-password" type="button">Show</button>

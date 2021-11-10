@@ -33,7 +33,7 @@
         <form class="js-bm-preferences-form">
             <fieldset>
                 <isloop items="${pdict.preferences}" var="preference" status="loopstatus">
-                    <div class="row form-group ${preference.mandotory ? 'required' : ''}">
+                    <div class="row form-group ${preference.mandatory ? 'required' : ''}">
                         <label class="col-md-2 control-label">${preference.displayName || preference.ID}</label>
                         <div class="col-md-4">
                             <isif condition="${preference.inputType === 'checkbox'}">
@@ -44,7 +44,9 @@
                                 <isinclude template="preferences/input/input" />
                             </isif>
                             <span class="field-description mt-2">
-                                <isprint value="${preference.description}" encoding="off" /></span>
+                                <isset scope="page" name="descriptionTemplate" value="${'preferences/descriptions/' + preference.ID}"/>
+                                <isinclude template="${descriptionTemplate}" />
+                            </span>
                         </div>
                     </div>
                     <isif condition="${preference.ID === 'mollieProfileId'}">

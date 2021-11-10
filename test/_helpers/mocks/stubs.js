@@ -2,6 +2,7 @@ const sinon = require('sinon');
 const sandbox = sinon.createSandbox();
 
 const MollieServiceException = require('../../../cartridges/int_mollie/cartridge/scripts/exceptions/MollieServiceException');
+const PaymentProviderException = require('../../../cartridges/int_mollie/cartridge/scripts/exceptions/MollieServiceException');
 const Resource = require('./dw/web/Resource');
 const BasketMgr = require('./dw/order/BasketMgr');
 const Basket = require('./dw/order/Basket');
@@ -146,6 +147,7 @@ class CurrencyMock extends Currency {
 }
 
 const serviceExceptionMock = sandbox.spy(MollieServiceException);
+const paymentProviderExceptionMock = sandbox.spy(PaymentProviderException);
 
 const customMock = sandbox.stub();
 const SiteMock = {
@@ -222,6 +224,7 @@ const loggerMock = { debug: sandbox.stub(), error: sandbox.stub() };
 const collectionsMock = { map: sandbox.stub() };
 
 const configMock = {
+    getPluginVersion: sandbox.stub(),
     getSiteId: sandbox.stub(),
     getSiteName: sandbox.stub(),
     getEnabledMode: sandbox.stub(),
@@ -235,13 +238,14 @@ const configMock = {
     getTransactionStatus: sandbox.stub(),
     getTransactionAPI: sandbox.stub(),
     getRefundStatus: sandbox.stub(),
-    getDefaultAttributeValue: sandbox.stub()
+    getDefaultAttributeValue: sandbox.stub(),
+    getEnableQrCode: sandbox.stub()
 };
 
 const orderHelperMock = {
     getMappedPaymentDescription: sandbox.stub(),
+    getOrderLineCategories: sandbox.stub(),
     checkMollieRefundStatus: sandbox.stub(),
-    getIssuerData: sandbox.stub(),
     setRefundStatus: sandbox.stub(),
     getRefundStatus: sandbox.stub(),
     addItemToOrderHistory: sandbox.stub(),
@@ -261,10 +265,16 @@ const orderHelperMock = {
     getOrderCustomProperty: sandbox.stub(),
     setPaymentId: sandbox.stub(),
     getPaymentId: sandbox.stub(),
+    getIssuerData: sandbox.stub(),
+    setIssuerData: sandbox.stub(),
+    setPaymentDetails: sandbox.stub(),
+    getPaymentDetails: sandbox.stub(),
     setPaymentStatus: sandbox.stub(),
     getPaymentStatus: sandbox.stub(),
     setPaymentDescription: sandbox.stub(),
     getPaymentDescription: sandbox.stub(),
+    setPaymentLink: sandbox.stub(),
+    getPaymentLink: sandbox.stub(),
     setOrderId: sandbox.stub(),
     getOrderId: sandbox.stub(),
     setOrderStatus: sandbox.stub(),
@@ -389,6 +399,7 @@ const initMocks = function () {
 module.exports = {
     sandbox: sandbox,
     mollieRequest: sandbox.stub(),
+    mollieError: sandbox.stub(),
     authRequest: sandbox.stub(),
     loggerMock: loggerMock,
     collectionsMock: collectionsMock,
@@ -400,6 +411,7 @@ module.exports = {
     orderHelperMock: orderHelperMock,
     checkoutHelpersMock: checkoutHelpersMock,
     serviceExceptionMock: serviceExceptionMock,
+    paymentProviderExceptionMock: paymentProviderExceptionMock,
     renderTemplateHelperMock: renderTemplateHelperMock,
     mollieRequestEntitiesMock: mollieRequestEntitiesMock,
     csrfProtectionMock: csrfProtectionMock,

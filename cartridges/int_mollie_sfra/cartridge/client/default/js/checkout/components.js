@@ -31,7 +31,7 @@ const verificationCodeError = '#verification-code-error';
 function createMollieComponents() {
     mollie = Mollie($mollieComponentsContainer.attr('data-components-profile-id'), {
         locale: $mollieComponentsContainer.attr('data-components-locale'),
-        testmode: $mollieComponentsContainer.attr('data-components-test-mode')
+        testmode: $mollieComponentsContainer.attr('data-components-test-mode') === 'true'
     });
 
     cardHolderComponent = mollie.createComponent('cardHolder');
