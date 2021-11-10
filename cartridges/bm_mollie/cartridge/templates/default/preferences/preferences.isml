@@ -44,7 +44,9 @@
                                 <isinclude template="preferences/input/input" />
                             </isif>
                             <span class="field-description mt-2">
-                                <isprint value="${preference.description}" encoding="off" /></span>
+                                <isset scope="page" name="descriptionTemplate" value="${'preferences/descriptions/' + preference.ID}"/>
+                                <isinclude template="${descriptionTemplate}" />
+                            </span>
                         </div>
                     </div>
                     <isif condition="${preference.ID === 'mollieProfileId'}">

@@ -86,9 +86,6 @@ describe('Config', () => {
         stubs.mollieConfigHelperMock.getPreference.returns(preferences.mollieLogCategory);
         expect(getConfig(preferences).getLogCategory()).to.eql(preferences.mollieLogCategory);
     });
-    it('gets customPageFieldSettings', () => {
-        expect(getConfig(preferences).getCustomPageFieldSettings()).to.eql(fieldSettings);
-    });
     it('gets transactionstatus', () => {
         stubs.mollieConfigHelperMock.getPreference.returns(preferences.mollieBearerToken);
         const transactionStatus = getConfig(preferences).getTransactionStatus();
