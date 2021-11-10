@@ -225,7 +225,8 @@ function getMethods(currentBasket, countryCode) {
             amount: currentBasket.adjustedMerchandizeTotalGrossPrice.value.toFixed(2),
             currency: currentBasket.adjustedMerchandizeTotalGrossPrice.currencyCode,
             billingCountry: currentBasket.billingAddress ? currentBasket.billingAddress.countryCode.value : countryCode,
-            orderLineCategories: orderHelper.getOrderLineCategories(currentBasket)
+            orderLineCategories: orderHelper.getOrderLineCategories(currentBasket),
+            resource: config.getDefaultEnabledTransactionAPI().value === 'order' ? 'orders' : 'payments'
         });
     } catch (e) {
         if (e.name === 'PaymentProviderException') throw e;
@@ -318,7 +319,8 @@ function testApiKeys(testApiKey, liveApiKey) {
     var testResult;
     try {
         liveResult = MollieService.getMethods({
-            bearerToken: liveApiKey
+            bearerToken: liveApiKey,
+            resource: config.getDefaultEnabledTransactionAPI().value === 'order' ? 'orders' : 'payments'
         });
     } catch (e) {
         liveResult = {
@@ -328,7 +330,8 @@ function testApiKeys(testApiKey, liveApiKey) {
 
     try {
         testResult = MollieService.getMethods({
-            bearerToken: testApiKey
+            bearerToken: testApiKey,
+            resource: config.getDefaultEnabledTransactionAPI().value === 'order' ? 'orders' : 'payments'
         });
     } catch (e) {
         testResult = {

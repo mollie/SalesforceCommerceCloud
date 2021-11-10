@@ -1,7 +1,6 @@
 var Site = require('dw/system/Site');
 var Resource = require('dw/web/Resource');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
-var customPageFieldSettings = require('*/cartridge/scripts/customPageFieldSettings');
 var mollieConfigHelper = require('*/cartridge/scripts/mollieConfigHelper');
 
 var DEFAULT_ATTRIBUTE_VALUE = 'default';
@@ -71,7 +70,6 @@ function Config() {
     this.componentsEnabled = mollieConfigHelper.getPreference(sitePreferences, 'mollieComponentsEnabled', true);
     this.enableQrCode = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnableQrCode', false);
     this.logCategory = mollieConfigHelper.getPreference(sitePreferences, 'mollieLogCategory', false);
-    this.customPageFieldSettings = customPageFieldSettings;
 
     this.getPluginVersion = function () {
         var version = PLUGIN_VERSION.join(' ');
@@ -206,16 +204,6 @@ function Config() {
      */
     this.getLogCategory = function () {
         return this.logCategory;
-    };
-
-    /**
-    * Get LogCategory
-    * @function
-    * @name Config#getLogCategory
-    * @return {string} logCategory
-    */
-    this.getCustomPageFieldSettings = function () {
-        return this.customPageFieldSettings;
     };
 
     /**

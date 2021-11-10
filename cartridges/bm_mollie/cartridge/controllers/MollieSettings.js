@@ -3,11 +3,11 @@
 var server = require('server');
 
 var Site = require('dw/system/Site');
+var ISML = require('dw/template/ISML');
 var Transaction = require('dw/system/Transaction');
 var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
 var collections = require('*/cartridge/scripts/util/collections');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
-var config = require('*/cartridge/scripts/mollieConfig');
 var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
 
 var valueTypeCodeMapping = {
@@ -34,13 +34,11 @@ var valueTypeCodeMapping = {
  * @throws {MollieServiceException}
  */
 function getMappedPreferences(preferences, molliePreferences) {
-    var fieldSettings = config.getCustomPageFieldSettings();
     return collections.map(molliePreferences, function (preference) {
         return {
             ID: preference.ID,
             displayName: preference.displayName,
             defaultValue: preference.defaultValue,
-            description: fieldSettings[preference.ID] && fieldSettings[preference.ID].description,
             mandatory: preference.mandatory,
             selectedValue: preferences.getCustom()[preference.ID],
             inputType: valueTypeCodeMapping[preference.valueTypeCode],
