@@ -1,12 +1,12 @@
 module.exports = {
     GET_METHODS: {
         method: 'GET',
-        path: '/v2/methods',
+        path: '/v2/methods?resource={resource}',
         serviceName: 'Mollie.GetMethods'
     },
     GET_METHODS_WITH_PARAMS: {
         method: 'GET',
-        path: '/v2/methods?include=issuers&includeWallets=applepay&amount[value]={amount}&amount[currency]={currency}&resource=orders&billingCountry={billingCountry}',
+        path: '/v2/methods?resource={resource}&include=issuers&includeWallets=applepay&amount[value]={amount}&amount[currency]={currency}&billingCountry={billingCountry}',
         serviceName: 'Mollie.GetMethods'
     },
     GET_METHOD: {

@@ -99,7 +99,6 @@ async function setCardToken() {
     if (error) {
         throw new Error(error.message);
     }
-    console.log('set token', token);
     return token;
 }
 

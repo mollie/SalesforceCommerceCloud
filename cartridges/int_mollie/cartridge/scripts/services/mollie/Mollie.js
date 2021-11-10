@@ -67,6 +67,11 @@ function Mollie(configuration) {
             this.path = this.path
                 .replace('{currency}', parameters.currency);
         }
+
+        if (parameters.resource) {
+            this.path = this.path
+                .replace('{resource}', parameters.resource);
+        }
     };
 
     this.addSeperator = function (url) {
