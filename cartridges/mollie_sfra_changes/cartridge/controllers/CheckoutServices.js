@@ -15,7 +15,7 @@ var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
  * @param {returns} - json
  * @param {serverfunction} - post
  */
-server.replace('PlaceOrder', server.middleware.https, function (req, res, next) {
+server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) {
     var BasketMgr = require('dw/order/BasketMgr');
     var Resource = require('dw/web/Resource');
     var Transaction = require('dw/system/Transaction');
@@ -35,7 +35,8 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
             serverErrors: [],
             redirectUrl: URLUtils.url('Cart-Show').toString()
         });
-        return next();
+        this.emit('route:Complete', req, res);
+        return;
     }
 
     var validatedProducts = validationHelpers.validateProducts(currentBasket);
@@ -47,7 +48,8 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
             serverErrors: [],
             redirectUrl: URLUtils.url('Cart-Show').toString()
         });
-        return next();
+        this.emit('route:Complete', req, res);
+        return;
     }
 
     if (req.session.privacyCache.get('fraudDetectionStatus')) {
@@ -57,8 +59,8 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
             redirectUrl: URLUtils.url('Error-ErrorCode', 'err', '01').toString(),
             errorMessage: Resource.msg('error.technical', 'checkout', null)
         });
-
-        return next();
+        this.emit('route:Complete', req, res);
+        return;
     }
 
     var validationOrderStatus = hooksHelper('app.validate.order', 'validateOrder', currentBasket, require('*/cartridge/scripts/hooks/validateOrder').validateOrder);
@@ -67,7 +69,8 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
             error: true,
             errorMessage: validationOrderStatus.message
         });
-        return next();
+        this.emit('route:Complete', req, res);
+        return;
     }
 
     // Check to make sure there is a shipping address
@@ -80,7 +83,8 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
             },
             errorMessage: Resource.msg('error.no.shipping.address', 'checkout', null)
         });
-        return next();
+        this.emit('route:Complete', req, res);
+        return;
     }
 
     // Check to make sure billing address exists
@@ -93,7 +97,8 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
             },
             errorMessage: Resource.msg('error.no.billing.address', 'checkout', null)
         });
-        return next();
+        this.emit('route:Complete', req, res);
+        return;
     }
 
     // Calculate the basket
@@ -112,7 +117,8 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
             },
             errorMessage: Resource.msg('error.payment.not.valid', 'checkout', null)
         });
-        return next();
+        this.emit('route:Complete', req, res);
+        return;
     }
 
     // Re-calculate the payments.
@@ -122,7 +128,8 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
             error: true,
             errorMessage: Resource.msg('error.technical', 'checkout', null)
         });
-        return next();
+        this.emit('route:Complete', req, res);
+        return;
     }
 
     // Creates a new order.
@@ -132,14 +139,16 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
             error: true,
             errorMessage: Resource.msg('error.technical', 'checkout', null)
         });
-        return next();
+        this.emit('route:Complete', req, res);
+        return;
     }
 
     req.session.privacyCache.set('orderId', order.orderNo);
+    req.session.privacyCache.set('orderToken', order.orderToken);
     req.session.privacyCache.set('isCheckoutDevice', true);
 
     // Handles payment authorization
-    var handlePaymentResult = COHelpers.handlePayments(order, order.orderNo);
+    var handlePaymentResult = COHelpers.handlePayments(order);
 
     // Comment block to support SFRA < 6.0.0
     // Handle custom processing post authorization
@@ -150,7 +159,8 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
     var postAuthCustomizations = hooksHelper('app.post.auth', 'postAuthorization', handlePaymentResult, order, options, require('*/cartridge/scripts/hooks/postAuthorizationHandling').postAuthorization);
     if (postAuthCustomizations && Object.prototype.hasOwnProperty.call(postAuthCustomizations, 'error')) {
         res.json(postAuthCustomizations);
-        return next();
+        this.emit('route:Complete', req, res);
+        return;
     }
     // End block
 
@@ -164,7 +174,8 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
             fieldErrors: handlePaymentResult.fieldErrors,
             serverErrors: handlePaymentResult.serverErrors
         });
-        return next();
+        this.emit('route:Complete', req, res);
+        return;
     }
 
     if (req.currentCustomer.addressBook) {
@@ -180,16 +191,13 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
     // Reset usingMultiShip after successful Order placement
     req.session.privacyCache.set('usingMultiShipping', false);
 
-    // TODO: Exposing a direct route to an Order, without at least encoding the orderID
-    //  is a serious PII violation.  It enables looking up every customers orders, one at a
-    //  time.
     res.json({
         error: false,
         redirectUrl: handlePaymentResult.redirectUrl,
         renderQRCodeUrl: handlePaymentResult.renderQRCodeUrl
     });
-
-    return next();
+    this.emit('route:Complete', req, res);
+    return;
 });
 
 module.exports = server.exports();
