@@ -83,7 +83,7 @@ function processPaymentResult(order, paymentResult) {
         case STATUS.EXPIRED:
         case STATUS.CANCELED:
         case STATUS.FAILED:
-            url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
+            url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'orderToken', orderToken, 'stage', 'payment').toString();
             Transaction.wrap(function () {
                 orderHelper.failOrCancelOrder(order,
                     'PAYMENT :: Canceling order, Mollie status :: ' + paymentResult.status);
@@ -149,7 +149,7 @@ function processQR(order) {
         case STATUS.FAILED:
             result = {
                 paidStatus: false,
-                continueUrl: URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString()
+                continueUrl: URLUtils.https('Checkout-Begin', 'orderID', orderId, 'orderToken', orderToken, 'stage', 'payment').toString()
             };
             break;
 

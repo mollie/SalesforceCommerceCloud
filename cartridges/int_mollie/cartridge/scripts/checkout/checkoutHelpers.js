@@ -18,10 +18,9 @@ var COHelpers = require('*/cartridge/scripts/utils/superModule')(module);
 /**
  * handles the payment authorization for each payment instrument
  * @param {dw.order.Order} order - the order object
- * @param {string} orderNumber - The order number for the order
  * @returns {Object} authorization result
  */
-COHelpers.handlePayments = function (order, orderNumber) {
+COHelpers.handlePayments = function (order) {
     try {
         if (order.totalNetPrice.getValue() === 0) throw new MollieServiceException('Order has netPrice of 0');
 
@@ -44,7 +43,7 @@ COHelpers.handlePayments = function (order, orderNumber) {
         var authorizationResult = HookMgr.callHook(
             hookName,
             'Authorize',
-            orderNumber,
+            order,
             paymentInstrument,
             paymentProcessor
         );
@@ -66,23 +65,25 @@ COHelpers.handlePayments = function (order, orderNumber) {
 /**
  * Checks if order exists
  * @param {orderNumber} orderNumber - Order Id
+ * @param {orderToken} orderToken - Order Token
  * @returns {boolean} Order exists?
  */
-COHelpers.orderExists = function (orderNumber) {
-    return OrderMgr.getOrder(orderNumber) !== null;
+COHelpers.orderExists = function (orderNumber, orderToken) {
+    return OrderMgr.getOrder(orderNumber, orderToken) !== null;
 };
 
 /**
  * Restores a basket based on the last created order that has not been paid.
  * @param {string} lastOrderNumber - orderId of last order in session
+ * @param {string} lastOrderToken - orderToken of last order in session
  * @returns {void}
  */
-COHelpers.restorePreviousBasket = function (lastOrderNumber) {
+COHelpers.restorePreviousBasket = function (lastOrderNumber, lastOrderToken) {
     var currentBasket = BasketMgr.getCurrentBasket();
 
     if (!currentBasket || currentBasket.getProductLineItems().length === 0) {
-        if (lastOrderNumber) {
-            var order = OrderMgr.getOrder(lastOrderNumber);
+        if (lastOrderNumber && lastOrderToken) {
+            var order = OrderMgr.getOrder(lastOrderNumber, lastOrderToken);
             if (order && order.getStatus().value === Order.ORDER_STATUS_CREATED
                 && !orderHelper.getOrderIsAuthorized(order)) {
                 Transaction.wrap(function () {

@@ -49,19 +49,17 @@ function Handle(basket, paymentInformation) {
 /**
  * Authorizes a payment using an e-commerce redirect.
  *
- * @param {string} orderNumber - The current order's number
+ * @param {dw.order.Order} order - The current order
  * @param {dw.order.OrderPaymentInstrument} paymentInstrument -  The payment instrument to authorize
  * @param {dw.order.PaymentProcessor} paymentProcessor
  *  -  The payment processor of the current payment method
  * @return {Object} returns an error object
  */
-function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
+function Authorize(order, paymentInstrument, paymentProcessor) {
     var serverErrors = [];
     var fieldErrors = {};
     var error = false;
     var redirectUrl;
-
-    var order = OrderMgr.getOrder(orderNumber);
 
     try {
         var paymentMethod = PaymentMgr.getPaymentMethod(paymentInstrument.getPaymentMethod());
@@ -79,7 +77,7 @@ function Authorize(orderNumber, paymentInstrument, paymentProcessor) {
         }
 
         Transaction.wrap(function () {
-            paymentInstrument.getPaymentTransaction().setTransactionID(orderNumber);
+            paymentInstrument.getPaymentTransaction().setTransactionID(order.getOrderNo());
             paymentInstrument.getPaymentTransaction().setPaymentProcessor(paymentProcessor);
             orderHelper.setRefundStatus(order, config.getRefundStatus().NOTREFUNDED);
             orderHelper.setPaymentLink(order, null, redirectUrl);
