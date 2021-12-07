@@ -67,8 +67,6 @@ function Payment(currentBasket, currentCustomer, countryCode) {
 
     var paymentInstruments = currentBasket.paymentInstruments;
 
-    // TODO: Should compare currentBasket and currentCustomer and countryCode to see
-    //     if we need them or not
     this.applicablePaymentMethods =
         paymentMethods ? applicablePaymentMethods(paymentMethods, countryCode) : null;
 
