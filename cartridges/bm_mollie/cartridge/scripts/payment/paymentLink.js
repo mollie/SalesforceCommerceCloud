@@ -9,7 +9,7 @@ var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServi
  * @param {string} paymentLink - generated payment link
  */
 function sendPaymentLink(order, email, paymentLink) { // eslint-disable-line no-unused-vars
-    // TODO implement own email logic
+    // Implement custom email logic
     throw new MollieServiceException('sendPaymentLink not yet implemented');
 }
 

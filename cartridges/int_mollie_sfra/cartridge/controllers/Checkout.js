@@ -24,10 +24,11 @@ server.extend(Checkout);
 server.prepend('Begin', function (req, res, next) {
     // in case of a user pressing back button, get the orderId from the privacyCache
     var orderId = req.querystring.orderId || req.session.privacyCache.get('orderId');
-    if (orderId && !COHelpers.orderExists(orderId)) {
+    var orderToken = req.querystring.orderToken || req.session.privacyCache.get('orderToken');
+    if (orderId && !COHelpers.orderExists(orderId, orderToken)) {
         res.redirect(URLUtils.home().toString());
     } else {
-        COHelpers.restorePreviousBasket(orderId);
+        COHelpers.restorePreviousBasket(orderId, orderToken);
     }
 
     next();
