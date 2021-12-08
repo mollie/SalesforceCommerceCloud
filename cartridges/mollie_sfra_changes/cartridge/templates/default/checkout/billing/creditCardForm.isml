@@ -6,7 +6,7 @@
 
     <!--- Hidden input for Mollie components card token --->
     <input type="hidden" class="cardToken" id="cardToken" name="${creditFields.cardToken.htmlName}" value="" <isprint
-        value=${creditFields.cardToken.attributes} encoding="off" />
+        value=${creditFields.cardToken.attributes} encoding="on" />
     >
 
     <div class="form-group required">

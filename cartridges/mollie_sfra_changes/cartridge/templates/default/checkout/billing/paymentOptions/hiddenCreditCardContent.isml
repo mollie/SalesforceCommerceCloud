@@ -9,5 +9,5 @@
 <input type="text" class="cardNumber" id="cardNumber"
     name="${creditFields.cardNumber.htmlName}"
     value=""
-    <isprint value=${creditFields.cardNumber.attributes} encoding="off"/>
+    <isprint value=${creditFields.cardNumber.attributes} encoding="on"/>
 >
