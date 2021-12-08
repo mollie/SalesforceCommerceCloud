@@ -9,7 +9,7 @@
                 <isloop items="${paymentOption.issuers}" alias="issuer" status="loopStatus">
                     <label class="form-control-label">
                         <input type="radio" class="issuers__input" value="${JSON.stringify(issuer)}" <isprint
-                            value="${pdict.forms.billingForm.issuer.attributes}" encoding="off" />
+                            value="${pdict.forms.billingForm.issuer.attributes}" encoding="on" />
                         <isif condition="${loopStatus.first}">checked</isif>/>
                         <img class="issuers__image" src="${issuer.image}" height="32" alt="${issuer.name}"
                              title="${issuer.name}" />
@@ -18,7 +18,7 @@
                 </isloop>
                 <!--- in case no issuer is found --->
                 <input type="hidden" value="" <isprint value="${pdict.forms.billingForm.issuer.attributes}"
-                                                       encoding="off" />/>
+                                                       encoding="on" />/>
             </form>
         </isif>
     </fieldset>
