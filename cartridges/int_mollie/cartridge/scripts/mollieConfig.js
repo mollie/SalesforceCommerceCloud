@@ -37,7 +37,6 @@ var ENABLED_MODE = {
 
 var PLUGIN_VERSION = [
     'SFCC/' + Resource.msg('global.version.number', 'version', null),
-    'SFCCCertificationVersion/' + Resource.msg('mollie.version.certification.number', 'version', null),
     'MollieSFCC/' + Resource.msg('mollie.version.number', 'version', null),
     'uap/HFyJqxekGpwVPUzr'
 ];
