@@ -1,23 +1,18 @@
 'use strict';
 
-const applePayContent = '.js-apple-pay-content';
 
 /**
  * Check if browser supports Apple Pay
  */
 function checkApplePaySupport() {
-    if (window.ApplePaySession && window.ApplePaySession.canMakePayments()) {
-        $(applePayContent).removeClass('d-none');
+    console.log(window.ApplePaySession, window.ApplePaySession.canMakePayments())
+    if (window.ApplePaySession &&
+        window.ApplePaySession.canMakePayments()) {
+            $('body').addClass('apple-pay-enabled');
+            $('.js-apple-pay-content').removeClass('d-none');
     }
 }
 
-/**
- * Initialize Apple Pay functions
- */
-function init() {
-    checkApplePaySupport();
-}
-
 module.exports = {
-    init: init
+    checkApplePaySupport: checkApplePaySupport
 };

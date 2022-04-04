@@ -77,6 +77,7 @@ function Authorize(order, paymentInstrument, paymentProcessor) {
         }
 
         Transaction.wrap(function () {
+            session.privacy.applePayPaymentToken = null;
             paymentInstrument.getPaymentTransaction().setTransactionID(order.getOrderNo());
             paymentInstrument.getPaymentTransaction().setPaymentProcessor(paymentProcessor);
             orderHelper.setRefundStatus(order, config.getRefundStatus().NOTREFUNDED);

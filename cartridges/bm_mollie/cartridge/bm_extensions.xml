@@ -63,16 +63,37 @@
         <icon>check_address.png</icon>
     </menuaction>
 
-    <menuaction id="mollie_settings" menupath="site-prefs" position="2" site="true">
-        <name xml:lang="x-default">Mollie settings</name>
+    <menuitem id="mollieSettings" position="9000" site="true">
+        <name xml:lang="x-default">Mollie</name>
         <short_description xml:lang="x-default">Mollie settings</short_description>
         <description xml:lang="x-default">Mollie settings</description>
+        <icon>icons/sitespaymentmethods_ico.gif</icon>
+    </menuitem>
+    <menuaction id="MollieGeneralSettings" menupath="mollieSettings" position="9001" site="true">
+        <name xml:lang="x-default">Mollie General settings</name>
+        <short_description xml:lang="x-default">Mollie General settings</short_description>
+        <description xml:lang="x-default">Mollie General settings</description>
         <exec pipeline="MollieSettings" node="Start"/>
         <sub-pipelines>
             <pipeline name="MollieSettings" />
         </sub-pipelines>
         <parameters>
-            <parameter name="pref_group" value="Mollie Config"/>
+            <parameter name="pref_group" value="Mollie General Config"/>
+            <parameter name="page_title" value="Mollie General Config"/>
+        </parameters>
+        <icon>mollie.svg</icon>
+    </menuaction>
+    <menuaction id="MollieApplePayDirectSettings" menupath="mollieSettings" position="9002" site="true">
+        <name xml:lang="x-default">Mollie Apple Pay Direct settings</name>
+        <short_description xml:lang="x-default">Mollie Apple Pay Direct settings</short_description>
+        <description xml:lang="x-default">Mollie Apple Pay Direct settings</description>
+        <exec pipeline="MollieSettings" node="Start"/>
+        <sub-pipelines>
+            <pipeline name="MollieSettings" />
+        </sub-pipelines>
+        <parameters>
+            <parameter name="pref_group" value="Mollie Apple Pay Direct Config"/>
+            <parameter name="page_title" value="Mollie Apple Pay Direct Config"/>
         </parameters>
         <icon>mollie.svg</icon>
     </menuaction>

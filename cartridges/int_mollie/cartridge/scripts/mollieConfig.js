@@ -34,6 +34,7 @@ var ENABLED_MODE = {
     LIVE: 'LIVE'
 };
 
+var APPLE_PAY_DIRECT_PAYMENT_METHOD_ID = 'MOLLIE_APPLE_PAY_DIRECT';
 
 var PLUGIN_VERSION = [
     'SFCC/' + Resource.msg('global.version.number', 'version', null),
@@ -69,6 +70,19 @@ function Config() {
     this.componentsEnabled = mollieConfigHelper.getPreference(sitePreferences, 'mollieComponentsEnabled', true);
     this.enableQrCode = mollieConfigHelper.getPreference(sitePreferences, 'mollieEnableQrCode', false);
     this.logCategory = mollieConfigHelper.getPreference(sitePreferences, 'mollieLogCategory', false);
+
+    this.applePayDirectEnabled = mollieConfigHelper.getPreference(sitePreferences, 'mollieApplePayDirectEnabled', true);
+    this.applePayDirectMerchantName = mollieConfigHelper.getPreference(sitePreferences, 'mollieApplePayDirectMerchantName', true);
+    this.applePayDirectCountryCode = mollieConfigHelper.getPreference(sitePreferences, 'mollieApplePayDirectCountryCode', true);
+    this.applePayDirectVerificationString = mollieConfigHelper.getPreference(sitePreferences, 'mollieApplePayDirectVerificationString', true);
+    this.applePayDirectCartType = mollieConfigHelper.getPreference(sitePreferences, 'mollieApplePayDirectCartType', true);
+    this.applePayDirectCartButtonStyle = mollieConfigHelper.getPreference(sitePreferences, 'mollieApplePayDirectCartButtonStyle', true);
+    this.applePayDirectPdpType = mollieConfigHelper.getPreference(sitePreferences, 'mollieApplePayDirectPdpType', true);
+    this.applePayDirectPdpButtonStyle = mollieConfigHelper.getPreference(sitePreferences, 'mollieApplePayDirectPdpButtonStyle', true);
+    this.applePayDirectMerchantCapabilities = mollieConfigHelper.getPreference(sitePreferences, 'mollieApplePayDirectMerchantCapabilities', true);
+    this.applePayDirectSupportedNetworks = mollieConfigHelper.getPreference(sitePreferences, 'mollieApplePayDirectSupportedNetworks', true);
+    this.applePayDirectRequiredShippingContactFields = mollieConfigHelper.getPreference(sitePreferences, 'mollieApplePayDirectRequiredShippingContactFields', true);
+    this.applePayDirectRequiredBillingContactFields = mollieConfigHelper.getPreference(sitePreferences, 'mollieApplePayDirectRequiredBillingContactFields', true);
 
     this.getPluginVersion = function () {
         var version = PLUGIN_VERSION.join(' ');
@@ -243,6 +257,136 @@ function Config() {
      */
     this.getRefundStatus = function () {
         return REFUND_STATUS;
+    };
+
+    /**
+     * Get the payment method ID which must be used to configure the Mollie Apple Pay Direct
+     * @function
+     * @name Config#getApplePayDirectPaymentMethodId
+     * @return {string} APPLE_PAY_DIRECT_PAYMENT_METHOD_ID
+     */
+    this.getApplePayDirectPaymentMethodId = function () {
+        return APPLE_PAY_DIRECT_PAYMENT_METHOD_ID;
+    }
+
+    /**
+     * Is Apple Pay Direct Enabled
+     * @function
+     * @name Config#isApplePayDirectEnabled
+     * @return {boolean} applePayDirectEnabled
+     */
+    this.isApplePayDirectEnabled = function () {
+        return this.applePayDirectEnabled;
+    };
+
+    /**
+     * Apple Pay Direct Country Code
+     * @function
+     * @name Config#getApplePayDirectCountryCode
+     * @return {string} applePayEnabled
+     */
+    this.getApplePayDirectCountryCode = function () {
+        return this.applePayDirectCountryCode;
+    };
+
+    /**
+     * Is Apple Pay Direct Merchant Name
+     * @function
+     * @name Config#getApplePayDirectMerchantName
+     * @return {string} applePayEnabled
+     */
+    this.getApplePayDirectMerchantName = function () {
+        return this.applePayDirectMerchantName;
+    };
+
+    /**
+     * Is Apple Pay Enabled
+     * @function
+     * @name Config#isApplePayEnabled
+     * @return {string} applePayEnabled
+     */
+    this.getApplePayDirectVerificationString = function () {
+        return this.applePayDirectVerificationString;
+    };
+
+    /**
+     * Get Apple Pay Cart Button Style
+     * @function
+     * @name Config#getApplePayCartButtonStyle
+     * @return {string} applePayCartButtonStyle
+     */
+    this.getApplePayDirectCartButtonStyle = function () {
+        return this.applePayDirectCartButtonStyle.value;
+    };
+
+    /**
+     * Get Apple Pay PDP Button Style
+     * @function
+     * @name Config#getApplePayPdpButtonStyle
+     * @return {string} applePayPdpButtonStyle
+     */
+    this.getApplePayDirectPdpButtonStyle = function () {
+        return this.applePayDirectPdpButtonStyle.value;
+    };
+
+    /**
+     * Get Apple Pay Cart Button Type
+     * @function
+     * @name Config#getApplePayCartType
+     * @return {string} applePayCartType
+     */
+    this.getApplePayDirectCartType = function () {
+        return this.applePayDirectCartType.value;
+    };
+
+    /**
+     * Get Apple Pay PDP Button Type
+     * @function
+     * @name Config#getApplePayPdpType
+     * @return {string} applePayPdpType
+     */
+    this.getApplePayDirectPdpType = function () {
+        return this.applePayDirectPdpType.value;
+    };
+
+    /**
+     * Get Apple Pay Merchant Capabilities
+     * @function
+     * @name Config#getApplePayDirectMerchantCapabilities
+     * @return {dw.value.EnumValue} applePayDirectMerchantCapabilities
+     */
+    this.getApplePayDirectMerchantCapabilities = function () {
+        return this.applePayDirectMerchantCapabilities;
+    };
+
+    /**
+     * Get Apple Pay Supported Networks
+     * @function
+     * @name Config#getApplePayDirectSupportedNetworks
+     * @return {dw.value.EnumValue} applePayDirectSupportedNetworks
+     */
+    this.getApplePayDirectSupportedNetworks = function () {
+        return this.applePayDirectSupportedNetworks;
+    };
+
+    /**
+     * Get Apple Pay Required Shipping Contact Fields
+     * @function
+     * @name Config#getApplePayDirectRequiredShippingContactFields
+     * @return {dw.value.EnumValue} applePayDirectRequiredShippingContactFields
+     */
+    this.getApplePayDirectRequiredShippingContactFields = function () {
+        return this.applePayDirectRequiredShippingContactFields;
+    };
+
+    /**
+     * Get Apple Pay Required Billing Contact Fields
+     * @function
+     * @name Config#getApplePayDirectRequiredBillingContactFields
+     * @return {dw.value.EnumValue} applePayDirectRequiredBillingContactFields
+     */
+    this.getApplePayDirectRequiredBillingContactFields = function () {
+        return this.applePayDirectRequiredBillingContactFields;
     };
 
     // #endregion

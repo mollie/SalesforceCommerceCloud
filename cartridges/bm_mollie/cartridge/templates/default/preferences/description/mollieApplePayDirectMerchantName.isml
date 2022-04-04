@@ -1,0 +1,1 @@
+Configure the <a href='https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypaymentrequest/1916123-merchantcapabilities'>Merchant Name</a> that will be shown on the apple pay <a href="https://developer.apple.com/design/human-interface-guidelines/apple-pay/overview/checkout-and-payment/#customize-the-payment-sheet">payment sheet</a> in the "total" line item.

@@ -22,7 +22,7 @@ server.get('RedirectSuccess', function (req, res, next) {
     var orderToken = req.querystring.orderToken;
 
     if (orderId && orderToken) {
-        res.render('mollieRedirectTemplate', {
+        res.render('mollie/mollieRedirectTemplate', {
             continueUrl: URLUtils.url('Order-Confirm'),
             orderId: orderId,
             orderToken: orderToken
@@ -53,7 +53,7 @@ server.get('Redirect', server.middleware.https, function (req, res, next) {
                 // QR code was used for payment
                 if (paymentDetails && paymentDetails.qrCode && !isCheckoutDevice) {
                     var paymentStatus = order.getPaymentStatus().getValue();
-                    res.render('mollieQrCodeRedirect', {
+                    res.render('mollie/mollieQrCodeRedirect', {
                         paid: paymentStatus === Order.PAYMENT_STATUS_PAID,
                         orderId: orderId
                     });
@@ -96,7 +96,7 @@ server.get('RenderQRCode', server.middleware.https, function (req, res, next) {
     var qrCodeHeight = qrCodeObject && qrCodeObject.height;
 
     if (qrCodeSrc && qrCodeHeight && qrCodeWidth) {
-        res.render('mollieQrCodeTemplate', {
+        res.render('mollie/mollieQrCodeTemplate', {
             qrCodeSrc: qrCodeSrc,
             qrCodeHeight: qrCodeHeight,
             qrCodeWidth: qrCodeWidth,
@@ -156,14 +156,21 @@ server.get('WatchQRCode', server.middleware.https, function (req, res, next) {
  */
 server.post('Hook', server.middleware.https, function (req, res, next) {
     try {
+
         var orderId = req.querystring.orderId;
         var orderToken = req.querystring.orderToken;
         var statusUpdateId = req.form && req.form.id;
         if (orderId && orderToken && statusUpdateId) {
             var order = orderId && OrderMgr.getOrder(orderId, orderToken);
             if (order) {
-                paymentService.processPaymentUpdate(order, statusUpdateId);
-                res.json({ success: true });
+                if ((orderHelper.isMollieOrder(order) && !empty(orderHelper.getOrderId(order))) || !empty(orderHelper.getPaymentId(order))) {
+                    paymentService.processPaymentUpdate(order, statusUpdateId);
+                    res.json({ success: true });
+                } else {
+                    res.setStatusCode(425);
+                    res.json({ success: false, error: Resource.msg('error.order.incorrect.status', null, 'mollie') });
+                }
+
             } else {
                 res.setStatusCode(404);
                 res.json({ success: false, error: Resource.msg('error.order.not.found', null, 'mollie') });
@@ -175,6 +182,26 @@ server.post('Hook', server.middleware.https, function (req, res, next) {
     } catch (e) {
         res.setStatusCode(500);
         res.json({ success: false, error: e.message });
+    }
+
+    return next();
+});
+
+/**
+ * MolliePayment-ApplePayValidateMerchant : Send the apple pay merchant validation to Mollie as descibed here in the documentation (https://docs.mollie.com/wallets/applepay-direct-integration)
+ * @name Mollie/MolliePayment-ApplePayValidateMerchant
+ * @function
+ * @memberof MolliePayment
+ * @param {serverfunction} - get
+ */
+server.post('ApplePayValidateMerchant', function (req, res, next) {
+    try {
+        var body = JSON.parse(req.body);
+        var merchantSession = paymentService.validateMerchant(body.validationURL, body.hostname);
+        res.json({ session: merchantSession });
+    } catch (e) {
+        res.setStatusCode(500);
+        res.json({ success: false, error: e });
     }
 
     return next();

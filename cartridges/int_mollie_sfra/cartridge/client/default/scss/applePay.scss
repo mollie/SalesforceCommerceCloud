@@ -1,0 +1,34 @@
+@charset "UTF-8";
+
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
+
+.apple-pay {
+    &-cart {
+        --apple-pay-button-width: 100%;
+        --apple-pay-button-height: 38px;
+        --apple-pay-button-border-radius: 3px;
+        --apple-pay-button-padding: .375rem .75rem;
+        --apple-pay-button-box-sizing: border-box;
+    }
+
+    &-pdp {
+        --apple-pay-button-width: 140px;
+        --apple-pay-button-height: 38px;
+        --apple-pay-button-border-radius: 3px;
+        --apple-pay-button-padding: .375rem .75rem;
+        --apple-pay-button-box-sizing: border-box;
+    }
+
+    @include media-breakpoint-down(xs) {
+        &-pdp {
+            margin: 1%;
+            --apple-pay-button-width: 98%;
+        }
+    }
+}
+
+.add-to-cart {
+    min-width: 140px;
+}

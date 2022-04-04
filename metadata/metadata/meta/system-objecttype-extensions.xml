@@ -1,0 +1,1326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+
+    <type-extension type-id="PaymentMethod">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="molliePaymentMethodId">
+                <display-name xml:lang="x-default">Payment method ID</display-name>
+                <display-name xml:lang="fr">ID méthode de paiement</display-name>
+                <display-name xml:lang="de">ID der Zahlungsmethode</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieOrderExpiryDays">
+                <display-name xml:lang="x-default">Order expiry days</display-name>
+                <display-name xml:lang="fr">Jours d'expiration de la commande</display-name>
+                <display-name xml:lang="de">Tage bis Ablauf der Bestellung</display-name>
+                <description xml:lang="x-default">expiry days for orders created with the Orders API</description>
+                <description xml:lang="fr">jours d'expiration pour les commandes créées avec l'API Commandes</description>
+                <description xml:lang="de">Tage bis Ablauf für Bestellungen, die über die Orders API erstellt wurden</description>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">DEFAULT</display>
+                        <value>default</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>1</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>2</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>3</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>4</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>5</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>6</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>7</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>8</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>9</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>10</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>11</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>12</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>13</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>14</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>15</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>16</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>17</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>18</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>19</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>20</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>21</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>22</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>23</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>24</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>25</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>26</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>27</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>28</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>29</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>30</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>31</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>32</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>33</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>34</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>35</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>36</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>37</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>38</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>39</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>40</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>41</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>42</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>43</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>44</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>45</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>46</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>47</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>48</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>49</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>50</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>51</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>52</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>53</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>54</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>55</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>56</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>57</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>58</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>59</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>60</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>61</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>62</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>63</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>64</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>65</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>66</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>67</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>68</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>69</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>70</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>71</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>72</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>73</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>74</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>75</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>76</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>77</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>78</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>79</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>80</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>81</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>82</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>83</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>84</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>85</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>86</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>87</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>88</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>89</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>90</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>91</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>92</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>93</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>94</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>95</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>96</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>97</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>98</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>99</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>100</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieEnabledTransactionAPI">
+                <display-name xml:lang="x-default">Method</display-name>
+                <display-name xml:lang="fr">Méthode</display-name>
+                <display-name xml:lang="de">Methode</display-name>
+                <description xml:lang="x-default">Read more about the differences between the Payment and Orders API: https://docs.mollie.com/orders/why-use-orders</description>
+                <description xml:lang="fr">En savoir plus sur les différences entre l'API Paiement et l'API Commandes : https://docs.mollie.com/orders/why-use-orders</description>
+                <description xml:lang="de">Erfahren Sie mehr über die Unterschiede zwischen der Payment API und der Orders API: https://docs.mollie.com/orders/why-use-orders</description>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">DEFAULT</display>
+                        <value>default</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">PAYMENTS API</display>
+                        <value>payment</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">ORDERS API</display>
+                        <value>order</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieProductCategory">
+                <display-name xml:lang="x-default">Mollie product category</display-name>
+                <display-name xml:lang="fr">Catégorie produit Mollie</display-name>
+                <display-name xml:lang="de">Mollie-Produktkategorie</display-name>
+                <description xml:lang="x-default">The product category that is send to Mollie with the order (meal/eco/gift)</description>
+                <description xml:lang="fr">La catégorie de produit qui est envoyée à Mollie avec la commande (repas/eco/cadeau)</description>
+                <description xml:lang="de">Die Produktkategorie, die mit der Bestellung an Mollie übermittelt wird (Essen/Öko/Geschenk)</description>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>meal</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>eco</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>gift</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Mollie">
+                <display-name xml:lang="x-default">Mollie</display-name>
+                <attribute attribute-id="molliePaymentMethodId" />
+                <attribute attribute-id="mollieOrderExpiryDays" />
+                <attribute attribute-id="mollieEnabledTransactionAPI" />
+                <attribute attribute-id="mollieProductCategory" />
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <type-extension type-id="PaymentTransaction">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="molliePaymentId">
+                <display-name xml:lang="x-default">Mollie payment ID</display-name>
+                <display-name xml:lang="fr">ID paiement Mollie</display-name>
+                <display-name xml:lang="de">Mollie-Zahlungs-ID</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="molliePaymentStatus">
+                <display-name xml:lang="x-default">Mollie payment status</display-name>
+                <display-name xml:lang="fr">Statut paiement Mollie</display-name>
+                <display-name xml:lang="de">Mollie-Zahlungsstatus</display-name>
+                <description xml:lang="x-default">The Mollie payment status. https://docs.mollie.com/payments/status-changes</description>
+                <description xml:lang="fr">Le statut paiement Mollie. https://docs.mollie.com/payments/status-changes</description>
+                <description xml:lang="de">Der Mollie-Zahlungsstatus. https://docs.mollie.com/payments/status-changes</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="molliePaymentDescription">
+                <display-name xml:lang="x-default">Mollie payment description</display-name>
+                <display-name xml:lang="fr">Description paiement Mollie</display-name>
+                <display-name xml:lang="de">Mollie-Zahlungsbeschreibung</display-name>
+                <description xml:lang="x-default">The Mollie payment description.</description>
+                <description xml:lang="fr">La description paiement Mollie.</description>
+                <description xml:lang="de">Die Mollie-Zahlungsbeschreibung.</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieIssuerData">
+                <display-name xml:lang="x-default">Mollie issuer data</display-name>
+                <display-name xml:lang="fr">Données émetteur Mollie</display-name>
+                <display-name xml:lang="de">Mollie-Ausstellerdaten</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="molliePaymentDetails">
+                <display-name xml:lang="x-default">Mollie payment details</display-name>
+                <display-name xml:lang="fr">Détails de paiement Mollie</display-name>
+                <display-name xml:lang="de">Mollie-Zahlungsdetails</display-name>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="molliePaymentLink">
+                <display-name xml:lang="x-default">Mollie payment link</display-name>
+                <display-name xml:lang="fr">Lien pour paiement Mollie</display-name>
+                <display-name xml:lang="de">Mollie-Zahlungslink</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Mollie">
+                <display-name xml:lang="x-default">Mollie</display-name>
+                <attribute attribute-id="molliePaymentId" />
+                <attribute attribute-id="molliePaymentStatus" />
+                <attribute attribute-id="molliePaymentDescription" />
+                <attribute attribute-id="mollieIssuerData" />
+                <attribute attribute-id="molliePaymentLink" />
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <type-extension type-id="Order">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="mollieOrderId">
+                <display-name xml:lang="x-default">Mollie order ID</display-name>
+                <display-name xml:lang="fr">ID commande Mollie</display-name>
+                <display-name xml:lang="de">Mollie-Bestell-ID</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieOrderStatus">
+                <display-name xml:lang="x-default">Mollie order status</display-name>
+                <display-name xml:lang="fr">Statut commande Mollie</display-name>
+                <display-name xml:lang="de">Mollie-Bestellstatus</display-name>
+                <description xml:lang="x-default">The Mollie order status https://docs.mollie.com/payments/status-changes</description>
+                <description xml:lang="fr">Le statut commande Mollie https://docs.mollie.com/payments/status-changes</description>
+                <description xml:lang="de">Der Mollie-Bestellstatus https://docs.mollie.com/payments/status-changes</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieUsedTransactionAPI">
+                <display-name xml:lang="x-default">Used Method</display-name>
+                <display-name xml:lang="fr">Méthode utilisée</display-name>
+                <display-name xml:lang="de">Verwendete Methode</display-name>
+                <description xml:lang="x-default">The used Method to create this order (payment API/order API)</description>
+                <description xml:lang="fr">La méthode utilisée pour créer cette commande (API de paiement/API de commande)</description>
+                <description xml:lang="de">Die Methode, die zur Erstellung der Bestellung verwendet wurde (Payment API/Orders API)</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieRefundStatus">
+                <display-name xml:lang="x-default">Refund status</display-name>
+                <display-name xml:lang="fr">Statut de remboursement</display-name>
+                <display-name xml:lang="de">Rückerstattungsstatus</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">NOTREFUNDED</display>
+                        <value>REFUND_STATUS_NOTREFUNDED</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">PARTREFUNDED</display>
+                        <value>REFUND_STATUS_PARTREFUNDED</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">REFUNDED</display>
+                        <value>REFUND_STATUS_REFUNDED</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieOrderIsAuthorized">
+                <display-name xml:lang="x-default">Order is authorized</display-name>
+                <display-name xml:lang="fr">La commande est autorisée</display-name>
+                <display-name xml:lang="de">Bestellung autorisiert</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Mollie">
+                <display-name xml:lang="x-default">Mollie</display-name>
+                <attribute attribute-id="mollieOrderId" />
+                <attribute attribute-id="mollieOrderStatus" />
+                <attribute attribute-id="mollieUsedTransactionAPI" />
+                <attribute attribute-id="mollieRefundStatus" />
+                <attribute attribute-id="mollieOrderIsAuthorized" />
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <type-extension type-id="Profile">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="mollieCustomerId">
+                <display-name xml:lang="x-default">Mollie customer ID</display-name>
+                <display-name xml:lang="fr">ID client Mollie</display-name>
+                <display-name xml:lang="de">Mollie-Kunden-ID</display-name>
+                <description xml:lang="x-default">The Mollie customer ID used for single click payments</description>
+                <description xml:lang="fr">L'identifiant client Mollie utilisé pour les paiements en un seul clic</description>
+                <description xml:lang="de">Die Mollie-Kunden-ID, die für Ein-Klick-Zahlungen verwendet wird</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Mollie">
+                <display-name xml:lang="x-default">Mollie</display-name>
+                <attribute attribute-id="mollieCustomerId" />
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <type-extension type-id="Product">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="mollieProductCategory">
+                <display-name xml:lang="x-default">Mollie product category</display-name>
+                <display-name xml:lang="fr">Catégorie produit Mollie</display-name>
+                <display-name xml:lang="de">Mollie-Produktkategorie</display-name>
+                <description xml:lang="x-default">The product category that is send to Mollie with the order (meal/eco/gift)</description>
+                <description xml:lang="fr">La catégorie de produit qui est envoyée à Mollie avec la commande (repas/eco/cadeau)</description>
+                <description xml:lang="de">Die Produktkategorie, die mit der Bestellung an Mollie übermittelt wird (Essen/Öko/Geschenk)</description>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>meal</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>eco</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>gift</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Mollie">
+                <display-name xml:lang="x-default">Mollie</display-name>
+                <attribute attribute-id="mollieProductCategory" />
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="mollieEnabledMode">
+                <display-name xml:lang="x-default">Environment</display-name>
+                <display-name xml:lang="fr">Environnement</display-name>
+                <display-name xml:lang="de">Umgebung</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <value>TEST</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>LIVE</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieBearerTestToken">
+                <display-name xml:lang="x-default">API Key Test</display-name>
+                <display-name xml:lang="fr">Test clé API</display-name>
+                <display-name xml:lang="de">Test-API-Schlüssel</display-name>
+                <description xml:lang="x-default">You can find your API key in your Mollie Profile, it starts with test or live. https://www.mollie.com/dashboard/org_9306261/developers/api-keys</description>
+                <description xml:lang="fr">Vous trouverez votre clé API dans votre profil Mollie, elle commence par test ou live. https://www.mollie.com/dashboard/org_9306261/developers/api-keys</description>
+                <description xml:lang="de">Sie finden Ihren API-Schlüssel in Ihrem Mollie-Profil. Er beginnt mit Test oder Live. https://www.mollie.com/dashboard/org_9306261/developers/api-keys</description>
+                <type>password</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieBearerToken">
+                <display-name xml:lang="x-default">API Key Live</display-name>
+                <display-name xml:lang="fr">Live clé API</display-name>
+                <display-name xml:lang="de">Live-API-Schlüssel</display-name>
+                <type>password</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieProfileId">
+                <display-name xml:lang="x-default">Profile ID</display-name>
+                <display-name xml:lang="fr">ID profil</display-name>
+                <display-name xml:lang="de">Profil-ID</display-name>
+                <description xml:lang="x-default">You can find your Profile ID in your Mollie Profile: https://www.mollie.com/dashboard/org_9306261/developers/api-keys</description>
+                <description xml:lang="fr">Vous trouverez votre ID de profil dans votre profil Mollie : https://www.mollie.com/dashboard/org_9306261/developers/api-keys</description>
+                <description xml:lang="de">Sie finden Ihre Profil-ID in Ihrem Mollie-Profil: https://www.mollie.com/dashboard/org_9306261/developers/api-keys</description>
+                <type>password</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieDefaultEnabledTransactionAPI">
+                <display-name xml:lang="x-default">Default Method</display-name>
+                <display-name xml:lang="fr">Méthode par défaut</display-name>
+                <display-name xml:lang="de">Standardmethode</display-name>
+                <description xml:lang="x-default">Read more about the differences between the Payment and Orders API: https://docs.mollie.com/orders/why-use-orders</description>
+                <description xml:lang="fr">En savoir plus sur les différences entre l'API Paiement et l'API Commandes : https://docs.mollie.com/orders/why-use-orders</description>
+                <description xml:lang="de">Erfahren Sie mehr über die Unterschiede zwischen der Payment API und der Orders API: https://docs.mollie.com/orders/why-use-orders</description>
+                <type>enum-of-string</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">PAYMENTS API</display>
+                        <value>payment</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">ORDERS API</display>
+                        <value>order</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieDefaultOrderExpiryDays">
+                <display-name xml:lang="x-default">Default order expiry days</display-name>
+                <display-name xml:lang="fr">Jours d'expiration de la commande par défaut</display-name>
+                <display-name xml:lang="de">Standardmäßige Anzahl Tage bis Ablauf der Bestellung</display-name>
+                <description xml:lang="x-default">Default expiry days for orders created with the Orders API</description>
+                <description xml:lang="fr">Jours d'expiration par défaut pour les commandes créées avec les API Commandes</description>
+                <description xml:lang="de">Standardmäßige Anzahl Tage bis Ablauf für Bestellungen, die über die Orders API erstellt wurden</description>
+                <type>enum-of-int</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <value>1</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>2</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>3</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>4</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>5</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>6</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>7</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>8</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>9</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>10</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>11</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>12</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>13</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>14</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>15</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>16</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>17</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>18</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>19</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>20</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>21</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>22</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>23</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>24</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>25</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>26</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>27</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>28</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>29</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <value>30</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>31</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>32</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>33</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>34</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>35</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>36</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>37</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>38</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>39</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>40</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>41</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>42</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>43</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>44</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>45</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>46</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>47</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>48</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>49</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>50</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>51</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>52</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>53</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>54</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>55</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>56</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>57</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>58</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>59</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>60</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>61</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>62</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>63</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>64</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>65</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>66</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>67</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>68</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>69</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>70</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>71</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>72</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>73</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>74</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>75</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>76</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>77</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>78</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>79</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>80</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>81</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>82</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>83</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>84</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>85</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>86</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>87</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>88</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>89</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>90</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>91</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>92</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>93</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>94</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>95</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>96</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>97</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>98</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>99</value>
+                    </value-definition>
+                    <value-definition>
+                        <value>100</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieEnableSingleClickPayments">
+                <display-name xml:lang="x-default">Use Single Click Payments for Credit Cards</display-name>
+                <display-name xml:lang="fr">Utilisez les paiements en un seul clic pour les cartes de crédit</display-name>
+                <display-name xml:lang="de">Ein-Klick-Zahlungen für Kreditkarten verwenden</display-name>
+                <description xml:lang="x-default">Read more about Single Click Payments and how it improves your conversion. https://help.mollie.com/hc/en-us/articles/115000671249-What-are-single-click-payments-and-how-does-it-work-</description>
+                <description xml:lang="fr">En savoir plus sur les paiements Single Click et la manière dont il améliore votre conversion. https://help.mollie.com/hc/en-us/articles/115000671249-What-are-single-click-payments-and-how-does-it-work-</description>
+                <description xml:lang="de">Erfahren Sie mehr über Ein-Klick-Zahlungen und wie sie Ihre Umsatzquote steigern. https://help.mollie.com/hc/en-us/articles/115000671249-What-are-single-click-payments-and-how-does-it-work-</description>
+                <type>boolean</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieComponentsEnabled">
+                <display-name xml:lang="x-default">Use Mollie Components for Credit Cards</display-name>
+                <display-name xml:lang="fr">Utilisez les composants Mollie pour les cartes de crédit</display-name>
+                <display-name xml:lang="de">Mollie-Komponenten für Kreditkarten verwenden</display-name>
+                <description xml:lang="x-default">Read more about Mollie Components and how it improves your conversion. https://www.mollie.com/en/news/post/better-checkout-flows-with-mollie-components</description>
+                <description xml:lang="fr">Lisez plus sur Mollie Components et la manière dont il améliore votre conversion. https://www.mollie.com/en/news/post/better-checkout-flows-with-mollie-components</description>
+                <description xml:lang="de">Erfahren Sie mehr über Mollie-Komponenten und wie sie Ihre Umsatzquote steigern. https://www.mollie.com/en/news/post/better-checkout-flows-with-mollie-components</description>
+                <type>boolean</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieEnableQrCode">
+                <display-name xml:lang="x-default">Use Storefront QR Code Payments </display-name>
+                <display-name xml:lang="fr">Utilisez les paiements par code QR de Storefront</display-name>
+                <display-name xml:lang="de">Zahlungen über QR-Code via Storefront verwenden</display-name>
+                <description xml:lang="x-default">Read more about QR Codes. https://docs.mollie.com/payments/qr-codes</description>
+                <description xml:lang="fr">En savoir plus sur les codes QR. https://docs.mollie.com/payments/qr-codes</description>
+                <description xml:lang="de">Erfahren Sie mehr über QR-Codes. https://docs.mollie.com/payments/qr-codes.</description>
+                <type>boolean</type>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieLogCategory">
+                <display-name xml:lang="x-default">Log category</display-name>
+                <display-name xml:lang="fr">Catégorie de journal</display-name>
+                <display-name xml:lang="de">Log-Kategorie</display-name>
+                <description xml:lang="x-default">Log category used by SFCC. The log category can be selected under: "Administration -&gt; Operations -&gt; Custom Log Settings".</description>
+                <description xml:lang="fr">Catégorie de journal utilisée par SFCC. La catégorie de journal peut être sélectionnée sous : « Administration -&gt; Opérations -&gt; Paramètres des journaux personnalisés ».</description>
+                <description xml:lang="de">Von SFCC verwendete Log-Kategorie. Die Log-Kategorie kann unter folgendem Pfad ausgewählt werden: „Verwaltung -&gt; Betrieb -&gt; Benutzerdefinierte Log-Einstellungen“.</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <default-value>mollie</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieApplePayDirectEnabled">
+                <display-name xml:lang="x-default">Apple Pay Direct - Enabled</display-name>
+                <description xml:lang="x-default">Enable the Apple Pay Direct Integration</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieApplePayDirectVerificationString">
+                <display-name xml:lang="x-default">Apple Pay Direct - Domain Verification String</display-name>
+                <description xml:lang="x-default">Provide the Apple domain verification file</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieApplePayDirectPdpButtonStyle">
+                <display-name xml:lang="x-default">Apple Pay Direct - PDP Button Style</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">Black</display>
+                        <value>black</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">White</display>
+                        <value>white</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">White with Outline</display>
+                        <value>white-outline</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieApplePayDirectPdpType">
+                <display-name xml:lang="x-default">Apple Pay Direct - PDP Button Type</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">Pay</display>
+                        <value>pay</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">Buy</display>
+                        <value>buy</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Checkout</display>
+                        <value>check-out</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Continue</display>
+                        <value>continue</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Order</display>
+                        <value>order</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieApplePayDirectCartButtonStyle">
+                <display-name xml:lang="x-default">Apple Pay Direct - Cart Button Style</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">Black</display>
+                        <value>black</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">White</display>
+                        <value>white</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">White with Outline</display>
+                        <value>white-outline</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieApplePayDirectCartType">
+                <display-name xml:lang="x-default">Apple Pay Direct - Cart Button Type</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">Buy</display>
+                        <value>buy</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Pay</display>
+                        <value>pay</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">Checkout</display>
+                        <value>check-out</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Continue</display>
+                        <value>continue</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Order</display>
+                        <value>order</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieApplePayDirectMerchantCapabilities">
+                <display-name xml:lang="x-default">Apple Pay Direct - Merchant Capabilities</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <select-multiple-flag>true</select-multiple-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">3DS</display>
+                        <value>supports3DS</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Credit</display>
+                        <value>supportsCredit</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Debit</display>
+                        <value>supportsDebit</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">EMV</display>
+                        <value>supportsEMV</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieApplePayDirectSupportedNetworks">
+                <display-name xml:lang="x-default">Apple Pay Direct - Supported Networks</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <select-multiple-flag>true</select-multiple-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">American Express</display>
+                        <value>amex</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Cartes Bancaires</display>
+                        <value>cartesBancaires</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">UnionPay International</display>
+                        <value>chinaUnionPay</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Discover</display>
+                        <value>discover</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">EFTPOS</display>
+                        <value>eftpos</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Visa Electron</display>
+                        <value>electron</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Elo</display>
+                        <value>elo</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Girocard</display>
+                        <value>girocard</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Interac</display>
+                        <value>interac</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">JCB</display>
+                        <value>jcb</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Mada</display>
+                        <value>mada</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Maestro</display>
+                        <value>maestro</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Mastercard</display>
+                        <value>masterCard</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Mir</display>
+                        <value>mir</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Private Label</display>
+                        <value>privateLabel</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Visa</display>
+                        <value>visa</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">V Pay</display>
+                        <value>vPay</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieApplePayDirectRequiredBillingContactFields">
+                <display-name xml:lang="x-default">Apple Pay Direct - Required Billing Contact Fields</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <select-multiple-flag>true</select-multiple-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">Postal Address</display>
+                        <value>postalAddress</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieApplePayDirectRequiredShippingContactFields">
+                <display-name xml:lang="x-default">Apple Pay Direct - Required Shipping Contact Fields</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <select-multiple-flag>true</select-multiple-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">Postal Address</display>
+                        <value>postalAddress</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Name</display>
+                        <value>name</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Phonetic Name</display>
+                        <value>phoneticName</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Phone</display>
+                        <value>phone</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Email</display>
+                        <value>email</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Mollie General Config">
+                <display-name xml:lang="de">Konfiguration für die Einbindung von Mollie</display-name>
+                <display-name xml:lang="x-default">Configuration for General Mollie Integration</display-name>
+                <display-name xml:lang="fr">Configuration pour l’intégration Mollie</display-name>
+                <attribute attribute-id="mollieEnabledMode"/>
+                <attribute attribute-id="mollieBearerToken"/>
+                <attribute attribute-id="mollieBearerTestToken"/>
+                <attribute attribute-id="mollieProfileId"/>
+                <attribute attribute-id="mollieDefaultEnabledTransactionAPI"/>
+                <attribute attribute-id="mollieDefaultOrderExpiryDays"/>
+                <attribute attribute-id="mollieLogCategory"/>
+                <attribute attribute-id="mollieComponentsEnabled"/>
+                <attribute attribute-id="mollieEnableSingleClickPayments"/>
+                <attribute attribute-id="mollieEnableQrCode"/>
+            </attribute-group>
+            <attribute-group group-id="Mollie Apple Pay Direct Config">
+                <display-name xml:lang="x-default">Configuration for Apple Pay Direct Mollie Integration</display-name>
+                <attribute attribute-id="mollieApplePayDirectEnabled"/>
+                <attribute attribute-id="mollieApplePayDirectVerificationString"/>
+                <attribute attribute-id="mollieApplePayDirectPdpButtonStyle"/>
+                <attribute attribute-id="mollieApplePayDirectPdpType"/>
+                <attribute attribute-id="mollieApplePayDirectCartButtonStyle"/>
+                <attribute attribute-id="mollieApplePayDirectCartType"/>
+                <attribute attribute-id="mollieApplePayDirectMerchantCapabilities"/>
+                <attribute attribute-id="mollieApplePayDirectSupportedNetworks"/>
+                <attribute attribute-id="mollieApplePayDirectRequiredBillingContactFields"/>
+                <attribute attribute-id="mollieApplePayDirectRequiredShippingContactFields"/>
+            </attribute-group>
+            <attribute-group group-id="Mollie Settings Config">
+                <display-name xml:lang="x-default">Configuration for Mollie custom settings page</display-name>
+                <attribute attribute-id="mollieCustomPageSettings"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+</metadata>

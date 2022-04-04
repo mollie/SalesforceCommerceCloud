@@ -260,6 +260,18 @@ function Customer(mollieCustomer) {
     this.createdDatetime = customer.createdDatetime;
 }
 
+function Session(mollieSession) {
+    var session = mollieSession || {};
+    this.epochTimestamp = mollieSession.epochTimestamp;
+    this.expiresAt = mollieSession.expiresAt;
+    this.merchantSessionIdentifier = mollieSession.merchantSessionIdentifier;
+    this.nonce = mollieSession.nonce;
+    this.merchantIdentifier = mollieSession.merchantIdentifier;
+    this.domainName = mollieSession.domainName;
+    this.displayName = mollieSession.displayName;
+    this.signature = mollieSession.signature;
+}
+
 module.exports = {
     Amount: Amount,
     Link: Link,
@@ -272,5 +284,6 @@ module.exports = {
     Shipment: Shipment,
     Line: Line,
     Issuer: Issuer,
-    Customer: Customer
+    Customer: Customer,
+    Session: Session
 };

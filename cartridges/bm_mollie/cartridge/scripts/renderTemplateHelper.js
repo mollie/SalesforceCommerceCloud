@@ -1,4 +1,5 @@
 var ISML = require('dw/template/ISML');
+var Template = require('dw/util/Template');
 var Logger = require('*/cartridge/scripts/utils/logger');
 var base = require('*/cartridge/scripts/utils/superModule')(module);
 
@@ -13,6 +14,15 @@ base.renderTemplate = function (templateName, viewParams) {
     } catch (e) {
         Logger.error('Error while rendering template ' + templateName);
         throw e;
+    }
+};
+
+base.templateExists = function (templateName) {
+    try {
+        new Template(templateName).render();
+        return true;
+    } catch (e) {
+        return false;
     }
 };
 

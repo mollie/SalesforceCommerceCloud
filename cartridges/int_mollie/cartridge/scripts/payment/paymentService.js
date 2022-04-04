@@ -63,7 +63,8 @@ function createPayment(order, paymentMethod, paymentData) {
             customerId: paymentData && paymentData.customerId,
             description: paymentDescription,
             locale: paymentData && paymentData.locale,
-            includeQrCode: paymentData && paymentData.isQrPaymentMethod && config.getEnableQrCode()
+            includeQrCode: paymentData && paymentData.isQrPaymentMethod && config.getEnableQrCode(),
+            applePayPaymentToken: paymentData && paymentData.applePayPaymentToken
         });
 
         Transaction.wrap(function () {
@@ -148,6 +149,7 @@ function createOrder(order, paymentMethod, paymentData) {
             shipments: order.getShipments(),
             priceAdjustments: order.getPriceAdjustments(),
             cardToken: paymentData && paymentData.cardToken,
+            applePayPaymentToken: paymentData && paymentData.applePayPaymentToken,
             issuer: paymentData && paymentData.issuer,
             customerId: paymentData && paymentData.customerId,
             orderLineCategory: paymentMethod.custom.mollieProductCategory,
@@ -233,6 +235,26 @@ function getMethods(currentBasket, countryCode) {
         throw MollieServiceException.from(e);
     }
 }
+
+/**
+ *
+ * @param {string} validationUrl - the validationUrl from the ApplePayValidateMerchant event
+ * @param {string} domain - the current domain name
+ * @returns {Object} - Apple Pay Session
+ * @throws {MollieServiceException}
+ */
+function validateMerchant(validationUrl, domain) {
+    try {
+        return MollieService.validateMerchant({
+            validationUrl: validationUrl,
+            domain: domain
+        });
+    } catch (e) {
+        if (e.name === 'PaymentProviderException') throw e;
+        throw MollieServiceException.from(e);
+    }
+}
+
 
 /**
  *
@@ -355,6 +377,7 @@ module.exports = {
     cancelOrder: cancelOrder,
     cancelOrderLineItem: cancelOrderLineItem,
     getMethods: getMethods,
+    validateMerchant: validateMerchant,
     createPaymentRefund: createPaymentRefund,
     createOrderRefund: createOrderRefund,
     createShipment: createShipment,

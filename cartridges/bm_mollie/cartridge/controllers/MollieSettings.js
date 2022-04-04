@@ -3,8 +3,8 @@
 var server = require('server');
 
 var Site = require('dw/system/Site');
-var ISML = require('dw/template/ISML');
 var Transaction = require('dw/system/Transaction');
+var Collection = require('dw/util/Collection');
 var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
 var collections = require('*/cartridge/scripts/util/collections');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
@@ -23,7 +23,7 @@ var valueTypeCodeMapping = {
     13: 'password',
     10: 'number',
     3: 'text',
-    4: 'text'
+    4: 'textarea'
 };
 
 /**
@@ -35,17 +35,28 @@ var valueTypeCodeMapping = {
  */
 function getMappedPreferences(preferences, molliePreferences) {
     return collections.map(molliePreferences, function (preference) {
+        var selectedValue = preferences.getCustom()[preference.ID];
         return {
             ID: preference.ID,
             displayName: preference.displayName,
             defaultValue: preference.defaultValue,
             mandatory: preference.mandatory,
-            selectedValue: preferences.getCustom()[preference.ID],
+            selectedValue: selectedValue,
             inputType: valueTypeCodeMapping[preference.valueTypeCode],
+            multiValueType: preference.multiValueType,
             values: collections.map(preference.values, function (value) {
+                var isSelected;
+                if (preference.multiValueType) {
+                    isSelected = selectedValue.filter(function (selectedVal) {
+                        return selectedVal.value === value.value;
+                    }).length > 0;
+                } else {
+                    isSelected = selectedValue.value === value.value;
+                }
                 return {
                     displayValue: value.displayValue,
-                    value: value.value
+                    value: value.value,
+                    selected: isSelected
                 };
             })
         };
@@ -78,10 +89,13 @@ function getMappedPreferenceForPrefGroup(prefGroup, preferences) {
  * @param {serverfunction} - get
  */
 server.get('Start', csrfProtection.generateToken, function (req, res, next) {
+    var pageTitle = request.httpParameterMap.get('page_title');
     var prefGroup = request.httpParameterMap.get('pref_group');
     var preferences = Site.getCurrent().getPreferences();
 
     res.render('preferences/preferences_wrapper', {
+        pageTitle: pageTitle,
+        prefGroup: prefGroup,
         preferences: getMappedPreferenceForPrefGroup(prefGroup, preferences)
     });
     return next();
@@ -102,27 +116,42 @@ server.post('SavePreferences',
     function (req, res, next) {
         try {
             var preferences = Site.getCurrent().getPreferences();
+            var prefGroup = request.httpParameterMap.get('pref_group');
+            var mappedPreferences = getMappedPreferenceForPrefGroup(prefGroup, preferences);
             var paramNames = request.httpParameterMap.parameterNames;
 
             collections.forEach(paramNames, function (paramName) {
-                if (paramName !== 'csrf_token') {
+                var mappedPreference = mappedPreferences.find(function (currentMappedPref) {
+                    return currentMappedPref.ID === paramName;
+                });
+                if (paramName !== 'csrf_token' && paramName !== 'pref_group' && paramName !== 'page_title') {
                     var param = request.httpParameterMap.get(paramName);
                     var preference = preferences.custom[paramName];
-                    var paramValue = param.booleanValue || param.dateValue || param.doubleValue || param.intValue || param.value;
-                    if (preference !== null && paramValue !== preference.value) {
-                        Transaction.wrap(function () {
-                            switch (paramValue) {
-                                case 'checked':
-                                    preferences.custom[paramName] = true;
-                                    break;
-                                case 'unchecked':
-                                    preferences.custom[paramName] = false;
-                                    break;
-                                default:
-                                    preferences.custom[paramName] = paramValue;
-                                    break;
-                            }
-                        });
+
+                    if (mappedPreference.multiValueType) {
+                        var paramValues = param.stringValues || param.values;
+                        if (preference !== null) {
+                            Transaction.wrap(function () {
+                                preferences.custom[paramName] = paramValues;
+                            });
+                        }
+                    } else {
+                        var paramValue = param.booleanValue || param.dateValue || param.doubleValue || param.intValue || param.value;
+                        if (preference !== null && paramValue !== preference.value) {
+                            Transaction.wrap(function () {
+                                switch (paramValue) {
+                                    case 'checked':
+                                        preferences.custom[paramName] = true;
+                                        break;
+                                    case 'unchecked':
+                                        preferences.custom[paramName] = false;
+                                        break;
+                                    default:
+                                        preferences.custom[paramName] = paramValue;
+                                        break;
+                                }
+                            });
+                        }
                     }
                 }
             });
@@ -131,6 +160,7 @@ server.post('SavePreferences',
                 error: false
             });
         } catch (e) {
+            var error = e;
             res.json({
                 errorMsg: e.message,
                 error: true

@@ -1,0 +1,8 @@
+<div class="input-group">
+    <textarea class="form-control"
+        id="${preference.ID}"
+        name="${preference.ID}"
+        rows="8"
+        ${preference.mandatory ? 'required' : ''}
+    >${preference.selectedValue || preference.defaultValue || ''}</textarea>
+</div>
