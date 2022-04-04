@@ -67,7 +67,7 @@
         <name xml:lang="x-default">Mollie</name>
         <short_description xml:lang="x-default">Mollie settings</short_description>
         <description xml:lang="x-default">Mollie settings</description>
-        <icon>icons/sitespaymentmethods_ico.gif</icon>
+        <icon>mollie.svg</icon>
     </menuitem>
     <menuaction id="MollieGeneralSettings" menupath="mollieSettings" position="9001" site="true">
         <name xml:lang="x-default">Mollie General settings</name>
