@@ -1039,6 +1039,20 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <default-value>true</default-value>
             </attribute-definition>
+            <attribute-definition attribute-id="mollieApplePayDirectMerchantName">
+                <display-name xml:lang="x-default">Merchant Name</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="mollieApplePayDirectCountryCode">
+                <display-name xml:lang="x-default">Merchant Country Code</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
             <attribute-definition attribute-id="mollieApplePayDirectVerificationString">
                 <display-name xml:lang="x-default">Domain Verification String</display-name>
                 <description xml:lang="x-default">Provide the Apple domain verification file</description>
