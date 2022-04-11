@@ -34,23 +34,15 @@
 		},
 		{
 			"name": "dw.extensions.applepay.getRequest",
-			"script": "./cartridge/scripts/mollieApplePay"
+			"script": "./cartridge/scripts/hooks/mollieApplePay"
 		},
 		{
 			"name": "dw.extensions.applepay.paymentAuthorized.authorizeOrderPayment",
-			"script": "./cartridge/scripts/mollieApplePay"
+			"script": "./cartridge/scripts/hooks/mollieApplePay"
 		},
 		{
 			"name": "dw.extensions.applepay.paymentAuthorized.placeOrder",
-			"script": "./cartridge/scripts/mollieApplePay"
-		},
-		{
-			"name": "dw.extensions.applepay.paymentAuthorized.failOrder",
-			"script": "./cartridge/scripts/mollieApplePay"
-		},
-		{
-			"name": "dw.extensions.applepay.paymentAuthorized.createOrder",
-			"script": "./cartridge/scripts/mollieApplePay"
+			"script": "./cartridge/scripts/hooks/mollieApplePay"
 		}
 	]
 }

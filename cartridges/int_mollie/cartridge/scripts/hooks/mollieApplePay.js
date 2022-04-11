@@ -62,3 +62,10 @@ exports.authorizeOrderPayment = function (order, event) {
 
     return new Status(Status.OK);
 };
+
+exports.placeOrder = function (order) {
+    var URLUtils = require('dw/web/URLUtils');
+    var ApplePayHookResult = require('dw/extensions/applepay/ApplePayHookResult');
+    var url = URLUtils.url('Order-Confirm', 'orderID', order.orderNo, 'orderToken', order.getOrderToken());
+    return new ApplePayHookResult(new Status(Status.OK), url);
+}

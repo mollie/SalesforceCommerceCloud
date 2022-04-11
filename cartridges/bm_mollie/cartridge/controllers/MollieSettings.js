@@ -126,18 +126,18 @@ server.post('SavePreferences',
                 });
                 if (paramName !== 'csrf_token' && paramName !== 'pref_group' && paramName !== 'page_title') {
                     var param = request.httpParameterMap.get(paramName);
-                    var preference = preferences.custom[paramName];
+                    // var preference = preferences.custom[paramName];
 
                     if (mappedPreference.multiValueType) {
                         var paramValues = param.stringValues || param.values;
-                        if (preference !== null) {
+                        if (mappedPreference !== null) {
                             Transaction.wrap(function () {
                                 preferences.custom[paramName] = paramValues;
                             });
                         }
                     } else {
                         var paramValue = param.booleanValue || param.dateValue || param.doubleValue || param.intValue || param.value;
-                        if (preference !== null && paramValue !== preference.value) {
+                        if (mappedPreference !== null) {
                             Transaction.wrap(function () {
                                 switch (paramValue) {
                                     case 'checked':

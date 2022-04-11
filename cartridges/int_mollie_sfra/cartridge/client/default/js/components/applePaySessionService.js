@@ -70,7 +70,6 @@ module.exports = class AppleSessionService {
         httpUtils.postJson(ACTION.prepareBasket, {
             sku: sku
         }).then(function (response) {
-            response.request.total.label = session.appleSessionService.merchantName; // eslint-disable-line
             httpUtils.processServerResponse(response);
         }, function (error) {
             try {
@@ -85,11 +84,33 @@ module.exports = class AppleSessionService {
         });
     }
 
-    submitOrder(formAction) {
-        var form = document.createElement('form');
-        form.action = formAction;
-        form.method = 'post';
+    submitForm(formAction) {
+        // Initialize full POST action url + seperate params
+        const formActionUrl = new URL(formAction, window.location.origin);
+        const params = new URLSearchParams(formActionUrl.search);
 
+        // Create the form
+        const form = document.createElement('form');
+
+        // Construct Order ID input for POST submit and delete the query param from the url
+        const orderIdInput = document.createElement('input');
+        orderIdInput.type = 'hidden'
+        orderIdInput.name = 'orderID';
+        orderIdInput.value = params.get(orderIdInput.name);
+        formActionUrl.searchParams.delete(orderIdInput.name);
+        form.appendChild(orderIdInput);
+
+        // Construct Order Token input for POST submit and delete the query param from the url
+        const orderTokenInput = document.createElement('input');
+        orderTokenInput.type = 'hidden'
+        orderTokenInput.name = 'orderToken';
+        orderTokenInput.value = params.get(orderTokenInput.name);
+        formActionUrl.searchParams.delete(orderTokenInput.name);
+        form.appendChild(orderTokenInput);
+
+        // Complete the form setup + submit form
+        form.action = formActionUrl.toString();
+        form.method = 'post';
         document.body.appendChild(form);
         form.submit();
     }
@@ -113,10 +134,9 @@ module.exports = class AppleSessionService {
         httpUtils.postJson(ACTION.onpaymentauthorized, filterEvent(e)).then(function (response) {
             session.completePayment(ApplePaySession.STATUS_SUCCESS);
             httpUtils.processServerResponse(response);
-            // session.setSession(null);
-            this.submitOrder(response.redirect);
+            session.appleSessionService.appleSession.setSession(null);
+            session.appleSessionService.submitForm(response.redirect);
         }, function (error) {
-            console.log('error', error);
             session.completePayment(mapStatus(error.message));
             httpUtils.processServerResponse(error.response);
             httpUtils.doRedirect();
@@ -126,7 +146,7 @@ module.exports = class AppleSessionService {
     }
 
     oncancelHandler() {
-        // this.setSession(null);
+        this.appleSessionService.appleSession.setSession(null);
         httpUtils.postJson(ACTION.cancel, {}).then(function (response) {
             httpUtils.processServerResponse(response);
             httpUtils.doRedirect();

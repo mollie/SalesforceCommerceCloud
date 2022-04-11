@@ -9,6 +9,7 @@ module.exports = class AppleSession {
         if (parseFloat(this.appleSessionService.request.total.amount) === 0) {
             this.appleSessionService.request.total.amount = '0.01';
         }
+        this.appleSessionService.request.total.label = '';
         this.setSession(new ApplePaySession(APPLE_PAY_VERSION, this.appleSessionService.request));
         this.session.appleSessionService = appleSessionService;
         this.session.begin();
