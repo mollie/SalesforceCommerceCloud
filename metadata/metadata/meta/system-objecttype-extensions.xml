@@ -1033,7 +1033,11 @@
             </attribute-definition>
             <attribute-definition attribute-id="mollieApplePayDirectEnabled">
                 <display-name xml:lang="x-default">Enabled</display-name>
+                <display-name xml:lang="fr">Activé</display-name>
+                <display-name xml:lang="de">Aktiviert</display-name>
                 <description xml:lang="x-default">Enable the Apple Pay Direct Integration</description>
+                <description xml:lang="fr">Autoriser l'intégration Apple Pay Direct</description>
+                <description xml:lang="de">Apple-Pay-Direct-Integration aktivieren</description>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1041,6 +1045,8 @@
             </attribute-definition>
             <attribute-definition attribute-id="mollieApplePayDirectMerchantName">
                 <display-name xml:lang="x-default">Merchant Name</display-name>
+                <display-name xml:lang="fr">Nom du commerçant</display-name>
+                <display-name xml:lang="de">Händlername</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1048,6 +1054,8 @@
             </attribute-definition>
             <attribute-definition attribute-id="mollieApplePayDirectCountryCode">
                 <display-name xml:lang="x-default">Merchant Country Code</display-name>
+                <display-name xml:lang="fr">Code pays du commerçant</display-name>
+                <display-name xml:lang="de">Ländercode des Händlers</display-name>
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1063,102 +1071,144 @@
             </attribute-definition>
             <attribute-definition attribute-id="mollieApplePayDirectPdpButtonStyle">
                 <display-name xml:lang="x-default">PDP Button Style</display-name>
+                <display-name xml:lang="fr">Style du bouton PDP</display-name>
+                <display-name xml:lang="de">Schaltflächenstil Produktdetailseite</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <value-definitions>
                     <value-definition default="true">
                         <display xml:lang="x-default">Black</display>
+                        <display xml:lang="fr">Noir</display>
+                        <display xml:lang="de">Schwarz</display>
                         <value>black</value>
                     </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">White</display>
+                        <display xml:lang="fr">Blanc</display>
+                        <display xml:lang="de">Weiß</display>
                         <value>white</value>
                     </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">White with Outline</display>
+                        <display xml:lang="fr">Blanc sans contour</display>
+                        <display xml:lang="de">Weiß mit Umrandung</display>
                         <value>white-outline</value>
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
             <attribute-definition attribute-id="mollieApplePayDirectPdpType">
                 <display-name xml:lang="x-default">PDP Button Type</display-name>
+                <display-name xml:lang="fr">Type de bouton PDP</display-name>
+                <display-name xml:lang="de">Schaltflächentyp Produktdetailseite</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <value-definitions>
                     <value-definition>
                         <display xml:lang="x-default">Pay</display>
+                        <display xml:lang="fr">Payer</display>
+                        <display xml:lang="de">Bezahlen</display>
                         <value>pay</value>
                     </value-definition>
                     <value-definition default="true">
                         <display xml:lang="x-default">Buy</display>
+                        <display xml:lang="fr">Acheter</display>
+                        <display xml:lang="de">Kaufen</display>
                         <value>buy</value>
                     </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">Checkout</display>
+                        <display xml:lang="fr">Vérifier</display>
+                        <display xml:lang="de">Checkout</display>
                         <value>check-out</value>
                     </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">Continue</display>
+                        <display xml:lang="fr">Poursuivre</display>
+                        <display xml:lang="de">Weiter</display>
                         <value>continue</value>
                     </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">Order</display>
+                        <display xml:lang="fr">Commander</display>
+                        <display xml:lang="de">Bestellung</display>
                         <value>order</value>
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
             <attribute-definition attribute-id="mollieApplePayDirectCartButtonStyle">
                 <display-name xml:lang="x-default">Cart Button Style</display-name>
+                <display-name xml:lang="fr">Style du bouton panier</display-name>
+                <display-name xml:lang="de">Schaltflächenstil Warenkorb</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <value-definitions>
                     <value-definition default="true">
                         <display xml:lang="x-default">Black</display>
+                        <display xml:lang="fr">Noir</display>
+                        <display xml:lang="de">Schwarz</display>
                         <value>black</value>
                     </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">White</display>
+                        <display xml:lang="fr">Blanc</display>
+                        <display xml:lang="de">Weiß</display>
                         <value>white</value>
                     </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">White with Outline</display>
+                        <display xml:lang="fr">Blanc sans contour</display>
+                        <display xml:lang="de">Weiß mit Umrandung</display>
                         <value>white-outline</value>
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
             <attribute-definition attribute-id="mollieApplePayDirectCartType">
                 <display-name xml:lang="x-default">Cart Button Type</display-name>
+                <display-name xml:lang="fr">Type du bouton panier</display-name>
+                <display-name xml:lang="de">Schaltflächentyp Warenkorb</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <value-definitions>
                     <value-definition>
-                        <display xml:lang="x-default">Buy</display>
-                        <value>buy</value>
-                    </value-definition>
-                    <value-definition>
                         <display xml:lang="x-default">Pay</display>
+                        <display xml:lang="fr">Payer</display>
+                        <display xml:lang="de">Bezahlen</display>
                         <value>pay</value>
                     </value-definition>
                     <value-definition default="true">
+                        <display xml:lang="x-default">Buy</display>
+                        <display xml:lang="fr">Acheter</display>
+                        <display xml:lang="de">Kaufen</display>
+                        <value>buy</value>
+                    </value-definition>
+                    <value-definition>
                         <display xml:lang="x-default">Checkout</display>
+                        <display xml:lang="fr">Vérifier</display>
+                        <display xml:lang="de">Checkout</display>
                         <value>check-out</value>
                     </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">Continue</display>
+                        <display xml:lang="fr">Poursuivre</display>
+                        <display xml:lang="de">Weiter</display>
                         <value>continue</value>
                     </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">Order</display>
+                        <display xml:lang="fr">Commander</display>
+                        <display xml:lang="de">Bestellung</display>
                         <value>order</value>
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
             <attribute-definition attribute-id="mollieApplePayDirectMerchantCapabilities">
                 <display-name xml:lang="x-default">Merchant Capabilities</display-name>
+                <display-name xml:lang="fr">Moyens de paiement commerçant</display-name>
+                <display-name xml:lang="de">Bezahlmöglichkeiten des Händlers</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1184,6 +1234,8 @@
             </attribute-definition>
             <attribute-definition attribute-id="mollieApplePayDirectSupportedNetworks">
                 <display-name xml:lang="x-default">Supported Card Networks</display-name>
+                <display-name xml:lang="fr">Réseaux de cartes pris en charge</display-name>
+                <display-name xml:lang="de">Unterstützte Kartennetzwerke</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1217,6 +1269,8 @@
             </attribute-definition>
             <attribute-definition attribute-id="mollieApplePayDirectRequiredBillingContactFields">
                 <display-name xml:lang="x-default">Required Billing Contact Fields</display-name>
+                <display-name xml:lang="fr">Champs obligatoires de contact facturation</display-name>
+                <display-name xml:lang="de">Pflichtfelder Rechnungsadresse</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1224,12 +1278,16 @@
                 <value-definitions>
                     <value-definition>
                         <display xml:lang="x-default">Postal Address</display>
+                        <display xml:lang="fr">Adresse postale</display>
+                        <display xml:lang="de">Postadresse</display>
                         <value>postalAddress</value>
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
             <attribute-definition attribute-id="mollieApplePayDirectRequiredShippingContactFields">
                 <display-name xml:lang="x-default">Required Shipping Contact Fields</display-name>
+                <display-name xml:lang="fr">Champs obligatoires de contact expédition</display-name>
+                <display-name xml:lang="de">Pflichtfelder Versandadresse</display-name>
                 <type>enum-of-string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -1237,22 +1295,32 @@
                 <value-definitions>
                     <value-definition>
                         <display xml:lang="x-default">Postal Address</display>
+                        <display xml:lang="fr">Adresse postale</display>
+                        <display xml:lang="de">Postadresse</display>
                         <value>postalAddress</value>
                     </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">Name</display>
+                        <display xml:lang="fr">Nom</display>
+                        <display xml:lang="de">Name</display>
                         <value>name</value>
                     </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">Phonetic Name</display>
+                        <display xml:lang="fr">Nom phonétique</display>
+                        <display xml:lang="de">Phonetischer Name</display>
                         <value>phoneticName</value>
                     </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">Phone</display>
+                        <display xml:lang="fr">Téléphone</display>
+                        <display xml:lang="de">Telefon</display>
                         <value>phone</value>
                     </value-definition>
                     <value-definition>
                         <display xml:lang="x-default">Email</display>
+                        <display xml:lang="fr">E-mail</display>
+                        <display xml:lang="de">E-mail</display>
                         <value>email</value>
                     </value-definition>
                 </value-definitions>
@@ -1276,6 +1344,8 @@
             </attribute-group>
             <attribute-group group-id="Mollie Apple Pay Direct Config">
                 <display-name xml:lang="x-default">Configuration for Apple Pay Direct Mollie Integration</display-name>
+                <display-name xml:lang="fr">Configuration pour l’intégration Mollie de Apple Pay Direct</display-name>
+                <display-name xml:lang="de">Konfiguration für die Apple-Pay-Direct-Integration für Mollie</display-name>
                 <attribute attribute-id="mollieApplePayDirectEnabled"/>
                 <attribute attribute-id="mollieApplePayDirectMerchantName"/>
                 <attribute attribute-id="mollieApplePayDirectCountryCode"/>
@@ -1290,6 +1360,8 @@
             </attribute-group>
             <attribute-group group-id="Mollie Settings Config">
                 <display-name xml:lang="x-default">Configuration for Mollie custom settings page</display-name>
+                <display-name xml:lang="fr">Configuration de la page des paramètres personnalisés Mollie</display-name>
+                <display-name xml:lang="de">Konfiguration für die persönlichen Einstellungen von Mollie</display-name>
                 <attribute attribute-id="mollieCustomPageSettings"/>
             </attribute-group>
         </group-definitions>
