@@ -16,9 +16,9 @@ describe('models/payment', () => {
     before(() => stubs.init());
     beforeEach(() => {
         const PAYMENT_PROCESSOR = {
-            DEFAULT: "MOLLIE_ECOM_DEFAULT",
-            QR: "MOLLIE_ECOM_CREDIT",
-            CREDIT: "MOLLIE_ECOM_CREDIT"
+            DEFAULT: 'MOLLIE_ECOM_DEFAULT',
+            QR: 'MOLLIE_ECOM_CREDIT',
+            CREDIT: 'MOLLIE_ECOM_CREDIT'
         };
         const molliePaymentMethodId = faker.random.uuid();
         const url = faker.internet.url();

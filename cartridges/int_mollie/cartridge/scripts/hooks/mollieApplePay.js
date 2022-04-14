@@ -2,6 +2,13 @@ var Status = require('dw/system/Status');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var config = require('*/cartridge/scripts/mollieConfig');
 
+/**
+ * Update the getRequest hook so merchantName, countryCode, merchantCapabilities,
+ * supportedNetworks, requiredShippingContactFields and requiredBillingContactFields
+ * are using the correct data
+ * @param {dw.order.Basket} basket - The basket for the Apple Pay request
+ * @param {Object} request - The Apple Pay payment request object
+ */
 exports.getRequest = function (basket, request) {
     session.custom.applepaysession = true;   // eslint-disable-line
 
@@ -22,6 +29,12 @@ exports.getRequest = function (basket, request) {
     });
 };
 
+/**
+ * Update the authorizeOrderPayment hook to authorize the apple pay payment
+ * @param {dw.order.Order} order - The order paid using Apple Pay
+ * @param {Object} event - ApplePayPaymentAuthorizedEvent object
+ * @returns {dw.extensions.applepay.ApplePayHookResult} status - a non-null status ends the hook execution
+ */
 exports.authorizeOrderPayment = function (order, event) {
     var Resource = require('dw/web/Resource');
     var HookMgr = require('dw/system/HookMgr');
@@ -63,9 +76,15 @@ exports.authorizeOrderPayment = function (order, event) {
     return new Status(Status.OK);
 };
 
+/**
+ * Update the placeOrder hook to have the user redirected to the Order Confirm Page
+ * @param {dw.order.Order} order - The order paid using Apple Pay
+ * @param {Object} event - ApplePayPaymentAuthorizedEvent object
+ * @returns {dw.extensions.applepay.ApplePayHookResult} status - a non-null status ends the hook execution
+ */
 exports.placeOrder = function (order) {
     var URLUtils = require('dw/web/URLUtils');
     var ApplePayHookResult = require('dw/extensions/applepay/ApplePayHookResult');
     var url = URLUtils.url('Order-Confirm', 'orderID', order.orderNo, 'orderToken', order.getOrderToken());
     return new ApplePayHookResult(new Status(Status.OK), url);
-}
+};

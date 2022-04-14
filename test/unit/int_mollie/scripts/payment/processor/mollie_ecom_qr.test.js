@@ -44,6 +44,7 @@ describe('payment/processor/mollie_ecom_qr', () => {
 
     context('#Handle', () => {
         beforeEach(() => {
+            this.order = new stubs.dw.OrderMock();
             this.currentBasket = new stubs.dw.BasketMock();
             this.currentBasket.totalGrossPrice = faker.random.number();
             this.paymentInformation = {
@@ -125,22 +126,21 @@ describe('payment/processor/mollie_ecom_qr', () => {
                 }
             };
 
-            stubs.dw.OrderMgrMock.getOrder.returns(this.order);
+            this.order.getOrderNo.returns(this.orderNumber);
             stubs.paymentServiceMock.createPayment.returns(createPaymentResult);
             const issuerId = faker.random.number();
             stubs.orderHelperMock.getIssuerData.returns(`{ "id": ${issuerId} }`);
-            var result = mollieEcomQR.Authorize(this.orderNumber, this.paymentInstrument, this.paymentProcessor);
+            var result = mollieEcomQR.Authorize(this.order, this.paymentInstrument, this.paymentProcessor);
 
             expect(result.redirectUrl).to.eql(redirectUrl);
             expect(result.renderQRCodeUrl).to.exist;
             expect(stubs.paymentServiceMock.createPayment).to.been.calledOnce()
                 .and.to.have.been.calledWithExactly(this.order, this.paymentMethod, { issuer: issuerId, isQrPaymentMethod: true });
-            expect(stubs.dw.OrderMgrMock.getOrder).to.been.calledOnce();
+            expect(this.order.getOrderNo).to.been.calledOnce();
 
             expect(result.error).to.be.false;
             expect(result.fieldErrors).to.deep.equal({});
             expect(result.serverErrors).to.be.empty;
         });
-
     });
 });

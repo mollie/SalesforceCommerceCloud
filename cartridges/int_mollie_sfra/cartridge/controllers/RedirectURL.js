@@ -8,8 +8,9 @@ server.extend(page);
 
 server.prepend('Start', function (req, res, next) {
     var URLRedirectMgr = require('dw/web/URLRedirectMgr');
-    
-    if (URLRedirectMgr.getRedirectOrigin() === '/.well-known/apple-developer-merchantid-domain-association') { // Intercept the incoming path request
+
+    // Intercept the incoming path request
+    if (URLRedirectMgr.getRedirectOrigin() === '/.well-known/apple-developer-merchantid-domain-association') {
         response.getWriter().print(config.getApplePayDirectVerificationString());
         return null;
     }

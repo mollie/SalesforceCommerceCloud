@@ -4,8 +4,6 @@ var server = require('server');
 
 var Site = require('dw/system/Site');
 var Transaction = require('dw/system/Transaction');
-var Collection = require('dw/util/Collection');
-var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
 var collections = require('*/cartridge/scripts/util/collections');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
@@ -160,7 +158,6 @@ server.post('SavePreferences',
                 error: false
             });
         } catch (e) {
-            var error = e;
             res.json({
                 errorMsg: e.message,
                 error: true

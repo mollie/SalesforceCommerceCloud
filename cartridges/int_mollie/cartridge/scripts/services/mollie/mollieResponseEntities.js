@@ -260,16 +260,21 @@ function Customer(mollieCustomer) {
     this.createdDatetime = customer.createdDatetime;
 }
 
+/**
+ *
+ * @class
+ * @param {Object} mollieSession - Mollie Apple Pay Session
+ */
 function Session(mollieSession) {
     var session = mollieSession || {};
-    this.epochTimestamp = mollieSession.epochTimestamp;
-    this.expiresAt = mollieSession.expiresAt;
-    this.merchantSessionIdentifier = mollieSession.merchantSessionIdentifier;
-    this.nonce = mollieSession.nonce;
-    this.merchantIdentifier = mollieSession.merchantIdentifier;
-    this.domainName = mollieSession.domainName;
-    this.displayName = mollieSession.displayName;
-    this.signature = mollieSession.signature;
+    this.epochTimestamp = session.epochTimestamp;
+    this.expiresAt = session.expiresAt;
+    this.merchantSessionIdentifier = session.merchantSessionIdentifier;
+    this.nonce = session.nonce;
+    this.merchantIdentifier = session.merchantIdentifier;
+    this.domainName = session.domainName;
+    this.displayName = session.displayName;
+    this.signature = session.signature;
 }
 
 module.exports = {

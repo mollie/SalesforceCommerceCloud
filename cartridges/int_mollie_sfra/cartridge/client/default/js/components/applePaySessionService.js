@@ -1,5 +1,7 @@
 'use strict';
 /* global ApplePaySession Event */
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+
 const httpUtils = require('../utils/http');
 
 const ACTION = window.dw.applepay && window.dw.applepay.action;
@@ -32,7 +34,7 @@ function mapStatus(status) {
  */
 function filterEvent(e) {
     const filteredEvent = {};
-    for (let prop in e) {
+    for (let prop in e) { // eslint-disable-line
         if (!Event.prototype.hasOwnProperty(prop)) { // eslint-disable-line
             filteredEvent[prop] = e[prop];
         }
@@ -94,7 +96,7 @@ module.exports = class AppleSessionService {
 
         // Construct Order ID input for POST submit and delete the query param from the url
         const orderIdInput = document.createElement('input');
-        orderIdInput.type = 'hidden'
+        orderIdInput.type = 'hidden';
         orderIdInput.name = 'orderID';
         orderIdInput.value = params.get(orderIdInput.name);
         formActionUrl.searchParams.delete(orderIdInput.name);
@@ -102,7 +104,7 @@ module.exports = class AppleSessionService {
 
         // Construct Order Token input for POST submit and delete the query param from the url
         const orderTokenInput = document.createElement('input');
-        orderTokenInput.type = 'hidden'
+        orderTokenInput.type = 'hidden';
         orderTokenInput.name = 'orderToken';
         orderTokenInput.value = params.get(orderTokenInput.name);
         formActionUrl.searchParams.delete(orderTokenInput.name);

@@ -156,7 +156,6 @@ server.get('WatchQRCode', server.middleware.https, function (req, res, next) {
  */
 server.post('Hook', server.middleware.https, function (req, res, next) {
     try {
-
         var orderId = req.querystring.orderId;
         var orderToken = req.querystring.orderToken;
         var statusUpdateId = req.form && req.form.id;
@@ -170,7 +169,6 @@ server.post('Hook', server.middleware.https, function (req, res, next) {
                     res.setStatusCode(425);
                     res.json({ success: false, error: Resource.msg('error.order.incorrect.status', null, 'mollie') });
                 }
-
             } else {
                 res.setStatusCode(404);
                 res.json({ success: false, error: Resource.msg('error.order.not.found', null, 'mollie') });

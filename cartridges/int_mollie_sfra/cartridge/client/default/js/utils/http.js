@@ -1,13 +1,20 @@
 let redirect;
 
-function doRedirect () {
+/**
+ * Trigger Redirect
+ */
+function doRedirect() {
     if (redirect) {
         // Redirect to last responded redirect
         location.href = redirect;
     }
 }
 
-function dispatchEvent (event) {
+/**
+ * Dispatch an apple pay event
+ * @param {Object} event - Apple Pay Event
+ */
+function dispatchEvent(event) {
     if (!event || !event.name) {
         return;
     }
@@ -17,7 +24,11 @@ function dispatchEvent (event) {
     }));
 }
 
-function processServerResponse (response) {
+/**
+ * Process Server Response
+ * @param {Object} response - Response to process after apple pay hook result
+ */
+function processServerResponse(response) {
     if (!response) {
         return;
     }
@@ -29,7 +40,12 @@ function processServerResponse (response) {
     dispatchEvent(response.event);
 }
 
-function handleResponse (response) {
+/**
+ * Correctly handle response status codes
+ * @param {Object} response - HTTP response
+ * @returns {PromiseLike<Json> | Promise<Json>} - Response JSON
+ */
+function handleResponse(response) {
     return response.json()
         .then(function (json) {
             if (response.status >= 200 && response.status < 300) {
@@ -44,7 +60,13 @@ function handleResponse (response) {
         });
 }
 
-function postJson (url, data) {
+/**
+ * Post JSON data helper
+ * @param {string} url - endpoint
+ * @param {Obect} data - data
+ * @returns {Promise<any>} - Result
+ */
+function postJson(url, data) {
     var json = data;
     if (typeof data === 'object') {
         json = JSON.stringify(data);
@@ -56,17 +78,22 @@ function postJson (url, data) {
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            Accept: 'application/json'
         },
         body: json
     }).then(handleResponse);
 }
 
-function getJson (url) {
+/**
+ * Get JSON data helper
+ * @param {string} url - endpoint
+ * @returns {Promise<any>} - Result
+ */
+function getJson(url) {
     return fetch(url, {
         credentials: 'include',
         headers: {
-            'Accept': 'application/json'
+            Accept: 'application/json'
         }
     }).then(handleResponse);
 }
@@ -75,7 +102,6 @@ module.exports = {
     doRedirect,
     dispatchEvent,
     processServerResponse,
-    handleResponse,
     postJson,
     getJson
-}
+};

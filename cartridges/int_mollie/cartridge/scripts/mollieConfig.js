@@ -267,7 +267,7 @@ function Config() {
      */
     this.getApplePayDirectPaymentMethodId = function () {
         return APPLE_PAY_DIRECT_PAYMENT_METHOD_ID;
-    }
+    };
 
     /**
      * Is Apple Pay Direct Enabled

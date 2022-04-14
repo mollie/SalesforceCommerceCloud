@@ -1,6 +1,7 @@
 var OrderMgr = function () {};
 
 OrderMgr.getOrder = function () {};
+OrderMgr.getOrderNo = function () {};
 OrderMgr.queryOrders = function () {};
 OrderMgr.searchOrder = function () {};
 OrderMgr.failOrder = function () {};

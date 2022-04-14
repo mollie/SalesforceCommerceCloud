@@ -76,7 +76,7 @@ describe('checkout/checkoutHelpers', () => {
                 .and.to.have.been.calledWithExactly(
                     `app.payment.processor.${paymentProcessorID}`.toLowerCase(),
                     'Authorize',
-                    order.orderNo,
+                    order,
                     paymentInstrument,
                     paymentProcessor);
 
@@ -256,7 +256,7 @@ describe('checkout/checkoutHelpers', () => {
                 .and.to.have.been.calledWithExactly(
                     `app.payment.processor.${paymentProcessorID.toLowerCase()}`,
                     'Authorize',
-                    order.orderNo,
+                    order,
                     paymentInstrument,
                     paymentProcessor);
             expect(stubs.dw.OrderMgrMock.failOrder).to.not.have.been.calledOnce()
@@ -288,25 +288,27 @@ describe('checkout/checkoutHelpers', () => {
     context('#orderExists', () => {
         it('return true if the order manager returns an existing order', () => {
             var orderNumber = faker.random.number();
+            var orderToken = faker.random.number();
             var order = new stubs.dw.OrderMock();
 
             stubs.dw.OrderMgrMock.getOrder.returns(order);
 
-            var result = checkoutHelpers.orderExists(orderNumber);
+            var result = checkoutHelpers.orderExists(orderNumber, orderToken);
 
             expect(stubs.dw.OrderMgrMock.getOrder).to.be.calledOnce()
-                .and.to.be.calledWithExactly(orderNumber);
+                .and.to.be.calledWithExactly(orderNumber, orderToken);
             expect(result).to.be.eql(true);
         });
         it('return false is the order manager does not return an order', () => {
             var orderNumber = faker.random.number();
+            var orderToken = faker.random.number();
 
             stubs.dw.OrderMgrMock.getOrder.returns(null);
 
-            var result = checkoutHelpers.orderExists(orderNumber);
+            var result = checkoutHelpers.orderExists(orderNumber, orderToken);
 
             expect(stubs.dw.OrderMgrMock.getOrder).to.be.calledOnce()
-                .and.to.be.calledWithExactly(orderNumber);
+                .and.to.be.calledWithExactly(orderNumber, orderToken);
             expect(result).to.be.eql(false);
         });
     });
@@ -314,13 +316,14 @@ describe('checkout/checkoutHelpers', () => {
     context('#restorePreviousBasket', () => {
         it('fail the last order when the status is CREATED. Continue with current basket', () => {
             var lastOrderNumber = faker.random.number();
+            var lastOrderToken = faker.random.number();
             var order = new stubs.dw.OrderMock();
 
             order.getStatus.returns({ value: stubs.dw.OrderMock.ORDER_STATUS_CREATED });
             stubs.dw.BasketMgrMock.getCurrentBasket.returns({ getProductLineItems: () => [] });
             stubs.dw.OrderMgrMock.getOrder.returns(order);
 
-            checkoutHelpers.restorePreviousBasket(lastOrderNumber);
+            checkoutHelpers.restorePreviousBasket(lastOrderNumber, lastOrderToken);
 
             expect(stubs.orderHelperMock.failOrder).to.be.calledOnce()
                 .and.to.be.calledWith(order, sinon.match('Order failed'));

@@ -10,7 +10,7 @@ var mollieResponseEntities = require('*/cartridge/scripts/services/mollie/mollie
 function payloadBuilder(params) {
     var payload = {
         validationUrl: params.validationUrl,
-        domain: params.domain,
+        domain: params.domain
     };
 
     return payload;
