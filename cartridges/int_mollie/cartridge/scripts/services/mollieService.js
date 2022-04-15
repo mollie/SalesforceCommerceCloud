@@ -3,6 +3,7 @@ var createPayment = require('*/cartridge/scripts/services/mollie/payment/createP
 var getPayment = require('*/cartridge/scripts/services/mollie/payment/getPayment');
 var cancelPayment = require('*/cartridge/scripts/services/mollie/payment/cancelPayment');
 var paymentConstants = require('*/cartridge/scripts/services/mollie/payment/paymentConstants');
+var walletConstants = require('*/cartridge/scripts/services/mollie/wallet/walletConstants');
 
 var createOrder = require('*/cartridge/scripts/services/mollie/order/createOrder');
 var getOrder = require('*/cartridge/scripts/services/mollie/order/getOrder');
@@ -23,6 +24,8 @@ var methodConstants = require('*/cartridge/scripts/services/mollie/method/method
 
 var createCustomer = require('*/cartridge/scripts/services/mollie/customer/createCustomer');
 var customerConstants = require('*/cartridge/scripts/services/mollie/customer/customerConstants');
+
+var validateMerchant = require('*/cartridge/scripts/services/mollie/wallet/validateMerchant');
 
 exports.createPayment = function (parameters) {
     var mollie = new Mollie(paymentConstants.CREATE_PAYMENT);
@@ -121,5 +124,12 @@ exports.createCustomer = function (parameters) {
     var mollie = new Mollie(customerConstants.CREATE_CUSTOMER);
     mollie.addPayloadBuilder(createCustomer.payloadBuilder);
     mollie.addResponseMapper(createCustomer.responseMapper);
+    return mollie.execute(parameters);
+};
+
+exports.validateMerchant = function (parameters) {
+    var mollie = new Mollie(walletConstants.VALIDATE_MERCHANT);
+    mollie.addPayloadBuilder(validateMerchant.payloadBuilder);
+    mollie.addResponseMapper(validateMerchant.responseMapper);
     return mollie.execute(parameters);
 };

@@ -15,7 +15,7 @@ var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
  * @param {returns} - json
  * @param {serverfunction} - post
  */
-server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) {
+server.prepend('PlaceOrder', server.middleware.https, function (req, res) {
     var BasketMgr = require('dw/order/BasketMgr');
     var Resource = require('dw/web/Resource');
     var Transaction = require('dw/system/Transaction');

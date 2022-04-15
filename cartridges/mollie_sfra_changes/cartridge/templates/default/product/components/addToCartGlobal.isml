@@ -1,0 +1,28 @@
+<div class="row cart-and-ipay"
+    data-is-apple-session="${session.custom.applepaysession === 'true'}"
+    data-applepay-enabled="${pdict.applePayDirectEnabled}"
+    data-onvalidatemerchant="${URLUtils.url('MolliePayment-ApplePayValidateMerchant')}"
+    data-applepay-type="${pdict.applePayDirectType}"
+    data-applepay-buttonstyle="${pdict.applePayDirectButtonStyle}"
+    data-locale="${request.locale}"
+>
+    <isif condition="${session.custom.applepaysession && pdict.applePayDirectEnabled && product.readyToOrder}">
+        <div class="col-sm-12">
+            <apple-pay-button class="apple-pay apple-pay-pdp" buttonstyle="${pdict.applePayDirectButtonStyle}" type="${pdict.applePayDirectType}" locale="${request.locale}" data-sku="${product.id}"></apple-pay-button>
+        </div>
+    </isif>
+
+    <div class="col-sm-12 my-2">
+        <input type="hidden" class="add-to-cart-url" value="${pdict.addToCartUrl}">
+        <button class="add-to-cart-global btn btn-primary"
+                sku="${product.id}"
+                ${!product.readyToOrder || !product.available ? "disabled" : ""}>
+            <i class="fa fa-shopping-bag"></i>
+            <isif condition="${product.productType === 'set' || product.productType === 'bundle'}">
+                ${Resource.msg('button.addalltocart', 'common', null)}
+            <iselse>
+                ${Resource.msg('button.addtocart', 'common', null)}
+            </isif>
+        </button>
+    </div>
+</div>

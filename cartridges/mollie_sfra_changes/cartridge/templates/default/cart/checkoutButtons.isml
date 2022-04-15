@@ -1,0 +1,20 @@
+<div class="row checkout-and-applepay"
+	data-is-apple-session="${session.custom.applepaysession === 'true'}"
+	data-applepay-enabled="${pdict.applePayDirectEnabled}"
+	data-onvalidatemerchant="${URLUtils.url('MolliePayment-ApplePayValidateMerchant')}"
+	data-applepay-type="${pdict.applePayDirectType}"
+	data-applepay-buttonstyle="${pdict.applePayDirectButtonStyle}"
+	data-locale="${request.locale}"
+>
+	<isif condition="${session.custom.applepaysession && pdict.applePayDirectEnabled}">
+		<div class="col-sm-12">
+			<apple-pay-button class="apple-pay apple-pay-cart" buttonstyle="${pdict.applePayDirectButtonStyle}" type="${pdict.applePayDirectType}" locale="${request.locale}"></apple-pay-button>
+		</div>
+	</isif>
+
+	<div class="col-12 my-2" id="cart-checkout-button">
+		<a href="${URLUtils.https('Checkout-Begin')}" class="btn btn-primary btn-block checkout-btn ${pdict.valid.error ? 'disabled' : ''}" role="button">
+			${Resource.msg('button.checkout','cart',null)}
+		</a>
+	</div>
+</div>

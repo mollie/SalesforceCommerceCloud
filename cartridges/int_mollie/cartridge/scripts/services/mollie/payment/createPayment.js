@@ -22,12 +22,16 @@ function payloadBuilder(params) {
     if (params.cardToken) {
         payload.cardToken = params.cardToken;
     }
+    if (params.applePayPaymentToken) {
+        payload.applePayPaymentToken = JSON.stringify(params.applePayPaymentToken);
+    }
     if (params.issuer) {
         payload.issuer = params.issuer;
     }
     if (params.customerId) {
         payload.customerId = params.customerId;
     }
+
 
     return payload;
 }

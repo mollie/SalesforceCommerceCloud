@@ -1,0 +1,1 @@
+Configurer le nom qui sera affiché sur la <a href="https://developer.apple.com/design/human-interface-guidelines/apple-pay/overview/checkout-and-payment/#customize-the-payment-sheet">fiche de paiement apple pay</a> à la ligne article « total ». Il apparaîtra sous la forme « Pay {{Merchant Name}} ».
