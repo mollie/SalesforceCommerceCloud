@@ -78,4 +78,17 @@ describe('MolliePayment controller tests', () => {
             });
         });
     });
+
+    context('MolliePayment-ApplePayValidateMerchant', () => {
+        it('Should return a error response when order is not found', () => {
+            return request({
+                url: config.baseUrl + 'MolliePayment-ApplePayValidateMerchant',
+                method: 'POST',
+                rejectUnauthorized: false,
+                resolveWithFullResponse: true
+            }).catch(function (err) {
+                assert.equal(err.statusCode, 500, 'Should return a 500 response statusCode');
+            });
+        });
+    });
 });

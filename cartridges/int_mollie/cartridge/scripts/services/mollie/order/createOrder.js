@@ -30,6 +30,9 @@ function payloadBuilder(params) {
     if (params.cardToken) {
         payload.payment.cardToken = params.cardToken;
     }
+    if (params.applePayPaymentToken) {
+        payload.payment.applePayPaymentToken = JSON.stringify(params.applePayPaymentToken);
+    }
     if (params.issuer) {
         payload.payment.issuer = params.issuer;
     }
