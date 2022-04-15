@@ -46,11 +46,9 @@
                                 <isinclude template="preferences/input/input" />
                             </isif>
                             <isset name="descriptionTemplate" value="${'preferences/description/' + preference.ID}" scope="page" />
-                            <isif condition="${require('*/cartridge/scripts/renderTemplateHelper').templateExists(descriptionTemplate)}">
-                                <span class="field-description mt-2">
-                                    <isinclude template="${descriptionTemplate}" />
-                                </span>
-                            </isif>
+                            <span class="field-description mt-2">
+                                <isinclude template="${descriptionTemplate}" />
+                            </span>
                         </div>
                     </div>
                     <isif condition="${preference.ID === 'mollieProfileId'}">
