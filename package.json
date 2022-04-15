@@ -1,6 +1,6 @@
 {
   "name": "link_mollie",
-  "version": "21.1.0",
+  "version": "22.1.0",
   "version-sfra": "6.0.0",
   "description": "Link cartridge for Mollie integration",
   "main": "index.js",
