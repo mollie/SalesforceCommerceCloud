@@ -1,9 +1,11 @@
 <div class="payment-details js-payment-details">
     <isloop items="${pdict.order.billing.payment.selectedPaymentInstruments}" var="payment">
-        <isif condition="${payment.paymentMethod === 'MOLLIE_CREDIT_CARD'}">
-            <isinclude template="checkout/billing/paymentOptions/creditCardSummary" />
-        <iselse/>
-            <isinclude template="checkout/billing/paymentOptions/redirectSummary" />
+        <isif condition="${paymentOption && paymentOption.ID !== 'MOLLIE_APPLE_PAY_DIRECT'}">
+            <isif condition="${payment.paymentMethod === 'MOLLIE_CREDIT_CARD'}">
+                <isinclude template="checkout/billing/paymentOptions/creditCardSummary" />
+            <iselse/>
+                <isinclude template="checkout/billing/paymentOptions/redirectSummary" />
+            </isif>
         </isif>
     </isloop>
 </div>

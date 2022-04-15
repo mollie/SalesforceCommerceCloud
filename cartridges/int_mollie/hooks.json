@@ -23,6 +23,26 @@
 		{
 			"name": "app.payment.form.processor.mollie_ecom_qr",
 			"script": "./cartridge/scripts/payment/processor/mollie_ecom_qr_form_processor"
+		},
+		{
+			"name": "app.payment.processor.mollie_ecom_applepay_direct",
+			"script": "./cartridge/scripts/payment/processor/mollie_ecom_applepay_direct"
+		},
+		{
+			"name": "app.payment.form.processor.mollie_ecom_applepay_direct",
+			"script": "./cartridge/scripts/payment/processor/mollie_ecom_applepay_direct_form_processor"
+		},
+		{
+			"name": "dw.extensions.applepay.getRequest",
+			"script": "./cartridge/scripts/hooks/mollieApplePay"
+		},
+		{
+			"name": "dw.extensions.applepay.paymentAuthorized.authorizeOrderPayment",
+			"script": "./cartridge/scripts/hooks/mollieApplePay"
+		},
+		{
+			"name": "dw.extensions.applepay.paymentAuthorized.placeOrder",
+			"script": "./cartridge/scripts/hooks/mollieApplePay"
 		}
 	]
 }

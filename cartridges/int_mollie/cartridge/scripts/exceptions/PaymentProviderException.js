@@ -9,6 +9,7 @@ var convertToPaymentProviderExceptionStackTrace = function (error) {
  * @class PaymentProviderException
  * @param {string} message - Error message
  * @param {string|Object} [errorDetail] - Detail on an error (string or object)
+ * @param {string} cardAuthError - Indicated if the error given is a credit card authorisation error
  */
 function PaymentProviderException(message, errorDetail, cardAuthError) {
     MollieServiceException.call(this, message, errorDetail);

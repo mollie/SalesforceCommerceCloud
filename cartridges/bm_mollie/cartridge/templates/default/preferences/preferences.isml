@@ -1,6 +1,6 @@
 <div class="card js-bm-preferences">
     <div class="card-header">
-        ${Resource.msg('label.preferences.heading', 'bm', null)}
+        ${pdict.pageTitle}
     </div>
     <div class="card-body">
         <div class="alert alert-success js-bm-preferences-alert-success d-none"></div>
@@ -34,28 +34,34 @@
             <fieldset>
                 <isloop items="${pdict.preferences}" var="preference" status="loopstatus">
                     <div class="row form-group ${preference.mandatory ? 'required' : ''}">
-                        <label class="col-md-2 control-label">${preference.displayName || preference.ID}</label>
-                        <div class="col-md-4">
+                        <label class="col-lg-4 col-xl-3 control-label">${preference.displayName || preference.ID}</label>
+                        <div class="col-lg-8 col-xl-6">
                             <isif condition="${preference.inputType === 'checkbox'}">
                                 <isinclude template="preferences/input/toggle" />
                             <iselseif condition="${preference.inputType === 'select'}" />
                                 <isinclude template="preferences/input/select" />
+                            <iselseif condition="${preference.inputType === 'textarea'}" />
+                                <isinclude template="preferences/input/textarea" />
                             <iselse/>
                                 <isinclude template="preferences/input/input" />
                             </isif>
-                            <span class="field-description mt-2">
-                                <isinclude template="${'preferences/description/' + preference.ID}" />
-                            </span>
+                            <isset name="descriptionTemplate" value="${'preferences/description/' + preference.ID}" scope="page" />
+                            <isif condition="${require('*/cartridge/scripts/renderTemplateHelper').templateExists(descriptionTemplate)}">
+                                <span class="field-description mt-2">
+                                    <isinclude template="${descriptionTemplate}" />
+                                </span>
+                            </isif>
                         </div>
                     </div>
                     <isif condition="${preference.ID === 'mollieProfileId'}">
                         <isinclude template="preferences/testApiKey" />
                     </isif>
+                    <hr>
                 </isloop>
                 <a href="${URLUtils.url('PaymentMethod-Start')}" class="d-block mb-2 mt-2">${Resource.msg('label.preferences.configure.methods', 'bm', null)}</a>
                 <input type="hidden" name="${pdict.csrf.tokenName}" value="${pdict.csrf.token}"/>
                 <button type="button" class="btn btn-primary js-bm-preferences-submit mt-2"
-                    data-method-url="${URLUtils.url('MollieSettings-SavePreferences')}">${Resource.msg('label.preferences.save', 'bm', null)}</button>
+                    data-method-url="${URLUtils.url('MollieSettings-SavePreferences', 'pref_group', pdict.prefGroup)}">${Resource.msg('label.preferences.save', 'bm', null)}</button>
             </fieldset>
         </form>
     </div>

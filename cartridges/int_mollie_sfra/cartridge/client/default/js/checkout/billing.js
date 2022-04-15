@@ -54,6 +54,7 @@ function updatePaymentOptions(data) {
             components.mountMollieComponents();
             components.initEventListeners();
         }
+        require('./applePay').checkApplePaySupport();
     }
 }
 
