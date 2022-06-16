@@ -175,6 +175,7 @@ server.post('SavePreferences',
  * @param {serverfunction} - post
  */
 server.post('TestApiKey', function (req, res, next) {
+    var renderTemplateHelper = require('*/cartridge/scripts/renderTemplateHelper');
     var testApiKey = request.httpParameterMap.get('testApiKey');
     var liveApiKey = request.httpParameterMap.get('liveApiKey');
 
