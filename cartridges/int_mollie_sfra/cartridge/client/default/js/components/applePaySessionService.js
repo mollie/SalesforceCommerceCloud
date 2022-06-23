@@ -5,22 +5,23 @@
 const httpUtils = require('../utils/http');
 
 const ACTION = window.dw.applepay && window.dw.applepay.action;
-const STATUSES = {
-    Failure: ApplePaySession.STATUS_FAILURE,
-    InvalidBillingPostalAddress: ApplePaySession.STATUS_INVALID_BILLING_POSTAL_ADDRESS,
-    InvalidShippingPostalAddress: ApplePaySession.STATUS_INVALID_SHIPPING_POSTAL_ADDRESS,
-    InvalidShippingContact: ApplePaySession.STATUS_INVALID_SHIPPING_CONTACT,
-    PINRequired: ApplePaySession.STATUS_PIN_REQUIRED,
-    PINIncorrect: ApplePaySession.STATUS_PIN_INCORRECT,
-    PINLockout: ApplePaySession.STATUS_PIN_LOCKOUT
-};
 const AppleSession = require('./applePaySession');
+
 
 /** Map Apple Pay Session statusses
  * @param {string} status - status to be mapped
  * @returns {number} AppleSession status
  */
 function mapStatus(status) {
+    const STATUSES = {
+        Failure: ApplePaySession.STATUS_FAILURE,
+        InvalidBillingPostalAddress: ApplePaySession.STATUS_INVALID_BILLING_POSTAL_ADDRESS,
+        InvalidShippingPostalAddress: ApplePaySession.STATUS_INVALID_SHIPPING_POSTAL_ADDRESS,
+        InvalidShippingContact: ApplePaySession.STATUS_INVALID_SHIPPING_CONTACT,
+        PINRequired: ApplePaySession.STATUS_PIN_REQUIRED,
+        PINIncorrect: ApplePaySession.STATUS_PIN_INCORRECT,
+        PINLockout: ApplePaySession.STATUS_PIN_LOCKOUT
+    };
     if (status && STATUSES[status]) {
         return STATUSES[status];
     }
