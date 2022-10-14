@@ -83,13 +83,44 @@ describe('payment/paymentService', () => {
             expect(result).to.eql(createPaymentResult);
         });
     });
+    context('#processPaymentRedirect', () => {
+        beforeEach(() => {
+            this.order = new stubs.dw.OrderMock();
+            this.processPaymentResultResult = {
+                url: faker.internet.url()
+            };
+            stubs.paymentHelperMock.processPaymentResultRedirect.returns(this.processPaymentResultResult);
+        });
+        it('Should process payment redirect for Mollie order', () => {
+            stubs.orderHelperMock.isMollieOrder.returns(true);
+            stubs.paymentServiceMock.getOrder.returns({
+                order: {}
+            });
+
+            var url = paymentService.processPaymentRedirect(this.order);
+
+            expect(stubs.paymentHelperMock.processPaymentResultRedirect).have.to.been.calledOnce();
+            expect(url).to.eql(this.processPaymentResultResult.url);
+        });
+        it('Should process payment redirect for Mollie payment', () => {
+            stubs.orderHelperMock.isMollieOrder.returns(false);
+            stubs.paymentServiceMock.getPayment.returns({
+                payment: {}
+            });
+
+            var url = paymentService.processPaymentRedirect(this.order);
+
+            expect(stubs.paymentHelperMock.processPaymentResultRedirect).have.to.been.calledOnce();
+            expect(url).to.eql(this.processPaymentResultResult.url);
+        });
+    });
     context('#processPaymentUpdate', () => {
         beforeEach(() => {
             this.order = new stubs.dw.OrderMock();
             this.processPaymentResultResult = {
                 url: faker.internet.url()
             };
-            stubs.paymentHelperMock.processPaymentResult.returns(this.processPaymentResultResult);
+            stubs.paymentHelperMock.processPaymentResultHook.returns(this.processPaymentResultResult);
         });
         it('Should process payment update for Mollie order', () => {
             stubs.orderHelperMock.isMollieOrder.returns(true);
@@ -99,7 +130,7 @@ describe('payment/paymentService', () => {
 
             var url = paymentService.processPaymentUpdate(this.order);
 
-            expect(stubs.paymentHelperMock.processPaymentResult).have.to.been.calledOnce();
+            expect(stubs.paymentHelperMock.processPaymentResultHook).have.to.been.calledOnce();
             expect(url).to.eql(this.processPaymentResultResult.url);
         });
         it('Should process payment update for Mollie payment', () => {
@@ -110,7 +141,7 @@ describe('payment/paymentService', () => {
 
             var url = paymentService.processPaymentUpdate(this.order);
 
-            expect(stubs.paymentHelperMock.processPaymentResult).have.to.been.calledOnce();
+            expect(stubs.paymentHelperMock.processPaymentResultHook).have.to.been.calledOnce();
             expect(url).to.eql(this.processPaymentResultResult.url);
         });
         it('Should call processPaymentResult when order id does match statusUpdateId', () => {
@@ -123,7 +154,7 @@ describe('payment/paymentService', () => {
 
             var url = paymentService.processPaymentUpdate(this.order, statusUpdateId);
 
-            expect(stubs.paymentHelperMock.processPaymentResult).have.to.been.calledOnce();
+            expect(stubs.paymentHelperMock.processPaymentResultHook).have.to.been.calledOnce();
             expect(url).to.eql(this.processPaymentResultResult.url);
         });
         it('Should call processPaymentResult when payment id does match statusUpdateId', () => {
@@ -137,7 +168,7 @@ describe('payment/paymentService', () => {
 
             var url = paymentService.processPaymentUpdate(this.order, statusUpdateId);
 
-            expect(stubs.paymentHelperMock.processPaymentResult).have.to.been.calledOnce();
+            expect(stubs.paymentHelperMock.processPaymentResultHook).have.to.been.calledOnce();
             expect(url).to.eql(this.processPaymentResultResult.url);
         });
         it('Should ignore processPaymentResult when order id or payment id does not match statusUpdateId', () => {
@@ -151,7 +182,7 @@ describe('payment/paymentService', () => {
 
             var url = paymentService.processPaymentUpdate(this.order, statusUpdateId);
 
-            expect(stubs.paymentHelperMock.processPaymentResult).not.to.have.been.called();
+            expect(stubs.paymentHelperMock.processPaymentResultHook).not.to.have.been.called();
             expect(url).to.be.undefined();
         });
     });

@@ -59,7 +59,7 @@ server.get('Redirect', server.middleware.https, function (req, res, next) {
                     });
                 } else {
                     req.session.privacyCache.set('isCheckoutDevice', false);
-                    var url = paymentService.processPaymentUpdate(order);
+                    var url = paymentService.processPaymentRedirect(order);
                     res.redirect(url);
                 }
                 return next();

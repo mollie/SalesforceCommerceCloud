@@ -7,30 +7,141 @@ var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 
 /**
- * Process the Order Result from Mollie
+ * Returns the URL to redirect to when order has been placed
  *
  * @param {dw.order.Order} order order
- * @param {Object} paymentResult paymentResult from getOrder or getPayment call
- * @return {string} url
+ * @returns {string} URL to redirect to when order is placed
  */
-function processPaymentResult(order, paymentResult) {
+function getRedirectSuccessURL(order) {
     var orderId = order.orderNo;
     var orderToken = order.orderToken;
 
     // Uncomment block to support SFRA < 6.0.0
-    // var url = URLUtils.https('Order-Confirm', 'ID', orderId, 'token', orderToken).toString();
+    // return URLUtils.https('Order-Confirm', 'ID', orderId, 'token', orderToken).toString();
 
-    // Comment block to support SFRA < 6.0.0
-    var url = URLUtils.https('MolliePayment-RedirectSuccess', 'orderId', orderId, 'orderToken', orderToken).toString();
+    // Comment block to support SFRA >= 6.0.0
+    return URLUtils.https('MolliePayment-RedirectSuccess', 'orderId', orderId, 'orderToken', orderToken).toString();
     // End block
+}
+
+/**
+ * Checks if Mollie order status has changed
+ *
+ * @param {dw.order.Order} order order
+ * @param {Object} paymentResult paymentResult from getOrder or getPayment call
+ * @returns {boolean} Whether Mollie order status has changed or not
+ */
+function isMollieOrderStatusChanged(order, paymentResult) {
+    var isMollieOrder = orderHelper.isMollieOrder(order);
+    var mollieOrderStatus = isMollieOrder ? orderHelper.getOrderStatus(order) : orderHelper.getPaymentStatus(order);
+    return mollieOrderStatus !== paymentResult.status;
+}
+
+/**
+ * Update the mollie status on the order
+ *
+ * @param {dw.order.Order} order order
+ * @param {Object} paymentResult paymentResult from getOrder or getPayment call
+ * @param {boolean} isMollieOrder true if mollie order, false if mollie payment
+ */
+function updateStatus(order, paymentResult, isMollieOrder) {
+    Transaction.wrap(function () {
+        if (paymentResult.payments && paymentResult.payments[0]) {
+            orderHelper.setPaymentDetails(order, null, paymentResult.payments[0].details);
+        }
+
+        if (isMollieOrder) {
+            orderHelper.setOrderId(order, paymentResult.id);
+            orderHelper.setOrderStatus(order, paymentResult.status);
+        } else {
+            orderHelper.setPaymentId(order, null, paymentResult.id);
+            orderHelper.setPaymentStatus(order, null, paymentResult.status);
+        }
+    });
+}
+
+/**
+ * Process the Order Result from Mollie when redirect endpoint is called
+ *
+ * @param {dw.order.Order} order order
+ * @param {Object} paymentResult paymentResult from getOrder or getPayment call
+ * @return {Object} url
+ */
+function processPaymentResultRedirect(order, paymentResult) {
+    var orderId = order.orderNo;
+    var url = getRedirectSuccessURL(order);
+    var isMollieOrder = orderHelper.isMollieOrder(order);
+    var shouldUpdateStatus = true;
+
+    if (!isMollieOrderStatusChanged(order, paymentResult)) {
+        return { url: url };
+    }
+
+    var STATUS = config.getTransactionStatus();
+
+    // PROCESS STATUS
+    switch (paymentResult.status) {
+        case STATUS.PENDING:
+            Transaction.wrap(function () {
+                orderHelper.addItemToOrderHistory(order,
+                    'PAYMENT :: Order pending, Mollie status :: ' + paymentResult.status);
+            });
+            break;
+
+        case STATUS.OPEN:
+        case STATUS.CREATED:
+            Transaction.wrap(function () {
+                orderHelper.addItemToOrderHistory(order,
+                    'PAYMENT :: Order open, Mollie status :: ' + paymentResult.status);
+            });
+            break;
+
+        case STATUS.SHIPPING:
+            Transaction.wrap(function () {
+                orderHelper.setOrderShippingStatus(order, Order.SHIPPING_STATUS_PARTSHIPPED,
+                    { customLogMessage: 'Order partially shipped, Mollie status :: ' + paymentResult.status });
+            });
+            break;
+
+        case STATUS.EXPIRED:
+        case STATUS.CANCELED:
+        case STATUS.FAILED:
+            shouldUpdateStatus = false;
+            url = URLUtils.https('Checkout-Begin', 'orderID', orderId, 'stage', 'payment').toString();
+            break;
+
+        default:
+            shouldUpdateStatus = false;
+    }
+
+    if (shouldUpdateStatus) {
+        updateStatus(order, paymentResult, isMollieOrder);
+    }
+
+    return {
+        url: url
+    };
+}
+
+/**
+ * Process the Order Result from Mollie
+ *
+ * @param {dw.order.Order} order order
+ * @param {Object} paymentResult paymentResult from getOrder or getPayment call
+ * @return {Object} url
+ */
+function processPaymentResultHook(order, paymentResult) {
+    var orderId = order.orderNo;
+    var url = getRedirectSuccessURL(order);
+    var isMollieOrder = orderHelper.isMollieOrder(order);
 
     orderHelper.checkMollieRefundStatus(order, paymentResult);
 
-    var STATUS = config.getTransactionStatus();
-    var isMollieOrder = orderHelper.isMollieOrder(order);
-    var mollieOrderStatus = isMollieOrder ? orderHelper.getOrderStatus(order) : orderHelper.getPaymentStatus(order);
-    if (mollieOrderStatus === paymentResult.status) return { url: url };
+    if (!isMollieOrderStatusChanged(order, paymentResult)) {
+        return { url: url };
+    }
 
+    var STATUS = config.getTransactionStatus();
 
     if (orderHelper.getOrderIsAuthorized(order)) {
         Transaction.wrap(function () {
@@ -57,26 +168,11 @@ function processPaymentResult(order, paymentResult) {
             });
             break;
 
-        case STATUS.PENDING:
-            Transaction.wrap(function () {
-                orderHelper.addItemToOrderHistory(order,
-                    'PAYMENT :: Order pending, Mollie status :: ' + paymentResult.status);
-            });
-            break;
-
         case STATUS.AUTHORIZED:
             Transaction.wrap(function () {
                 orderHelper.setOrderIsAuthorized(order, true);
                 orderHelper.addItemToOrderHistory(order,
                     'PAYMENT :: Order authorized, Mollie status :: ' + paymentResult.status);
-            });
-            break;
-
-        case STATUS.OPEN:
-        case STATUS.CREATED:
-            Transaction.wrap(function () {
-                orderHelper.addItemToOrderHistory(order,
-                    'PAYMENT :: Order open, Mollie status :: ' + paymentResult.status);
             });
             break;
 
@@ -90,32 +186,13 @@ function processPaymentResult(order, paymentResult) {
             });
             break;
 
-        case STATUS.SHIPPING:
-            Transaction.wrap(function () {
-                orderHelper.setOrderShippingStatus(order, Order.SHIPPING_STATUS_PARTSHIPPED,
-                    { customLogMessage: 'Order partially shipped, Mollie status :: ' + paymentResult.status });
-            });
-            break;
-
         default:
             Transaction.wrap(function () {
                 orderHelper.addItemToOrderHistory(order, 'PAYMENT :: Unknown Mollie status update :: ' + paymentResult.status);
             });
     }
 
-    Transaction.wrap(function () {
-        if (paymentResult.payments && paymentResult.payments[0]) {
-            orderHelper.setPaymentDetails(order, null, paymentResult.payments[0].details);
-        }
-
-        if (isMollieOrder) {
-            orderHelper.setOrderId(order, paymentResult.id);
-            orderHelper.setOrderStatus(order, paymentResult.status);
-        } else {
-            orderHelper.setPaymentId(order, null, paymentResult.id);
-            orderHelper.setPaymentStatus(order, null, paymentResult.status);
-        }
-    });
+    updateStatus(order, paymentResult, isMollieOrder);
 
     return {
         url: url
@@ -163,7 +240,8 @@ function processQR(order) {
 }
 
 module.exports = {
-    processPaymentResult: processPaymentResult,
+    processPaymentResultHook: processPaymentResultHook,
+    processPaymentResultRedirect: processPaymentResultRedirect,
     processQR: processQR
 };
 
