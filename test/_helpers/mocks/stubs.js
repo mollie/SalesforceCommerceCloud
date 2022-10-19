@@ -321,7 +321,8 @@ const paymentServiceMock = {
 };
 
 const paymentHelperMock = {
-    processPaymentResult: sandbox.stub()
+    processPaymentResultHook: sandbox.stub(),
+    processPaymentResultRedirect: sandbox.stub()
 };
 
 const mollieConfigHelperMock = {
