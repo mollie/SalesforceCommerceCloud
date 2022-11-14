@@ -99,7 +99,7 @@ module.exports = {
         $(document).on('applepay:init', function (e, data) {
             const { $container, productData } = data;
 
-            if (location.protocol !== 'https:' || !ApplePaySession.supportsVersion(appleSessionVersion)) {
+            if (!window.ApplePaySession || location.protocol !== 'https:' || !ApplePaySession.supportsVersion(appleSessionVersion)) {
                 return;
             }
 
