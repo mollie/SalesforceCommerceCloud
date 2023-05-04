@@ -196,11 +196,11 @@ COHelpers.getMolliePaymentMethods = function (currentBasket, orderModel, country
     getMethodResponse.methods.forEach(function (mollieMethod) {
         mollieMethods[mollieMethod.id] = mollieMethod;
     });
-
     return paymentMethods.filter(function (method) {
         return mollieMethods[method.molliePaymentMethodId] || !method.molliePaymentMethodId;
     }).map(function (method) {
         var mappedMethod = method;
+        mappedMethod.name = mollieMethods[method.name.replace(/\s/g, '').toLowerCase()].description;
         if (method.molliePaymentMethodId) {
             var mollieMethod = mollieMethods[method.molliePaymentMethodId];
             mappedMethod.issuers = mollieMethod && mollieMethod.issuers;
