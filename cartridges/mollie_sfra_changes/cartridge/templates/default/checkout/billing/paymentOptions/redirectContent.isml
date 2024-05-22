@@ -5,21 +5,25 @@
         <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
             value="${paymentOption.ID}">
         <isif condition="${paymentOption.processor !== 'MOLLIE_ECOM_QR'}">
-            <form class="issuers js-issuers">
-                <isloop items="${paymentOption.issuers}" alias="issuer" status="loopStatus">
-                    <label class="form-control-label">
-                        <input type="radio" class="issuers__input" value="${JSON.stringify(issuer)}" <isprint
-                            value="${pdict.forms.billingForm.issuer.attributes}" encoding="on" />
-                        <isif condition="${loopStatus.first}">checked</isif>/>
-                        <img class="issuers__image" src="${issuer.image}" height="32" alt="${issuer.name}"
-                             title="${issuer.name}" />
-                        <span>${issuer.name}</span>
-                    </label>
-                </isloop>
-                <!--- in case no issuer is found --->
-                <input type="hidden" value="" <isprint value="${pdict.forms.billingForm.issuer.attributes}"
-                                                       encoding="on" />/>
-            </form>
+            <isif condition="${paymentOption.ID !== 'MOLLIE_IDEAL'}">
+
+                <form class="issuers js-issuers">
+                    <isloop items="${paymentOption.issuers}" alias="issuer" status="loopStatus">
+                        <label class="form-control-label">
+                            <input type="radio" class="issuers__input" value="${JSON.stringify(issuer)}" <isprint
+                                value="${pdict.forms.billingForm.issuer.attributes}" encoding="on" />
+                            <isif condition="${loopStatus.first}">checked</isif>/>
+                            <img class="issuers__image" src="${issuer.image}" height="32" alt="${issuer.name}"
+                                 title="${issuer.name}" />
+                            <span>${issuer.name}</span>
+                        </label>
+                    </isloop>
+                    <!--- in case no issuer is found --->
+                    <input type="hidden" value="" <isprint value="${pdict.forms.billingForm.issuer.attributes}"
+                                                           encoding="on" />/>
+                </form>
+
+            </isif>
         </isif>
     </fieldset>
 </div>
