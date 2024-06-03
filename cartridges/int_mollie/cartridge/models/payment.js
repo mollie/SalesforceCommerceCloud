@@ -42,7 +42,7 @@ function applicablePaymentMethods(paymentMethods) {
             name: method.name,
             image: method.image && method.image.URL.toString(),
             molliePaymentMethodId: method.custom.molliePaymentMethodId,
-            processor: method.paymentProcessor.getID()
+            processor: method.paymentProcessor ? method.paymentProcessor.getID() : 'MOLLIE_ECOM_DEFAULT'
         };
     });
 }
