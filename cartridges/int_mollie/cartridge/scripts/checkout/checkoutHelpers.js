@@ -203,8 +203,9 @@ COHelpers.getMolliePaymentMethods = function (currentBasket, orderModel, country
         mappedMethod.name = mollieMethods[method.molliePaymentMethodId] ? mollieMethods[method.molliePaymentMethodId].description : method.name;
         if (method.molliePaymentMethodId) {
             var mollieMethod = mollieMethods[method.molliePaymentMethodId];
-            mappedMethod.issuers = mollieMethod && mollieMethod.issuers;
-
+            if (method.molliePaymentMethodId !== 'ideal') {
+                mappedMethod.issuers = mollieMethod && mollieMethod.issuers;
+            }
             if (mollieMethod.imageURL) {
                 mappedMethod.image = mollieMethod.imageURL;
             }
