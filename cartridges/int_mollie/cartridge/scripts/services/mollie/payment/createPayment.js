@@ -16,7 +16,10 @@ function payloadBuilder(params) {
         redirectUrl: URLUtils.https('MolliePayment-Redirect', 'orderId', params.orderId, 'orderToken', params.orderToken).toString(),
         webhookUrl: URLUtils.https('MolliePayment-Hook', 'orderId', params.orderId, 'orderToken', params.orderToken).toString(),
         locale: params.locale || request.getLocale(),
-        method: params.methodId
+        method: params.methodId,
+        lines: new mollieRequestEntities.Lines(params.productLineItems, params.shipments, params.priceAdjustments, params.orderLineCategory),
+        billingAddress: new mollieRequestEntities.Address(params.billingAddress, params.email),
+        shippingAddress: new mollieRequestEntities.Address(params.shippingAddress, params.email),
     };
 
     if (params.cardToken) {

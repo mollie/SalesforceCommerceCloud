@@ -18,6 +18,9 @@ var refundConstants = require('*/cartridge/scripts/services/mollie/refund/refund
 var createShipment = require('*/cartridge/scripts/services/mollie/shipment/createShipment');
 var shipmentConstants = require('*/cartridge/scripts/services/mollie/shipment/shipmentConstants');
 
+var createCapture = require('*/cartridge/scripts/services/mollie/capture/createCapture');
+var captureConstants = require('*/cartridge/scripts/services/mollie/capture/captureConstants');
+
 var getMethod = require('*/cartridge/scripts/services/mollie/method/getMethod');
 var getMethods = require('*/cartridge/scripts/services/mollie/method/getMethods');
 var methodConstants = require('*/cartridge/scripts/services/mollie/method/methodConstants');
@@ -94,6 +97,13 @@ exports.createShipment = function (parameters) {
     var mollie = new Mollie(shipmentConstants.CREATE_SHIPMENT);
     mollie.addPayloadBuilder(createShipment.payloadBuilder);
     mollie.addResponseMapper(createShipment.responseMapper);
+    return mollie.execute(parameters);
+};
+
+exports.createCapture = function (parameters) {
+    var mollie = new Mollie(captureConstants.CREATE_CAPTURE);
+    mollie.addPayloadBuilder(createCapture.payloadBuilder);
+    mollie.addResponseMapper(createCapture.responseMapper);
     return mollie.execute(parameters);
 };
 

@@ -248,6 +248,21 @@ function Shipment(mollieShipment) {
 /**
  *
  * @class
+ * @param {Object} mollieCapture - Mollie Capture object
+ */
+function Capture(mollieCapture) {
+    var capture = mollieCapture || {};
+    this.resource = capture.resource;
+    this.id = capture.id;
+    this.amount = new Amount(capture.amount);
+    this.createdAt = capture.createdAt;
+    this.description = capture.description;
+    this.paymentId = capture.paymentId;
+}
+
+/**
+ *
+ * @class
  * @param {Object} mollieCustomer - Mollie Customer object
  */
 function Customer(mollieCustomer) {
@@ -290,5 +305,6 @@ module.exports = {
     Line: Line,
     Issuer: Issuer,
     Customer: Customer,
-    Session: Session
+    Session: Session,
+    Capture: Capture
 };
