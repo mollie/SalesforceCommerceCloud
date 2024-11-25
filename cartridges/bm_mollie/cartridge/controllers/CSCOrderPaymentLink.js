@@ -66,6 +66,27 @@ function sendPaymentLink(order, email, paymentLink) {
 }
 
 /**
+ * Get payment link from Mollie via hook service
+ * @param {dw.order.Order} order - order
+ * @param {dw.order.PaymentMethod} paymentMethod - paymentMethod
+ * @param {Object} paymentData - paymentData
+ * @return {MollieServiceException} - exception
+ */
+function getPaymentLink(order, paymentMethod, paymentData) {
+    var hookName = 'mollie.get.payment.link';
+
+    if (!HookMgr.hasHook(hookName)) throw new MollieServiceException('Hook ' + hookName + ' not supported.');
+
+    return HookMgr.callHook(
+        hookName,
+        'getPaymentLink',
+        order,
+        paymentMethod,
+        paymentData
+    );
+}
+
+/**
  * CSCOrderPaymentLink-Start : Renders the payment link page
  * @name Mollie/CSCOrderPaymentLink-Start
  * @function
@@ -81,27 +102,22 @@ server.get('Start', csrfProtection.generateToken, function (req, res, next) {
     if (!isLinkAllowed(order) || undoFailOrCancelOrder(order).error) {
         res.render('order/payment/link/order_payment_link_not_available.isml');
         return next();
-    } else if (orderHelper.isMollieOrder(order)) {
-        var getOrderResult = paymentService.getOrder(orderHelper.getOrderId(order));
-        paymentLink = getOrderResult.order.links.checkout.href;
     } else {
         var mollieInstruments = orderHelper.getMolliePaymentInstruments(order);
         var lastMollieInstrument = mollieInstruments.pop();
         if (lastMollieInstrument) {
             var paymentMethodId = lastMollieInstrument.getPaymentMethod();
+            var paymentMethod = PaymentMgr.getPaymentMethod(paymentMethodId);
             var molliePaymentId = orderHelper.getPaymentId(order, paymentMethodId);
             var getPaymentResult;
             if (molliePaymentId) {
                 getPaymentResult = paymentService.getPayment(molliePaymentId);
-            }
-            if (getPaymentResult && getPaymentResult.payment.links.checkout.href) {
-                paymentLink = getPaymentResult.payment.links.checkout.href;
+                var paymentLinkData = getPaymentLink(order, paymentMethod, getPaymentResult.payment);
+                paymentLink = paymentLinkData && paymentLinkData.payment && paymentLinkData.payment.links && paymentLinkData.payment.links.paymentLink ? paymentLinkData.payment.links.paymentLink.href : null;
             } else {
-                var paymentMethod = PaymentMgr.getPaymentMethod(paymentMethodId);
-                var locale = getPaymentResult ? getPaymentResult.payment.locale : order.customerLocaleID;
-                var createPaymentresult = paymentService.createPayment(order, paymentMethod, { locale: locale });
-                paymentLink = createPaymentresult.payment.links.checkout.href;
-            }
+                res.render('order/payment/link/order_payment_link_not_available.isml');
+                return next();
+            }  
         }
     }
     if (paymentLink) {

@@ -39,6 +39,29 @@ function Links(mollieLinks) {
 /**
  *
  * @class
+ * @param {Object} mollieLinks - Mollie Links object
+ */
+function PaymentLinks(mollieLinks) {
+    var links = mollieLinks || {};
+    this.self = new Link(links.self);
+    this.paymentLink = new Link(links.paymentLink);
+    this.documentation = new Link(links.documentation);
+}
+
+/**
+ *
+ * @class
+ * @param {Object} molliePayment - Mollie payment Links object
+ */
+function PaymentFromPaymentLinks(molliePayment) {
+    var payment = molliePayment || {};
+    this.embedded = payment._embedded;
+    this.links = new Links(payment._links);
+}
+
+/**
+ *
+ * @class
  * @param {Object} mollieAddress - Mollie Address object
  */
 function Address(mollieAddress) {
@@ -92,6 +115,23 @@ function Payment(molliePayment) {
     this.redirectUrl = payment.redirectUrl;
     this.webhookUrl = payment.webhookUrl;
     this.links = new Links(payment._links);
+}
+
+/**
+ *
+ * @class
+ * @param {Object} molliePayment - Mollie PaymentLink object
+ */
+function PaymentLink(molliePayment) {
+    var payment = molliePayment || {};
+    this.amount = new Amount(payment.amount);
+    this.description = payment.description;
+    this.expiresAt = payment.expiresAt;
+    this.profileId = payment.profileId;
+    this.redirectUrl = payment.redirectUrl;
+    this.webhookUrl = payment.webhookUrl;
+    this.reusable = payment.reusable;
+    this.links = new PaymentLinks(payment._links);
 }
 
 /**
@@ -283,6 +323,7 @@ module.exports = {
     Links: Links,
     Address: Address,
     Payment: Payment,
+    PaymentLink: PaymentLink,
     Order: Order,
     Method: Method,
     Refund: Refund,
@@ -291,4 +332,5 @@ module.exports = {
     Issuer: Issuer,
     Customer: Customer,
     Session: Session
+    PaymentFromPaymentLinks: PaymentFromPaymentLinks
 };

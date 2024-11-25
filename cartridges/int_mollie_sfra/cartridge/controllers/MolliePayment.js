@@ -9,6 +9,7 @@ var Resource = require('dw/web/Resource');
 var paymentService = require('*/cartridge/scripts/payment/paymentService');
 var MollieServiceException = require('*/cartridge/scripts/exceptions/MollieServiceException');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
+var paymentHelper = require('*/cartridge/scripts/payment/paymentHelper');
 
 /**
  * MolliePayment-RedirectSuccess : Handling of a successful payment. Redirects to order confirmation.
@@ -45,6 +46,7 @@ server.get('Redirect', server.middleware.https, function (req, res, next) {
     try {
         var orderId = req.querystring.orderId;
         var orderToken = req.querystring.orderToken;
+        var isRedirectFromPaymentLink = req.querystring.link;
         var isCheckoutDevice = req.session.privacyCache.get('isCheckoutDevice');
         if (orderId && orderToken) {
             var order = orderId && OrderMgr.getOrder(orderId, orderToken);
@@ -57,6 +59,10 @@ server.get('Redirect', server.middleware.https, function (req, res, next) {
                         paid: paymentStatus === Order.PAYMENT_STATUS_PAID,
                         orderId: orderId
                     });
+                } else if (isRedirectFromPaymentLink){ // Payment From Link scenario (CSC)
+                    var url = paymentHelper.getRedirectSuccessURL(order);
+                    res.redirect(url);
+                    
                 } else {
                     req.session.privacyCache.set('isCheckoutDevice', false);
                     var url = paymentService.processPaymentRedirect(order);

@@ -2,6 +2,9 @@ var Mollie = require('*/cartridge/scripts/services/mollie/Mollie');
 var createPayment = require('*/cartridge/scripts/services/mollie/payment/createPayment');
 var getPayment = require('*/cartridge/scripts/services/mollie/payment/getPayment');
 var cancelPayment = require('*/cartridge/scripts/services/mollie/payment/cancelPayment');
+var createPaymentLink = require('*/cartridge/scripts/services/mollie/link/createPaymentLink');
+var getPaymentFromLink = require('*/cartridge/scripts/services/mollie/link/getPaymentFromLink');
+var paymentLinkConstants = require('*/cartridge/scripts/services/mollie/link/paymentLinkConstants');
 var paymentConstants = require('*/cartridge/scripts/services/mollie/payment/paymentConstants');
 var walletConstants = require('*/cartridge/scripts/services/mollie/wallet/walletConstants');
 
@@ -45,6 +48,20 @@ exports.cancelPayment = function (parameters) {
     var mollie = new Mollie(paymentConstants.CANCEL_PAYMENT);
     mollie.addPayloadBuilder(cancelPayment.payloadBuilder);
     mollie.addResponseMapper(cancelPayment.responseMapper);
+    return mollie.execute(parameters);
+};
+
+exports.getPaymentFromLink = function (parameters) {
+    var mollie = new Mollie(paymentLinkConstants.GET_PAYMENT_FROM_LINK);
+    mollie.addPayloadBuilder(getPaymentFromLink.payloadBuilder);
+    mollie.addResponseMapper(getPaymentFromLink.responseMapper);
+    return mollie.execute(parameters);
+};
+
+exports.createPaymentLink = function (parameters) {
+    var mollie = new Mollie(paymentLinkConstants.CREATE_PAYMENT_LINK);
+    mollie.addPayloadBuilder(createPaymentLink.payloadBuilder);
+    mollie.addResponseMapper(createPaymentLink.responseMapper);
     return mollie.execute(parameters);
 };
 

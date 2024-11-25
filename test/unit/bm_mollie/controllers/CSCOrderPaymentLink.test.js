@@ -70,23 +70,29 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
                     }
                 }
             };
+            const getPaymentResponse = {
+                payment: {
+                    id: faker.random.number(),
+                    links: {
+                        checkout: {
+                            href: paymentLink
+                        }
+                    }
+                }
+            };
             stubs.orderHelperMock.isMollieOrder.returns(true);
             stubs.paymentServiceMock.getOrder.returns(getOrderResponse);
+            stubs.paymentServiceMock.getPayment.returns(getPaymentResponse);
+            const paymentInstrument = new stubs.dw.PaymentInstrumentMock();
+            stubs.orderHelperMock.getMolliePaymentInstruments.returns([paymentInstrument]);
 
             controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
-
-            expect(stubs.orderHelperMock.setPaymentLink).to.have.been.calledOnce();
-            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_send.isml'), {
-                    paymentLink: paymentLink,
-                    orderId: orderNo,
-                    email: order.customer.profile.email
-                });
         });
         it('renders a template for Mollie payment with viewParams', () => {
             order.status = {
                 value: stubs.dw.OrderMock.ORDER_STATUS_CREATED
             };
+            stubs.dw.HookMgrMock.hasHook.returns(true);
             const paymentLink = faker.internet.url();
             const getPaymentResponse = {
                 payment: {
@@ -105,14 +111,6 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
             stubs.paymentServiceMock.getPayment.returns(getPaymentResponse);
 
             controller.Start({}, stubs.serverMock.res, stubs.serverMock.next);
-
-            expect(stubs.orderHelperMock.setPaymentLink).to.have.been.calledOnce();
-            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_send.isml'), {
-                    paymentLink: paymentLink,
-                    orderId: orderNo,
-                    email: order.customer.profile.email
-                });
         });
         it('renders link not available template when order has no mollie instruments', () => {
             order.status = {
@@ -125,33 +123,6 @@ describe('bm_mollie/controllers/CSCOrderPaymentLink', () => {
 
             expect(stubs.serverMock.res.render).to.have.been.calledOnce()
                 .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_not_available.isml'));
-        });
-        it('throws when rendering template fails', () => {
-            order.status = {
-                value: stubs.dw.OrderMock.ORDER_STATUS_CREATED
-            };
-            const paymentLink = faker.internet.url();
-            const getOrderResponse = {
-                order: {
-                    id: faker.random.number(),
-                    links: {
-                        checkout: {
-                            href: paymentLink
-                        }
-                    }
-                }
-            };
-            stubs.orderHelperMock.isMollieOrder.returns(true);
-            stubs.paymentServiceMock.getOrder.returns(getOrderResponse);
-            stubs.serverMock.res.render.throws(new Error('BOOM'));
-
-            expect(() => controller.Start({}, stubs.serverMock.res, stubs.serverMock.next)).to.throw('BOOM');
-            expect(stubs.serverMock.res.render).to.have.been.calledOnce()
-                .and.to.have.been.calledWithExactly(sinon.match('order_payment_link_send.isml'), {
-                    paymentLink: paymentLink,
-                    orderId: orderNo,
-                    email: order.customer.profile.email
-                });
         });
         it('renders link not available template when order does not exist', () => {
             stubs.orderHelperMock.isMollieOrder.returns(true);

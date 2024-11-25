@@ -3,6 +3,10 @@
 		{
 			"name": "mollie.send.payment.link",
 			"script": "./cartridge/scripts/payment/paymentLink"
+		},
+		{
+			"name": "mollie.get.payment.link",
+			"script": "./cartridge/scripts/payment/paymentLink"
 		}
 	]
 }

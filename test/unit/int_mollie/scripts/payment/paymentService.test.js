@@ -179,11 +179,19 @@ describe('payment/paymentService', () => {
             stubs.paymentServiceMock.getOrder.returns({
                 order: {}
             });
+            stubs.paymentServiceMock.getPaymentFromPaymentLink.returns({
+                payment: {
+                    embedded: {
+                        payments: [
+                            {url: faker.random.uuid()}
+                        ]
+                    }
+                }
+            })
 
             var url = paymentService.processPaymentUpdate(this.order, statusUpdateId);
 
-            expect(stubs.paymentHelperMock.processPaymentResultHook).not.to.have.been.called();
-            expect(url).to.be.undefined();
+            expect(stubs.paymentHelperMock.processPaymentResultHook).to.have.been.called();
         });
     });
     context('#cancelPayment', () => {

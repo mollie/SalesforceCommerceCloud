@@ -181,7 +181,8 @@ const mollieServiceMock = {
     getMethods: sandbox.stub(),
     getMethodsWithParams: sandbox.stub(),
     createCustomer: sandbox.stub(),
-    requestPaymentSession: sandbox.stub()
+    requestPaymentSession: sandbox.stub(),
+    getPaymentFromPaymentLink: sandbox.stub()
 };
 
 const dw = {
@@ -282,7 +283,8 @@ const orderHelperMock = {
     setUsedTransactionAPI: sandbox.stub(),
     getUsedTransactionAPI: sandbox.stub(),
     setOrderIsAuthorized: sandbox.stub(),
-    getOrderIsAuthorized: sandbox.stub()
+    getOrderIsAuthorized: sandbox.stub(),
+    setUsedSiteContext: sandbox.stub()
 };
 
 const checkoutHelpersMock = {
@@ -317,7 +319,8 @@ const paymentServiceMock = {
     createOrderRefund: sandbox.stub(),
     createPaymentRefund: sandbox.stub(),
     createShipment: sandbox.stub(),
-    createCustomer: sandbox.stub()
+    createCustomer: sandbox.stub(),
+    getPaymentFromPaymentLink: sandbox.stub()
 };
 
 const paymentHelperMock = {
