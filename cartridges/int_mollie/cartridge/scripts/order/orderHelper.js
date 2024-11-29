@@ -487,7 +487,7 @@ function setUsedTransactionAPI(order, usedTransactionAPI) {
 }
 
 /**
- * Function necessary to bypass the BM site context from URLUtils to the storefronte site context
+ * Function necessary to bypass the BM site context from URLUtils to the storefront site context
  * @param {dw.order.Order} order - CommerceCloud Order object
  */
 function setUsedSiteContext(order) {
