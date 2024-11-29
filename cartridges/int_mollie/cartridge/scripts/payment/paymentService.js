@@ -456,7 +456,7 @@ module.exports = {
     createOrderRefund: createOrderRefund,
     createShipment: createShipment,
     createCustomer: createCustomer,
-    testApiKeys: testApiKeys
+    testApiKeys: testApiKeys,
     createPaymentLink: createPaymentLink,
     getPaymentFromPaymentLink: getPaymentFromPaymentLink
 };

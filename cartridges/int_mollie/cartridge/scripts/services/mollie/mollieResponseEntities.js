@@ -331,6 +331,6 @@ module.exports = {
     Line: Line,
     Issuer: Issuer,
     Customer: Customer,
-    Session: Session
+    Session: Session,
     PaymentFromPaymentLinks: PaymentFromPaymentLinks
 };
