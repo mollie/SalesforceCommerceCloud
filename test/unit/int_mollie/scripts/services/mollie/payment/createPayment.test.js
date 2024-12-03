@@ -12,7 +12,10 @@ const createPayment = proxyquire(`${base}/int_mollie/cartridge/scripts/services/
     '*/cartridge/scripts/services/mollie/mollieResponseEntities': {
         Payment: paymentStub
     },
-    '*/cartridge/scripts/services/mollie/mollieRequestEntities': stubs.mollieRequestEntitiesMock
+    '*/cartridge/scripts/services/mollie/mollieRequestEntities': stubs.mollieRequestEntitiesMock,
+    '*/cartridge/scripts/utils/date': stubs.dateMock,
+    '*/cartridge/scripts/mollieConfig': stubs.configMock,
+
 });
 
 describe('mollie/createPayment', () => {
@@ -40,7 +43,17 @@ describe('mollie/createPayment', () => {
             this.params = {
                 totalGrossPrice: this.currencyStub,
                 methodId: faker.lorem.word(),
-                description: faker.lorem.word()
+                description: faker.lorem.word(),
+                paymentMethod: {
+                    custom: {
+                        mollieOrderExpiryDays: {
+                            value: faker.random.number()
+                        },
+                        molliePaymentMethodId: {
+                            value: faker.lorem.word()
+                        }
+                    }
+                },
             };
             stubs.dw.URLUtilsMock.https.returns(this.returnUrl);
         });

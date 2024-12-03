@@ -64,7 +64,15 @@ function createPayment(order, paymentMethod, paymentData) {
             description: paymentDescription,
             locale: paymentData && paymentData.locale,
             includeQrCode: paymentData && paymentData.isQrPaymentMethod && config.getEnableQrCode(),
-            applePayPaymentToken: paymentData && paymentData.applePayPaymentToken
+            applePayPaymentToken: paymentData && paymentData.applePayPaymentToken,
+            productLineItems: order.getProductLineItems(),
+            billingAddress: order.getBillingAddress(),
+            shippingAddress: order.getDefaultShipment().getShippingAddress(),
+            paymentMethod: paymentMethod,
+            email: order.getCustomer().getProfile() ? order.getCustomer().getProfile().getEmail() : order.getCustomerEmail(),
+            shipments: order.getShipments(),
+            priceAdjustments: order.getPriceAdjustments(),
+            orderLineCategory: paymentMethod.custom.mollieProductCategory,
         });
 
         Transaction.wrap(function () {
@@ -338,6 +346,24 @@ function createShipment(order, lines) {
 }
 
 /**
+ * @param {string} paymentMethodID - payment method ID
+ * @param {Object} amount - given amount object (amount + currency)
+ * @returns {Object}  - result of the create capture REST call
+ * @throws {MollieServiceException}
+ */
+function createCapture(paymentMethodID, amount) {
+    try {
+        return MollieService.createCapture({
+            paymentId: paymentMethodID,
+            amount: amount || {}
+        });
+    } catch (e) {
+        if (e.name === 'PaymentProviderException') throw e;
+        throw MollieServiceException.from(e);
+    }
+}
+
+/**
  *
  * @param {dw.customer.Profile} profile - Profile object
  * @returns {Object}  - result of the create customer REST call
@@ -407,5 +433,6 @@ module.exports = {
     createOrderRefund: createOrderRefund,
     createShipment: createShipment,
     createCustomer: createCustomer,
-    testApiKeys: testApiKeys
+    testApiKeys: testApiKeys,
+    createCapture: createCapture
 };

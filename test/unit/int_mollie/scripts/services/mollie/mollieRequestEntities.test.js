@@ -137,7 +137,7 @@ describe('mollie/mollieRequestEntities', () => {
             expect(this.default.sku).to.eql(this.productLineItem.productID);
         });
         it('has an name', () => {
-            expect(this.default.name).to.eql(this.productLineItem.productName);
+            expect(this.default.description).to.eql(this.productLineItem.productName);
         });
         it('has an quantity', () => {
             expect(this.default.quantity).to.eql(this.productLineItem.quantityValue);
@@ -196,8 +196,8 @@ describe('mollie/mollieRequestEntities', () => {
             this.default = new ShippingLineItem(this.shippingLineItem);
         });
 
-        it('has a name', () => {
-            expect(this.default.name).to.eql(this.shippingLineItem.lineItemText);
+        it('has a description', () => {
+            expect(this.default.description).to.eql(this.shippingLineItem.lineItemText);
         });
         it('has an quantity', () => {
             expect(this.default.quantity).to.eql(1);
@@ -243,8 +243,8 @@ describe('mollie/mollieRequestEntities', () => {
             this.default = new DiscountLineItem(this.discountLineItem);
         });
 
-        it('has a name', () => {
-            expect(this.default.name).to.eql(this.discountLineItem.lineItemText);
+        it('has a description', () => {
+            expect(this.default.description).to.eql(this.discountLineItem.lineItemText);
         });
         it('has an quantity', () => {
             expect(this.default.quantity).to.eql(1);

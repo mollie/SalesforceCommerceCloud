@@ -27,6 +27,8 @@ const mollieService = proxyquire(`${base}/int_mollie/cartridge/scripts/services/
     '*/cartridge/scripts/services/mollie/refund/createPaymentRefund': stubs.mollieHandlerStub,
     '*/cartridge/scripts/services/mollie/refund/refundConstants': refundConstants,
     '*/cartridge/scripts/services/mollie/shipment/createShipment': stubs.mollieHandlerStub,
+    '*/cartridge/scripts/services/mollie/capture/createCapture': stubs.mollieHandlerStub,
+    '*/cartridge/scripts/services/mollie/capture/captureConstants': stubs.mollieHandlerStub,
     '*/cartridge/scripts/services/mollie/wallet/validateMerchant': stubs.mollieHandlerStub,
     '*/cartridge/scripts/services/mollie/shipment/shipmentConstants': shipmentConstants,
     '*/cartridge/scripts/services/mollie/method/getMethod': stubs.mollieHandlerStub,

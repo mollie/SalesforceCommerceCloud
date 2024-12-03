@@ -71,6 +71,9 @@ describe('payment/paymentService', () => {
                     id: faker.random.uuid()
                 }
             };
+
+            order.getCustomer.returns({ getProfile: () => { } });
+            order.getDefaultShipment.returns({ getShippingAddress: () => { } });
             stubs.mollieServiceMock.createPayment.returns(createPaymentResult);
             stubs.configMock.getEnableQrCode.returns(true);
 

@@ -43,7 +43,7 @@ function Address(address, email) {
 function ProductLineItem(productLineItem, orderLineCategory) {
     var lineItem = {
         sku: productLineItem.productID,
-        name: productLineItem.productName,
+        description: productLineItem.productName,
         quantity: productLineItem.quantityValue,
         vatRate: (productLineItem.taxRate * 100).toFixed(2),
         vatAmount: new Currency(productLineItem.adjustedTax),
@@ -70,7 +70,7 @@ function ProductLineItem(productLineItem, orderLineCategory) {
  */
 function ShippingLineItem(shippingLineItem) {
     return {
-        name: shippingLineItem.lineItemText,
+        description: shippingLineItem.lineItemText,
         quantity: 1,
         vatRate: (shippingLineItem.taxRate * 100).toFixed(2),
         vatAmount: new Currency(shippingLineItem.adjustedTax),
@@ -90,7 +90,7 @@ function ShippingLineItem(shippingLineItem) {
 function DiscountLineItem(priceAdjustment) {
     var discount = new Currency(priceAdjustment.grossPrice);
     return {
-        name: priceAdjustment.lineItemText,
+        description: priceAdjustment.lineItemText,
         quantity: 1,
         vatRate: (priceAdjustment.taxRate * 100).toFixed(2),
         vatAmount: new Currency(priceAdjustment.tax),
