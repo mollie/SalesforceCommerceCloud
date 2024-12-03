@@ -487,6 +487,16 @@ function setUsedTransactionAPI(order, usedTransactionAPI) {
 }
 
 /**
+ * Function necessary to bypass the BM site context from URLUtils to the storefront site context
+ * @param {dw.order.Order} order - CommerceCloud Order object
+ */
+function setUsedSiteContext(order) {
+    var URLUtils = require('dw/web/URLUtils');
+    var siteContext = URLUtils.https('Replace-Me').toString();
+    setOrderCustomProperty(order, { key: 'mollieUsedSiteContext', value: siteContext });
+}
+
+/**
  *
  *
  * @param {dw.order.Order} order - CommerceCloud Order object
@@ -614,5 +624,6 @@ module.exports = {
     getRefundStatus: getRefundStatus,
     setOrderIsAuthorized: setOrderIsAuthorized,
     getOrderIsAuthorized: getOrderIsAuthorized,
-    checkMollieRefundStatus: checkMollieRefundStatus
+    checkMollieRefundStatus: checkMollieRefundStatus,
+    setUsedSiteContext: setUsedSiteContext
 };

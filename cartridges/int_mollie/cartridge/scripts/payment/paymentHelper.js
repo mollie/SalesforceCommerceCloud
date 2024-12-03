@@ -242,6 +242,7 @@ function processQR(order) {
 module.exports = {
     processPaymentResultHook: processPaymentResultHook,
     processPaymentResultRedirect: processPaymentResultRedirect,
-    processQR: processQR
+    processQR: processQR,
+    getRedirectSuccessURL: getRedirectSuccessURL
 };
 

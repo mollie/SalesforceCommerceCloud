@@ -26,6 +26,23 @@ function getPayment(paymentId) {
 
 /**
  *
+ * @param {string} paymentLinkId - paymentLinkId
+ * @returns {Object} - result of the get payment Link Id REST call
+ * @throws {MollieServiceException}
+ */
+function getPaymentFromPaymentLink(paymentLinkId) {
+    try {
+        return MollieService.getPaymentFromLink({
+            paymentId: paymentLinkId
+        });
+    } catch (e) {
+        if (e.name === 'PaymentProviderException') throw e;
+        throw MollieServiceException.from(e);
+    }
+}
+
+/**
+ *
  * @param {string} orderId - orderId
  * @returns {Object} - result of the get order REST call
  * @throws {MollieServiceException}
@@ -79,9 +96,38 @@ function createPayment(order, paymentMethod, paymentData) {
             var historyItem = 'PAYMENT :: Created payment with id: ' + paymentResult.payment.id;
             orderHelper.addItemToOrderHistory(order, historyItem, true);
             orderHelper.setUsedTransactionAPI(order, config.getTransactionAPI().PAYMENT);
+            orderHelper.setUsedSiteContext(order);
             orderHelper.setPaymentId(order, paymentMethod.getID(), paymentResult.payment.id);
             orderHelper.setPaymentDescription(order, paymentMethod.getID(), paymentDescription);
             orderHelper.setPaymentDetails(order, paymentMethod.getID(), paymentResult.payment.details);
+        });
+
+        return paymentResult;
+    } catch (e) {
+        if (e.name === 'PaymentProviderException') throw e;
+        throw MollieServiceException.from(e);
+    }
+}
+
+/**
+ *
+ * @param {dw.order.Order} order - Order object
+ * @param {dw.order.PaymentMethod} paymentMethod - Order paymentMethod
+ * @param {Object} paymentData - object containing method specific data
+ * @returns {Object} - result of the create payment Link REST call
+ * @throws {MollieServiceException}
+ */
+function createPaymentLink(order, paymentMethod, paymentData) {
+    try {
+        var paymentDescription = orderHelper.getMappedPaymentDescription(order, paymentMethod) || Resource.msgf('order.details.description', 'mollie', null, order.orderNo);
+        var paymentResult = MollieService.createPaymentLink({
+            orderId: order.orderNo,
+            orderToken: order.orderToken,
+            totalGrossPrice: order.getTotalGrossPrice(),
+            profileId: paymentData && paymentData.profileId,
+            description: paymentDescription,
+            paymentMethod: paymentMethod,
+            usedSiteContext: order.custom.mollieUsedSiteContext
         });
 
         return paymentResult;
@@ -133,6 +179,9 @@ function processPaymentUpdate(order, statusUpdateId) {
         } else if (!statusUpdateId || orderHelper.getPaymentId(order) === statusUpdateId) {
             var getPaymentResult = paymentService.getPayment(orderHelper.getPaymentId(order));
             url = paymentHelper.processPaymentResultHook(order, getPaymentResult.payment).url;
+        } else if (statusUpdateId) { // Payment From Link scenario, new paymentId is fetched via other service. See docs: https://docs.mollie.com/reference/get-payment-link-payments
+            var getPaymentResult = paymentService.getPaymentFromPaymentLink(statusUpdateId);
+            url = paymentHelper.processPaymentResultHook(order, getPaymentResult.payment.embedded.payments[0]).url;
         }
         return url;
     } catch (e) {
@@ -434,5 +483,7 @@ module.exports = {
     createShipment: createShipment,
     createCustomer: createCustomer,
     testApiKeys: testApiKeys,
-    createCapture: createCapture
+    createCapture: createCapture,
+    createPaymentLink: createPaymentLink,
+    getPaymentFromPaymentLink: getPaymentFromPaymentLink
 };

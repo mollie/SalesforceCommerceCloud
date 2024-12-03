@@ -3,17 +3,21 @@ const MollieMock = stubs.MollieMock;
 const mollieMockInstance = stubs.mollieMockInstance;
 const mollieHandlerStub = stubs.mollieHandlerStub;
 const paymentConstants = require(`${base}/int_mollie/cartridge/scripts/services/mollie/payment/paymentConstants`);
+const paymentLinkConstants = require(`${base}/int_mollie/cartridge/scripts/services/mollie/link/paymentLinkConstants`);
 const walletConstants = require(`${base}/int_mollie/cartridge/scripts/services/mollie/wallet/walletConstants`);
 const orderConstants = require(`${base}/int_mollie/cartridge/scripts/services/mollie/order/orderConstants`);
 const refundConstants = require(`${base}/int_mollie/cartridge/scripts/services/mollie/refund/refundConstants`);
 const shipmentConstants = require(`${base}/int_mollie/cartridge/scripts/services/mollie/shipment/shipmentConstants`);
 const methodConstants = require(`${base}/int_mollie/cartridge/scripts/services/mollie/method/methodConstants`);
 const customerConstants = require(`${base}/int_mollie/cartridge/scripts/services/mollie/customer/customerConstants`);
-const constants = { ...paymentConstants, ...orderConstants, ...refundConstants, ...shipmentConstants, ...methodConstants, ...customerConstants, ...walletConstants };
+const constants = { ...paymentConstants, ...orderConstants, ...refundConstants, ...shipmentConstants, ...methodConstants, ...customerConstants, ...walletConstants, ...paymentLinkConstants };
 
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const mollieService = proxyquire(`${base}/int_mollie/cartridge/scripts/services/mollieService`, {
     '*/cartridge/scripts/services/mollie/payment/createPayment': stubs.mollieHandlerStub,
+    '*/cartridge/scripts/services/mollie/link/createPaymentLink': stubs.mollieHandlerStub,
+    '*/cartridge/scripts/services/mollie/link/getPaymentFromLink': stubs.mollieHandlerStub,
+    '*/cartridge/scripts/services/mollie/link/paymentLinkConstants': paymentLinkConstants,
     '*/cartridge/scripts/services/mollie/payment/getPayment': stubs.mollieHandlerStub,
     '*/cartridge/scripts/services/mollie/payment/cancelPayment': stubs.mollieHandlerStub,
     '*/cartridge/scripts/services/mollie/payment/paymentConstants': paymentConstants,
