@@ -1,26 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <payment-settings xmlns="http://www.demandware.com/xml/impex/paymentsettings/2009-09-15">
-    <payment-method method-id="DW_APPLE_PAY">
-        <name xml:lang="x-default">Apple Pay</name>
-        <enabled-flag>false</enabled-flag>
-        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
-        <custom-attributes>
-            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
-            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
-            <custom-attribute attribute-id="molliePaymentMethodId">applepay</custom-attribute>
-        </custom-attributes>
-    </payment-method>
-
-    <payment-method method-id="DW_ANDROID_PAY">
-        <name xml:lang="x-default">Android Pay</name>
-        <enabled-flag>false</enabled-flag>
-        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
-        <custom-attributes>
-            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
-            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
-            <custom-attribute attribute-id="molliePaymentMethodId">applepay</custom-attribute>
-        </custom-attributes>
-    </payment-method>
 
     <payment-method method-id="MOLLIE_IDEAL_QR">
         <name xml:lang="x-default">iDEAL QR</name>
@@ -257,59 +236,6 @@ Order created for shop: {storeName}</description>
             <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
             <custom-attribute attribute-id="molliePaymentMethodId">in3</custom-attribute>
         </custom-attributes>
-    </payment-method>
-
-    <payment-method method-id="BANK_TRANSFER">
-        <name xml:lang="x-default">Bank Transfer</name>
-        <name xml:lang="fr-FR">Virement bancaire</name>
-        <name xml:lang="it-IT">Bonifico</name>
-        <name xml:lang="ja-JP">銀行間振替</name>
-        <name xml:lang="zh-CN">银行转账</name>
-        <enabled-flag>false</enabled-flag>
-    </payment-method>
-
-    <payment-method method-id="GIFT_CERTIFICATE">
-        <name xml:lang="x-default">Gift Certificate</name>
-        <name xml:lang="fr-FR">Chèque-cadeau</name>
-        <name xml:lang="it-IT">Certificato regalo</name>
-        <name xml:lang="ja-JP">ギフト券</name>
-        <name xml:lang="zh-CN">礼券</name>
-        <enabled-flag>false</enabled-flag>
-        <processor-id>BASIC_GIFT_CERTIFICATE</processor-id>
-    </payment-method>
-
-    <payment-method method-id="CREDIT_CARD">
-        <name xml:lang="x-default">Credit Card</name>
-        <name xml:lang="fr-FR">Carte de crédit</name>
-        <name xml:lang="it-IT">Carta di credito</name>
-        <name xml:lang="ja-JP">クレジットカード</name>
-        <name xml:lang="zh-CN">信用卡</name>
-        <enabled-flag>false</enabled-flag>
-        <processor-id>BASIC_CREDIT</processor-id>
-        <custom-attributes>
-            <custom-attribute attribute-id="molliePaymentMethodId">creditcard</custom-attribute>
-        </custom-attributes>
-    </payment-method>
-
-    <payment-method method-id="PayPal">
-        <name xml:lang="x-default">Pay Pal</name>
-        <name xml:lang="fr-FR">Pay Pal</name>
-        <name xml:lang="it-IT">PayPal</name>
-        <name xml:lang="ja-JP">PayPal</name>
-        <name xml:lang="zh-CN">PayPal</name>
-        <enabled-flag>false</enabled-flag>
-        <processor-id>PAYPAL_EXPRESS</processor-id>
-    </payment-method>
-
-    <payment-method method-id="BML">
-        <name xml:lang="x-default">Bill Me Later</name>
-        <name xml:lang="fr-FR">Bill Me Later</name>
-        <name xml:lang="it-IT">Bill Me Later</name>
-        <name xml:lang="ja-JP">Bill Me Later</name>
-        <name xml:lang="zh-CN">给我发送账单</name>
-        <description xml:lang="x-default">test test test</description>
-        <enabled-flag>false</enabled-flag>
-        <processor-id>CYBERSOURCE_BML</processor-id>
     </payment-method>
 
     <payment-method method-id="MOLLIE_ONE_KLARNA">
