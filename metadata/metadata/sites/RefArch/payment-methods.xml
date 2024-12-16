@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<payment-settings xmlns="http://www.demandware.com/xml/impex/paymentsettings/2009-09-15">
+
+    <payment-method method-id="MOLLIE_IDEAL_QR">
+        <name xml:lang="x-default">iDEAL QR</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_QR</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">ideal</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_BANCONTACT">
+        <name xml:lang="x-default">Bancontact</name>
+        <description xml:lang="x-default">Hey '{customer.firstname}, your ordernumber is: {orderNumber}</description>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">bancontact</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_CREDIT_CARD">
+        <name xml:lang="x-default">Credit card</name>
+        <description xml:lang="x-default">Name: {customer.firstName} {customer.lastName}
+Order number: {orderNumber} 
+Order created for shop: {storeName}</description>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_CREDIT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">creditcard</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_PAYPAL">
+        <name xml:lang="x-default">PayPal</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">paypal</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_IDEAL">
+        <name xml:lang="x-default">iDEAL</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">ideal</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_SOFORT">
+        <name xml:lang="x-default">SOFORT Banking</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">sofort</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_APPLE_PAY">
+        <name xml:lang="x-default">Apple Pay</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">applepay</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_BANKTRANSFER">
+        <name xml:lang="x-default">Bank transfer</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">banktransfer</custom-attribute>
+            <custom-attribute attribute-id="mollieProductCategory">meal</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_BELFIUS">
+        <name xml:lang="x-default">Belfius</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">belfius</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_KBC">
+        <name xml:lang="x-default">KBC</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">kbc</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_KLARNA_PAY_NOW">
+        <name xml:lang="x-default">Klarna: Pay now</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">order</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">28</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">klarnapaynow</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_KLARNA_PAY_LATER">
+        <name xml:lang="x-default">Klarna: Pay later</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">order</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">28</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">klarnapaylater</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_KLARNA_SLICE_IT">
+        <name xml:lang="x-default">Klarna: Slice it</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">order</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">28</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">klarnasliceit</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_GIFTCARD">
+        <name xml:lang="x-default">Gift cards</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">giftcard</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_ING_HOME_PAY">
+        <name xml:lang="x-default">ING Home'Pay</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">inghomepay</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_GIROPAY">
+        <name xml:lang="x-default">Giropay</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">giropay</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_EPS">
+        <name xml:lang="x-default">eps</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">eps</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_PRZELEWY">
+        <name xml:lang="x-default">Przelewy24</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">przelewy24</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_VOUCHER">
+        <name xml:lang="x-default">Voucher</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">order</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">voucher</custom-attribute>
+            <custom-attribute attribute-id="mollieProductCategory">gift</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_APPLE_PAY_DIRECT">
+        <name xml:lang="x-default">Apple Pay Direct</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_APPLEPAY_DIRECT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">default</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">applepay</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_IN3">
+        <name xml:lang="x-default">in3</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">order</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">default</custom-attribute>
+            <custom-attribute attribute-id="molliePaymentMethodId">in3</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-method method-id="MOLLIE_ONE_KLARNA">
+        <name xml:lang="x-default">One Klarna</name>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>MOLLIE_ECOM_DEFAULT</processor-id>
+        <custom-attributes>
+            <custom-attribute attribute-id="mollieEnabledTransactionAPI">order</custom-attribute>
+            <custom-attribute attribute-id="mollieOrderExpiryDays">8</custom-attribute>
+        </custom-attributes>
+    </payment-method>
+
+    <payment-card card-type="Credit card">
+        <name xml:lang="x-default">Credit card</name>
+        <enabled-flag>true</enabled-flag>
+        <card-number-settings>
+            <enable-checksum-verification>true</enable-checksum-verification>
+            <number-length/>
+            <number-prefix/>
+        </card-number-settings>
+        <security-code-length>0</security-code-length>
+    </payment-card>
+
+    <payment-card card-type="Master">
+        <name xml:lang="x-default">Master Card</name>
+        <name xml:lang="fr-FR">Master Card</name>
+        <name xml:lang="it-IT">Master Card</name>
+        <name xml:lang="ja-JP">Master Card</name>
+        <name xml:lang="zh-CN">Master Card（万事达卡）</name>
+        <enabled-flag>false</enabled-flag>
+        <card-number-settings>
+            <enable-checksum-verification>true</enable-checksum-verification>
+            <number-length>
+                <length>16</length>
+            </number-length>
+            <number-prefix>
+                <prefix>51-55</prefix>
+            </number-prefix>
+        </card-number-settings>
+        <security-code-length>3</security-code-length>
+    </payment-card>
+
+    <payment-card card-type="Visa">
+        <name xml:lang="x-default">Visa</name>
+        <name xml:lang="fr-FR">Visa</name>
+        <name xml:lang="it-IT">Visa</name>
+        <name xml:lang="ja-JP">Visa</name>
+        <name xml:lang="zh-CN">Visa</name>
+        <enabled-flag>true</enabled-flag>
+        <card-number-settings>
+            <enable-checksum-verification>true</enable-checksum-verification>
+            <number-length>
+                <length>13</length>
+                <length>16</length>
+            </number-length>
+            <number-prefix>
+                <prefix>4</prefix>
+            </number-prefix>
+        </card-number-settings>
+        <security-code-length>3</security-code-length>
+    </payment-card>
+
+    <payment-card card-type="Amex">
+        <name xml:lang="x-default">American Express</name>
+        <name xml:lang="fr-FR">American Express</name>
+        <name xml:lang="it-IT">American Express</name>
+        <name xml:lang="ja-JP">American Express</name>
+        <name xml:lang="zh-CN">American Express（美国运通卡）</name>
+        <enabled-flag>true</enabled-flag>
+        <card-number-settings>
+            <enable-checksum-verification>true</enable-checksum-verification>
+            <number-length>
+                <length>15</length>
+            </number-length>
+            <number-prefix>
+                <prefix>34</prefix>
+                <prefix>37</prefix>
+            </number-prefix>
+        </card-number-settings>
+        <security-code-length>4</security-code-length>
+    </payment-card>
+
+    <payment-card card-type="Master Card">
+        <name xml:lang="x-default">MasterCard</name>
+        <name xml:lang="fr-FR">MasterCard</name>
+        <name xml:lang="it-IT">MasterCard</name>
+        <name xml:lang="ja-JP">MasterCard</name>
+        <name xml:lang="zh-CN">MASTERCARD</name>
+        <enabled-flag>true</enabled-flag>
+        <card-number-settings>
+            <enable-checksum-verification>true</enable-checksum-verification>
+            <number-length>
+                <length>16</length>
+            </number-length>
+            <number-prefix>
+                <prefix>51-55</prefix>
+            </number-prefix>
+        </card-number-settings>
+        <security-code-length>3</security-code-length>
+    </payment-card>
+
+    <payment-card card-type="Discover">
+        <name xml:lang="x-default">Discover</name>
+        <name xml:lang="fr-FR">Discover</name>
+        <name xml:lang="it-IT">Discover</name>
+        <name xml:lang="ja-JP">Discover</name>
+        <name xml:lang="zh-CN">Discover</name>
+        <enabled-flag>true</enabled-flag>
+        <card-number-settings>
+            <enable-checksum-verification>true</enable-checksum-verification>
+            <number-length>
+                <length>16</length>
+            </number-length>
+            <number-prefix>
+                <prefix>6011</prefix>
+                <prefix>622126-622925</prefix>
+                <prefix>644-649</prefix>
+                <prefix>65</prefix>
+            </number-prefix>
+        </card-number-settings>
+        <security-code-length>3</security-code-length>
+        <countries>
+            <country country-code="US"/>
+        </countries>
+    </payment-card>
+
+    <payment-card card-type="DinersClub">
+        <name xml:lang="x-default">Diners Club International</name>
+        <name xml:lang="fr-FR">Diners Club International</name>
+        <name xml:lang="it-IT">Diners Club International</name>
+        <name xml:lang="ja-JP">Diners Club International</name>
+        <name xml:lang="zh-CN">Diners Club（大莱卡）</name>
+        <enabled-flag>false</enabled-flag>
+        <card-number-settings>
+            <enable-checksum-verification>true</enable-checksum-verification>
+            <number-length>
+                <length>14</length>
+            </number-length>
+            <number-prefix>
+                <prefix>30</prefix>
+                <prefix>36</prefix>
+                <prefix>38</prefix>
+            </number-prefix>
+        </card-number-settings>
+        <security-code-length>3</security-code-length>
+    </payment-card>
+
+</payment-settings>
