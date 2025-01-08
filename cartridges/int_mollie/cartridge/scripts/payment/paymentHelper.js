@@ -1,10 +1,35 @@
 var Transaction = require('dw/system/Transaction');
 var Order = require('dw/order/Order');
 var URLUtils = require('dw/web/URLUtils');
+var PaymentMgr = require('dw/order/PaymentMgr');
 
 var config = require('*/cartridge/scripts/mollieConfig');
 var orderHelper = require('*/cartridge/scripts/order/orderHelper');
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
+
+// Mapping used for Payment by Link, extra paymentIntrument is created within this logic
+var paymentMethodIdMapping = {
+    applepay: 'MOLLIE_APPLE_PAY',
+    bancontact: 'MOLLIE_BANCONTACT',
+    banktransfer: 'MOLLIE_BANKTRANSFER',
+    belfius: 'MOLLIE_BELFIUS',
+    creditcard: 'MOLLIE_CREDIT_CARD',
+    eps: 'MOLLIE_EPS',
+    giftcard: 'MOLLIE_GIFTCARD',
+    giropay: 'MOLLIE_GIROPAY',
+    ideal: 'MOLLIE_IDEAL',
+    in3: 'MOLLIE_IN3',
+    inghomepay: 'MOLLIE_ING_HOME_PAY',
+    kbc: 'MOLLIE_KBC',
+    klarnapaylater: 'MOLLIE_KLARNA_PAY_LATER',
+    klarnapaynow: 'MOLLIE_KLARNA_PAY_NOW',
+    klarnasliceit: 'MOLLIE_KLARNA_SLICE_IT',
+    klarna: 'MOLLIE_ONE_KLARNA',
+    paypal: 'MOLLIE_PAYPAL',
+    przelewy24: 'MOLLIE_PRZELEWY24',
+    sofort: 'MOLLIE_SOFORT',
+    voucher: 'MOLLIE_VOUCHER'
+};
 
 /**
  * Returns the URL to redirect to when order has been placed
@@ -128,9 +153,10 @@ function processPaymentResultRedirect(order, paymentResult) {
  *
  * @param {dw.order.Order} order order
  * @param {Object} paymentResult paymentResult from getOrder or getPayment call
+ * @param {boolean} isPaymentFromLink true/false depending if payment request is coming from a payment link
  * @return {Object} url
  */
-function processPaymentResultHook(order, paymentResult) {
+function processPaymentResultHook(order, paymentResult, isPaymentFromLink) {
     var orderId = order.orderNo;
     var url = getRedirectSuccessURL(order);
     var isMollieOrder = orderHelper.isMollieOrder(order);
@@ -190,6 +216,18 @@ function processPaymentResultHook(order, paymentResult) {
             Transaction.wrap(function () {
                 orderHelper.addItemToOrderHistory(order, 'PAYMENT :: Unknown Mollie status update :: ' + paymentResult.status);
             });
+    }
+
+    if (isPaymentFromLink) {
+        var mappedPaymentMethod = paymentResult && paymentResult.method ? paymentMethodIdMapping[paymentResult.method] : null;
+        if (mappedPaymentMethod) {
+            var processor = PaymentMgr.getPaymentMethod(mappedPaymentMethod).getPaymentProcessor();
+            Transaction.wrap(function () {
+                var paymentInstrument = order.createPaymentInstrument(mappedPaymentMethod, order.totalGrossPrice);
+                paymentInstrument.getPaymentTransaction().setTransactionID(order.getOrderNo());
+                paymentInstrument.getPaymentTransaction().setPaymentProcessor(processor);
+            });
+        }
     }
 
     updateStatus(order, paymentResult, isMollieOrder);
