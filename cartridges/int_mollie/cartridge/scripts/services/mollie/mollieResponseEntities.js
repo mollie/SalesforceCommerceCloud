@@ -132,6 +132,7 @@ function PaymentLink(molliePayment) {
     this.webhookUrl = payment.webhookUrl;
     this.reusable = payment.reusable;
     this.links = new PaymentLinks(payment._links);
+    this.method = payment.method;
 }
 
 /**

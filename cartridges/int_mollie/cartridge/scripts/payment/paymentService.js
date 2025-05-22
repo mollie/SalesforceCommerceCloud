@@ -69,7 +69,7 @@ function getOrder(orderId) {
  */
 function createPayment(order, paymentMethod, paymentData) {
     try {
-        var paymentDescription = orderHelper.getMappedPaymentDescription(order, paymentMethod) || Resource.msgf('order.details.description', 'mollie', null, order.orderNo);
+        var paymentDescription = orderHelper.getMappedPaymentDescription(order, paymentMethod) || order.orderNo.toString();
         var paymentResult = MollieService.createPayment({
             orderId: order.orderNo,
             orderToken: order.orderToken,
@@ -119,7 +119,7 @@ function createPayment(order, paymentMethod, paymentData) {
  */
 function createPaymentLink(order, paymentMethod, paymentData) {
     try {
-        var paymentDescription = orderHelper.getMappedPaymentDescription(order, paymentMethod) || Resource.msgf('order.details.description', 'mollie', null, order.orderNo);
+        var paymentDescription = orderHelper.getMappedPaymentDescription(order, paymentMethod) || order.orderNo.toString();
         var paymentResult = MollieService.createPaymentLink({
             orderId: order.orderNo,
             orderToken: order.orderToken,
@@ -181,7 +181,7 @@ function processPaymentUpdate(order, statusUpdateId) {
             url = paymentHelper.processPaymentResultHook(order, getPaymentResult.payment).url;
         } else if (statusUpdateId) { // Payment From Link scenario, new paymentId is fetched via other service. See docs: https://docs.mollie.com/reference/get-payment-link-payments
             var getPaymentResult = paymentService.getPaymentFromPaymentLink(statusUpdateId);
-            url = paymentHelper.processPaymentResultHook(order, getPaymentResult.payment.embedded.payments[0]).url;
+            url = paymentHelper.processPaymentResultHook(order, getPaymentResult.payment.embedded.payments[0], true).url;
         }
         return url;
     } catch (e) {
